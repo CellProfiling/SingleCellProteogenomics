@@ -13,14 +13,11 @@
 # to render slides: open JupyterLab, hit plus, select terminal
 # jupyter nbconvert C:\Users\antho\Dropbox\CodeLundbergGroup\TissueAtlasAnalysis.ipynb --to slides --post serve
 
-get_ipython().system('pip install scanpy')
-get_ipython().system('pip install pandas')
-# get_ipython().system('pip install sklearn')
-get_ipython().system('pip install ggplot')
-get_ipython().system('conda install -y -c vtraag python-igraph ')
+# get_ipython().system('pip install scanpy pandas')
+# get_ipython().system('conda install -y -c vtraag python-igraph ')
 
 # Render our plots inline
-get_ipython().run_line_magic('matplotlib', 'inline')
+# get_ipython().run_line_magic('matplotlib', 'inline')
 
 # some setup
 import pandas as pd
@@ -31,6 +28,37 @@ import matplotlib.colors as mpcolors
 import scanpy as sc
 import os
 import shutil
+
+
+#%% least squares, continuous time setup
+from scipy.optimize import least_squares
+def calc_R(xc, yc, x, y):
+    """ calculate the distance of each 2D points from the center (xc, yc) """
+    return np.sqrt((x-xc)**2 + (y-yc)**2)
+def f_2(c,x,y):
+    """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
+    print(c)
+    Ri = calc_R(c[0],c[1],x,y)
+    return Ri - Ri.mean()
+
+import decimal
+from stretch_time import stretch_time
+
+#%% TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
+
+#hours (for the G1/S cutoff)
+G1_LEN = 10.833
+#hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+G1_S_TRANS = 2.625
+#hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+S_G2_LEN = 11.975
+#hours (this should be from the G2/M cutoff above to the end)
+#M_LEN = 0.5
+#We are excluding Mphase from this analysis
+TOT_LEN = G1_LEN + G1_S_TRANS + S_G2_LEN
+G1_PROP = G1_LEN / TOT_LEN
+G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
+S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
 #%%
 if not os.path.isfile("AllCountsForScanpy.csv") or not os.path.isfile("355CountsForScanpy.csv"):
@@ -58,10 +86,147 @@ dd = "All"
 adata = sc.read_csv(dd + "CountsForScanpy.csv")
 adata.var_names_make_unique()
 
-#%%
-phases = pd.read_csv("WellPlatePhases.csv").sort_values(by="Well_Plate")
+#%% Read phases and FACS intensities
+phases = pd.read_csv("WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
 phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
 phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
+
+#%% Fucci plots
+phasesFilt = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585)] # stage may be null
+phasesFiltintSeqCenter = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585) & pd.notnull(phases.Stage)]
+phases_filtIntAjc = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585) & pd.notnull(phases.StageAJC)]
+plt.hist2d(phasesFiltintSeqCenter["Green530"], phasesFiltintSeqCenter["Red585"], bins=200)
+plt.tight_layout()
+plt.savefig(f"figures/FucciPlot{dd}Density.png")
+plt.show()
+plt.scatter(phases_filtIntAjc["Green530"], phases_filtIntAjc["Red585"], c = phases_filtIntAjc["StageAJC"].apply(lambda x: { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }[x]))
+plt.tight_layout()
+plt.savefig(f"figures/FucciPlot{dd}ByPhaseAJC.png")
+plt.show()
+plt.scatter(phasesFiltintSeqCenter["Green530"], phasesFiltintSeqCenter["Red585"], c = phasesFiltintSeqCenter["Stage"].apply(lambda x: { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }[x]))
+plt.tight_layout()
+plt.savefig(f"figures/FucciPlot{dd}ByPhase.png")
+plt.show()
+
+#%% Convert FACS intensities to pseudotime
+x = phasesFilt["Green530"]
+y = phasesFilt["Red585"]
+fucci_data = np.column_stack([x, y])
+center_est_xy = np.mean(x), np.mean(y)
+center_est2_xy = least_squares(f_2, center_est_xy, args=(x, y))
+xc_2, yc_2 = center_est2_xy.x
+Ri_2       = calc_R(*center_est2_xy.x,x,y)
+R_2        = Ri_2.mean()
+residu_2   = sum((Ri_2 - R_2)**2)
+
+# Center data
+centered_data = fucci_data - center_est2_xy.x
+
+# Convert data to polar
+def cart2pol(x, y):
+    rho = np.sqrt(x**2 + y**2)
+    phi = np.arctan2(y, x)
+    return(rho, phi)
+
+def pol2cart(rho, phi):
+    x = rho * np.cos(phi)
+    y = rho * np.sin(phi)
+    return(x, y)
+
+pol_data = cart2pol(centered_data[:,0],centered_data[:,1])
+pol_sort_inds = np.argsort(pol_data[1])
+pol_sort_rho = pol_data[0][pol_sort_inds]
+pol_sort_phi = pol_data[1][pol_sort_inds]
+centered_data_sort0 = centered_data[pol_sort_inds,0]
+centered_data_sort1 = centered_data[pol_sort_inds,1]
+
+# Rezero to minimum --resoning, cells disappear during mitosis, so we should have the fewest detected cells there
+NBINS = 150 #number of bins, arbitrary choice for now
+bins = plt.hist(pol_sort_phi,NBINS)
+start_phi = bins[1][np.argmin(bins[0])]
+
+# Move those points to the other side
+more_than_start = np.greater(pol_sort_phi,start_phi)
+less_than_start = np.less_equal(pol_sort_phi,start_phi)
+pol_sort_rho_reorder = np.concatenate((pol_sort_rho[more_than_start],pol_sort_rho[less_than_start]))
+pol_sort_inds_reorder = np.concatenate((pol_sort_inds[more_than_start],pol_sort_inds[less_than_start]))
+pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
+pol_sort_centered_data0 = np.concatenate((centered_data_sort0[more_than_start],centered_data_sort0[less_than_start]))
+pol_sort_centered_data1 = np.concatenate((centered_data_sort1[more_than_start],centered_data_sort1[less_than_start]))
+pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
+
+# Shift and re-scale "time"
+# reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
+pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
+pol_sort_norm_rev = 1 - pol_sort_norm 
+pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
+plt.tight_layout()
+plt.savefig(f"figures/Fucci{dd}PseudotimeHist.png")
+plt.show()
+
+# Apply uniform radius (rho) and convert back
+cart_data_ur = pol2cart(np.repeat(R_2, len(centered_data)), pol_data[1])
+
+#%% Visualize that pseudotime result
+start_pt = pol2cart(R_2,start_phi)
+g1_end_pt = pol2cart(R_2,start_phi + (1 - G1_PROP) * 2 * np.pi)
+g1s_end_pt = pol2cart(R_2,start_phi + (1 - G1_S_PROP) * 2 * np.pi)
+
+def plot_annotate_time(fraction):
+    pt = pol2cart(R_2,start_phi + (1 - fraction) * 2 * np.pi)
+    plt.scatter(pt[0],pt[1],c='c',linewidths=4)
+    plt.annotate(f"  {round(fraction * TOT_LEN, 2)} hrs", (pt[0], pt[1]))
+
+def drange(x, y, jump):
+  while x < y:
+    yield float(x)
+    x += decimal.Decimal(jump)
+
+def fucci_hist2d(centered_data, cart_data_ur, start_pt, outfolder, nbins=200):
+    fig, ax1 = plt.subplots(figsize=(10,10))
+    mycmap = plt.cm.gray_r
+    mycmap.set_under(color='w',alpha=None)
+    ax1.hist2d(centered_data[:,0],centered_data[:,1],bins=nbins,alpha=1,cmap=mycmap)
+    hist, xbins, ybins = np.histogram2d(cart_data_ur[0], cart_data_ur[1], bins=nbins, normed=True)
+    extent = [xbins.min(),xbins.max(),ybins.min(),ybins.max()]
+    im = ax1.imshow(
+            np.ma.masked_where(hist == 0, hist).T,
+            interpolation='nearest',
+            origin='lower',
+            extent=extent,
+            cmap='plasma')
+    plt.scatter(start_pt[0],start_pt[1],c='c',linewidths=4)
+    plt.scatter(g1_end_pt[0],g1_end_pt[1],c='c',linewidths=4)
+    plt.scatter(g1s_end_pt[0],g1s_end_pt[1],c='c',linewidths=4)
+    plt.scatter(g2_end_pt[0],g2_end_pt[1],c='c',linewidths=4)
+    plt.scatter(0,0,c='m',linewidths=4)
+    plt.annotate(f"  0 hrs (start)", (start_pt[0],start_pt[1]))
+    plt.annotate(f"  {G1_LEN} hrs (end of G1)", (g1_end_pt[0],g1_end_pt[1]))
+    plt.annotate(f"  {G1_LEN + G1_S_TRANS} hrs (end of S)", (g1s_end_pt[0],g1s_end_pt[1]))
+
+    for yeah in list(drange(decimal.Decimal(0.1), 0.9, '0.1')):
+        plot_annotate_time(yeah)
+
+    plt.xlabel(r'$\propto log_{10}(GMNN_{fucci})$',size=20,fontname='Arial')
+    plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20,fontname='Arial')
+    plt.tight_layout()
+    plt.savefig(os.path.join(outfolder,'masked_polar_hist.pdf'),transparent=True)
+
+fucci_hist2d(centered_data, cart_data_ur, start_pt, "figures", NBINS)
+
+#%% Fit PSIN model
+#bounds decided by trial and error
+#[0 1/4 1 0],[1 10 10 1] -- determined with legacy code in MATLAB
+
+# PSIN_INIT = [np.nan,1,1,np.nan]
+# PSIN_BOUNDS = ((0, 1/6, 1/2, 0),(1, 100, 100, 1))
+# PSIN_INIT_cell = PSIN_INIT
+# fit_coeffs_cell = least_squares(psin_fit, PSIN_INIT_cell, args=(
+#         curr_pol, curr_ab_cell_norm),bounds=PSIN_BOUNDS,method='trf')
+# fit_coeffs_fred = least_squares(psin_fit, PSIN_INIT_cyto, args=(
+#         curr_pol, curr_fred_norm),bounds=PSIN_BOUNDS,method='trf')
+# fit_coeffs_fgreen = least_squares(psin_fit, PSIN_INIT_cyto, args=(
+#         curr_pol, curr_fgreen_norm),bounds=PSIN_BOUNDS,method='trf')
 
 #%%
 adata.obs["phase"] = np.array(phases_filt["Stage"])
@@ -142,7 +307,20 @@ shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseNonCc
 sc.pl.heatmap(adata, nonccd_filtered, "phase_ajc", show=True, save=True)
 shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseNonCcdDiana.pdf")
 
-#%% Louvian clustering
-sc.tl.louvain(adata)
+#%% Louvian clustering -- this doesn't work; they use C++ packages that don't install easily.
+# I checked and I can use Seurat for this in R
+# sc.tl.louvain(adata)
+
+#%% partition-based graph abstraction (PAGA), and this doesn't work because of louvain either
+# sc.tl.paga(adata)
+# sc.pl.paga_compare(adata, edges=True, threshold=0.05)
+
+#%% pseudotime reconstruction
+adata.uns["iroot"] = 0
+sc.tl.dpt(adata, n_branchings=0)
+sc.pl.umap(adata, color='dpt_pseudotime', show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPredictedPseudotime.pdf")
+sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
+shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
 
 #%%
