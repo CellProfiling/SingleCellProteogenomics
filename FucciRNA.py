@@ -85,6 +85,7 @@ if not os.path.isfile("AllCountsForScanpy.csv") or not os.path.isfile("355Counts
 dd = "All"
 adata = sc.read_csv(dd + "CountsForScanpy.csv")
 adata.var_names_make_unique()
+adata.raw = adata
 
 #%% Read phases and FACS intensities
 phases = pd.read_csv("WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
@@ -364,5 +365,21 @@ sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
 shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
 sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
+
+#%% Expression vs Pseudotime
+def plot_expression_pseudotime(genelist, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        plt.scatter(adata.obs["fucci_time"], adata.X[:,list(adata.var_names).index(gene)])
+        plt.xlabel("Fucci Pseudotime",size=20,fontname='Arial')
+        plt.ylabel("Log Normalized RNA-Seq Counts Per Cell",size=20,fontname='Arial')
+        plt.title(gene,size=20,fontname='Arial')
+        plt.tight_layout()
+        plt.savefig(f"{outfolder}/{gene}.png")
+        plt.close()
+
+plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
+plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
+plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
 
 #%%
