@@ -25,10 +25,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mpcolors
+import matplotlib.patches as mpatches
 import scanpy as sc
 import os
 import shutil
-
 
 #%% least squares, continuous time setup
 from scipy.optimize import least_squares
@@ -88,25 +88,52 @@ adata.var_names_make_unique()
 
 #%% Read phases and FACS intensities
 phases = pd.read_csv("WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
-phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
+phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names) ]
 phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
 
+#%% Assign phases and log intensities; require log intensity
+adata.obs["phase"] = np.array(phases_filt["Stage"])
+adata.obs["phase_ajc"] = np.array(phases_filt["StageAJC"])
+adata.obs["Green530"] = np.array(phases_filt["Green530"])
+adata.obs["Red585"] = np.array(phases_filt["Red585"])
+adata = adata[pd.notnull(adata.obs["Green530"]) & pd.notnull(adata.obs["Red585"])] # removes dark mitotic cells
+
 #%% Fucci plots
-phasesFilt = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585)] # stage may be null
-phasesFiltintSeqCenter = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585) & pd.notnull(phases.Stage)]
-phases_filtIntAjc = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585) & pd.notnull(phases.StageAJC)]
+colormap = { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
+legendboxes = []
+labels = []
+for key in colormap:
+    legendboxes.append(mpatches.Rectangle((0,0), 1, 1, fc=colormap[key]))
+    labels.append(key)
+phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
+
+tt = "All"
+
+# heatmap
 plt.hist2d(phasesFiltintSeqCenter["Green530"], phasesFiltintSeqCenter["Red585"], bins=200)
 plt.tight_layout()
-plt.savefig(f"figures/FucciPlot{dd}Density.png")
+plt.savefig(f"figures/FucciPlot{tt}Density.png")
 plt.show()
-plt.scatter(phases_filtIntAjc["Green530"], phases_filtIntAjc["Red585"], c = phases_filtIntAjc["StageAJC"].apply(lambda x: { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }[x]))
-plt.tight_layout()
-plt.savefig(f"figures/FucciPlot{dd}ByPhaseAJC.png")
-plt.show()
-plt.scatter(phasesFiltintSeqCenter["Green530"], phasesFiltintSeqCenter["Red585"], c = phasesFiltintSeqCenter["Stage"].apply(lambda x: { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }[x]))
-plt.tight_layout()
-plt.savefig(f"figures/FucciPlot{dd}ByPhase.png")
-plt.show()
+
+# scatters
+def fucci_scatter(phases_filtered, outfile):
+    plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["StageAJC"].apply(lambda x: colormap[x]))
+    plt.legend(legendboxes, labels)
+    plt.tight_layout()
+    plt.savefig(outfile)
+    plt.show()
+
+phases_filtIntAjc = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.StageAJC)]
+fucci_scatter(phases_filtIntAjc, f"figures/FucciPlot{tt}ByPhaseAJC.png")
+
+phasesFiltintSeqCenter = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
+fucci_scatter(phasesFiltintSeqCenter, f"figures/FucciPlot{tt}ByPhase.png")
+
+for tt in ["355", "356", "357"]:
+    phasesfilt355 = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage) & phases_filt.Well_Plate.str.endswith(tt)]
+    phasesfilt355ajc = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.StageAJC)  & phases_filt.Well_Plate.str.endswith(tt)]
+    fucci_scatter(phasesfilt355, f"figures/FucciPlot{tt}ByPhase.png")
+    fucci_scatter(phasesfilt355ajc, f"figures/FucciPlot{tt}ByPhaseAJC.png")
 
 #%% Convert FACS intensities to pseudotime
 x = phasesFilt["Green530"]
@@ -167,6 +194,18 @@ plt.show()
 # Apply uniform radius (rho) and convert back
 cart_data_ur = pol2cart(np.repeat(R_2, len(centered_data)), pol_data[1])
 
+#%% Assign cells a pseudotime and visualize in fucci plot
+pol_unsort = np.argsort(pol_sort_inds_reorder)
+fucci_time = pol_sort_norm_rev[pol_unsort]
+adata.obs["fucci_time"] = fucci_time
+phasesFilt["fucci_time"] = fucci_time
+
+plt.scatter(phasesFilt["Green530"], phasesFilt["Red585"], c = phasesFilt["fucci_time"])
+plt.tight_layout()
+plt.colorbar()
+plt.savefig(f"figures/Fucci{dd}FucciPseudotime.png")
+plt.show()
+
 #%% Visualize that pseudotime result
 start_pt = pol2cart(R_2,start_phi)
 g1_end_pt = pol2cart(R_2,start_phi + (1 - G1_PROP) * 2 * np.pi)
@@ -198,7 +237,6 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, outfolder, nbins=200):
     plt.scatter(start_pt[0],start_pt[1],c='c',linewidths=4)
     plt.scatter(g1_end_pt[0],g1_end_pt[1],c='c',linewidths=4)
     plt.scatter(g1s_end_pt[0],g1s_end_pt[1],c='c',linewidths=4)
-    plt.scatter(g2_end_pt[0],g2_end_pt[1],c='c',linewidths=4)
     plt.scatter(0,0,c='m',linewidths=4)
     plt.annotate(f"  0 hrs (start)", (start_pt[0],start_pt[1]))
     plt.annotate(f"  {G1_LEN} hrs (end of G1)", (g1_end_pt[0],g1_end_pt[1]))
@@ -228,30 +266,26 @@ fucci_hist2d(centered_data, cart_data_ur, start_pt, "figures", NBINS)
 # fit_coeffs_fgreen = least_squares(psin_fit, PSIN_INIT_cyto, args=(
 #         curr_pol, curr_fgreen_norm),bounds=PSIN_BOUNDS,method='trf')
 
-#%%
-adata.obs["phase"] = np.array(phases_filt["Stage"])
-adata.obs["phase_ajc"] = np.array(phases_filt["StageAJC"])
-
-#%%
+#%% QC and filtering
 sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
 shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
 
-#%%
 sc.pp.filter_cells(adata, min_genes=200)
 sc.pp.filter_genes(adata, min_cells=20)
 sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
 sc.pp.log1p(adata)
 
-#%%
+#%% Post filtering QC
 sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
 sc.pl.highly_variable_genes(adata, show=True, save=True)
 shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersion{dd}Cells.pdf")
 
-#%% UMAP statistics
+#%% UMAP plots
+
+# UMAP statistics first
 sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata)
 
-#%% UMAP plot
 plt.rcParams['figure.figsize'] = (10, 10)
 sc.pl.umap(adata, color=["phase"], show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqCenterPhase.pdf")
@@ -322,5 +356,13 @@ sc.pl.umap(adata, color='dpt_pseudotime', show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPredictedPseudotime.pdf")
 sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
 shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
+
+#%% fucci pseudotime
+
+plt.rcParams['figure.figsize'] = (10, 10)
+sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
+shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
+sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
 
 #%%
