@@ -382,4 +382,16 @@ plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
 plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
 plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
 
+#%% Expression Fucci
+gene = "ANLN"
+phasesfiltfilt = phasesFilt[phasesFilt["Well_Plate"].isin(adata.obs_names) ]
+plt.scatter(phasesfiltfilt["Green530"], phasesfiltfilt["Red585"], c = adata.X[:,list(adata.var_names).index(gene)])
+plt.tight_layout()
+cbar = plt.colorbar()
+cbar.ax.get_yaxis().labelpad = 15
+cbar.ax.set_ylabel("Log Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
+plt.title(gene,size=20,fontname='Arial')
+plt.savefig(f"figures/Fucci{gene}.png")
+plt.show()
+
 #%%
