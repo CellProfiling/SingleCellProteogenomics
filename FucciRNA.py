@@ -253,25 +253,11 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, outfolder, nbins=200):
 
 fucci_hist2d(centered_data, cart_data_ur, start_pt, "figures", NBINS)
 
-#%% Fit PSIN model
-#bounds decided by trial and error
-#[0 1/4 1 0],[1 10 10 1] -- determined with legacy code in MATLAB
-
-# PSIN_INIT = [np.nan,1,1,np.nan]
-# PSIN_BOUNDS = ((0, 1/6, 1/2, 0),(1, 100, 100, 1))
-# PSIN_INIT_cell = PSIN_INIT
-# fit_coeffs_cell = least_squares(psin_fit, PSIN_INIT_cell, args=(
-#         curr_pol, curr_ab_cell_norm),bounds=PSIN_BOUNDS,method='trf')
-# fit_coeffs_fred = least_squares(psin_fit, PSIN_INIT_cyto, args=(
-#         curr_pol, curr_fred_norm),bounds=PSIN_BOUNDS,method='trf')
-# fit_coeffs_fgreen = least_squares(psin_fit, PSIN_INIT_cyto, args=(
-#         curr_pol, curr_fgreen_norm),bounds=PSIN_BOUNDS,method='trf')
-
 #%% QC and filtering
 sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
 shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
 
-sc.pp.filter_cells(adata, min_genes=200)
+sc.pp.filter_cells(adata, min_genes=400)
 sc.pp.filter_genes(adata, min_cells=20)
 sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
 sc.pp.log1p(adata)
@@ -307,10 +293,11 @@ sc.pl.umap(adata_ccdregev, color="phase_ajc", show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsAjcPhaseCcdRegev.pdf")
 
 #%% Heatmaps with published CCD genes again
-sc.pl.heatmap(adata, ccd_regev_filtered, "phase", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseCcdRegev.pdf")
-sc.pl.heatmap(adata, ccd_regev_filtered, "phase_ajc", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseCcdRegev.pdf")
+# kind of broken; need to set the colormap back to 'reds' somehow
+# sc.pl.heatmap(adata, ccd_regev_filtered, "phase", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseCcdRegev.pdf")
+# sc.pl.heatmap(adata, ccd_regev_filtered, "phase_ajc", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseCcdRegev.pdf")
 
 #%%
 ccd=pd.read_csv("ccd_genes.txt")
@@ -319,28 +306,30 @@ ccd_filtered = [gene for gene in ccd["gene"] if gene in adata.var_names]
 nonccd_filtered = [gene for gene in nonccd["gene"] if gene in adata.var_names]
 
 #%% Heatmaps with Diana's first few CCD genes
-sc.pl.heatmap(adata, ccd_filtered[:50], "phase", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseSelectCcdDiana.pdf")
-sc.pl.heatmap(adata, ccd_filtered[:50], "phase_ajc", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseSelectCcdDiana.pdf")
+# kind of broken; need to set the colormap back to 'reds' somehow
+# sc.pl.heatmap(adata, ccd_filtered[:50], "phase", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseSelectCcdDiana.pdf")
+# sc.pl.heatmap(adata, ccd_filtered[:50], "phase_ajc", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseSelectCcdDiana.pdf")
 
-# Heatmaps with Diana's CCD genes
-sc.pl.heatmap(adata, ccd_filtered, "phase", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseCcdDiana.pdf")
-sc.pl.heatmap(adata, ccd_filtered, "phase_ajc", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseCcdDiana.pdf")
+# # Heatmaps with Diana's CCD genes
+# sc.pl.heatmap(adata, ccd_filtered, "phase", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseCcdDiana.pdf")
+# sc.pl.heatmap(adata, ccd_filtered, "phase_ajc", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseCcdDiana.pdf")
 
 #%% Heatmaps with Diana's first few Non-CCD genes
-sc.pl.heatmap(adata, nonccd_filtered[:50], "phase", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseSelectNonCcdDiana.pdf")
-sc.pl.heatmap(adata, nonccd_filtered[:50], "phase_ajc", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseSelectNonCcdDiana.pdf")
+# kind of broken; need to set the colormap back to 'reds' somehow
+# sc.pl.heatmap(adata, nonccd_filtered[:50], "phase", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseSelectNonCcdDiana.pdf")
+# sc.pl.heatmap(adata, nonccd_filtered[:50], "phase_ajc", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseSelectNonCcdDiana.pdf")
 
-# Heatmaps with Diana's Non-CCD genes
-sc.pl.heatmap(adata, nonccd_filtered, "phase", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseNonCcdDiana.pdf")
-sc.pl.heatmap(adata, nonccd_filtered, "phase_ajc", show=True, save=True)
-shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseNonCcdDiana.pdf")
+# # Heatmaps with Diana's Non-CCD genes
+# sc.pl.heatmap(adata, nonccd_filtered, "phase", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsSeqCenterPhaseNonCcdDiana.pdf")
+# sc.pl.heatmap(adata, nonccd_filtered, "phase_ajc", show=True, save=True)
+# shutil.move("figures/heatmap.pdf", f"figures/heatmap{dd}CellsAjcPhaseNonCcdDiana.pdf")
 
 #%% Louvian clustering -- this doesn't work; they use C++ packages that don't install easily.
 # I checked and I can use Seurat for this in R
@@ -359,21 +348,22 @@ sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=Tr
 shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
 
 #%% fucci pseudotime
-
 plt.rcParams['figure.figsize'] = (10, 10)
 sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
 shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
 sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
 
-#%% Expression vs Pseudotime
+#%% Expression vs Pseudotime, uncomment to run again
 def plot_expression_pseudotime(genelist, outfolder):
     if not os.path.exists(outfolder): os.mkdir(outfolder)
     for gene in genelist:
-        plt.scatter(adata.obs["fucci_time"], adata.X[:,list(adata.var_names).index(gene)])
-        plt.xlabel("Fucci Pseudotime",size=20,fontname='Arial')
-        plt.ylabel("Log Normalized RNA-Seq Counts Per Cell",size=20,fontname='Arial')
-        plt.title(gene,size=20,fontname='Arial')
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        plt.scatter(adata.obs["fucci_time"], normalized_exp_data)
+        plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
+        plt.ylabel("RNA-Seq Counts, Normalized By Cell",size=36,fontname='Arial')
+        plt.title(gene,size=36,fontname='Arial')
         plt.tight_layout()
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
@@ -382,16 +372,63 @@ plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
 plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
 plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
 
-#%% Expression Fucci
-gene = "ANLN"
-phasesfiltfilt = phasesFilt[phasesFilt["Well_Plate"].isin(adata.obs_names) ]
-plt.scatter(phasesfiltfilt["Green530"], phasesfiltfilt["Red585"], c = adata.X[:,list(adata.var_names).index(gene)])
-plt.tight_layout()
-cbar = plt.colorbar()
-cbar.ax.get_yaxis().labelpad = 15
-cbar.ax.set_ylabel("Log Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
-plt.title(gene,size=20,fontname='Arial')
-plt.savefig(f"figures/Fucci{gene}.png")
-plt.show()
+#%% Expression Fucci, uncomment to run again
+def plot_expression_facs(genelist, pppp, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        plt.scatter(pppp["Green530"], pppp["Red585"], normalized_exp_data)
+        plt.tight_layout()
+        cbar = plt.colorbar()
+        cbar.ax.get_yaxis().labelpad = 15
+        cbar.ax.set_ylabel("Log Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
+        plt.title(gene,size=20,fontname='Arial')
+        plt.savefig(f"{outfolder}/{gene}.png")
+        plt.close()
+
+phasesfiltfilt = phasesFilt[phasesFilt["Well_Plate"].isin(adata.obs_names)]
+
+plot_expression_facs(ccd_regev_filtered, phasesfiltfilt, "figures/RegevGeneFucci")
+plot_expression_facs(ccd_filtered, phasesfiltfilt, "figures/DianaCcdGeneFucci")
+plot_expression_facs(nonccd_filtered, phasesfiltfilt, "figures/DianaNonCcdGeneFucci")
+
+#%% Expression-FUCCI facs of anillin by plate
+def plot_expression_facs_plate(genelist, pppp, plate, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    plt.subplot(1, 3)
+    for tt in ["355", "356", "357"]:
+        for gene in genelist:
+            pppp[gene] = adata.X[:,list(adata.var_names).index(gene)]
+            pppplate = pppp[pd.notnull(pppp.Green530) & pd.notnull(pppp.Red585) & pd.notnull(pppp.Stage) & phasesfiltfilt.Well_Plate.str.endswith(plate)]
+            plt.scatter(pppplate["Green530"], pppplate["Red585"], c = pppplate[gene])
+            plt.tight_layout()
+            cbar = plt.colorbar()
+            cbar.ax.get_yaxis().labelpad = 15
+            cbar.ax.set_ylabel("Log Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
+            plt.title(gene,size=20,fontname='Arial')
+            plt.savefig(f"{outfolder}/{gene}Plate{plate}.png")
+            plt.close()
+            pppp.drop(gene, 1)
+
+    plot_expression_facs_plate(
+        ["ANLN"], phasesfiltfilt, tt, f"figures/FucciPlotByPlates")
+
+#%% Expression UMAP, uncomment to run again
+def plot_expression_umap(genelist, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        adata.obs[gene] = normalized_exp_data
+        sc.pl.umap(adata, color=gene, show=False, save=True)
+        shutil.move("figures/umap.pdf", f"{outfolder}/{gene}.pdf")
+        plt.close()
+        adata.obs.drop(gene, 1)
+
+plot_expression_umap(ccd_regev_filtered, "figures/RegevGeneUmap")
+plot_expression_umap(ccd_filtered, "figures/DianaCcdGeneUmap")
+plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneUmap")
+
 
 #%%
