@@ -10,11 +10,9 @@
 # * How many of the genes that show variability not correlated to the cell cycle?
 
 #%%
-# to render slides: open JupyterLab, hit plus, select terminal
-# jupyter nbconvert C:\Users\antho\Dropbox\CodeLundbergGroup\TissueAtlasAnalysis.ipynb --to slides --post serve
-
 # get_ipython().system('pip install scanpy pandas')
-# get_ipython().system('conda install -y -c vtraag python-igraph ')
+# get_ipython().system('conda install -y -c vtraag python-igraph')
+# get_ipython().system('conda install -y -c conda-forge statsmodel')
 
 # Render our plots inline
 # get_ipython().run_line_magic('matplotlib', 'inline')
@@ -29,6 +27,8 @@ import matplotlib.patches as mpatches
 import scanpy as sc
 import os
 import shutil
+import scipy
+import scipy.stats
 
 #%% least squares, continuous time setup
 from scipy.optimize import least_squares
@@ -368,9 +368,96 @@ def plot_expression_pseudotime(genelist, outfolder):
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
 
-plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
-plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
-plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
+# plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
+# plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
+# plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
+
+#%% Cell cycle regulated ANOVA
+expression_data = np.exp(adata.X) - 1
+normalized_exp_data = expression_data / np.max(expression_data)
+stages = np.array(adata.obs["phase"])
+g1_exp = np.take(normalized_exp_data, np.nonzero(stages == "G1")[0], axis=0)
+s_exp = np.take(normalized_exp_data, np.nonzero(stages == "S-ph")[0], axis=0)
+g2_exp = np.take(normalized_exp_data, np.nonzero(stages == "G2M")[0], axis=0)
+tests_fp = [stats.f_oneway(g1_exp[:,geneidx], s_exp[:,geneidx], g2_exp[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
+pvals = [p for (F, p) in tests_fp]
+
+# benjimini-hochberg multiple testing correction
+# source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
+alpha = 0.01
+def _ecdf(x):
+    '''no frills empirical cdf used in fdrcorrection
+    '''
+    nobs = len(x)
+    return np.arange(1,nobs+1)/float(nobs)
+
+pvals_sortind = np.argsort(pvals)
+pvals_sorted = np.take(pvals, pvals_sortind)
+ecdffactor = _ecdf(pvals_sorted)
+reject = pvals_sorted <= ecdffactor*alpha
+reject = pvals_sorted <= ecdffactor*alpha
+if reject.any():
+    rejectmax = max(np.nonzero(reject)[0])
+    reject[:rejectmax] = True
+pvals_corrected_raw = pvals_sorted / ecdffactor
+pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
+del pvals_corrected_raw
+pvals_corrected[pvals_corrected>1] = 1
+pvals_corrected_ = np.empty_like(pvals_corrected)
+
+# deal with sorting
+pvals_corrected_[pvals_sortind] = pvals_corrected
+del pvals_corrected
+reject_ = np.empty_like(reject)
+reject_[pvals_sortind] = reject
+
+anova_tests = pd.DataFrame({"gene" : adata.var_names, "pvalue" : pvals, "pvaladj" : pvals_corrected_, "reject" : reject_})
+anova_tests.to_csv("output/transcript_regulation.csv")
+
+#%% Expression boxplots
+def format_p(p):
+    return '{:0.3e}'.format(p)
+
+def plot_expression_boxplots(genelist, outanova, outfolder):
+    notfound = []
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        if gene not in adata.var_names:
+            notfound.append(gene)
+            continue
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        expression_stage = pd.DataFrame({gene : normalized_exp_data, "stage" : adata.obs["phase"]})
+        exp_stage_filt = expression_stage[expression_stage.stage != "nan"].reset_index(drop=True)
+        boxplot = exp_stage_filt.boxplot(gene, by="stage", figsize=(12, 8))
+        boxplot.set_xlabel("Cell Cycle Stage", size=36,fontname='Arial')
+        boxplot.set_ylabel("Normalized Transcript Expression", size=36,fontname='Arial')
+        boxplot.tick_params(axis="both", which="major", labelsize=16)
+        qqq = anova_tests[anova_tests.gene == gene].iloc[0]["pvaladj"]
+        rej = anova_tests[anova_tests.gene == gene].iloc[0]["reject"]
+        boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36,fontname='Arial')
+        boxplot.get_figure().savefig(f"{outfolder}/{gene}_boxplot.png")
+        plt.close()
+    pd.DataFrame({"gene" : notfound}).to_csv(f"{outfolder}/GenesFilteredInScRNASeqAnalysis.csv")
+
+plot_expression_boxplots(ccd_regev_filtered, "ccd_regev_filtered", "figures/RegevGeneBoxplots")
+plot_expression_boxplots(ccd_filtered, "ccd_filtered", "figures/DianaCcdGeneBoxplots")
+plot_expression_boxplots(nonccd_filtered, "nonccd_filtered", "figures/DianaNonCcdGeneBoxplots")
+
+#%% [markdown]
+## Summary of ANOVA analysis
+#
+# I did ANOVA with multiple testing correction on all 17,199 genes that made it through filtering. 
+# Of those, about a third have evidence of cell cycle regulation at the transcript level (at 1% FDR). 
+# Of the gene set from the Regev study (single cell transcriptomics), all but one (99%) of the genes 
+# have evidence of transcript regulation over the cell cycle. An example of one of the surprises is above, 
+# where geminin is significant even while this effect is subtle in the pseudotime analysis.
+#
+# In Diana's 464 cell-cycle dependent genes, 197 had evidence of cell-cycle regulation at the 
+# transcript level (48% of the 410 genes that weren't filtered in scRNA-Seq preprocessing). 
+# Strangely, of the 890 non cell-cycle dependent genes, including 811 that made it through 
+# scRNA-Seq preprocessing, 362 genes (45%) showed evidence for cell cycle dependence at the 
+# transcript level.
 
 #%% Expression Fucci, uncomment to run again
 def plot_expression_facs(genelist, pppp, outfolder):
@@ -389,9 +476,9 @@ def plot_expression_facs(genelist, pppp, outfolder):
 
 phasesfiltfilt = phasesFilt[phasesFilt["Well_Plate"].isin(adata.obs_names)]
 
-plot_expression_facs(ccd_regev_filtered, phasesfiltfilt, "figures/RegevGeneFucci")
-plot_expression_facs(ccd_filtered, phasesfiltfilt, "figures/DianaCcdGeneFucci")
-plot_expression_facs(nonccd_filtered, phasesfiltfilt, "figures/DianaNonCcdGeneFucci")
+# plot_expression_facs(ccd_regev_filtered, phasesfiltfilt, "figures/RegevGeneFucci")
+# plot_expression_facs(ccd_filtered, phasesfiltfilt, "figures/DianaCcdGeneFucci")
+# plot_expression_facs(nonccd_filtered, phasesfiltfilt, "figures/DianaNonCcdGeneFucci")
 
 #%% Expression-FUCCI facs of anillin by plate
 def plot_expression_facs_plate(genelist, pppp, plate, outfolder):
@@ -426,9 +513,9 @@ def plot_expression_umap(genelist, outfolder):
         plt.close()
         adata.obs.drop(gene, 1)
 
-plot_expression_umap(ccd_regev_filtered, "figures/RegevGeneUmap")
-plot_expression_umap(ccd_filtered, "figures/DianaCcdGeneUmap")
-plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneUmap")
+# plot_expression_umap(ccd_regev_filtered, "figures/RegevGeneUmap")
+# plot_expression_umap(ccd_filtered, "figures/DianaCcdGeneUmap")
+# plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneUmap")
 
 
 #%%
