@@ -371,6 +371,7 @@ def plot_expression_pseudotime(genelist, outfolder):
 # plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
 # plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
 # plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
+plot_expression_pseudotime(["ENO1"], "figures/OtherGeneProfiles")
 
 #%% Cell cycle regulated ANOVA
 expression_data = np.exp(adata.X) - 1
@@ -386,8 +387,7 @@ pvals = [p for (F, p) in tests_fp]
 # source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
 alpha = 0.01
 def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection
-    '''
+    '''no frills empirical cdf used in fdrcorrection'''
     nobs = len(x)
     return np.arange(1,nobs+1)/float(nobs)
 
@@ -411,11 +411,76 @@ del pvals_corrected
 reject_ = np.empty_like(reject)
 reject_[pvals_sortind] = reject
 
-anova_tests = pd.DataFrame({"gene" : adata.var_names, "pvalue" : pvals, "pvaladj" : pvals_corrected_, "reject" : reject_})
+# BenjiHoch is actually pretty liberal for this dataset. What about bonferroni?
+# bonferroni MTC
+alphaBonf = alpha / float(len(pvals))
+rejectBonf = pvals_sorted <= alphaBonf
+pvals_correctedBonf = pvals_sorted * float(len(pvals))
+pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
+pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
+rejectBonf_unsorted = np.empty_like(rejectBonf)
+rejectBonf_unsorted[pvals_sortind] = rejectBonf
+
+anova_tests = pd.DataFrame(
+    {"gene" : adata.var_names, 
+    "pvalue" : pvals, 
+    "pvaladj_BH" : pvals_corrected_, 
+    "reject_BH" : reject_, 
+    "pvaladj_B" : pvals_correctedBonf_unsorted, 
+    "reject_B" : rejectBonf_unsorted})
 anova_tests.to_csv("output/transcript_regulation.csv")
+
+
+#%% Plotting variances of gene expression
+means = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
+variances = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
+mean_regev = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
+variances_regev = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
+mean_dianaccd = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_filtered]
+variances_dianaccd = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_filtered]
+mean_diananonccd = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in nonccd_filtered]
+variances_diananonccd = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in nonccd_filtered]
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax1.scatter(x = means, y = variances, label="All Genes")
+ax1.scatter(x = mean_regev, y = variances_regev, label="Regev CCD Genes")
+ax1.scatter(x = mean_dianaccd, y = variances_dianaccd, label="Fucci CCD Genes")
+ax1.scatter(x = mean_diananonccd, y = variances_diananonccd, label="Fucci Non-CCD Genes")
+plt.legend(loc="upper left")
+plt.xlabel("Mean Expression")
+plt.ylabel("Stdev Expression")
+plt.tight_layout()
+plt.savefig("figures/stdev_expression.png")
+plt.show()
+plt.close()
+
+def weights(vals):
+    '''normalizes all histogram bins to sum to 1'''
+    return np.ones_like(vals)/float(len(vals))
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+bins=np.histogram(np.hstack((variances, variances_regev, variances_dianaccd, variances_diananonccd)), bins=40)[1] #get the bin edges
+ax1.hist(variances_regev, bins=bins, weights=weights(variances_regev), 
+    label="Regev CCD Genes")
+ax1.hist(variances_dianaccd, bins=bins, weights=weights(variances_dianaccd),
+    label="Fucci CCD Genes")
+ax1.hist(variances_diananonccd, bins=bins, weights=weights(variances_diananonccd), 
+    label="Fucci Non-CCD Genes")
+ax1.hist(variances, bins=bins, weights=weights(variances), 
+    label="All Genes")
+plt.legend(loc="upper right")
+plt.xlabel("Stdev Expression")
+plt.ylabel("Count, Normalized to 1")
+plt.tight_layout()
+plt.savefig("figures/stdev_expression_hist.png")
+plt.show()
+plt.close()
 
 #%% Expression boxplots
 def format_p(p):
+    '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
 
 def plot_expression_boxplots(genelist, outanova, outfolder):
@@ -447,17 +512,24 @@ plot_expression_boxplots(nonccd_filtered, "nonccd_filtered", "figures/DianaNonCc
 #%% [markdown]
 ## Summary of ANOVA analysis
 #
-# I did ANOVA with multiple testing correction on all 17,199 genes that made it through filtering. 
+# I looked for transcript regulation across the cell cycle  on all 17,199 genes that made it through filtering 
+# (using ANOVA with Benjimini-Hochberg multiple testing correction).  
 # Of those, about a third have evidence of cell cycle regulation at the transcript level (at 1% FDR). 
 # Of the gene set from the Regev study (single cell transcriptomics), all but one (99%) of the genes 
 # have evidence of transcript regulation over the cell cycle. An example of one of the surprises is above, 
-# where geminin is significant even while this effect is subtle in the pseudotime analysis.
+# where geminin is significant (rejecting the hypothesis that all stages have the same expression level), 
+# even while this effect is subtle in the pseudotime analysis. It also seems to make sense that 
+# G1 and S phases have higher expression, while G2M has lower expression of geminin.
 #
 # In Diana's 464 cell-cycle dependent genes, 197 had evidence of cell-cycle regulation at the 
 # transcript level (48% of the 410 genes that weren't filtered in scRNA-Seq preprocessing). 
 # Strangely, of the 890 non cell-cycle dependent genes, including 811 that made it through 
 # scRNA-Seq preprocessing, 362 genes (45%) showed evidence for cell cycle dependence at the 
 # transcript level.
+#
+# I tried a Bonferroni correction (alpha=0.01), which is a bit more conservative, 
+# and 97% of the Regev genes, 27% of Diana's CCD proteins, and 20% of Diana's 
+# non-CCD proteins showed cell cycle regulation for transcripts.
 
 #%% Expression Fucci, uncomment to run again
 def plot_expression_facs(genelist, pppp, outfolder):
