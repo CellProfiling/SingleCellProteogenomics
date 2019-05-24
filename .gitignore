@@ -2,3 +2,4 @@ figures/
 *ForScanpy.csv
 .vscode/
 __pycache__/
+.pybiomart.sqlite

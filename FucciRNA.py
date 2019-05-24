@@ -29,6 +29,10 @@ import os
 import shutil
 import scipy
 import scipy.stats
+from pybiomart import Server
+
+server = Server("http://www.ensembl.org")
+ensembl = (server.marts["ENSEMBL_MART_ENSEMBL"].datasets["hsapiens_gene_ensembl"])
 
 #%% least squares, continuous time setup
 from scipy.optimize import least_squares
@@ -60,26 +64,40 @@ G1_PROP = G1_LEN / TOT_LEN
 G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
 S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
+#%% Symbol lookup
+symbols = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\gene_symbols.synonyms.hgnc.txt", delimiter="\t")
+accepted_symbols = set(symbols["Approved symbol"])
+accepted_lookup = {}
+for idx, row in symbols.iterrows():
+    for sss in str(row["Synonyms"]).split(", ") + str(row["Previous symbols"]).split(", "):
+        accepted_lookup[sss] = row["Approved symbol"]
+
 #%%
 if not os.path.isfile("AllCountsForScanpy.csv") or not os.path.isfile("355CountsForScanpy.csv"):
     counts355 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_355\\counts.tab", delimiter="\t", index_col=0)
     counts356 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_356\\counts.tab", delimiter="\t", index_col=0)
     counts357 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_357\\counts.tab", delimiter="\t", index_col=0)
-
-#%%
-if not os.path.isfile("AllCountsForScanpy.csv") or not os.path.isfile("355CountsForScanpy.csv"):
     counts355.columns += "_355"
     counts356.columns += "_356"
     counts357.columns += "_357"
-    counts355.columns
 
-#%%
+#%% Read in all data; keep symbols that aren't accepted to keep all data through analysis
+def correct_symbol(x):
+    if x in accepted_symbols: return x
+    elif x in accepted_lookup: return accepted_lookup[x]
+    elif x[-2] == "-": return x[:-2] # transcript symbols?
+    else: return x
+
 if not os.path.isfile("AllCountsForScanpy.csv") or not os.path.isfile("355CountsForScanpy.csv"):
-    counts = pd.concat([counts355,counts356,counts357], axis=1, sort=False)
-    counts.T.sort_index().to_csv("AllCountsForScanpy.csv")
+    countsT = pd.concat([counts355,counts356,counts357], axis=1, sort=False).T
+    countsT_acceptedish = countsT.rename(index=str, columns = dict([(x, correct_symbol(x)) for x in list(counts.index)]))
+    print(f"{len([x for x in list(countsT.columns) if x not in accepted_symbols])}: number of genes that had no accepted symbol")
+    print(f"{len([x for x in list(countsT_acceptedish.columns) if x not in accepted_symbols])}: number of genes that still have no accepted symbol")
+    countsT_acceptedish.sort_index().to_csv("AllCountsForScanpy.csv")
     counts355.T.sort_index().to_csv("355CountsForScanpy.csv")
     counts356.T.sort_index().to_csv("356CountsForScanpy.csv")
     counts357.T.sort_index().to_csv("357CountsForScanpy.csv")
+    del counts355, counts356, counts357, countsT, countsT_acceptedish
 
 #%% Read data into scanpy
 dd = "All"
@@ -111,10 +129,12 @@ phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_fi
 tt = "All"
 
 # heatmap
+phasesFiltintSeqCenter = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
 plt.hist2d(phasesFiltintSeqCenter["Green530"], phasesFiltintSeqCenter["Red585"], bins=200)
 plt.tight_layout()
 plt.savefig(f"figures/FucciPlot{tt}Density.png")
 plt.show()
+plt.close()
 
 # scatters
 def fucci_scatter(phases_filtered, outfile):
@@ -122,12 +142,10 @@ def fucci_scatter(phases_filtered, outfile):
     plt.legend(legendboxes, labels)
     plt.tight_layout()
     plt.savefig(outfile)
-    plt.show()
+    plt.close()
 
 phases_filtIntAjc = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.StageAJC)]
 fucci_scatter(phases_filtIntAjc, f"figures/FucciPlot{tt}ByPhaseAJC.png")
-
-phasesFiltintSeqCenter = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
 fucci_scatter(phasesFiltintSeqCenter, f"figures/FucciPlot{tt}ByPhase.png")
 
 for tt in ["355", "356", "357"]:
@@ -257,8 +275,8 @@ fucci_hist2d(centered_data, cart_data_ur, start_pt, "figures", NBINS)
 sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
 shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
 
-sc.pp.filter_cells(adata, min_genes=400)
-sc.pp.filter_genes(adata, min_cells=20)
+sc.pp.filter_cells(adata, min_genes=500)
+sc.pp.filter_genes(adata, min_cells=100)
 sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
 sc.pp.log1p(adata)
 
@@ -339,13 +357,13 @@ nonccd_filtered = [gene for gene in nonccd["gene"] if gene in adata.var_names]
 # sc.tl.paga(adata)
 # sc.pl.paga_compare(adata, edges=True, threshold=0.05)
 
-#%% pseudotime reconstruction
-adata.uns["iroot"] = 0
-sc.tl.dpt(adata, n_branchings=0)
-sc.pl.umap(adata, color='dpt_pseudotime', show=True, save=True)
-shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPredictedPseudotime.pdf")
-sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
-shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
+#%% pseudotime reconstruction (FUCCI is better; this one is kind of arbitrary)
+# adata.uns["iroot"] = 0
+# sc.tl.dpt(adata, n_branchings=0)
+# sc.pl.umap(adata, color='dpt_pseudotime', show=True, save=True)
+# shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPredictedPseudotime.pdf")
+# sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
+# shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
 
 #%% fucci pseudotime
 plt.rcParams['figure.figsize'] = (10, 10)
@@ -371,7 +389,7 @@ def plot_expression_pseudotime(genelist, outfolder):
 # plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
 # plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
 # plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
-plot_expression_pseudotime(["ENO1"], "figures/OtherGeneProfiles")
+# plot_expression_pseudotime(["ENO1"], "figures/OtherGeneProfiles")
 
 #%% Cell cycle regulated ANOVA
 expression_data = np.exp(adata.X) - 1
@@ -380,7 +398,7 @@ stages = np.array(adata.obs["phase"])
 g1_exp = np.take(normalized_exp_data, np.nonzero(stages == "G1")[0], axis=0)
 s_exp = np.take(normalized_exp_data, np.nonzero(stages == "S-ph")[0], axis=0)
 g2_exp = np.take(normalized_exp_data, np.nonzero(stages == "G2M")[0], axis=0)
-tests_fp = [stats.f_oneway(g1_exp[:,geneidx], s_exp[:,geneidx], g2_exp[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
+tests_fp = [scipy.stats.f_oneway(g1_exp[:,geneidx], s_exp[:,geneidx], g2_exp[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 pvals = [p for (F, p) in tests_fp]
 
 # benjimini-hochberg multiple testing correction
@@ -430,8 +448,28 @@ anova_tests = pd.DataFrame(
     "reject_B" : rejectBonf_unsorted})
 anova_tests.to_csv("output/transcript_regulation.csv")
 
+#%% How many of the genes that made it through aren't 
+print(f"{len([x for x in adata.var_names if x not in accepted_symbols])}: number of filtered genes that aren't accepted symbols")
+pd.DataFrame([x for x in adata.var_names if x not in accepted_symbols]).to_csv("output/final_genes_not_accepted_symbols.txt")
+print(str(len([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols])) + ": number of significant genes that aren't accepted symbols")
+pd.DataFrame([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols]).to_csv("output/significant_genes_not_accepted_symbols.txt")
 
-#%% Plotting variances of gene expression
+
+#%% How many of the variable genes of each biotype are there?
+    # pd.DataFrame([x for x in list(countsT_acceptedish.columns) if x not in accepted_symbols]).to_csv("output/genes_filtered_no_accepted_symbol")
+    # countsT_accepted = countsT_acceptedish.loc[:, countsT_acceptedish.columns.isin(accepted_symbols)]
+
+gene_biotypes = ensembl.query(attributes=["ensembl_gene_id", "external_gene_name", "gene_biotype"])#, filters={"chromosome_name": ["22"]})
+anova_tests_typed = anova_tests.merge(gene_biotypes, left_on="gene", right_on="Gene name", how="left")
+anova_tests_typed.head()
+
+#%%
+print(len(anova_tests))
+print(len(anova_tests_typed))
+
+#%%
+
+"#%% Plotting variances of gene expression
 means = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 variances = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 mean_regev = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
@@ -590,4 +628,51 @@ def plot_expression_umap(genelist, outfolder):
 # plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneUmap")
 
 
+#%% Moving avg Expression vs Pseudotime, uncomment to run again
+def moving_average(a, n):
+    '''A formula for the moving average of an array (a) with window size (n)'''
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
+
+expression_data = np.exp(adata.X) - 1
+normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
+fucci_time_inds = np.argsort(adata.obs["fucci_time"])
+fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
+norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
+
+def plot_expression_avg_pseudotime(genelist, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        nexp = norm_exp_sort[:,list(adata.var_names).index(gene)]
+        df = pd.DataFrame({"fucci_time" : fucci_time_sort, gene : nexp})
+        # plt.scatter(df["fucci_time"], df[gene], label="Normalized Expression")
+        bin_size = 100
+        plt.plot(df["fucci_time"], 
+            df[gene].rolling(bin_size).mean(), 
+            color="blue", 
+            label=f"Moving Average by {bin_size} Cells")
+        plt.fill_between(df["fucci_time"], 
+            df[gene].rolling(bin_size).quantile(0.10),
+            df[gene].rolling(bin_size).quantile(0.90), 
+            color="lightsteelblue", 
+            label="10th & 90th Percentiles")
+        # plt.plot(df["fucci_time"], color="orange", label="Normalized Expression, 10th Percentile")
+        # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() + 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
+        # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() - 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
+        plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
+        plt.ylabel("RNA-Seq Counts, Normalized By Cell",size=36,fontname='Arial')
+        plt.xticks(size=14)
+        plt.yticks(size=14)
+        plt.title(gene,size=36,fontname='Arial')
+        plt.legend(fontsize=14)
+        plt.tight_layout()
+        plt.savefig(f"{outfolder}/{gene}.png")
+        plt.close()
+
+# plot_expression_avg_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfilesAvgs")
+plot_expression_avg_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfilesAvgs")
+plot_expression_avg_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfilesAvgs")
+
 #%%
+
