@@ -14,10 +14,11 @@ from imports import *
 
 #%% Read in RNA-Seq data again and the CCD gene lists
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
-
-adata, phases_filt = read_counts_and_phases()
-qc_filtering(adata)
-
+dd = "All"
+counts_or_rpkms = "Counts"
+do_log_normalization = False
+adata, phases_filt = read_counts_and_phases(dd, counts_or_rpkms)
+qc_filtering(adata, do_log_normalization)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 #%% fucci pseudotime
@@ -35,7 +36,7 @@ shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
 def plot_expression_pseudotime(genelist, outfolder):
     if not os.path.exists(outfolder): os.mkdir(outfolder)
     for gene in genelist:
-        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        expression_data = adata.X
         normalized_exp_data = expression_data / np.max(expression_data)
         plt.scatter(adata.obs["fucci_time"], normalized_exp_data)
         plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
@@ -48,20 +49,19 @@ def plot_expression_pseudotime(genelist, outfolder):
 # plot_expression_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfiles")
 # plot_expression_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfiles")
 # plot_expression_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfiles")
-# plot_expression_pseudotime(["ENO1"], "figures/OtherGeneProfiles")
 
 
 #%% Expression Fucci, uncomment to run again
 def plot_expression_facs(genelist, pppp, outfolder):
     if not os.path.exists(outfolder): os.mkdir(outfolder)
     for gene in genelist:
-        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        expression_data = adata.X
         normalized_exp_data = expression_data / np.max(expression_data)
         plt.scatter(pppp["Green530"], pppp["Red585"], normalized_exp_data)
         plt.tight_layout()
         cbar = plt.colorbar()
         cbar.ax.get_yaxis().labelpad = 15
-        cbar.ax.set_ylabel("Log Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
+        cbar.ax.set_ylabel("Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
         plt.title(gene,size=20,fontname='Arial')
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
@@ -91,7 +91,7 @@ def plot_expression_facs_plate(genelist, pppp, plate, outfolder):
             plt.close()
             pppp.drop(gene, 1)
 
-    plot_expression_facs_plate(["ANLN"], phasesfiltfilt, tt, f"figures/FucciPlotByPlates")
+# plot_expression_facs_plate(["ANLN"], phasesfiltfilt, tt, f"figures/FucciPlotByPlates")
 
         
 #%% Moving avg Expression vs Pseudotime, uncomment to run again
@@ -101,11 +101,13 @@ def moving_average(a, n):
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
 
-expression_data = np.exp(adata.X) - 1
+expression_data = adata.X
 normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
+cell_time_sort = pd.DataFrame({"fucci_time" : fucci_time_sort, "cell" : np.take(adata.obs_names, fucci_time_inds)})
+cell_time_sort.to_csv("output/CellPseudotimes.csv")
 
 def plot_expression_avg_pseudotime(genelist, outfolder):
     if not os.path.exists(outfolder): os.mkdir(outfolder)
@@ -136,7 +138,7 @@ def plot_expression_avg_pseudotime(genelist, outfolder):
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
 
-plot_expression_avg_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfilesAvgs")
+# plot_expression_avg_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfilesAvgs")
 # plot_expression_avg_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfilesAvgs")
 # plot_expression_avg_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfilesAvgs")
 

@@ -33,7 +33,7 @@ S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
 #%% Read data into scanpy; Read phases and FACS intensities
 from ac_RNASeqData import read_counts_and_phases
-adata, phases_filt = read_counts_and_phases() # no qc, yet
+adata, phases_filt = read_counts_and_phases("All", "Counts") # no qc, yet
 
 #%% Fucci plots based on FACS intensities
 colormap = { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }

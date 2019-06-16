@@ -1,9 +1,12 @@
 from imports import *
 
-def read_counts_and_phases():
-    '''Read data into scanpy; Read phases and FACS intensities'''
-    dd = "All" # can also be 355,356, or 357
-    adata = sc.read_csv(f"input/{dd}CountsForScanpy.csv")
+def read_counts_and_phases(dd, count_or_rpkm):
+    '''
+    Read data into scanpy; Read phases and FACS intensities
+    * dd: "All", "355", "356", "357"
+    * count_or_rpkm: "Counts" or "Rpkms"
+    '''
+    adata = sc.read_csv(f"input/{dd}{count_or_rpkm}ForScanpy.csv")
     adata.var_names_make_unique()
     # adata.raw = adata
 
@@ -24,12 +27,13 @@ def read_counts_and_phases():
 
     return adata, phases_filt
 
-def qc_filtering(adata):
+def qc_filtering(adata, do_log_normalize):
     '''QC and filtering'''
     sc.pp.filter_cells(adata, min_genes=500)
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
-    sc.pp.log1p(adata)
+    if do_log_normalize:
+        sc.pp.log1p(adata)
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''

@@ -1,18 +1,23 @@
 #%% Imports
 from imports import *
-
-from pybiomart import Server
-server = Server("http://www.ensembl.org")
-ensembl = server.marts["ENSEMBL_MART_ENSEMBL"].datasets["hsapiens_gene_ensembl"]
+import numpy as np
 
 #%% Read in RNA-Seq data again and the CCD gene lists
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
-adata, phases_filt = read_counts_and_phases()
-qc_filtering(adata)
+dd = "All"
+count_or_rpkm = "Counts"
+adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm)
+qc_filtering(adata, False)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 #%% Cell cycle regulated ANOVA
-expression_data = np.exp(adata.X) - 1
+# Idea: separate the expression of each gene into G1/S/G2 phases, and use ANOVA to test if there's variation
+# Execution: scipy.stats.f_oneway and multiple testing correction
+# Output: table of all genes and ANOVA test results
+
+# expression_data = np.exp(adata.X) - 1
+# normalized_exp_data = expression_data / np.max(expression_data)
+expression_data = adata.X
 normalized_exp_data = expression_data / np.max(expression_data)
 stages = np.array(adata.obs["phase"])
 g1_exp = np.take(normalized_exp_data, np.nonzero(stages == "G1")[0], axis=0)
@@ -68,14 +73,44 @@ anova_tests = pd.DataFrame(
     "reject_B" : rejectBonf_unsorted})
 anova_tests.to_csv("output/transcript_regulation.csv")
 
-#%% How many of the genes that made it through aren't 
+## How many of the genes that made it through aren't  in the accepted set?
+# Idea: Check that the symbols of the genes we care about are in HGNC
+# Execution: list operations
+# Output: Numbers of genes not accepted...
 accepted_symbols = set(pd.read_pickle("output/accepted_gene_symbols.pkl")["accepted_symbols"])
 print(f"{len([x for x in adata.var_names if x not in accepted_symbols])}: number of filtered genes that aren't accepted symbols")
 pd.DataFrame([x for x in adata.var_names if x not in accepted_symbols]).to_csv("output/final_genes_not_accepted_symbols.txt")
 print(str(len([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols])) + ": number of significant genes that aren't accepted symbols")
 pd.DataFrame([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols]).to_csv("output/significant_genes_not_accepted_symbols.txt")
 
+
+#%% [markdown]
+## Summary of ANOVA analysis
+#
+# I looked for transcript regulation across the cell cycle  on all 17,199 genes that made it through filtering 
+# (using ANOVA with Benjimini-Hochberg multiple testing correction).  
+# Of those, about a third have evidence of cell cycle regulation at the transcript level (at 1% FDR). 
+# Of the gene set from the Regev study (single cell transcriptomics), all but one (99%) of the genes 
+# have evidence of transcript regulation over the cell cycle. An example of one of the surprises is above, 
+# where geminin is significant (rejecting the hypothesis that all stages have the same expression level), 
+# even while this effect is subtle in the pseudotime analysis. It also seems to make sense that 
+# G1 and S phases have higher expression, while G2M has lower expression of geminin.
+#
+# In Diana's 464 cell-cycle dependent genes, 197 had evidence of cell-cycle regulation at the 
+# transcript level (48% of the 410 genes that weren't filtered in scRNA-Seq preprocessing). 
+# Strangely, of the 890 non cell-cycle dependent genes, including 811 that made it through 
+# scRNA-Seq preprocessing, 362 genes (45%) showed evidence for cell cycle dependence at the 
+# transcript level.
+#
+# I tried a Bonferroni correction (alpha=0.01), which is a bit more conservative, 
+# and 97% of the Regev genes, 27% of Diana's CCD proteins, and 20% of Diana's 
+# non-CCD proteins showed cell cycle regulation for transcripts.
+
 #%% Expression boxplots
+# Idea: Use boxplots to display the variance and overlay ANOVA results for significance
+# Execution: Separate G1/S/G2 and generate boxplots
+# Output: Boxplots
+
 def format_p(p):
     '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
@@ -106,8 +141,11 @@ def plot_expression_boxplots(genelist, outanova, outfolder):
 # plot_expression_boxplots(ccd_filtered, "ccd_filtered", "figures/DianaCcdGeneBoxplots")
 # plot_expression_boxplots(nonccd_filtered, "nonccd_filtered", "figures/DianaNonCcdGeneBoxplots")
 
-
 #%% Plotting variances of gene expression
+# Idea: Using the spread as a measure of variability, is there higher variability for CCD genes (likely due to cyclicity)?
+# Execution: mean and stdevs
+# Output: Scatter of stdev vs mean expression; histogram of stdevs
+
 means = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 variances = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 mean_regev = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
@@ -125,7 +163,7 @@ ax1.scatter(x = mean_dianaccd, y = variances_dianaccd, label="Fucci CCD Genes")
 ax1.scatter(x = mean_diananonccd, y = variances_diananonccd, label="Fucci Non-CCD Genes")
 plt.legend(loc="upper left")
 plt.xlabel("Mean Expression")
-plt.ylabel("Stdev Expression")
+plt.ylabel("Stdev Expression") 
 plt.tight_layout()
 plt.savefig("figures/stdev_expression.png")
 plt.show()
@@ -153,28 +191,107 @@ plt.tight_layout()
 plt.savefig("figures/stdev_expression_hist.png")
 plt.show()
 plt.close()
+ 
 
-#%% [markdown]
-## Summary of ANOVA analysis
-#
-# I looked for transcript regulation across the cell cycle  on all 17,199 genes that made it through filtering 
-# (using ANOVA with Benjimini-Hochberg multiple testing correction).  
-# Of those, about a third have evidence of cell cycle regulation at the transcript level (at 1% FDR). 
-# Of the gene set from the Regev study (single cell transcriptomics), all but one (99%) of the genes 
-# have evidence of transcript regulation over the cell cycle. An example of one of the surprises is above, 
-# where geminin is significant (rejecting the hypothesis that all stages have the same expression level), 
-# even while this effect is subtle in the pseudotime analysis. It also seems to make sense that 
-# G1 and S phases have higher expression, while G2M has lower expression of geminin.
-#
-# In Diana's 464 cell-cycle dependent genes, 197 had evidence of cell-cycle regulation at the 
-# transcript level (48% of the 410 genes that weren't filtered in scRNA-Seq preprocessing). 
-# Strangely, of the 890 non cell-cycle dependent genes, including 811 that made it through 
-# scRNA-Seq preprocessing, 362 genes (45%) showed evidence for cell cycle dependence at the 
-# transcript level.
-#
-# I tried a Bonferroni correction (alpha=0.01), which is a bit more conservative, 
-# and 97% of the Regev genes, 27% of Diana's CCD proteins, and 20% of Diana's 
-# non-CCD proteins showed cell cycle regulation for transcripts.
+#%% Redo inputs:
+# Log normalize and use RPKMS because we're comparing genes in the next cell
+count_or_rpkm = "Rpkms"
+adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm)
+qc_filtering(adata, True)
 
+#%% Moving average percent variance
+# Idea: What percentage of variance in transcript expression is due to the cell cycle?
+# Execution: Calculate variance due to cell cycle as residuals from a moving average
+# Output: Scatters of the percent and total variances for each gene 
+
+def mvavg(yvals, mv_window):
+    return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
+
+expression_data = adata.X # log normalized
+normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
+fucci_time_inds = np.argsort(adata.obs["fucci_time"])
+fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
+norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
+moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
+cell_cycle_variance = np.apply_along_axis(np.var, 0, moving_averages)
+total_variance = np.apply_along_axis(np.var, 0, norm_exp_sort)
+percent_ccd_variance = cell_cycle_variance / total_variance
+avg_expression = np.apply_along_axis(np.median, 0, norm_exp_sort)
+
+def plot_variances(total_var, percent_var, expression_color, title, file_tag):
+    '''Plots percent variances from cell line against total variance'''
+    plt.scatter(total_var, percent_var, c=expression_color)
+    plt.xlabel("Total Variance", size=36,fontname='Arial')
+    plt.ylabel("Percent Variance Due to Cell Cycle",size=36,fontname='Arial')
+    plt.xticks(size=14)
+    plt.yticks(size=14)
+    plt.title(title, size=36, fontname='Arial')
+    cbar = plt.colorbar()
+    cbar.ax.get_yaxis().labelpad = 24
+    cbar.ax.set_ylabel("Median Log-Normalized RNA-Seq Counts", rotation=270,size=24,fontname='Arial')
+    plt.savefig(f"figures/VariancePlot{file_tag}.png")
+    plt.show()
+    plt.close()
+
+regevccdgenes = np.isin(adata.var_names, ccd_regev_filtered)
+dianaccdgenes = np.isin(adata.var_names, ccd_filtered)
+diananonccdgenes = np.isin(adata.var_names, nonccd_filtered)
+plot_variances(total_variance, percent_ccd_variance, avg_expression, "All Genes", "All")
+plot_variances(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], avg_expression[regevccdgenes], "Regev CCD Genes", "RegevCcd")
+plot_variances(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], avg_expression[dianaccdgenes], "Diana CCD Genes", "DianaCcd")
+plot_variances(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], avg_expression[diananonccdgenes], "Diana Non-CCD Genes", "DianaNonCCD")
+
+# Displaying the ANOVA results on the percent variances
+def plot_variances_tf(total_var, percent_var, expression_color, title, file_tag):
+    '''Plots percent variances from cell line against total variance'''
+    plt.scatter(total_var, percent_var, c=expression_color, cmap="bwr_r")
+    plt.xlabel("Total Variance", size=36,fontname='Arial')
+    plt.ylabel("Percent Variance Due to Cell Cycle",size=36,fontname='Arial')
+    plt.xticks(size=14)
+    plt.yticks(size=14)
+    plt.title(title, size=36, fontname='Arial')
+    plt.legend()
+    plt.savefig(f"figures/VarianceSignificancePlot{file_tag}.png")
+    plt.show()
+    plt.close()
+
+# plot_variances_tf(total_variance, percent_ccd_variance, rejectBonf_unsorted, "All Genes", "All")
+# plot_variances_tf(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], rejectBonf_unsorted[regevccdgenes], "Regev CCD Genes", "RegevCcd")
+# plot_variances_tf(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], rejectBonf_unsorted[dianaccdgenes], "Diana CCD Genes", "DianaCcd")
+# plot_variances_tf(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], rejectBonf_unsorted[diananonccdgenes], "Diana Non-CCD Genes", "DianaNonCCD")
+
+# What are these low percent variance ones that are significant?
+print("What are these low percent variance ones that are significant?")
+low_variance_signif = (percent_ccd_variance < 0.03) & (dianaccdgenes) & (rejectBonf_unsorted)
+print(np.array(adata.var_names)[low_variance_signif])
+
+# Okay, we're going to take the ones that passed ANOVA and have > 10% variance explained
+plot_variances_tf(total_variance, percent_ccd_variance, (rejectBonf_unsorted) & (percent_ccd_variance > 0.1), "All Genes", "All")
+plot_variances_tf(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], (rejectBonf_unsorted[regevccdgenes]) & (percent_ccd_variance[regevccdgenes] > 0.1), "Regev CCD Genes", "RegevCcd")
+plot_variances_tf(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], (rejectBonf_unsorted[dianaccdgenes]) & (percent_ccd_variance[dianaccdgenes] > 0.1), "Diana CCD Genes", "DianaCcd")
+plot_variances_tf(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], (rejectBonf_unsorted[diananonccdgenes]) & (percent_ccd_variance[diananonccdgenes] > 0.1), "Diana Non-CCD Genes", "DianaNonCCD")
+
+# Let's output those
+percent_variance_tests = pd.DataFrame(
+    {"gene" : adata.var_names, 
+    "pvalue" : pvals, 
+    "pvaladj_BH" : pvals_corrected_, 
+    "reject_BH" : reject_, 
+    "pvaladj_B" : pvals_correctedBonf_unsorted, 
+    "reject_B" : rejectBonf_unsorted,
+    "percent_variance" : percent_ccd_variance,
+    "total_variance" : total_variance,
+    "significant" : (rejectBonf_unsorted) & (percent_ccd_variance > 0.1),
+    "regev_ccd" : regevccdgenes,
+    "diana_ccd" : dianaccdgenes,
+    "diana_nonccd" : diananonccdgenes})
+percent_variance_tests.to_csv("output/transcript_regulation.csv")
+
+# And keep track of the ccd genes with and without transcript regulation
+ccd_transcript_regulated = np.array(adata.var_names)[(dianaccdgenes) & (rejectBonf_unsorted) & (percent_ccd_variance > 0.1)]
+ccd_nontranscript_regulated = np.array(adata.var_names)[(dianaccdgenes) & ~((rejectBonf_unsorted) & (percent_ccd_variance > 0.1))]
+pd.DataFrame({"gene" : ccd_transcript_regulated}).to_csv("output/ccd_transcript_regulated.csv")
+pd.DataFrame({"gene" : ccd_nontranscript_regulated}).to_csv("output/ccd_nontranscript_regulated.csv")
+pd.DataFrame({"gene" : adata.var_names}).to_csv("output/gene_names.csv")
 
 #%%

@@ -11,10 +11,15 @@ adata, phases_filt = read_counts_and_phases()
 qc_filtering(adata)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
+#%% Read in anova results
+anova_tests = pd.read_csv("output/transcript_regulation.csv")
+
 #%% How many of the variable genes of each biotype are there?
     # pd.DataFrame([x for x in list(countsT_acceptedish.columns) if x not in accepted_symbols]).to_csv("output/genes_filtered_no_accepted_symbol")
     # countsT_accepted = countsT_acceptedish.loc[:, countsT_acceptedish.columns.isin(accepted_symbols)]
 
-gene_biotypes = ensembl.query(attributes=["ensembl_gene_id", "external_gene_name", "gene_biotype"])#, filters={"chromosome_name": ["22"]})
+gene_biotypes = ensembl.query(attributes=[ "external_gene_name", "gene_biotype"])#, filters={"chromosome_name": ["22"]})
 anova_tests_typed = anova_tests.merge(gene_biotypes, left_on="gene", right_on="Gene name", how="left")
-anova_tests_typed.head()
+anova_tests_typed.groupby("gene")["Gene type"].agg(["Gene type", ", ".join])
+
+#%%

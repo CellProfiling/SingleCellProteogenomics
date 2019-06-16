@@ -1,0 +1,300 @@
+Entry	Entry name	Status	Gene names  (primary )	Post-translational modification	Glycosylation	Signal peptide
+P39019	RS19_HUMAN	reviewed	RPS19			
+Q9Y6A5	TACC3_HUMAN	reviewed	TACC3			
+Q9ULW0	TPX2_HUMAN	reviewed	TPX2			
+Q7LG56	RIR2B_HUMAN	reviewed	RRM2B			
+Q96B01	R51A1_HUMAN	reviewed	RAD51AP1			
+Q9Y5N6	ORC6_HUMAN	reviewed	ORC6			
+Q9H0H5	RGAP1_HUMAN	reviewed	RACGAP1	"PTM: Phosphorylated at multiple sites in the midbody during cytokinesis. Phosphorylation by AURKB on Ser-387 at the midbody is, at least in part, responsible for exerting its latent GAP activity towards RhoA. Phosphorylation on multiple serine residues by PLK1 enhances its association with ECT2 and is critical for cleavage furrow formation. {ECO:0000269|PubMed:12689593, ECO:0000269|PubMed:19468300, ECO:0000269|PubMed:19468302}."		
+P14635	CCNB1_HUMAN	reviewed	CCNB1	"PTM: Ubiquitinated by the SCF(NIPA) complex during interphase, leading to its destruction. Not ubiquitinated during G2/M phases. {ECO:0000269|PubMed:16009132}.; PTM: Phosphorylated by PLK1 at Ser-133 on centrosomes during prophase: phosphorylation by PLK1 does not cause nuclear import. Phosphorylation at Ser-147 was also reported to be mediated by PLK1 but Ser-133 seems to be the primary phosphorylation site. {ECO:0000269|PubMed:12447691, ECO:0000269|PubMed:12524548}."		
+O95067	CCNB2_HUMAN	reviewed	CCNB2			
+Q6PL18	ATAD2_HUMAN	reviewed	ATAD2			
+P20248	CCNA2_HUMAN	reviewed	CCNA2	"PTM: Polyubiquitinated via 'Lys-11'-linked ubiquitin by the anaphase-promoting complex (APC/C), leading to its degradation by the proteasome. Deubiquitinated and stabilized by USP37 enables entry into S phase. {ECO:0000269|PubMed:21596315}."		
+P24864	CCNE1_HUMAN	reviewed	CCNE1	"PTM: Phosphorylation of both Thr-395 by GSK3 and Ser-399 by CDK2 creates a high affinity degron recognized by FBXW7, and accelerates degradation via the ubiquitin proteasome pathway. Phosphorylation at Thr-77 creates a low affinity degron also recognized by FBXW7. {ECO:0000269|PubMed:14536078, ECO:0000269|PubMed:17434132, ECO:0000269|PubMed:21952639, ECO:0000269|PubMed:8861947}.; PTM: Ubiquitinated by UHRF2; appears to occur independently of phosphorylation. {ECO:0000269|PubMed:21952639}."		
+Q96GD4	AURKB_HUMAN	reviewed	AURKB	"PTM: The phosphorylation of Thr-232 requires the binding to INCENP and occurs by means of an autophosphorylation mechanism. Thr-232 phosphorylation is indispensable for the AURKB kinase activity. {ECO:0000269|PubMed:14722118}.; PTM: Ubiquitinated by different BCR (BTB-CUL3-RBX1) E3 ubiquitin ligase complexes. Ubiquitinated by the BCR(KLHL9-KLHL13) E3 ubiquitin ligase complex, ubiquitination leads to removal from mitotic chromosomes and is required for cytokinesis. During anaphase, the BCR(KLHL21) E3 ubiquitin ligase complex recruits the CPC complex from chromosomes to the spindle midzone and mediates the ubiquitination of AURKB. Ubiquitination of AURKB by BCR(KLHL21) E3 ubiquitin ligase complex may not lead to its degradation by the proteasome. {ECO:0000269|PubMed:17543862, ECO:0000269|PubMed:19995937}."		
+Q69YH5	CDCA2_HUMAN	reviewed	CDCA2	PTM: Phosphorylated by CDK1. May regulate its subcellular location. {ECO:0000269|PubMed:16998479}.		
+Q96FF9	CDCA5_HUMAN	reviewed	CDCA5	"PTM: Phosphorylated. Phosphorylation, as cells enter mitosis, disrupts the interaction with PDS5A and relieves the inhibition of WAPL by CDCA5. {ECO:0000269|PubMed:15837422}.; PTM: Ubiquitinated by the APC/C complex in G1, leading to its degradation. {ECO:0000305|PubMed:15837422}."		
+P30279	CCND2_HUMAN	reviewed	CCND2	"PTM: Polyubiquitinated by the SCF(FBXL2) complex, leading to proteasomal degradation. {ECO:0000269|PubMed:22323446}."		
+Q15003	CND2_HUMAN	reviewed	NCAPH	"PTM: Phosphorylated by CDK1. Its phosphorylation, as well as that of NCAPD2 and NCAPG subunits, activates the condensin complex and is required for chromosome condensation (By similarity). {ECO:0000250}."		
+Q6IBW4	CNDH2_HUMAN	reviewed	NCAPH2			
+Q53EZ4	CEP55_HUMAN	reviewed	CEP55	"PTM: There is a hierachy of phosphorylation, where both Ser-425 and Ser-428 are phosphorylated at the onset of mitosis, prior to Ser-436. Phosphorylation at Ser-425 and Ser-428 is required for dissociation from the centrosome at the G2/M boundary. Phosphorylation at the 3 sites, Ser-425, Ser-428 and Ser-436, is required for protein function at the final stages of cell division to complete cytokinesis successfully. {ECO:0000269|PubMed:16198290}."		
+Q9UBU7	DBF4A_HUMAN	reviewed	DBF4			
+Q15398	DLGP5_HUMAN	reviewed	DLGAP5	"PTM: Ubiquitinated, leading to its degradation. {ECO:0000269|PubMed:15145941}.; PTM: Decreased phosphorylation levels are associated with the differentiation of intestinal epithelial cells. {ECO:0000269|PubMed:14699157, ECO:0000269|PubMed:15145941, ECO:0000269|PubMed:15987997}."		
+Q86WX3	AROS_HUMAN	reviewed	RPS19BP1	PTM: Citrullinated by PADI4. {ECO:0000250}.		
+P51587	BRCA2_HUMAN	reviewed	BRCA2	"PTM: Phosphorylated by ATM upon irradiation-induced DNA damage. Phosphorylation by CHEK1 and CHEK2 regulates interaction with RAD51. Phosphorylation at Ser-3291 by CDK1 and CDK2 is low in S phase when recombination is active, but increases as cells progress towards mitosis; this phosphorylation prevents homologous recombination-dependent repair during S phase and G2 by inhibiting RAD51 binding. {ECO:0000269|PubMed:15199141, ECO:0000269|PubMed:15800615, ECO:0000269|PubMed:18317453}.; PTM: Ubiquitinated in the absence of DNA damage; this does not lead to proteasomal degradation. In contrast, ubiquitination in response to DNA damage leads to proteasomal degradation. {ECO:0000269|PubMed:15314155}."		
+O60566	BUB1B_HUMAN	reviewed	BUB1B	"PTM: Proteolytically cleaved by caspase-3 in a cell cycle specific manner. The cleavage might be involved in the durability of the cell cycle delay. Caspase-3 cleavage is associated with abrogation of the mitotic checkpoint. The major site of cleavage is at Asp-610. {ECO:0000269|PubMed:16227576}.; PTM: Acetylation at Lys-250 regulates its degradation and timing in anaphase entry. {ECO:0000269|PubMed:19407811}.; PTM: Ubiquitinated. Degraded by the proteasome. {ECO:0000269|PubMed:19407811}.; PTM: Sumoylated with SUMO2 and SUMO3. The sumoylation mediates the association with CENPE at the kinetochore. {ECO:0000269|PubMed:18374647}.; PTM: Autophosphorylated in vitro. Intramolecular autophosphorylation is stimulated by CENPE. Phosphorylated during mitosis and hyperphosphorylated in mitotically arrested cells. Phosphorylation at Ser-670 and Ser-1043 occurs at kinetochores upon mitotic entry with dephosphorylation at the onset of anaphase. {ECO:0000269|PubMed:10477750, ECO:0000269|PubMed:10593653, ECO:0000269|PubMed:17376779, ECO:0000269|PubMed:17785528, ECO:0000269|PubMed:19015317}."		
+Q7Z628	ARHG8_HUMAN	reviewed	NET1			
+Q9ULI0	ATD2B_HUMAN	reviewed	ATAD2B			
+O15392	BIRC5_HUMAN	reviewed	BIRC5	"PTM: Ubiquitinated by the Cul9-RING ubiquitin-protein ligase complex, leading to its degradation. Ubiquitination is required for centrosomal targeting. {ECO:0000269|PubMed:16322459, ECO:0000269|PubMed:24793696}.; PTM: In vitro phosphorylation at Thr-117 by AURKB prevents interaction with INCENP and localization to mitotic chromosomes (PubMed:14610074). Phosphorylation at Thr-48 by CK2 is critical for its mitotic and anti-apoptotic activities (PubMed:21252625). Phosphorylation at Thr-34 by CDK15 is critical for its anti-apoptotic activity (PubMed:24866247). Phosphorylation at Ser-20 by AURKC is critical for regulation of proper chromosome alignment and segregation, and possibly cytokinesis. {ECO:0000269|PubMed:11069302, ECO:0000269|PubMed:14610074, ECO:0000269|PubMed:21252625, ECO:0000269|PubMed:24866247, ECO:0000269|PubMed:27332895}.; PTM: Acetylation at Lys-129 by CBP results in its homodimerization, while deacetylation promotes the formation of monomers which heterodimerize with XPO1/CRM1 which facilitates its nuclear export. The acetylated form represses STAT3 transactivation. The dynamic equilibrium between its acetylation and deacetylation at Lys-129 determines its interaction with XPO1/CRM1, its subsequent subcellular localization, and its ability to inhibit STAT3 transactivation. {ECO:0000269|PubMed:20826784}."		
+Q53HL2	BOREA_HUMAN	reviewed	CDCA8	"PTM: Phosphorylated by TTK, essentially at Thr-88, Thr94, Thr-169 and Thr-230. Phosphorylation (probably by CDK1) promotes targeting of the CPC to centromeric DNA. {ECO:0000269|PubMed:15249581, ECO:0000269|PubMed:18243099, ECO:0000269|PubMed:19530738}.; PTM: Sumoylated by UBE2I and RANBP2. Desumoylated by SENP3 through the removal of SUMO2 and SUMO3. {ECO:0000269|PubMed:18946085}."		
+Q9NQW6	ANLN_HUMAN	reviewed	ANLN	"PTM: Phosphorylated during mitosis. {ECO:0000269|PubMed:15800069, ECO:0000269|PubMed:16357138}.; PTM: Ubiquitinated, and this requires FZR1/CDH1. {ECO:0000269|PubMed:16040610}."		
+Q6SJ93	F111B_HUMAN	reviewed	FAM111B			
+Q9NPC3	CIP1_HUMAN	reviewed	CCNB1IP1	PTM: Ubiquitinated; autoubiquitinated. {ECO:0000269|PubMed:12612082}.; PTM: Phosphorylated by CDK1 on serine or threonine residues (in vitro). {ECO:0000269|PubMed:12612082}.		
+Q9H3H3	CK068_HUMAN	reviewed	C11orf68			
+Q8IYA6	CKP2L_HUMAN	reviewed	CKAP2L	PTM: Ubiquitinated by the anaphase promoting complex/cyclosome (APC/C). {ECO:0000250}.		
+Q99741	CDC6_HUMAN	reviewed	CDC6			
+Q56NI9	ESCO2_HUMAN	reviewed	ESCO2			
+Q9BQ89	F110A_HUMAN	reviewed	FAM110A			
+Q9H4H8	FA83D_HUMAN	reviewed	FAM83D	PTM: Phosphorylated during mitosis. {ECO:0000269|PubMed:18485706}.		
+Q8NFT6	DBF4B_HUMAN	reviewed	DBF4B	PTM: Phosphorylated. {ECO:0000269|PubMed:12065429}.		
+Q9NZJ0	DTL_HUMAN	reviewed	DTL	"PTM: Ubiquitinated by the anaphase promoting complex/cyclosome (APC/C). Autoubiquitinated through 'Lys-48'-polyubiquitin chains in a PCNA-independent reaction, allowing proteasomal turnover. Polyubiquitinated by SCF(FBXO11) when not phosphorylated, leading to its degradation. A tight regulation of the polyubiquitination by SCF(FBXO11) is involved in the control of different processes such as TGF-beta signaling, cell cycle progression and exit. {ECO:0000269|PubMed:17106265, ECO:0000269|PubMed:23478441, ECO:0000269|PubMed:23478445}.; PTM: Phosphorylated at Thr-464 by CDK1/Cyclin-B and CDK2/Cyclin-A but not by CDK2/Cyclin-E, MAPK1 or PLK1. Phosphorylation at Thr-464 inhibits the interaction with FBXO11 and decreases upon cell cycle exit induced by TGF-beta or serum starvation. {ECO:0000269|PubMed:23478441}."		
+Q9H410	DSN1_HUMAN	reviewed	DSN1			
+P49454	CENPF_HUMAN	reviewed	CENPF	PTM: Hyperphosphorylated during mitosis.		
+Q9NYZ3	GTSE1_HUMAN	reviewed	GTSE1	PTM: Phosphorylated in mitosis. {ECO:0000250}.		
+Q86Y91	KI18B_HUMAN	reviewed	KIF18B			
+Q96Q89	KI20B_HUMAN	reviewed	KIF20B	"PTM: Phosphorylated during mitosis by CDK1 (PubMed:11470801, PubMed:12740395). {ECO:0000269|PubMed:11470801, ECO:0000269|PubMed:12740395}."		
+Q02241	KIF23_HUMAN	reviewed	KIF23	PTM: Ubiquitinated. Deubiquitinated by USP8/UBPY. {ECO:0000269|PubMed:18329369}.		
+P10244	MYBB_HUMAN	reviewed	MYBL2	"PTM: Phosphorylated by cyclin A/CDK2 during S-phase. Phosphorylation at Thr-520 is probably involved in transcriptional activity. {ECO:0000269|PubMed:10095772, ECO:0000269|PubMed:9840932}."		
+Q9BXS6	NUSAP_HUMAN	reviewed	NUSAP1	PTM: Ubiquitinated. Ubiquitination by FZR1 may lead to proteasome-dependent degradation of this protein. {ECO:0000269|PubMed:17618083}.; PTM: Phosphorylation by ATM in G2/M-phase induces mitotic arrest. {ECO:0000269|PubMed:21130744}.		
+Q8NCD3	HJURP_HUMAN	reviewed	HJURP			
+P52732	KIF11_HUMAN	reviewed	KIF11	"PTM: Phosphorylated exclusively on serine during S phase, but on both serine and Thr-926 during mitosis, so controlling the association of KIF11 with the spindle apparatus (probably during early prophase). {ECO:0000269|PubMed:19001501, ECO:0000269|PubMed:8548803}.; PTM: A subset of this protein primarily localized at the spindle pole is phosphorylated by NEK6 during mitosis; phosphorylation is required for mitotic function. {ECO:0000269|PubMed:19001501}."		
+Q99661	KIF2C_HUMAN	reviewed	KIF2C	"PTM: Phosphorylation by AURKB, regulates association with centromeres and kinetochores and the microtubule depolymerization activity. {ECO:0000269|PubMed:14960279}.; PTM: Ubiquitinated. {ECO:0000269|PubMed:20596523}."		
+O95239	KIF4A_HUMAN	reviewed	KIF4A			
+Q8NI77	KI18A_HUMAN	reviewed	KIF18A	PTM: Glycosylated. {ECO:0000269|PubMed:18680169}.; PTM: Ubiquitinated. {ECO:0000269|PubMed:18680169}.		
+P52292	IMA1_HUMAN	reviewed	KPNA2			
+Q9NQS7	INCE_HUMAN	reviewed	INCENP	"PTM: Phosphorylation by AURKB or AURKC at its C-terminal part is important for AURKB or AURKC activation by INCENP. {ECO:0000269|PubMed:12925766, ECO:0000269|PubMed:15316025, ECO:0000269|PubMed:27332895}."		
+O75330	HMMR_HUMAN	reviewed	HMMR		CARBOHYD 133 133 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 477 477 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 567 567 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 588 588 N-linked (GlcNAc...) asparagine. {ECO:0000255}.	
+P30305	MPIP2_HUMAN	reviewed	CDC25B	"PTM: Phosphorylated by BRSK1 in vitro. Phosphorylated by CHEK1, which inhibits the activity of this protein. Phosphorylation at Ser-353 by AURKA might locally participate in the control of the onset of mitosis. Phosphorylation by MELK at Ser-169 promotes localization to the centrosome and the spindle poles during mitosis. Phosphorylation at Ser-323 and Ser-375 by MAPK14 is required for binding to 14-3-3 proteins. {ECO:0000269|PubMed:11333986, ECO:0000269|PubMed:12400006, ECO:0000269|PubMed:15128871, ECO:0000269|PubMed:15150265, ECO:0000269|PubMed:15311285, ECO:0000269|PubMed:15629715, ECO:0000269|PubMed:15908796, ECO:0000269|PubMed:17332740}."		
+Q96HE9	PRR11_HUMAN	reviewed	PRR11	PTM: Ubiquitinated (Probable). Rapidly degraded by the proteasome; degradation may involve FBXW7-specific phosphorylated phosphodegron motifs. {ECO:0000305}.		
+O43663	PRC1_HUMAN	reviewed	PRC1	"PTM: Phosphorylation by CDK1 in early mitosis holds PRC1 in an inactive monomeric state, during the metaphase to anaphase transition, PRC1 is dephosphorylated, promoting interaction with KIF4A, which then translocates PRC1 along mitotic spindles to the plus ends of antiparallel interdigitating microtubules. Dephosphorylation also promotes MT-bundling activity by allowing dimerization. Phosphorylation by CDK1 prevents PLK1-binding: upon degradation of CDK1 at anaphase and dephosphorylation, it is then phosphorylated by PLK1, leading to cytokinesis. {ECO:0000269|PubMed:17351640, ECO:0000269|PubMed:17438553, ECO:0000269|PubMed:9885575}."		
+Q9BZD4	NUF2_HUMAN	reviewed	NUF2	PTM: Can be phosphorylated by AURKA and AURKB. {ECO:0000269|PubMed:14602875}.		
+P31350	RIR2_HUMAN	reviewed	RRM2	PTM: Phosphorylation on Ser-20 relieves the inhibitory effect on Wnt signaling.		
+Q96C24	SYTL4_HUMAN	reviewed	SYTL4			
+P23975	SC6A2_HUMAN	reviewed	SLC6A2		CARBOHYD 184 184 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 192 192 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 198 198 N-linked (GlcNAc...) asparagine. {ECO:0000255}.	
+Q9Y345	SC6A5_HUMAN	reviewed	SLC6A5		CARBOHYD 343 343 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 353 353 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 358 358 N-linked (GlcNAc...) asparagine. {ECO:0000255}.; CARBOHYD 364 364 N-linked (GlcNAc...) asparagine. {ECO:0000255}.	
+Q5FBB7	SGO1_HUMAN	reviewed	SGO1	"PTM: Ubiquitinated and degraded during mitotic exit by APC/C-Cdh1. {ECO:0000269|PubMed:19015261}.; PTM: Phosphorylation by NEK2 is essential for chromosome congression in mitosis and for the proper attachment of spindle microtubule to the kinetochore. Phosphorylated by PLK1 and AUKRB. {ECO:0000269|PubMed:16582621, ECO:0000269|PubMed:17617734, ECO:0000269|PubMed:17621308}."		
+Q14493	SLBP_HUMAN	reviewed	SLBP	"PTM: Phosphorylated on Thr-61 and Thr-62 in the S-phase. Phosphorylation of Thr-62 by CDK1 primes phosphorylation of Thr-61 by CK2. Phosphorylation of Thr-62 is required for its degradation by the proteasome at the end of the S phase. Its degradation is not required for histone mRNA degradation at the end of the S phase. All the phosphorylated forms detected are present in the cytoplasm. Both unphosphorylated and phosphorylated forms bind the stem-loop structure of histone mRNAs. Phosphorylation at Thr-171 increases affinity for histone mRNAs. {ECO:0000269|PubMed:12588979, ECO:0000269|PubMed:18490441, ECO:0000269|PubMed:22439849}."		
+Q9Y448	SKAP_HUMAN	reviewed	KNSTRN			
+Q8WXH0	SYNE2_HUMAN	reviewed	SYNE2	PTM: The disulfid bond with SUN2 is required for stability of the SUN2:SYNE2/KASH2 LINC complex under tensile forces though not required for the interaction. {ECO:0000269|PubMed:26244732}.		
+O00762	UBE2C_HUMAN	reviewed	UBE2C	"PTM: Autoubiquitinated by the APC/C complex, leading to its degradation by the proteasome. Its degradation plays a central role in APC/C regulation, allowing cyclin-A accumulation before S phase entry. APC/C substrates inhibit the autoubiquitination of UBE2C/UBCH10 but not its E2 function, hence APC/C remaining active until its substrates have been destroyed. {ECO:0000269|PubMed:15558010}."		
+P53814	SMTN_HUMAN	reviewed	SMTN			
+O95347	SMC2_HUMAN	reviewed	SMC2			
+Q8IX90	SKA3_HUMAN	reviewed	SKA3			
+Q9BZQ2	SHP1L_HUMAN	reviewed	SHCBP1L			
+Q8NEM2	SHCBP_HUMAN	reviewed	SHCBP1			
+O95235	KI20A_HUMAN	reviewed	KIF20A	"PTM: Phosphorylated by PLK1 at Ser-528 during mitosis, creating a docking site for PLK1 and recruiting PLK1 at central spindle. {ECO:0000269|PubMed:12939256}."		
+P46013	KI67_HUMAN	reviewed	MKI67	"PTM: Phosphorylated. Hyperphosphorylated in mitosis (PubMed:10502411, PubMed:10653604). Hyperphosphorylated form does not bind DNA. {ECO:0000269|PubMed:10502411, ECO:0000269|PubMed:10653604}."		
+Q7L590	MCM10_HUMAN	reviewed	MCM10			
+Q9BYG3	MK67I_HUMAN	reviewed	NIFK	"PTM: Sequentially phosphorylated on Thr-238, Thr-234 and Ser-230. Thr-234 is phosphorylated only when Thr-238 is phosphorylated. Likewise, phosphorylation at Ser-230 requires that Thr-234 and Thr-238 are phosphorylated. Phosphorylation enhances MKI67 binding. {ECO:0000269|PubMed:11342549, ECO:0000269|PubMed:14659764, ECO:0000269|PubMed:16244663}."		
+J3KTI7	J3KTI7_HUMAN	unreviewed	CDC6			
+E5RIP2	E5RIP2_HUMAN	unreviewed	ATAD2			
+A0A087X1R1	A0A087X1R1_HUMAN	unreviewed	SMTN			
+A0A075B6E2	A0A075B6E2_HUMAN	unreviewed	RPS19			
+G3V5N1	G3V5N1_HUMAN	unreviewed	SYNE2			
+H7C4H8	H7C4H8_HUMAN	unreviewed	SLBP			
+H0YCZ9	H0YCZ9_HUMAN	unreviewed	CDCA5			
+E9PC90	E9PC90_HUMAN	unreviewed	CCNB1			
+A0A286YFD6	A0A286YFD6_HUMAN	unreviewed	RRM2			
+C9JZP1	C9JZP1_HUMAN	unreviewed	NCAPH			
+G3V5E6	G3V5E6_HUMAN	unreviewed	CCNB1IP1			SIGNAL 1 17 {ECO:0000256|SAM:SignalP}.
+H7BZZ8	H7BZZ8_HUMAN	unreviewed	SMTN			
+E9PS27	E9PS27_HUMAN	unreviewed	FAM111B			
+F8WAR3	F8WAR3_HUMAN	unreviewed	NCAPH2			
+H0YAC9	H0YAC9_HUMAN	unreviewed	KIF20A			
+G3V5S3	G3V5S3_HUMAN	unreviewed	CCNB1IP1			
+H0YM18	H0YM18_HUMAN	unreviewed	NUSAP1			
+A0A0C4DGE5	A0A0C4DGE5_HUMAN	unreviewed	SMC2			
+E5RG52	E5RG52_HUMAN	unreviewed	RRM2B			
+Q5T821	Q5T821_HUMAN	unreviewed	SMC2			
+H7C372	H7C372_HUMAN	unreviewed	SMTN			
+C9JYU8	C9JYU8_HUMAN	unreviewed	SMTN			
+D6RBN1	D6RBN1_HUMAN	unreviewed	KIF20A			
+F8VQF5	F8VQF5_HUMAN	unreviewed	RACGAP1			
+G3V3D4	G3V3D4_HUMAN	unreviewed	SYNE2			
+Q5SQI6	Q5SQI6_HUMAN	unreviewed	NET1			
+H0YKA7	H0YKA7_HUMAN	unreviewed	NUSAP1			
+I3L3Z1	I3L3Z1_HUMAN	unreviewed	SHCBP1			
+H0Y432	H0Y432_HUMAN	unreviewed	CEP55			
+H7C3R2	H7C3R2_HUMAN	unreviewed	ANLN			
+H7C1K5	H7C1K5_HUMAN	unreviewed	ANLN			
+V9GZ26	V9GZ26_HUMAN	unreviewed	FAM110A			
+J3QKY4	J3QKY4_HUMAN	unreviewed	PRR11			
+C9J0G4	C9J0G4_HUMAN	unreviewed	ANLN			
+J3KTD6	J3KTD6_HUMAN	unreviewed	AURKB			
+J3QLN7	J3QLN7_HUMAN	unreviewed	CDC6			
+H3BT22	H3BT22_HUMAN	unreviewed	ORC6			
+H0YME6	H0YME6_HUMAN	unreviewed	KIF23			
+H7C3S1	H7C3S1_HUMAN	unreviewed	ANLN			
+G3V3N7	G3V3N7_HUMAN	unreviewed	PRC1			
+A0A494C117	A0A494C117_HUMAN	unreviewed	TACC3			
+F8W8D3	F8W8D3_HUMAN	unreviewed	SLBP			
+H0YMJ4	H0YMJ4_HUMAN	unreviewed	KIF23			
+H3BTB9	H3BTB9_HUMAN	unreviewed	BUB1B-PAK6			
+H3BSJ8	H3BSJ8_HUMAN	unreviewed	PRC1			
+H0YGT5	H0YGT5_HUMAN	unreviewed	RAD51AP1			
+C9JG15	C9JG15_HUMAN	unreviewed	ATAD2B			
+H0YNE4	H0YNE4_HUMAN	unreviewed	PRC1			
+H0YCR8	H0YCR8_HUMAN	unreviewed	CDCA5			
+H3BSN5	H3BSN5_HUMAN	unreviewed	BUB1B-PAK6			
+E5RIE3	E5RIE3_HUMAN	unreviewed	ESCO2			
+A0A096LNK9	A0A096LNK9_HUMAN	unreviewed	SMTN			
+H0YMD2	H0YMD2_HUMAN	unreviewed	NUSAP1			
+D6RHI0	D6RHI0_HUMAN	unreviewed	CCNB1			
+G3V5X4	G3V5X4_HUMAN	unreviewed	SYNE2			
+J3KRF8	J3KRF8_HUMAN	unreviewed	AURKB			
+Q5JW53	Q5JW53_HUMAN	unreviewed	DSN1			
+E7EUV9	E7EUV9_HUMAN	unreviewed	SLBP			
+H0YCL8	H0YCL8_HUMAN	unreviewed	CDCA5			
+B5MCI0	B5MCI0_HUMAN	unreviewed	SMTN			
+F5H710	F5H710_HUMAN	unreviewed	RAD51AP1			
+D6R9E4	D6R9E4_HUMAN	unreviewed	KIF20A			
+F8VXH1	F8VXH1_HUMAN	unreviewed	RACGAP1			
+F8VWY4	F8VWY4_HUMAN	unreviewed	RACGAP1			
+A0A0C4DGZ6	A0A0C4DGZ6_HUMAN	unreviewed	RRM2B			
+H0YM42	H0YM42_HUMAN	unreviewed	PRC1			
+G3V543	G3V543_HUMAN	unreviewed	DLGAP5			
+F8VV39	F8VV39_HUMAN	unreviewed	RACGAP1			
+F8VRL2	F8VRL2_HUMAN	unreviewed	RACGAP1			
+H7C0Y6	H7C0Y6_HUMAN	unreviewed	ANLN			
+H0YE37	H0YE37_HUMAN	unreviewed	BRCA2			
+A0A1W2PS37	A0A1W2PS37_HUMAN	unreviewed	SYNE2			
+A0A087WTY4	A0A087WTY4_HUMAN	unreviewed	CENPF			
+M0QXK4	M0QXK4_HUMAN	unreviewed	RPS19			
+F8VQZ5	F8VQZ5_HUMAN	unreviewed	RACGAP1			
+F8W1E5	F8W1E5_HUMAN	unreviewed	RACGAP1			
+G3V4E5	G3V4E5_HUMAN	unreviewed	DLGAP5			
+A0A0A6YYG7	A0A0A6YYG7_HUMAN	unreviewed	NCAPH2			
+C9J600	C9J600_HUMAN	unreviewed	MCM10			
+C9JQZ8	C9JQZ8_HUMAN	unreviewed	SMTN			
+C9JWC4	C9JWC4_HUMAN	unreviewed	HJURP			
+C9JXC1	C9JXC1_HUMAN	unreviewed	RRM2			
+C9JWI7	C9JWI7_HUMAN	unreviewed	TACC3			
+F8VZ41	F8VZ41_HUMAN	unreviewed	RACGAP1			
+M0R140	M0R140_HUMAN	unreviewed	RPS19			
+E9PQC4	E9PQC4_HUMAN	unreviewed	NUF2			
+E9PP32	E9PP32_HUMAN	unreviewed	NUF2			
+F5GZ90	F5GZ90_HUMAN	unreviewed	DTL			
+F8WFE7	F8WFE7_HUMAN	unreviewed	RPS19BP1			
+A0A0U1RQB7	A0A0U1RQB7_HUMAN	unreviewed	BUB1B-PAK6			
+F8W0L1	F8W0L1_HUMAN	unreviewed	RACGAP1			
+H0YA62	H0YA62_HUMAN	unreviewed	CCNB1			
+B1AQT3	B1AQT3_HUMAN	unreviewed	NUF2			
+F8VVY0	F8VVY0_HUMAN	unreviewed	RACGAP1			
+A0A0B4J1S3	A0A0B4J1S3_HUMAN	unreviewed	BIRC5			
+J3QLN8	J3QLN8_HUMAN	unreviewed	AURKB			
+A0A0A0MSE8	A0A0A0MSE8_HUMAN	unreviewed	UBE2C			
+E5RJN3	E5RJN3_HUMAN	unreviewed	NCAPH2			
+F8VV47	F8VV47_HUMAN	unreviewed	RACGAP1			
+A0A0B4J211	A0A0B4J211_HUMAN	unreviewed	ATAD2			
+J3QQS2	J3QQS2_HUMAN	unreviewed	PRR11			
+H0YAV1	H0YAV1_HUMAN	unreviewed	RRM2B			
+F5H1Y0	F5H1Y0_HUMAN	unreviewed	RAD51AP1			
+J3QR52	J3QR52_HUMAN	unreviewed	CDC6			
+A0A2R8Y531	A0A2R8Y531_HUMAN	unreviewed	KIF23			
+G3V5Q4	G3V5Q4_HUMAN	unreviewed	CCNB1IP1			
+A0A0C4DGK3	A0A0C4DGK3_HUMAN	unreviewed	SYNE2			
+H0YN50	H0YN50_HUMAN	unreviewed	KNSTRN			
+H0YD86	H0YD86_HUMAN	unreviewed	BRCA2			
+F8VZ66	F8VZ66_HUMAN	unreviewed	RACGAP1			
+A0A087WVP4	A0A087WVP4_HUMAN	unreviewed	SMTN			
+E7EMT0	E7EMT0_HUMAN	unreviewed	TACC3			
+J3QR53	J3QR53_HUMAN	unreviewed	PRR11			
+H7C0I6	H7C0I6_HUMAN	unreviewed	HJURP			
+F8VRD2	F8VRD2_HUMAN	unreviewed	RACGAP1			
+H0YKD4	H0YKD4_HUMAN	unreviewed	KNSTRN			
+C9JGQ0	C9JGQ0_HUMAN	unreviewed	SMTN			
+H3BLT4	H3BLT4_HUMAN	unreviewed	BIRC5			
+E5RFE4	E5RFE4_HUMAN	unreviewed	ESCO2			
+C9JV14	C9JV14_HUMAN	unreviewed	SMTN			
+A0A2R8Y837	A0A2R8Y837_HUMAN	unreviewed	RRM2			
+H7C3V8	H7C3V8_HUMAN	unreviewed	HJURP			
+H0YMP3	H0YMP3_HUMAN	unreviewed	CCNB2			
+F8W1T4	F8W1T4_HUMAN	unreviewed	RACGAP1			
+H0Y9U8	H0Y9U8_HUMAN	unreviewed	CCNB1			
+A0A2U3TZL8	A0A2U3TZL8_HUMAN	unreviewed	KIF23			
+F8VV37	F8VV37_HUMAN	unreviewed	RACGAP1			
+F8WF77	F8WF77_HUMAN	unreviewed	DBF4			
+H7BYN4	H7BYN4_HUMAN	unreviewed	KIF23			
+H0YIK5	H0YIK5_HUMAN	unreviewed	RACGAP1			
+F8VWX0	F8VWX0_HUMAN	unreviewed	RACGAP1			
+C9JP19	C9JP19_HUMAN	unreviewed	SMTN			
+H0Y8F2	H0Y8F2_HUMAN	unreviewed	TACC3			
+I3L1Q9	I3L1Q9_HUMAN	unreviewed	CCNE1			
+H0YKF8	H0YKF8_HUMAN	unreviewed	KNSTRN			
+M0QYF7	M0QYF7_HUMAN	unreviewed	RPS19			
+Q5JW57	Q5JW57_HUMAN	unreviewed	DSN1			
+H7C167	H7C167_HUMAN	unreviewed	ANLN			
+A0A1W2PRN9	A0A1W2PRN9_HUMAN	unreviewed	SYNE2			
+E5RFP7	E5RFP7_HUMAN	unreviewed	ESCO2			
+H7C415	H7C415_HUMAN	unreviewed	NCAPH			
+B1AQT4	B1AQT4_HUMAN	unreviewed	NUF2			
+H0YN44	H0YN44_HUMAN	unreviewed	BUB1B			
+E5RJL4	E5RJL4_HUMAN	unreviewed	NCAPH2			
+H0YJB2	H0YJB2_HUMAN	unreviewed	CCNB1IP1			
+H3BMA4	H3BMA4_HUMAN	unreviewed	ORC6			
+F8VVE5	F8VVE5_HUMAN	unreviewed	RACGAP1			
+F8WB17	F8WB17_HUMAN	unreviewed	SGO1			
+H0YC55	H0YC55_HUMAN	unreviewed	NCAPH2			
+F5GWG1	F5GWG1_HUMAN	unreviewed	SKA3			
+H0YMK5	H0YMK5_HUMAN	unreviewed	BUB1B			
+F8WCV1	F8WCV1_HUMAN	unreviewed	HJURP			
+G3V4T3	G3V4T3_HUMAN	unreviewed	SYNE2			
+F8VYH6	F8VYH6_HUMAN	unreviewed	RACGAP1			
+A0A0A0MSJ5	A0A0A0MSJ5_HUMAN	unreviewed	KIF20B			
+H3BTQ7	H3BTQ7_HUMAN	unreviewed	ORC6			
+H0YLH8	H0YLH8_HUMAN	unreviewed	KNSTRN			
+M0R2L9	M0R2L9_HUMAN	unreviewed	RPS19			
+H0Y5Z9	H0Y5Z9_HUMAN	unreviewed	KIF2C			
+C9JBH9	C9JBH9_HUMAN	unreviewed	SMTN			
+F8VUW9	F8VUW9_HUMAN	unreviewed	RACGAP1			
+F8VS54	F8VS54_HUMAN	unreviewed	RACGAP1			
+E5RI30	E5RI30_HUMAN	unreviewed	HMMR			
+H0YJ70	H0YJ70_HUMAN	unreviewed	CCNB1IP1			
+K7EP76	K7EP76_HUMAN	unreviewed	BIRC5			
+H0YLA0	H0YLA0_HUMAN	unreviewed	PRC1			
+A0A0A0MRE3	A0A0A0MRE3_HUMAN	unreviewed	SYNE2			
+H7BYF1	H7BYF1_HUMAN	unreviewed	ATAD2B			
+E9PHA2	E9PHA2_HUMAN	unreviewed	NCAPH			
+B5MBX0	B5MBX0_HUMAN	unreviewed	CDCA5			
+H0YB88	H0YB88_HUMAN	unreviewed	ESCO2			
+F8WC55	F8WC55_HUMAN	unreviewed	TACC3			
+E9PEI0	E9PEI0_HUMAN	unreviewed	CDCA2			
+C9J2U0	C9J2U0_HUMAN	unreviewed	CCNE1			
+F5H031	F5H031_HUMAN	unreviewed	RAD51AP1			
+A0A087WVK1	A0A087WVK1_HUMAN	unreviewed	UBE2C			
+B4DIG0	B4DIG0_HUMAN	unreviewed	CDC25B			
+G8JLH2	G8JLH2_HUMAN	unreviewed	CDC25B			
+J3KS65	J3KS65_HUMAN	unreviewed	KPNA2			
+I3L413	I3L413_HUMAN	unreviewed	CCNE1			
+H0YNN6	H0YNN6_HUMAN	unreviewed	KNSTRN			
+F5H4V6	F5H4V6_HUMAN	unreviewed	RAD51AP1			
+J3QRV0	J3QRV0_HUMAN	unreviewed	PRR11			
+F8WBE0	F8WBE0_HUMAN	unreviewed	CKAP2L			
+H1UBN3	H1UBN3_HUMAN	unreviewed	CCNB2			
+Q8IX09	Q8IX09_HUMAN	unreviewed	TACC3			
+A0A087WXK8	A0A087WXK8_HUMAN	unreviewed	FAM83D			
+B4E099	B4E099_HUMAN	unreviewed	DBF4B			
+J3QL07	J3QL07_HUMAN	unreviewed	KPNA2			
+Q5T670	Q5T670_HUMAN	unreviewed	MCM10			
+C9JA91	C9JA91_HUMAN	unreviewed	TACC3			
+K4DI81	K4DI81_HUMAN	unreviewed	UBE2C			
+V9GY01	V9GY01_HUMAN	unreviewed	KNSTRN			
+H0YLA7	H0YLA7_HUMAN	unreviewed	KNSTRN			
+B4DXK0	B4DXK0_HUMAN	unreviewed	DBF4			
+C9JJT6	C9JJT6_HUMAN	unreviewed	ANLN			
+J3QLL0	J3QLL0_HUMAN	unreviewed	KPNA2			
+Q5JR89	Q5JR89_HUMAN	unreviewed	KIF2C			
+H0YGD4	H0YGD4_HUMAN	unreviewed	CCND2			
+A0A494BYR6	A0A494BYR6_HUMAN	unreviewed	KIF18B			
+Q5JW54	Q5JW54_HUMAN	unreviewed	DSN1			
+K7ELG2	K7ELG2_HUMAN	unreviewed	BIRC5			
+F5H8H7	F5H8H7_HUMAN	unreviewed	SKA3			
+J3KT86	J3KT86_HUMAN	unreviewed	AURKB			
+K7EMW2	K7EMW2_HUMAN	unreviewed	BIRC5			
+H0YCT9	H0YCT9_HUMAN	unreviewed	CDCA5			
+H0YM11	H0YM11_HUMAN	unreviewed	KNSTRN			
+E5RIH2	E5RIH2_HUMAN	unreviewed	HMMR			
+J3KRJ2	J3KRJ2_HUMAN	unreviewed	AURKB			
+C9J470	C9J470_HUMAN	unreviewed	NCAPH			
+Q5JR91	Q5JR91_HUMAN	unreviewed	KIF2C			
+E9PM67	E9PM67_HUMAN	unreviewed	INCENP			
+J3QR41	J3QR41_HUMAN	unreviewed	AURKB			
+H0YL53	H0YL53_HUMAN	unreviewed	PRC1			
+G3V2Q0	G3V2Q0_HUMAN	unreviewed	SYNE2			
+H0YFK6	H0YFK6_HUMAN	unreviewed	RAD51AP1			
+A0A494BZT8	A0A494BZT8_HUMAN	unreviewed	TACC3			
+H0YAE8	H0YAE8_HUMAN	unreviewed	SLBP			
+E9PKH1	E9PKH1_HUMAN	unreviewed	NUF2			
+H7C1C2	H7C1C2_HUMAN	unreviewed	ANLN			
+C9J1G9	C9J1G9_HUMAN	unreviewed	ATAD2B			
+E5RHW7	E5RHW7_HUMAN	unreviewed	ATAD2			

@@ -10,6 +10,14 @@ if not os.path.isfile("input/AllCountsForScanpy.csv") or not os.path.isfile("inp
     counts356.columns += "_356"
     counts357.columns += "_357"
 
+if not os.path.isfile("input/AllRpkmForScanpy.csv") or not os.path.isfile("input/355RpkmForScanpy.csv"):
+    rpkms355 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_355\\rpkms.tab", delimiter="\t", index_col=0)
+    rpkms356 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_356\\rpkms.tab", delimiter="\t", index_col=0)
+    rpkms357 = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\CellCycle\\ESCG_data\\SS2_18_357\\rpkms.tab", delimiter="\t", index_col=0)
+    rpkms355.columns += "_355"
+    rpkms356.columns += "_356"
+    rpkms357.columns += "_357"
+
 #%% Read in all data; 
 # keep symbols that aren't accepted to keep all data through analysis
 
@@ -24,6 +32,7 @@ def gene_symbol_lookup():
     return accepted_symbols, accepted_lookup
 
 accepted_symbols, accepted_lookup = gene_symbol_lookup()
+pd.DataFrame({"accepted_symbols" : list(accepted_symbols)}).to_pickle("output/accepted_gene_symbols.pkl")
 
 def correct_symbol(x):
     if x in accepted_symbols: return x
@@ -41,5 +50,16 @@ if not os.path.isfile("input/AllCountsForScanpy.csv") or not os.path.isfile("inp
     counts355.T.sort_index().to_csv("input/355CountsForScanpy.csv")
     counts356.T.sort_index().to_csv("input/356CountsForScanpy.csv")
     counts357.T.sort_index().to_csv("input/357CountsForScanpy.csv")
+
+if not os.path.isfile("input/AllRpkmForScanpy.csv") or not os.path.isfile("input/355RpkmForScanpy.csv"):
+    rpkms = pd.concat([rpkms355,rpkms356,rpkms357], axis=1, sort=False)
+    rpkmsT = rpkms.T
+    rpkmsT_acceptedish = rpkmsT.rename(index=str, columns = dict([(x, correct_symbol(x)) for x in list(rpkms.index)]))
+    print(f"{len([x for x in list(rpkmsT.columns) if x not in accepted_symbols])}: number of genes that had no accepted symbol")
+    print(f"{len([x for x in list(rpkmsT_acceptedish.columns) if x not in accepted_symbols])}: number of genes that still have no accepted symbol")
+    rpkmsT_acceptedish.sort_index().to_csv("input/AllRpkmsForScanpy.csv")
+    rpkms355.T.sort_index().to_csv("input/355RpkmsForScanpy.csv")
+    rpkms356.T.sort_index().to_csv("input/356RpkmsForScanpy.csv")
+    rpkms357.T.sort_index().to_csv("input/357RpkmsForScanpy.csv")
 
 #%%
