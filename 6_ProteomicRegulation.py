@@ -190,6 +190,7 @@ def weights(vals):
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 
 def add_temps(filename, title, splitname, merged):
+    '''Adds melting temperature measurements from supp info files to lists'''
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
     if len(merged) == 0: merged = df
@@ -198,16 +199,46 @@ def add_temps(filename, title, splitname, merged):
     ccd_n_stab = df[np.isin(df["ProteinName"], ccd_nontranscript_regulated)]
 
     all_temps.extend(df[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
-    transcript_reg.extend(ccd_t_stab[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
-    nontranscr_reg.extend(ccd_n_stab[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
+    transcript_reg.extend(ccd_t_stab[pd.notna(ccd_t_stab["Melting point [°C]"])]["Melting point [°C]"])
+    nontranscr_reg.extend(ccd_n_stab[pd.notna(ccd_n_stab["Melting point [°C]"])]["Melting point [°C]"])
 
-def temp_hist():
+def stat_tests(title):
+    print(f"{title} statistical tests")
+    print("Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD")
+    print(f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)")
+    print(f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)")
+    print(f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)")
+    print(f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)")
+    print(scipy.stats.ttest_ind(transcript_reg, nontranscr_reg))
+    print(scipy.stats.kruskal(transcript_reg, nontranscr_reg))
+    print()
+    print("Testing whether non-transcript reg. CCD is different than all proteins")
+    print(f"{np.mean(all_temps)} +/- {np.std(all_temps)}: All Proteins (mean, std)")
+    print(f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)")
+    print(f"{np.median(all_temps)}: All Proteins (median)")
+    print(f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)")
+    print(scipy.stats.ttest_ind(all_temps, nontranscr_reg))
+    print(scipy.stats.kruskal(all_temps, nontranscr_reg))
+    print()
+    print("Testing whether transcript reg. CCD is different than all proteins")
+    print(f"{np.mean(all_temps)} +/- {np.std(all_temps)}: All Proteins (mean, std)")
+    print(f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)")
+    print(f"{np.median(all_temps)}: All Proteins (median)")
+    print(f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)")
+    print(scipy.stats.ttest_ind(all_temps, transcript_reg))
+    print(scipy.stats.kruskal(all_temps, transcript_reg))
+    print()
+
+def temp_hist(title):
+    '''Generates a histogram of melting points with bins normalized to 1'''
     bins=np.histogram(np.hstack((all_temps, transcript_reg, nontranscr_reg)), bins=40)[1] #get the bin edges
     plt.hist(all_temps, bins=bins, weights=weights(all_temps), alpha=0.5, label="All Proteins")
     plt.hist(transcript_reg, bins=bins, weights=weights(transcript_reg), alpha=0.5, label="Transcript Reg. CCD")
     plt.hist(nontranscr_reg, bins=bins, weights=weights(nontranscr_reg), alpha=0.6, label="Non-Transcript Reg. CCD")
     plt.legend(loc="upper right")
     plt.xlabel("Melting Point (°C)")
+    plt.title(title)
+    stat_tests(title)
 
 
 # Individual histograms
@@ -216,31 +247,31 @@ plt.figure(figsize=(15,15))
 plt.subplot(331)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
-temp_hist()
+temp_hist("A549_R1")
 plt.subplot(332)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
-temp_hist()
+temp_hist("A549_R2")
 plt.subplot(334)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
-temp_hist()
+temp_hist("HEK293_R1")
 plt.subplot(335)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
-temp_hist()
+temp_hist("HEK293_R2")
 plt.subplot(337)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
-temp_hist()
+temp_hist("HepG2_R1")
 plt.subplot(338)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
-temp_hist()
+temp_hist("HepG2_R2")
 plt.subplot(339)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
-temp_hist()
+temp_hist("HepG2_R3")
 plt.savefig("figures/ProteinMeltingPointsIndivid.png")
 plt.show()
 plt.close()
@@ -254,7 +285,7 @@ add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv",
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
-temp_hist()
+temp_hist("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPoints.png")
 plt.show()
 plt.close()
@@ -292,112 +323,101 @@ print(scipy.stats.kruskal(all_temps, transcript_reg))
 
 #%% Using melting temperatures (histograms, combined protein measurements)
 # Idea: The above conclusions are based on tests that require independent observations,
-#       but some proteins measurements are represented more than once
+#       but some proteins measurements are represented more than once (max of 12 times)
 # Execution: use melting points from data frames; combine protein measurements
 # Output: histograms for the replicates and aggregate
 #       statistical test for whether the transcript reg and non-transcript reg CCD
 #       are different.
 
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-    
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
+atp, trp, ntp = [], [], []
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
 
-def add_temps(filename, title, splitname, merged):
+def add_temps_and_names(filename, title, splitname):
+    '''Adds melting temperature measurements from supp info files to lists'''
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
-    if len(merged) == 0: merged = df
-    else: pd.merge(merged, df, on="ProteinName", suffixes=("", title))
     ccd_t_stab = df[np.isin(df["ProteinName"], ccd_transcript_regulated)]
     ccd_n_stab = df[np.isin(df["ProteinName"], ccd_nontranscript_regulated)]
 
-    all_temps.extend(df[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
-    transcript_reg.extend(ccd_t_stab[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
-    nontranscr_reg.extend(ccd_n_stab[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
+    notna = pd.notna(df["Melting point [°C]"])
+    all_temps.extend(df[notna]["Melting point [°C]"])
+    transcript_reg.extend(ccd_t_stab[notna]["Melting point [°C]"])
+    nontranscr_reg.extend(ccd_n_stab[notna]["Melting point [°C]"])
 
-def temp_hist():
-    bins=np.histogram(np.hstack((all_temps, transcript_reg, nontranscr_reg)), bins=40)[1] #get the bin edges
-    plt.hist(all_temps, bins=bins, weights=weights(all_temps), alpha=0.5, label="All Proteins")
-    plt.hist(transcript_reg, bins=bins, weights=weights(transcript_reg), alpha=0.5, label="Transcript Reg. CCD")
-    plt.hist(nontranscr_reg, bins=bins, weights=weights(nontranscr_reg), alpha=0.6, label="Non-Transcript Reg. CCD")
-    plt.legend(loc="upper right")
-    plt.xlabel("Melting Point (°C)")
+    atp.extend(df[notna]["ProteinName"])
+    trp.extend(ccd_t_stab[notna]["ProteinName"])
+    ntp.extend(ccd_n_stab[notna]["ProteinName"])
 
+def avg_prot_temps(temps, proteinNames):
+    '''Finds median of the measurements from the same protein'''
+    aaa = []
+    for i in range(len(temps)):
+        df = pd.DataFrame({"name" : proteinNames[i], "temps": temps[i]})
+        aaa.append(list(df.groupby("name")["temps"].median()))
+    return aaa
 
 # Individual histograms
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 plt.figure(figsize=(15,15))
 plt.subplot(331)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("A549_R1")
 plt.subplot(332)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("A549_R2")
 plt.subplot(334)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("HEK293_R1")
 plt.subplot(335)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
+temp_hist("HEK293_R2")
 plt.subplot(337)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("HepG2_R1")
 plt.subplot(338)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
-temp_hist()
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("HepG2_R2")
 plt.subplot(339)
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
-temp_hist()
-plt.savefig("figures/ProteinMeltingPointsIndivid.png")
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("HepG2_R3")
+plt.savefig("figures/ProteinMeltingPointsMedianedIndivid.png")
 plt.show()
 plt.close()
 
 # Aggregate histogram
-all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
-temp_hist()
-plt.savefig("figures/ProteinMeltingPoints.png")
+all_temps, transcript_reg, nontranscr_reg = [],[],[]
+atp, trp, ntp = [], [], []
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
+add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
+all_temps, transcript_reg, nontranscr_reg = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg], [atp, trp, ntp])
+temp_hist("Aggregated Melting Points")
+plt.savefig("figures/ProteinMeltingPointsMedianed.png")
 plt.show()
 plt.close()
-
-# Statistical tests
-print("Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD")
-print(f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)")
-print(f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)")
-print(f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)")
-print(f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)")
-print(scipy.stats.ttest_ind(transcript_reg, nontranscr_reg))
-print(scipy.stats.kruskal(transcript_reg, nontranscr_reg))
-print()
-print("Testing whether non-transcript reg. CCD is different than all proteins")
-print(f"{np.mean(all_temps)} +/- {np.std(all_temps)}: All Proteins (mean, std)")
-print(f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)")
-print(f"{np.median(all_temps)}: All Proteins (median)")
-print(f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)")
-print(scipy.stats.ttest_ind(all_temps, nontranscr_reg))
-print(scipy.stats.kruskal(all_temps, nontranscr_reg))
-print()
-print("Testing whether transcript reg. CCD is different than all proteins")
-print(f"{np.mean(all_temps)} +/- {np.std(all_temps)}: All Proteins (mean, std)")
-print(f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)")
-print(f"{np.median(all_temps)}: All Proteins (median)")
-print(f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)")
-print(scipy.stats.ttest_ind(all_temps, transcript_reg))
-print(scipy.stats.kruskal(all_temps, transcript_reg))
 
 #%% [markdown]
 # The replicates do look better with the melting points, and the difference is
