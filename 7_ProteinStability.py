@@ -4,6 +4,11 @@ from Bio import SeqIO
 # import requests
 # import sys
 
+#%% Import the genes names we're analyzing
+ccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
+ccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
+genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+
 #%% Let's take a look at protein stability
 # Idea: Is there a difference in protein stability or turnover for the proteins that are
 # transcriptionally regulated CCD vs non-transcriptionally regulated?
