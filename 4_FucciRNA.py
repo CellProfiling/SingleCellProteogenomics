@@ -144,3 +144,61 @@ def plot_expression_avg_pseudotime(genelist, outfolder):
 
 
 #%%
+# Idea: Are there any differences in raw counts and such from the different parts
+#       of the cell cycle?
+# Execution: Based on the phase, before and after filtering,
+#       summarize the 1) total count of reads per cell,
+#       2) total number of genes detected per cell
+# Output: total counts per cell; total genes per cell before and after filtering
+#       plot moving avg total counts per cell on pseudotime
+#       plot moving avg toal # genes per cell on pseudotime
+
+dd = "All"
+counts_or_rpkms = "Counts"
+do_log_normalization = False
+adata, phases_filt = read_counts_and_phases(dd, counts_or_rpkms)
+expression_data = adata.X
+fucci_time_inds = np.argsort(adata.obs["fucci_time"])
+fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
+exp_sort = np.take(expression_data, fucci_time_inds, axis=0)
+
+# Total counts per cell, moving average
+exp = exp_sort.sum(axis=1)
+df = pd.DataFrame({"fucci_time" : fucci_time_sort, "total_counts" : exp})
+bin_size = 100
+plt.figure(figsize=(10,10))
+plt.plot(df["fucci_time"], 
+        df["total_counts"].rolling(bin_size).mean(), 
+        color="blue", 
+        label=f"Moving Average by {bin_size} Cells")
+plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
+plt.ylabel("Total RNA-Seq Counts",size=36,fontname='Arial')
+plt.xticks(size=14)
+plt.yticks(size=14)
+# plt.title("Total Counts",size=36,fontname='Arial')
+plt.legend(fontsize=14)
+plt.tight_layout()
+plt.savefig(f"figures/TotalCountsPseudotime.png")
+plt.show()
+plt.close()
+
+# Total genes detected per cell, moving average
+gene_ct = np.count_nonzero(exp_sort, axis=1)
+df = pd.DataFrame({"fucci_time" : fucci_time_sort, "total_genes" : gene_ct})
+plt.figure(figsize=(10,10))
+plt.plot(df["fucci_time"], 
+        df["total_genes"].rolling(bin_size).mean(), 
+        color="blue", 
+        label=f"Moving Average by {bin_size} Cells")
+plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
+plt.ylabel("Total Genes Detected By RNA-Seq",size=36,fontname='Arial')
+plt.xticks(size=14)
+plt.yticks(size=14)
+# plt.title("Total Genes ",size=36,fontname='Arial')
+plt.legend(fontsize=14)
+plt.tight_layout()
+plt.savefig(f"figures/TotalGenesPseudotime.png")
+plt.show()
+plt.close()
+
+#%%

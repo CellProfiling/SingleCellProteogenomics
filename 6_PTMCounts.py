@@ -3,6 +3,7 @@ from imports import *
 from Bio import SeqIO
 import requests
 import sys
+import re
 
 #%% Import the genes names we're analyzing
 ccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
@@ -126,5 +127,41 @@ print(f"one-sided Wilcoxon test for same median all and non-transcriptionally re
 # of phosphosites is 7 for all proteins, 34.5 phosphosites for transcriptionally regulated CCD proteins,
 # and 11 for non-transcriptionally regulated CCD proteins. These differences are significant.
 
+
+#%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
+# one or the other
+# Idea: PTM annotation counts are pretty biased; PTM data might be better
+# Execution: 
+#   Take in the results from analyzing U2OS data with MetaMorpheus.
+#   Count mods for each protein, excluding oxidations
+# Output: # of PTMs per protein in each class and for all proteins
+
+# Read in the protein group results
+file = pd.read_csv('C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv', sep="\t", index_col=False)
+targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
+modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
+modifications = [re.findall('\[.*?\]',s) for s in modifiedProteins["Sequence Coverage with Mods"]]
+unique_mods = set([item for sublist in modifications for item in sublist])
+
+genes = list(modifiedProteins["Gene"])
+seqs = list(modifiedProteins["Sequence Coverage with Mods"])
+unambigenes = []
+modcts = []
+for idx in range(len(genes)):
+    print(genes[idx])
+    genesplit = str(genes[idx]).split("|")
+    seq = seqs[idx]
+    if len(genesplit) == 1:
+        mods = [m for m in re.findall('\[.*?\]', seq) if not "oxidation" in m.lower()]
+        unambigenes.append(genesplit[0])
+        modcts.append(len(mods))
+
+print(f"{str(len(targets))} proteins")
+print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
+
+df = pd.DataFrame({"gene" : unambigenes, "modcts" : modcts})
+df.hist()
+
+# print(f"{str(len(modifiedPeptides))} interesting modified peptides ({str(round(float(len(modPeptides))/float(len(file))*100,2))}%)")
 
 #%%

@@ -1,8 +1,6 @@
 #%% Imports
 from imports import *
 from Bio import SeqIO
-# import requests
-# import sys
 
 #%% Import the genes names we're analyzing
 ccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])

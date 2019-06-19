@@ -5,7 +5,7 @@ import numpy as np
 #%% Read in RNA-Seq data again and the CCD gene lists
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
-count_or_rpkm = "Counts"
+count_or_rpkm = "Rpkms" # so that the results match for cross-gene comparisons
 adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm)
 qc_filtering(adata, False)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
@@ -220,6 +220,7 @@ avg_expression = np.apply_along_axis(np.median, 0, norm_exp_sort)
 
 def plot_variances(total_var, percent_var, expression_color, title, file_tag):
     '''Plots percent variances from cell line against total variance'''
+    plt.figure(figsize=(10,10))
     plt.scatter(total_var, percent_var, c=expression_color)
     plt.xlabel("Total Variance", size=36,fontname='Arial')
     plt.ylabel("Percent Variance Due to Cell Cycle",size=36,fontname='Arial')
@@ -244,6 +245,7 @@ plot_variances(total_variance[diananonccdgenes], percent_ccd_variance[diananoncc
 # Displaying the ANOVA results on the percent variances
 def plot_variances_tf(total_var, percent_var, expression_color, title, file_tag):
     '''Plots percent variances from cell line against total variance'''
+    plt.figure(figsize=(10,10))
     plt.scatter(total_var, percent_var, c=expression_color, cmap="bwr_r")
     plt.xlabel("Total Variance", size=36,fontname='Arial')
     plt.ylabel("Percent Variance Due to Cell Cycle",size=36,fontname='Arial')

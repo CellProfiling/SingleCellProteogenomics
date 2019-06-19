@@ -108,7 +108,7 @@ def plot_expression_umap(genelist, outfolder):
 # * How many of the genes that are temporally regulated over the cell cycle, using the fucci colors to build the cell cycle trajectory?
 # * How many of the genes that show variability not correlated to the cell cycle?
 
-#%%
+#%% 
 
 #%% Heatmaps with published CCD genes again
 # kind of broken; need to set the colormap back to 'reds' somehow
