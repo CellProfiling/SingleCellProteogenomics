@@ -144,23 +144,85 @@ modifications = [re.findall('\[.*?\]',s) for s in modifiedProteins["Sequence Cov
 unique_mods = set([item for sublist in modifications for item in sublist])
 
 genes = list(modifiedProteins["Gene"])
-seqs = list(modifiedProteins["Sequence Coverage with Mods"])
-unambigenes = []
-modcts = []
+seqmods = list(modifiedProteins["Sequence Coverage with Mods"])
+seqs = list(modifiedProteins["Sequence Coverage"])
+coverage = list(modifiedProteins["Sequence Coverage %"])
+genemods = {}
 for idx in range(len(genes)):
-    print(genes[idx])
     genesplit = str(genes[idx]).split("|")
-    seq = seqs[idx]
-    if len(genesplit) == 1:
-        mods = [m for m in re.findall('\[.*?\]', seq) if not "oxidation" in m.lower()]
-        unambigenes.append(genesplit[0])
-        modcts.append(len(mods))
+    seqmod = seqmods[idx].split("|")
+    seq = seqs[idx].split("|")
+    cov = coverage[idx].split("|")
+    for idxx in range(len(genesplit)):
+        mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not "oxidation" in m.lower()]
+        effective_length = float(len(seq[idxx])) * float(cov[idxx][:-1]) / 100
+        mods_per_eff_base = float(len(mods)) / float(effective_length)
+        if genesplit[idxx] in genemods: genemods[genesplit[idxx]].append(mods_per_eff_base)
+        else: genemods[genesplit[idxx]] = [mods_per_eff_base]        
 
 print(f"{str(len(targets))} proteins")
 print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
+print(f"{str(len([g for g in genemods.keys() if g in ccd_transcript_regulated]))}: number of transcript regulated CCD genes of {len(ccd_transcript_regulated)} detected unambiguously.")
+print(f"{str(len([g for g in genemods.keys() if g in ccd_nontranscript_regulated]))}: number of transcript regulated CCD genes of {len(ccd_nontranscript_regulated)} detected unambiguously.")
+print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of transcript regulated CCD genes of {len(genes_analyzed)} detected unambiguously.")
+
+unambigenes = []
+modcts = []
+for gene in genemods.keys():
+    unambigenes.append(gene)
+    modcts.append(np.median(genemods[gene]))
 
 df = pd.DataFrame({"gene" : unambigenes, "modcts" : modcts})
 df.hist()
+plt.show()
+plt.close()
+
+ccd_t_modcts = df[np.isin(df["gene"], ccd_transcript_regulated)]["modcts"]
+ccd_n_modcts = df[np.isin(df["gene"], ccd_nontranscript_regulated)]["modcts"]
+all_modcts = df[np.isin(df["gene"], genes_analyzed)]["modcts"]
+print(f"mean number of mods / seq length for all proteins: {np.mean(all_modcts)}")
+print(f"mean number of mods / seq length for transcriptionally regulated: {np.mean(ccd_t_modcts)}")
+print(f"mean number of mods / seq length for non-transcriptionally regulated: {np.mean(ccd_n_modcts)}")
+t, p = scipy.stats.ttest_ind(ccd_t_modcts, ccd_n_modcts)
+print(f"two-sided t-test for same means of transcript and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.ttest_ind(all_modcts, ccd_t_modcts)
+print(f"two-sided t-test for same means of all and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(ccd_t_modcts, ccd_n_modcts)
+print(f"two-sided kruskal for same medians of transcript and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts)
+print(f"two-sided kruskal for same medians of all and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts, ccd_n_modcts)
+print(f"two-sided kruskal for same medians of all, transcript CCD, and non-transcriptionally regulated: {2*p}")
+
+
+# Generate a histogram of effective mod counts with bins normalized to 1'''
+def weights(vals):
+    '''normalizes all histogram bins to sum to 1'''
+    return np.ones_like(vals)/float(len(vals))
+
+bins=np.histogram(np.hstack((all_modcts, ccd_t_modcts, ccd_n_modcts)), bins=40)[1] #get the bin edges
+plt.hist(all_modcts, bins=bins, weights=weights(all_modcts), alpha=0.5, label="All Proteins")
+plt.hist(ccd_t_modcts, bins=bins, weights=weights(ccd_t_modcts), alpha=0.5, label="Transcript Reg. CCD")
+plt.hist(ccd_n_modcts, bins=bins, weights=weights(ccd_n_modcts), alpha=0.6, label="Non-Transcript Reg. CCD")
+plt.legend(loc="upper right")
+plt.xlabel("Modifications per Covered Base")
+plt.show()
+plt.close()
+
+# Generate boxplots for effective mod counts
+mmmm = np.concatenate((all_modcts, ccd_t_modcts, ccd_n_modcts))
+cccc = (["All"] * len(all_modcts))
+cccc.extend(["Transcript CCD"] * len(ccd_t_modcts))
+cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
+moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
+boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
+boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
+boxplot.set_ylabel("Modifications per Covered Base", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=16)
+# boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36,fontname='Arial')
+# boxplot.get_figure().savefig(f"{outfolder}/{gene}_boxplot.png")
+plt.show()
+plt.close()
 
 # print(f"{str(len(modifiedPeptides))} interesting modified peptides ({str(round(float(len(modPeptides))/float(len(file))*100,2))}%)")
 

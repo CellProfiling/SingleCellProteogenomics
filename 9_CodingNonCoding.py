@@ -22,4 +22,5 @@ gene_biotypes = ensembl.query(attributes=[ "external_gene_name", "gene_biotype"]
 anova_tests_typed = anova_tests.merge(gene_biotypes, left_on="gene", right_on="Gene name", how="left")
 anova_tests_typed.groupby("gene")["Gene type"].agg(["Gene type", ", ".join])
 
-#%%
+#%% This should be much easier with the RSEM dataframes
+# Can possibly use the script already written to transfer GFF info to the table
