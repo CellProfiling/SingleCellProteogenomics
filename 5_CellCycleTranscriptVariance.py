@@ -83,7 +83,6 @@ pd.DataFrame([x for x in adata.var_names if x not in accepted_symbols]).to_csv("
 print(str(len([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols])) + ": number of significant genes that aren't accepted symbols")
 pd.DataFrame([x for x in list(anova_tests[anova_tests.reject_B == True]["gene"]) if x not in accepted_symbols]).to_csv("output/significant_genes_not_accepted_symbols.txt")
 
-
 #%% [markdown]
 ## Summary of ANOVA analysis
 #
@@ -140,6 +139,13 @@ def plot_expression_boxplots(genelist, outanova, outfolder):
 # plot_expression_boxplots(ccd_regev_filtered, "ccd_regev_filtered", "figures/RegevGeneBoxplots")
 # plot_expression_boxplots(ccd_filtered, "ccd_filtered", "figures/DianaCcdGeneBoxplots")
 # plot_expression_boxplots(nonccd_filtered, "nonccd_filtered", "figures/DianaNonCcdGeneBoxplots")
+
+# Output the stage in which there is peak expression for each gene in the known set
+expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+normalized_exp_data = expression_data / np.max(expression_data)
+expression_stage = pd.DataFrame({gene : normalized_exp_data, "stage" : adata.obs["phase"]})
+exp_stage_filt = expression_stage[expression_stage.stage != "nan"].reset_index(drop=True)
+
 
 #%% Plotting variances of gene expression
 # Idea: Using the spread as a measure of variability, is there higher variability for CCD genes (likely due to cyclicity)?
@@ -243,10 +249,11 @@ plot_variances(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes
 plot_variances(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], avg_expression[diananonccdgenes], "Diana Non-CCD Genes", "DianaNonCCD")
 
 # Displaying the ANOVA results on the percent variances
-def plot_variances_tf(total_var, percent_var, expression_color, title, file_tag):
+def plot_variances_tf(total_var, percent_var, expression_color, title, file_tag, cutoff):
     '''Plots percent variances from cell line against total variance'''
     plt.figure(figsize=(10,10))
     plt.scatter(total_var, percent_var, c=expression_color, cmap="bwr_r")
+    plt.axhline(cutoff)
     plt.xlabel("Total Variance", size=36,fontname='Arial')
     plt.ylabel("Percent Variance Due to Cell Cycle",size=36,fontname='Arial')
     plt.xticks(size=14)
@@ -268,10 +275,11 @@ low_variance_signif = (percent_ccd_variance < 0.03) & (dianaccdgenes) & (rejectB
 print(np.array(adata.var_names)[low_variance_signif])
 
 # Okay, we're going to take the ones that passed ANOVA and have > 10% variance explained
-plot_variances_tf(total_variance, percent_ccd_variance, (rejectBonf_unsorted) & (percent_ccd_variance > 0.1), "All Genes", "All")
-plot_variances_tf(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], (rejectBonf_unsorted[regevccdgenes]) & (percent_ccd_variance[regevccdgenes] > 0.1), "Regev CCD Genes", "RegevCcd")
-plot_variances_tf(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], (rejectBonf_unsorted[dianaccdgenes]) & (percent_ccd_variance[dianaccdgenes] > 0.1), "Diana CCD Genes", "DianaCcd")
-plot_variances_tf(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], (rejectBonf_unsorted[diananonccdgenes]) & (percent_ccd_variance[diananonccdgenes] > 0.1), "Diana Non-CCD Genes", "DianaNonCCD")
+cutoff = 0.1
+plot_variances_tf(total_variance, percent_ccd_variance, (rejectBonf_unsorted) & (percent_ccd_variance > cutoff), "All Genes", "All", cutoff)
+plot_variances_tf(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], (rejectBonf_unsorted[regevccdgenes]) & (percent_ccd_variance[regevccdgenes] > cutoff), "Regev CCD Genes", "RegevCcd", cutoff)
+plot_variances_tf(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], (rejectBonf_unsorted[dianaccdgenes]) & (percent_ccd_variance[dianaccdgenes] > cutoff), "Diana CCD Genes", "DianaCcd", cutoff)
+plot_variances_tf(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], (rejectBonf_unsorted[diananonccdgenes]) & (percent_ccd_variance[diananonccdgenes] > cutoff), "Diana Non-CCD Genes", "DianaNonCCD", cutoff)
 
 # Let's output those
 percent_variance_tests = pd.DataFrame(
@@ -283,17 +291,19 @@ percent_variance_tests = pd.DataFrame(
     "reject_B" : rejectBonf_unsorted,
     "percent_variance" : percent_ccd_variance,
     "total_variance" : total_variance,
-    "significant" : (rejectBonf_unsorted) & (percent_ccd_variance > 0.1),
+    "significant" : (rejectBonf_unsorted) & (percent_ccd_variance > cutoff),
     "regev_ccd" : regevccdgenes,
     "diana_ccd" : dianaccdgenes,
     "diana_nonccd" : diananonccdgenes})
 percent_variance_tests.to_csv("output/transcript_regulation.csv")
 
 # And keep track of the ccd genes with and without transcript regulation
-ccd_transcript_regulated = np.array(adata.var_names)[(dianaccdgenes) & (rejectBonf_unsorted) & (percent_ccd_variance > 0.1)]
-ccd_nontranscript_regulated = np.array(adata.var_names)[(dianaccdgenes) & ~((rejectBonf_unsorted) & (percent_ccd_variance > 0.1))]
-pd.DataFrame({"gene" : ccd_transcript_regulated}).to_csv("output/ccd_transcript_regulated.csv")
-pd.DataFrame({"gene" : ccd_nontranscript_regulated}).to_csv("output/ccd_nontranscript_regulated.csv")
+ccd_transcript_regulated = np.array(adata.var_names)[(rejectBonf_unsorted) & (percent_ccd_variance > cutoff)]
+dianaccd_transcript_regulated = np.array(adata.var_names)[(dianaccdgenes) & (rejectBonf_unsorted) & (percent_ccd_variance > cutoff)]
+dianaccd_nontranscript_regulated = np.array(adata.var_names)[(dianaccdgenes) & ~((rejectBonf_unsorted) & (percent_ccd_variance > cutoff))]
+pd.DataFrame({"gene" : ccd_transcript_regulated}).to_csv("output/allccd_transcript_regulated.csv")
+pd.DataFrame({"gene" : dianaccd_transcript_regulated}).to_csv("output/ccd_transcript_regulated.csv")
+pd.DataFrame({"gene" : dianaccd_nontranscript_regulated}).to_csv("output/ccd_nontranscript_regulated.csv")
 pd.DataFrame({"gene" : adata.var_names}).to_csv("output/gene_names.csv")
 
 #%%

@@ -201,4 +201,6 @@ plt.savefig(f"figures/TotalGenesPseudotime.png")
 plt.show()
 plt.close()
 
-#%%
+#%% Idea: What does the UMAP look like without the transcript CCD genes?
+# Execution: filter out the transcript CCD genes from the counts table
+# Output: UMAP for the RNA-Seq data

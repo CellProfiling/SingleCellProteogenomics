@@ -1,0 +1,2245 @@
+,gene,modcts,modlist
+0,CAPNS1,0.005653550429669833,[N-acetylmethionine on M]
+1,RPLP1,0.04616805170821791,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P]"
+2,PTBP1,0.023872045834328004,"[N-acetylmethionine on M], [Butyrylation on K], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on K], [Hydroxylation on N], [Hydroxylation on N], [Acetylation on K], [Hydroxylation on N]"
+3,HNRNPL,0.00285371968986391,"[Methylation on K], [Methylation on K]"
+4,EEF1D,0.011767469026783203,"[N-acetylalanine on A], [Trimethylation on K], [Phosphoserine on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S]"
+5,RCC1,0.0,
+6,SPTBN1,0.0,
+7,KPNA3,0.0050510152540660675,[N-acetylalanine on A]
+8,SLC1A5,0.0,
+9,MBD2,0.00901144453455889,[Formylation on K]
+10,PRPF19,0.0028755463538072236,[N-acetylserine on S]
+11,TNKS1BP1,0.0014106560961503196,[Phosphoserine on S]
+12,SFXN1,0.005263711969681019,[N-acetylserine on S]
+13,FH,0.0030165912518853697,[Hydroxylation on N]
+14,TLN1,0.0029814079400856263,"[Hydroxylation on N], [Hydroxylation on N], [Phosphorylation on S], [Hydroxylation on N], [Hydroxylation on K]"
+15,NAT10,0.002168021680216802,[Glutarylation on K]
+16,PPIF,0.0,
+17,HSPD1,0.012615908660821296,"[Hydroxylation on P], [Methylation on K], [Acetylation on K], [N6-acetyllysine on K], [Methylation on K], [Citrullination on R]"
+18,PLRG1,0.0,
+19,GNPDA1,0.0,
+20,ACOT1,0.004948535233570863,[Dimethylation on K]
+21,GAPDH,0.1029336078229542,"[Deamidated asparagine on N], [Citrullination on R], [Deamidated asparagine on N], [Deamidated asparagine on N], [Hydroxylation on N], [Hydroxylation on P], [Phosphoserine on S], [Methylation on K], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Acetylation on K], [Acetylation on K], [Deamidated asparagine on N], [Hydroxylation on N], [Cysteine persulfide on C], [Deamidated asparagine on N], [Methylation on K], [Hydroxylation on N], [Acetylation on K], [Glutarylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on N], [Deamidated asparagine on N], [Nitrosylation on Y], [Methylation on R]"
+22,USP14,0.007229612492770388,"[Hydroxylation on K], [Hydroxylation on K]"
+23,SNUPN,0.0154320987654321,[N-acetylmethionine on M]
+24,ESYT1,0.0017090511348099534,[Hydroxylation on P]
+25,SLC25A13,0.005590496156533892,"[Hydroxylation on P], [N6-methyllysine on K]"
+26,ATP5F1B,0.0073508273729941285,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N]"
+27,HSD17B4,0.002717391304347826,[N6-succinyllysine on K]
+28,HIST1H1A,0.011344299489506523,[N-acetylserine on S]
+29,TPR,0.0020643456540363116,"[N-acetylalanine on A], [Hydroxylation on P]"
+30,ZBTB7A,0.01223091976516634,[Acetylation on X]
+31,ACTB,0.1149329634766528,"[N-acetylaspartate on D], [Hydroxylation on K], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Carboxylation on E], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [Hydroxylation on K], [N6-methyllysine on K], [Formylation on K], [Butyrylation on K], [Hydroxybutyrylation on K], [Acetylation on K], [Dimethylation on K], [Succinylation on K], [Crotonylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Nitrosylation on Y], [Hydroxylation on P], [Nitrosylation on C], [Hydroxylation on P], [Hydroxylation on P], [Nitrosylation on C], [Hydroxylation on N], [Acetylation on K], [Methylation on K], [Butyrylation on K], [Nitrosylation on Y], [Hydroxylation on N], [Nitrosylation on Y], [N-acetylaspartate on D], [Hydroxylation on K], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Carboxylation on E], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [N6-methyllysine on K], [Hydroxylation on K], [Formylation on K], [Butyrylation on K], [Hydroxybutyrylation on K], [Acetylation on K], [Dimethylation on K], [Succinylation on K], [Crotonylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Nitrosylation on Y], [Hydroxylation on P], [Nitrosylation on C], [Hydroxylation on P], [Hydroxylation on P], [Nitrosylation on C], [Hydroxylation on N], [Acetylation on K], [Methylation on K], [Butyrylation on K], [Nitrosylation on Y], [Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on P], [N-acetylaspartate on D], [Hydroxylation on K], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Carboxylation on E], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [Hydroxylation on K], [N6-methyllysine on K], [Formylation on K], [Butyrylation on K], [Hydroxybutyrylation on K], [Acetylation on K], [Dimethylation on K], [Succinylation on K], [Crotonylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Nitrosylation on Y], [Hydroxylation on P]"
+32,DDX5,0.007880634653777452,"[Hydroxylation on P], [Formylation on K], [Methylation on K], [Hydroxylation on P], [Formylation on K], [Methylation on K], [Hydroxylation on P], [Formylation on K], [Methylation on K]"
+33,VDAC1,0.0,
+34,KIAA0586,0.013358427201253444,"[Phosphorylation on S], [Phosphorylation on S]"
+35,TUBB4A,0.03201221575999484,"[Hydroxylation on N], [Hydroxylation on N], [Citrullination on R], [Butyrylation on K], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R]"
+36,TUBB,0.04450966122635483,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K]"
+37,TUBB4B,0.04052311659605821,"[Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K]"
+38,TUBB2A,0.033046926635822864,"[Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K]"
+39,TUBB2B,0.033046926635822864,"[Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K]"
+40,XRCC5,0.0,
+41,FLNB,0.0021961128802020424,"[Hydroxylation on P], [Hydroxylation on K], [Acetylation on K], [Phosphoserine on S]"
+42,BTF3,0.0061162079510703364,[Phosphorylation on T]
+43,DHRS7,0.0,
+44,ECH1,0.0,
+45,VDAC3,0.011217679062202031,"[Formylation on K], [Phosphoserine on S]"
+46,UBR4,0.001543507621068879,"[Phosphorylation on S], [Phosphorylation on S]"
+47,UROD,0.005449591280653951,[N-acetylmethionine on M]
+48,JPT1,0.034384924028387526,"[Acetylation on X], [Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S], [Acetylation on K]"
+49,SNRNP200,0.0009179701843284132,[Hydroxylation on N]
+50,EEF1A1,0.06663267585839502,"[Hydroxylation on K], [N6-methyllysine on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Hydroxylation on P], [Formylation on K], [Acetylation on K], [Dimethylation on R], [5-glutamyl glycerylphosphorylethanolamine on E], [Hydroxylation on P], [Acetylation on K], [N6,N6-dimethyllysine on K], [Butyrylation on K], [Hydroxylation on K], [Hydroxylation on K], [N6,N6-dimethyllysine on K], [N6-methyllysine on K], [N6,N6,N6-trimethyllysine on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Hydroxylation on P], [Formylation on K], [Acetylation on K], [Dimethylation on R], [Formylation on K], [Methylation on K], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [5-glutamyl glycerylphosphorylethanolamine on E], [Hydroxylation on P], [Acetylation on K], [N6,N6,N6-trimethyllysine on K], [Trimethylation on K], [5-glutamyl glycerylphosphorylethanolamine on E], [Acetylation on K], [Methylation on K], [Hydroxybutyrylation on K], [Hydroxylation on P]"
+51,EEF1A2,0.03410253495509833,"[N6,N6-dimethyllysine on K], [Butyrylation on K], [Hydroxylation on K], [Hydroxylation on K], [N6-methyllysine on K], [N6,N6-dimethyllysine on K], [Hydroxylation on N], [Citrullination on R], [Methylation on R], [5-glutamyl glycerylphosphorylethanolamine on E], [Hydroxylation on P], [Acetylation on K]"
+53,DDX20,0.0036775522212415413,[Acetylation on X]
+54,FARSB,0.0,
+55,SLC25A12,0.0044694734960221685,[Methylation on K]
+56,CALD1,0.0052464160736187685,"[Acetylation on X], [Acetylation on X], [Phosphorylation on S]"
+57,HSPA8,0.029687433733406845,"[Nitrosylation on Y], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Citrullination on R], [Nitrosylation on Y], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on P], [Nitrosylation on Y], [Methylation on K], [Hydroxylation on N], [Methylation on R], [Omega-N-methylarginine on R], [N6,N6-dimethyllysine on K], [N6,N6,N6-trimethyllysine on K], [Hydroxylation on N], [Methylation on R], [Omega-N-methylarginine on R]"
+58,HADHA,0.006654775240736334,"[Hydroxylation on P], [Hydroxylation on N], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on N], [Acetylation on K]"
+59,CCT6A,0.0,
+60,ACAT1,0.0,
+61,HNRNPA2B1,0.023283790601109862,"[Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on K], [Omega-N-methylarginine on R], [Omega-N-methylarginine on R], [Omega-N-methylarginine on R]"
+62,MAP1B,0.007293354943273906,"[N-acetylalanine on A], [Phosphoserine on S], [Phosphoserine on S], [Phosphorylation on T], [Phosphorylation on T], [Phosphoserine on S], [Phosphoserine on S], [Phosphoserine on S], [Phosphorylation on T]"
+63,MED15,0.00746491489997014,[Malonylation on K]
+64,MTHFD1,0.003450060376056581,"[N-acetylmethionine on M], [Hydroxylation on P]"
+65,ALYREF,0.04958725805962919,"[Dimethylation on R], [N6-acetyllysine on K], [Phosphoserine on S], [Butyrylation on K], [Citrullination on R], [N6-methyllysine on K], [N-acetylalanine on A], [Asymmetric dimethylarginine on R], [Dimethylation on R], [N6-acetyllysine on K], [Phosphoserine on S], [Butyrylation on K], [Citrullination on R], [N6-methyllysine on K]"
+66,NELFB,0.004105090311986864,[Phosphoserine on S]
+67,VCL,0.0,
+68,H3F3A,0.15822784810126583,"[N6,N6-dimethyllysine on K], [N6-methyllysine on K], [N6,N6,N6-trimethyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [Trimethylation on K], [N6-acetyllysine on K], [N6-butyryllysine on K], [N6-acetyllysine on K], [N6,N6-dimethyllysine on K], [N6-methyllysine on K], [Acetylation on K], [N6,N6-dimethyllysine on K], [N6-methyllysine on K], [N6,N6-dimethyllysine on K], [N6-methyllysine on K], [Hydroxylation on N]"
+69,CLUH,0.0018961150430077097,"[Hydroxylation on P], [Hydroxylation on P]"
+70,HSPA1A,0.01629915942906373,"[Hydroxylation on P], [Acetylation on K], [Hydroxylation on P], [Omega-N-methylarginine on R], [N6,N6-dimethyllysine on K], [N6,N6,N6-trimethyllysine on K], [Hydroxylation on P]"
+72,RBBP7,0.0,
+73,ITGB5,0.0,
+74,AKAP12,0.007652280379553107,"[Phosphoserine on S], [Phosphoserine on S], [Phosphoserine on S]"
+75,COG3,0.005032206119162641,[N-acetylalanine on A]
+76,FLNA,0.009189393397931366,"[Hydroxylation on P], [Hydroxylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Hydroxylation on K], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Phosphorylation on S], [Hydroxylation on P], [Hydroxylation on P], [Phosphorylation on S], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Hydroxylation on K], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Phosphorylation on S], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N]"
+77,HSPB1,0.0689289501590668,"[Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on P], [Phosphorylation on S], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Acetylation on K], [Hydroxylation on P], [Trimethylation on K], [Methylation on K], [Acetylation on K], [Hydroxylation on N]"
+78,GSR,0.0,
+79,KIF1BP,0.0,
+80,COPB1,0.0,
+81,ILF3,0.00392480081635857,"[Phosphoserine on S], [Sulfonation on Y]"
+82,SFN,0.01240694789081886,"[Hydroxylation on K], [Acetylation on K]"
+83,SERPINH1,0.027453133579104245,"[Hydroxylation on P], [Acetylation on K], [Methylation on R], [Methylation on K], [Hydroxylation on N], [Hydroxylation on K], [HexNAc on T]"
+84,CDV3,0.004930966469428008,[Glu to PyroGlu on Q]
+85,PELP1,0.0029498525073746312,[N-acetylalanine on A]
+86,PLEC,0.005442653650095015,"[Dimethylation on R], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Dimethylation on K], [Hydroxylation on P], [Methylation on R], [Phosphorylation on T], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Phosphoserine on S], [Phosphorylation on Y], [Dimethylation on R], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on K], [Dimethylation on K], [Hydroxylation on P], [Methylation on R], [Phosphorylation on T], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Phosphoserine on S], [Phosphorylation on Y]"
+87,RBFOX2,0.007780890133831309,"[Omega-N-methylarginine on R], [Omega-N-methylarginine on R], [Omega-N-methylarginine on R]"
+88,TRAP1,0.0,
+89,AHCY,0.013616557734204794,"[N-acetylserine on S], [Hydroxylation on N], [Hydroxylation on N]"
+90,PKM,0.021588274635744385,"[Acetylation on K], [Acetylation on K], [Malonylation on K], [Citrullination on R], [Butyrylation on K], [Hydroxylation on P], [Hydroxylation on N], [N-acetylserine on S], [Phosphotyrosine on Y], [Acetylation on K], [Acetylation on K], [Malonylation on K], [Citrullination on R], [Butyrylation on K], [N6-succinyllysine on K], [Hydroxylation on P], [HexNAc on T], [Hydroxylation on N], [Hydroxylation on P]"
+91,PREB,0.0,
+92,MVD,0.005681818181818182,[N-acetylalanine on A]
+93,YBX1,0.007014590347923681,[Phosphoserine on S]
+94,MATR3,0.0,"[Phosphoserine on S], [Phosphoserine on S]"
+95,EPB41L2,0.0,
+96,EIF4G2,0.002345820920030965,[N-acetylmethionine on M]
+97,CAVIN1,0.005827505827505828,[N-acetylmethionine on M]
+98,PSMC1,0.0038520801232665635,[Acetylation on K]
+99,CDK4,0.0,
+100,AHNAK,0.01766622309916028,"[Phosphoserine on S], [Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Formylation on K], [Hydroxylation on P], [Hydroxylation on K], [Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Formylation on K], [Phosphoserine on S], [Methylation on K], [Formylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Formylation on K], [Nitrosylation on C], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Carboxylation on D], [Citrullination on R], [Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Formylation on K], [Phosphoserine on S], [Phosphothreonine on T], [Hydroxylation on P], [Hydroxylation on K], [Phosphoserine on S], [Formylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Formylation on K], [Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [HexNAc on S], [Hydroxylation on P], [Hydroxylation on P], [Phosphoserine on S], [Phosphoserine on S]"
+101,HNRNPU,0.011019283746556474,"[N-acetylserine on S], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P]"
+102,EXOC8,0.0,
+103,MARS,0.0,
+104,GPI,0.003895446223364887,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+105,AP2A1,0.002006944026331106,[Nitrosylation on C]
+106,COPE,0.0,
+107,MSN,0.0,
+108,UFM1,0.0,
+109,SSRP1,0.0,
+110,ATP6V1A,0.0,
+111,ACACA,0.001039652340257418,[N-acetylmethionine on M]
+112,CNDP2,0.003395585738539898,[N-acetylalanine on A]
+113,MAP2K2,0.00510204081632653,[Hydroxylation on P]
+114,CLTC,0.004893564962074872,"[N-acetylalanine on A], [Methylation on K], [Hydroxylation on N], [Acetylation on K], [Hydroxylation on P]"
+115,COMMD9,0.007652280379553107,[N-acetylalanine on A]
+116,ENO1,0.02179598953792502,"[Sulfonation on Y], [Hydroxylation on N], [Hydroxylation on P], [Methylation on K], [N6-acetyllysine on K], [Hydroxylation on P], [N6-acetyllysine on K]"
+117,COPA,0.0026449971494521603,"[Hydroxylation on P], [Hydroxylation on P]"
+118,RAE1,0.004605747973470892,[Acetylation on X]
+119,UGDH,0.0,
+120,GRHPR,0.0,
+121,FASN,0.005973715651135006,"[N-acetylmethionine on M], [HexNAc on T], [Acetylation on K], [Methylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K], [Phosphothreonine on T]"
+122,PLIN3,0.006776904310111141,"[Hydroxylation on N], [Phosphorylation on T]"
+123,RANBP2,0.0007754342431761787,[Asymmetric dimethylarginine on R]
+124,TNS1,0.0,
+125,DDX3X,0.002288748512313467,[N-acetylserine on S]
+126,ARPC2,0.0,
+127,RAVER1,0.0,"[N-acetylalanine on A], [Phosphorylation on T]"
+128,BLMH,0.004676174888940846,[Phosphorylation on Y]
+129,RPA2,0.0,
+130,SFPQ,0.008320159747067143,"[Asymmetric dimethylarginine on R], [Hydroxylation on P], [Omega-N-methylarginine on R]"
+131,ARPC4,0.008753501400560224,[N-acetylthreonine on T]
+132,PEBP1,0.013042911177774879,"[Hydroxylation on P], [Hydroxylation on P]"
+133,KPNA4,0.0,
+134,BCLAF1,0.021140713061543692,"[Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S]"
+135,CIAO2B,0.009295408068414203,[Acetylation on X]
+136,EIF2AK2,0.005185377236193933,[Phosphoserine on S]
+137,FSCN1,0.006650483822698101,"[N-acetylthreonine on T], [Hydroxylation on K]"
+138,CCT7,0.008371002846140967,"[N-acetylmethionine on M], [Hydroxylation on N], [Omega-N-methylarginine on R]"
+139,EIF2S3,0.0037169194171870353,[N-acetylalanine on A]
+140,HNRNPUL2,0.0065301857837855495,"[Phosphoserine on S], [Acetylation on K]"
+141,SMARCC1,0.0023815194093831865,[N-acetylalanine on A]
+142,ACO2,0.0,
+143,CTNNA1,0.0038060439978686153,"[Glu to PyroGlu on Q], [N-acetylthreonine on T]"
+144,UQCRC1,0.010416666666666666,"[Pyridoxal phosphate on K], [Hydroxylation on P], [Hydroxylation on P]"
+145,IGF2R,0.0,
+146,VIM,0.07408542816268138,"[Phosphorylation on S], [Citrullination on R], [Butyrylation on K], [Formylation on K], [Methylation on K], [Acetylation on K], [Hydroxylation on K], [Methylation on R], [Formylation on K], [N6-acetyllysine on K], [Crotonylation on K], [Butyrylation on K], [Carboxylation on E], [Phosphoserine on S], [Methylation on K], [Hydroxylation on K], [Formylation on K], [Hydroxylation on N], [Hydroxylation on K], [Acetylation on K], [Citrullination on R], [Hydroxylation on N], [Phosphorylation on Y], [Phosphorylation on S], [Hydroxylation on P], [Hydroxylation on N], [Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S]"
+147,MTOR,0.003566461000748957,"[N-acetylmethionine on M], [ADP-ribosylation on S]"
+148,RRM1,0.0,
+149,ACADVL,0.0,
+150,MSH2,0.0,
+151,ALDOA,0.009157509157509156,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+152,CIP2A,0.0,
+153,RPN1,0.0,
+154,RAB21,0.0103359173126615,[N-acetylalanine on A]
+155,AHCTF1,0.007355104442483083,"[Hydroxylation on P], [Phosphoserine on S], [Phosphoserine on S], [Hydroxylation on K]"
+156,ALDH7A1,0.0032548904729355855,"[Methylation on K], [Methylation on K], [Methylation on K]"
+157,RPLP0,0.0,
+158,LIMS1,0.007891414141414142,[Acetylation on X]
+159,FERMT2,0.00294811320754717,[Methylation on K]
+160,VDAC2,0.015631326320026055,"[N-acetylalanine on A], [Hydroxylation on N], [Phosphorylation on T], [Hydroxylation on N], [Phosphorylation on T]"
+161,ACTN4,0.003951319740793425,"[Hydroxylation on K], [Methylation on R], [Citrullination on R], [Phosphorylation on S], [Phosphorylation on S]"
+162,DNM1L,0.0044208007622209364,"[N-acetylmethionine on M], [Hydroxylation on N], [N-acetylmethionine on M], [Hydroxylation on N]"
+163,HCFC1,0.01332057582057582,"[Hydroxylation on N], [Hydroxylation on K], [Omega-N-methylarginine on R], [HexNAc on T], [HexNAc on T], [HexNAc on S], [HexNAc on S], [Omega-N-methylarginine on R], [N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on K], [Omega-N-methylarginine on R], [HexNAc on T], [HexNAc on T], [HexNAc on S], [HexNAc on S], [Omega-N-methylarginine on R]"
+164,SERBP1,0.021129141311697092,"[Phosphorylation on S], [Omega-N-methylarginine on R], [Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S]"
+165,LGALS1,0.052375607931163484,"[N-acetylalanine on A], [Hydroxylation on N], [Methylation on K], [Hydroxylation on P], [Methylation on K], [Hydroxylation on N], [Methylation on K]"
+166,MYL12A,0.026429680704310916,"[Hydroxylation on K], [Acetylation on K], [Hydroxylation on K], [Acetylation on K]"
+167,MYL12B,0.02642706131078224,"[Hydroxylation on K], [Acetylation on K]"
+168,MYL9,0.020764119601328904,"[Hydroxylation on K], [Acetylation on K]"
+169,RPS7,0.026661926768574477,"[Hydroxylation on P], [Methylation on K], [Acetylation on K]"
+170,ACTN1,0.00178903678259625,"[Hydroxylation on N], [Hydroxylation on K], [Hydroxylation on N]"
+171,PICALM,0.0,
+172,PPP1R13L,0.00309674222717701,[Dimethylation on R]
+174,POLA2,0.0,
+176,PRDX4,0.0,
+179,UNK,0.0,
+180,ATP2A2,0.0,
+181,CHMP4B,0.0,
+182,RPLP2,0.03260869565217391,"[Phosphorylation on S], [N6-acetyllysine on K], [Phosphoserine on S]"
+183,PLS1,0.0,
+184,SUCLG2,0.0,
+185,BCCIP,0.0,
+186,CCT2,0.007577671129072999,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on P]"
+187,CRMP1,0.0,
+188,TKT,0.007162804371843924,"[Hydroxylation on N], [Acetylation on K], [N-acetylmethionine on M], [Hydroxylation on N], [Acetylation on K]"
+189,PRKDC,0.0,
+190,SEC16A,0.0,
+191,RBBP4,0.011029411764705883,"[N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on K]"
+192,RPS3,0.015241579027587257,"[Hydroxylation on N], [Methylation on R], [Phosphorylation on T]"
+193,SPTAN1,0.0006651894683089972,"[Hydroxylation on N], [Hydroxylation on N]"
+194,RPN2,0.0,
+195,DPYSL2,0.004615952732644018,"[Dimethylation on K], [Phosphothreonine on T]"
+196,RARS,0.002405002405002405,[Malonylation on K]
+197,DCTN1,0.0017692852087756545,[Dimethylation on K]
+198,EDC4,0.0015861686097232135,[N-acetylalanine on A]
+199,MSH3,0.004397537379067722,[HexNAc on S]
+200,TTC37,0.0,
+201,TUBG1,0.0,
+202,APEX1,0.0238231370306842,"[Hydroxylation on P], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on K], [Methylation on R]"
+203,SOD1,0.008325008325008324,[Hydroxylation on N]
+204,MDH2,0.01305255830142708,"[Hydroxylation on P], [Acetylation on K], [Hydroxylation on P]"
+205,ANKRD17,0.004766316108594866,"[Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N]"
+206,PHGDH,0.003894285940430003,"[Hydroxylation on N], [Hydroxylation on N]"
+207,ARL8A,0.0,
+208,ARL8B,0.0,
+209,NOL10,0.0,
+210,RFC4,0.0,
+211,GSN,0.0,[Acetylation on X]
+212,SRRM1,0.024582104228121928,"[N-acetylmethionine on M], [Phosphothreonine on T], [Phosphoserine on S], [Phosphorylation on S]"
+213,CCT5,0.018333182227205643,"[Malonylation on K], [Malonylation on K], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Methylation on R], [N-acetylalanine on A], [Hydroxylation on N], [Malonylation on K], [Malonylation on K], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Methylation on R]"
+214,EEF1G,0.003690854063630324,[N-acetylalanine on A]
+215,KIAA2013,0.0,
+216,EIF4G1,0.0022234020267325122,"[Hydroxylation on P], [Hydroxylation on P], [Phosphoserine on S]"
+217,CTBP2,0.0,
+218,PTBP2,0.006277463904582548,[N-acetylmethionine on M]
+219,FEN1,0.004873294346978558,[Hydroxylation on P]
+220,CRYAB,0.03447161861984302,"[N-acetylmethionine on M], [Carboxylation on D], [Hydroxylation on P], [Citrullination on R], [N-acetylmethionine on M], [Carboxylation on D], [Hydroxylation on P], [Citrullination on R]"
+221,FLNC,0.006535126303883373,"[Hydroxylation on P], [Hydroxylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Phosphoserine on S], [Hydroxylation on P]"
+222,SPC24,0.0,
+223,ARPC1B,0.004978096375945838,[Acetylation on X]
+224,ARPC1A,0.004826254826254826,[Acetylation on X]
+225,GNB1,0.004743833017077799,[N-acetylserine on S]
+226,CAD,0.0013797555110143923,"[Phosphorylation on S], [N-acetylalanine on A], [Phosphorylation on S]"
+227,NASP,0.003965736040609137,"[N-acetylalanine on A], [Hydroxybutyrylation on K]"
+228,HECTD1,0.0020149927184087793,"[Hydroxylation on P], [Hydroxylation on P]"
+229,MYH9,0.00900360144057623,"[N-acetylalanine on A], [Hydroxylation on N], [N6-acetyllysine on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on N], [Acetylation on K]"
+230,HSP90B1,0.008442915338666443,"[Phosphorylation on S], [Hydroxylation on N], [Hydroxylation on K], [Hydroxylation on K]"
+231,MYH10,0.0032302523903867688,"[Hydroxylation on N], [N6-acetyllysine on K], [Hydroxylation on P]"
+232,RPL8,0.006176270767710456,[(3S)-3-hydroxyhistidine on H]
+233,EPB41L3,0.00226220920769926,"[Phosphorylation on S], [Phosphorylation on T]"
+234,RRP12,0.0,
+235,USP9X,0.0,
+236,MAP1A,0.0010886117136724984,"[Phosphorylation on S], [Phosphorylation on S]"
+237,HP1BP3,0.0043055196762249205,[N-acetylalanine on A]
+239,U2AF1,0.010683760683760684,[N-acetylalanine on A]
+240,PPIA,0.0487634970393591,"[Hydroxylation on P], [Methylation on R], [Hydroxylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on K]"
+241,H2AFY,0.0,
+242,EIF3I,0.0,
+243,SF1,0.016378907374432886,"[HexNAc on S], [N-acetylalanine on A], [Hydroxylation on N], [HexNAc on S]"
+244,ATP5PO,0.0,
+245,GART,0.0,
+246,MSH6,0.0016339869281045752,[Phosphoserine on S]
+247,IQGAP1,0.0009579369869050013,[N-acetylserine on S]
+248,UBR5,0.0017012878749213156,[N-acetylthreonine on T]
+249,PTGES3,0.05810577208762121,"[Hydroxylation on P], [Acetylation on K], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on N], [Hydroxylation on N]"
+250,NUP88,0.0038557933294775396,[N-acetylalanine on A]
+251,NUBP2,0.009710623422023694,[N-acetylmethionine on M]
+254,CNN1,0.0,
+255,CSTF2,0.006523676291236695,"[Hydroxylation on P], [Dimethylation on R]"
+256,ACAT2,0.00484402247626429,[N-acetylmethionine on M]
+257,HIP1R,0.0,
+258,BRAT1,0.002388287836450049,[Acetylation on X]
+259,UBA1,0.0017503325631870053,[Hydroxylation on N]
+260,PLS3,0.0030558635035562347,"[Hydroxylation on P], [Hydroxylation on P]"
+261,ASNS,0.0,
+262,FKBP4,0.0,
+263,TUBB6,0.03736920777279522,"[Citrullination on R], [Carboxylation on D], [Hydroxylation on N], [Hydroxylation on N], [Carboxylation on K], [Citrullination on R], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K], [ADP-ribosylation on S], [Hydroxylation on N]"
+264,RTN4,0.0018237525532535743,[N-acetylmethionine on M]
+265,ERBIN,0.002442121715346293,[Hydroxylation on K]
+266,EIF5A2,0.015875806281894486,"[Hydroxylation on P], [Hydroxylation on P]"
+267,EIF5A,0.011439029970258523,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+268,PYGL,0.0,
+269,WASHC4,0.0,
+270,ATG7,0.0,
+271,UBAP2,0.0,
+272,NPM3,0.011953143676786996,[N-acetylalanine on A]
+273,IDH1,0.0,
+274,CCT3,0.0056457304163726185,"[Phosphoserine on S], [Hydroxylation on P]"
+275,KIF5B,0.0032450674974039456,"[N-acetylalanine on A], [Acetylation on K]"
+276,CCT4,0.019789734075448363,"[Omega-N-methylarginine on R], [Methylation on K], [Hydroxylation on N], [N6-acetyllysine on K], [Methylation on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R]"
+277,UBQLN1,0.0,
+278,ERC1,0.002353834855957097,"[Malonylation on K], [Malonylation on K]"
+279,EZR,0.0,
+280,GLS,0.0037369207772795215,[Sulfonation on Y]
+281,NCAPH,0.0,
+282,STAT3,0.004995004995004995,"[N-acetylalanine on A], [Hydroxylation on N]"
+283,PRKAG2,0.0,
+284,ST13,0.008468834688346884,[Hydroxylation on K]
+285,TOP1,0.006079951360389117,"[N-acetylserine on S], [N6-acetyllysine on K]"
+286,ANXA1,0.011716919231370098,"[N-acetylalanine on A], [Hydroxylation on N], [Methylation on K]"
+287,PLEKHA5,0.004266939750810718,[N-acetylalanine on A]
+288,SF3B3,0.0,
+289,TNS3,0.0028835063437139563,[Acetylation on X]
+290,TOMM70,0.002569901315789474,[Omega-N-methylarginine on R]
+291,CDKN2AIPNL,0.021026072329688814,[N-acetylmethionine on M]
+292,CSDE1,0.0,
+293,SMC3,0.0034965646252556864,"[N6-acetyllysine on K], [N6-acetyllysine on K]"
+294,GGA2,0.008585901948999743,[Acetylation on X]
+295,DHX9,0.0,
+296,OLA1,0.0035458807854209674,"[Hydroxylation on K], [Hydroxylation on K]"
+297,UBA2,0.0,
+298,HSP90AA1,0.02276867030965392,"[Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Acetylation on K], [Formylation on K], [Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K]"
+299,HSP90AB1,0.03187420314492138,"[Phosphorylation on S], [Hydroxylation on N], [Acetylation on K], [Glutarylation on K], [Hydroxylation on N], [Methylation on R], [Dimethylation on K], [Phosphoserine on S], [Hydroxylation on N], [ADP-ribosylation on S], [Methylation on R], [Nitrosylation on Y], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K]"
+301,DNAAF5,0.007309941520467836,"[N-acetylalanine on A], [Hydroxylation on P]"
+302,CTNND1,0.0,
+303,EHD1,0.0026375481352534686,[N-acetylmethionine on M]
+304,NCL,0.011737089201877934,"[Phosphoserine on S], [N6-acetyllysine on K], [Acetylation on K], [Hydroxylation on N]"
+305,ADK,0.0,
+306,GOT1,0.010377032168799722,"[Acetylation on X], [Hydroxylation on P], [Hydroxylation on N]"
+307,HNRNPM,0.003755148470203919,"[Hydroxylation on P], [N-acetylalanine on A], [Hydroxylation on P]"
+308,ALCAM,0.0,
+309,RACK1,0.022445663343291622,"[Hydroxylation on N], [Hydroxylation on N], [Phosphorylation on T], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N], [Nitrosylation on Y], [Carboxylation on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Methylation on R], [Hydroxylation on N], [Hydroxylation on N], [N-acetylthreonine on T], [N-acetylmethionine on M], [Formylation on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Methylation on R], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Methylation on R]"
+310,PDIA4,0.0030399756801945585,[Hydroxylation on P]
+311,GNAS,0.0059024908511391815,"[Phosphorylation on T], [Phosphorylation on T]"
+312,EEF2,0.023003312476996687,"[Acetylation on X], [Nitrosylation on Y], [Phosphorylation on Y], [Phosphorylation on S], [Hydroxylation on P], [Hydroxylation on P], [Diphthamide on H], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K]"
+313,TIMM50,0.0,
+315,PSMC3,0.010513404590853337,"[N-acetylmethionine on M], [Acetylation on K], [Hydroxylation on N]"
+316,BLVRB,0.016181229773462785,"[Hydroxylation on P], [Hydroxylation on P]"
+317,UPF1,0.0,
+318,TARDBP,0.022644927536231887,"[Hydroxylation on P], [Hydroxylation on N], [Butyrylation on K]"
+320,STAM,0.007122507122507123,[Hydroxylation on P]
+321,CKAP4,0.0,
+322,THOP1,0.0,
+323,DYNC1H1,0.0,
+324,UGGT1,0.0,
+325,HNRNPA0,0.0,
+326,RPA1,0.003121878121878122,[N-acetylmethionine on M]
+327,PAGE2B,0.0,
+328,PAGE2,0.0,
+329,KRT18,0.008159934720522236,"[Hydroxylation on P], [Citrullination on R]"
+330,NPLOC4,0.0032249742002063986,"[N-acetylalanine on A], [Acetylation on K]"
+331,DLAT,0.0,
+332,ANKFY1,0.0053464499572284,[Hydroxylation on N]
+333,CACYBP,0.011695906432748537,"[N-acetylalanine on A], [Acetylation on K]"
+334,DBN1,0.007516253899056711,"[N-acetylalanine on A], [Phosphoserine on S]"
+335,NAPA,0.0,
+336,ENO2,0.008084727948904519,"[Hydroxylation on P], [Hydroxylation on P]"
+337,UMPS,0.0,
+338,GNPDA2,0.0,
+339,NUMA1,0.0,
+340,GOT2,0.003370407819346141,[N6-succinyllysine on K]
+341,SLC25A4,0.012428535918468805,"[N-acetylglycine on G], [N6,N6,N6-trimethyllysine on K]"
+343,ABCD3,0.0,
+344,VAT1,0.005089058524173028,[Nitrosylation on C]
+345,FUBP3,0.0030142271521581866,[N-acetylalanine on A]
+346,NECAP1,0.009259259259259259,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+347,LMNA,0.009387452473966908,"[Acetylation on K], [Citrullination on R], [Formylation on K], [Methylation on K], [Acetylation on K], [Citrullination on R], [Formylation on K], [Phosphorylation on S]"
+348,TNPO3,0.004012680069018097,[N-acetylmethionine on M]
+349,AK2,0.0,
+350,PDLIM4,0.00946969696969697,"[Phosphorylation on S], [Dimethylation on K]"
+351,HNRNPH3,0.017341040462427744,"[Hydroxylation on N], [Hydroxylation on P], [Omega-N-methylarginine on R]"
+352,MAP4,0.005419603335063257,"[Phosphorylation on S], [Phosphothreonine on T], [Phosphoserine on S], [Phosphoserine on S], [N-acetylalanine on A], [Phosphorylation on S], [Phosphothreonine on T], [Phosphoserine on S], [Phosphoserine on S]"
+353,CPSF3,0.0034809245335561127,[N-acetylserine on S]
+354,ACTG1,0.16345210853220007,"[N-acetylglutamate on E], [Hydroxylation on K], [Acetylation on K], [Nitrosylation on Y], [Hydroxylation on P], [Carboxylation on E], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [Hydroxylation on K], [N6-methyllysine on K], [Formylation on K], [Butyrylation on K], [Hydroxybutyrylation on K], [Acetylation on K], [Dimethylation on K], [Succinylation on K], [Crotonylation on K], [Hydroxylation on P], [Hydroxylation on P]"
+355,SEC23B,0.0028972910328842532,[N-acetylalanine on A]
+356,EIF1B,0.013614703880190605,[N-acetylserine on S]
+357,EIF1,0.011492931846914148,[N-acetylserine on S]
+358,WDR61,0.005752085130859937,[N-acetylmethionine on M]
+359,SDF2,0.0,
+360,BICD2,0.004494786048184107,[N-acetylserine on S]
+361,CLIC4,0.022586109542631284,"[N-acetylalanine on A], [Hydroxylation on P], [Formylation on K], [Hydroxylation on N]"
+362,VCP,0.023263027295285357,"[N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [N6,N6,N6-trimethyllysine on K], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P]"
+364,MAPK1,0.006172839506172839,[N-acetylalanine on A]
+365,LONP1,0.0,
+367,UBA5,0.0,
+368,PRPSAP2,0.0,
+369,GDI2,0.0056179775280898875,"[Acetylation on K], [Methylation on K]"
+370,RAB14,0.005672149744753261,[N-acetylalanine on A]
+371,NES,0.007173292397744717,"[Phosphorylation on S], [ADP-ribosylation on S], [Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S]"
+372,IFITM3,0.025062656641604012,[Acetylation on X]
+373,GTF3C1,0.0,
+374,PTPN23,0.0,
+375,ARHGEF2,0.005512312376795352,"[Phosphorylation on S], [Nitrosylation on Y], [Phosphorylation on S], [Nitrosylation on Y]"
+376,DNAJA1,0.009505251651537474,"[Hydroxylation on N], [Hydroxylation on P]"
+377,EIF3B,0.008011964533703664,"[N-acetylmethionine on M], [Hydroxylation on N], [Hydroxylation on K]"
+378,VPS18,0.0,
+379,ASAH1,0.0,
+380,U2AF2,0.00935672514619883,"[Hydroxylation on P], [Hydroxylation on P]"
+381,PRKCSH,0.015356265356265355,"[ADP-ribosylation on S], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K]"
+382,EIF5B,0.0,
+383,STAT1,0.0026666666666666666,[N-acetylserine on S]
+384,UBA6,0.0,
+385,SORD,0.015278838808250574,"[N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on P]"
+386,PSMC2,0.006415191172696947,"[Hydroxylation on P], [Hydroxylation on K]"
+387,MKI67,0.0038390663390663387,"[Phosphoserine on S], [Phosphothreonine on T], [ADP-ribosylation on S], [Phosphothreonine on T], [ADP-ribosylation on S]"
+388,SDHA,0.0,
+390,IMPA1,0.014157287463721949,"[Hydroxylation on N], [Hydroxylation on P]"
+391,PSMD8,0.005712000913920146,[Acetylation on X]
+392,GMPS,0.0,
+393,CAPN2,0.00974025974025974,"[Hydroxylation on P], [Acetylation on K], [Formylation on K]"
+394,RTCB,0.0033003300330033004,[Hydroxylation on N]
+395,RCN1,0.0,
+396,RPSA,0.01753873286371979,"[N-acetylserine on S], [Hydroxylation on P], [Hydroxylation on P], [N-acetylserine on S], [Hydroxylation on P], [Hydroxylation on P]"
+397,TP53I3,0.005905976848570754,[N-acetylmethionine on M]
+398,EPHA2,0.0026962899050905955,[Hydroxylation on P]
+399,USP5,0.007946598855689765,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on K]"
+400,KHDRBS1,0.016123831022250887,"[Hydroxylation on K], [Hydroxylation on N]"
+401,PDIA3,0.0,
+402,PSMB4,0.0,
+403,CTPS1,0.0025637081474644925,[Phosphorylation on S]
+404,EIF6,0.013836042891732963,"[Hydroxylation on N], [Hydroxylation on N]"
+405,CAPRIN1,0.0,
+406,ALDOC,0.011944577161968466,[Hydroxylation on P]
+407,DLG1,0.002734332276058186,[Nitrosylation on C]
+408,EIF3K,0.011188185276348177,[N-acetylalanine on A]
+409,HYOU1,0.0010880445663054357,[Hydroxylation on P]
+410,HMGCS1,0.0,
+411,UGP2,0.003685141509433962,[Acetylation on X]
+412,NLN,0.0,
+413,VTA1,0.009580379383023568,[N-acetylalanine on A]
+414,ERP44,0.005240540823813018,[HexNAc on S]
+415,ACLY,0.005449591280653951,"[Hydroxylation on P], [Hydroxylation on N], [Phosphothreonine on T]"
+417,UBE2L3,0.012487512487512488,[Methylation on R]
+418,VPS33B,0.004911350130150778,[N-acetylalanine on A]
+419,BTF3L4,0.0,
+420,PSMA4,0.0035875726483461288,[Phosphorylation on T]
+421,PRDX6,0.022321428571428572,"[Acetylation on X], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K]"
+422,APRT,0.00992063492063492,[N-acetylalanine on A]
+423,MVP,0.0019645979450305497,[N-acetylalanine on A]
+424,TXNL1,0.0057670126874279125,[Acetylation on X]
+425,SAE1,0.0,
+426,SMC1A,0.0,
+427,RPS12,0.010237510237510237,[N-acetylalanine on A]
+428,AHSA1,0.0038928682653379012,[Succinylation on K]
+429,TUFM,0.010880603510808065,"[Hydroxylation on K], [N6-acetyllysine on K], [Hydroxylation on P]"
+430,HSPH1,0.012361375997739635,"[N-acetylserine on S], [Hydroxylation on N], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Phosphoserine on S]"
+431,TPI1,0.035407630344339205,"[Succinylation on K], [Phosphoserine on S], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on P], [N6-acetyllysine on K]"
+432,PGK1,0.02425026271117937,"[Hydroxylation on N], [Hydroxylation on P], [Phosphoserine on S], [Hydroxylation on N], [Hydroxylation on K], [Acetylation on K], [N6-acetyllysine on K], [Hydroxylation on N], [Hydroxylation on P]"
+434,ARF4,0.010541851149061775,[Hydroxylation on N]
+435,ARF3,0.0254993625159371,"[Hydroxylation on P], [Methylation on K], [Methylation on K]"
+436,ARF1,0.033999150021249466,"[N-acetylglycine on G], [Hydroxylation on P], [Methylation on K], [Methylation on K]"
+437,ARF5,0.01763668430335097,"[Hydroxylation on P], [Methylation on K]"
+438,SQSTM1,0.005681818181818182,[Phosphorylation on S]
+439,NPM1,0.059187782402068116,"[Butyrylation on K], [Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on P], [Methylation on K], [Hydroxylation on P], [Methylation on R], [Phosphoserine on S], [N6-acetyllysine on K], [Hydroxylation on P], [Methylation on R]"
+440,TUBA3C,0.05405405405405406,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Methylation on R]"
+441,TUBA3D,0.05405405405405406,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Methylation on R]"
+442,TUBA1B,0.05872523021913266,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Methylation on R], [Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Pyridoxal phosphate on K], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P]"
+443,TUBA4A,0.04185267857142857,"[Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on P], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Methylation on R]"
+444,TUBA3E,0.05555555555555555,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K]"
+445,TUBA1C,0.06072874493927125,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P], [Methylation on K], [Hydroxylation on P], [Hydroxylation on K]"
+446,TXNRD1,0.0,
+447,ELP1,0.0,
+448,PUF60,0.0034048348655090228,[Hydroxylation on N]
+449,SPR,0.0,
+450,PARK7,0.017184008974341036,"[Cysteine sulfinic acid (-SO2H) on C], [Hydroxylation on P], [Hydroxylation on P], [Cysteine sulfinic acid (-SO2H) on C], [Hydroxylation on P]"
+451,DYNLL1,0.0,
+452,KTN1,0.0013398539559188048,[Phosphorylation on S]
+453,HBS1L,0.0,
+454,G6PD,0.011697274535033338,"[N-acetylalanine on A], [Methylation on K], [Hydroxylation on P], [Hydroxylation on N], [Methylation on R]"
+455,IQGAP3,0.0,
+456,GPD2,0.0,
+457,DPYSL3,0.0,
+458,NONO,0.0,
+459,MTHFD1L,0.0,
+460,HUWE1,0.0007620789513793629,[Phosphorylation on S]
+461,POR,0.0,
+462,HSPA4,0.0053304904051172716,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N]"
+463,MAT2A,0.0,
+464,SET,0.0,
+465,ATP5F1A,0.0031724881824815206,[Phosphoserine on S]
+466,PDCD11,0.0015719810104693937,[N-acetylalanine on A]
+467,NUP214,0.0023923444976076554,[HexNAc on S]
+468,TBL3,0.0,
+469,GCN1,0.0024959440908523646,"[N-acetylalanine on A], [Methylation on R], [Nitrosylation on C]"
+470,ANXA2,0.03687315634218289,"[N-acetylserine on S], [Butyrylation on K], [Phosphorylation on S], [Butyrylation on K], [Methylation on K], [Acetylation on K], [Dimethylation on K], [Trimethylation on K], [Methylation on R], [Hydroxylation on P], [Methylation on R]"
+471,RAB11B,0.0,
+472,PRDX2,0.0,
+473,AAAS,0.00666000666000666,"[N-acetylcysteine on C], [Acetylation on K]"
+474,MGME1,0.0,
+475,NDRG3,0.006201550387596899,[N-acetylmethionine on M]
+476,ECPAS,0.0,
+477,SLC35F2,0.012153621779290228,[N-acetylmethionine on M]
+478,GID8,0.007433838834374071,[Acetylation on X]
+479,GDI1,0.009069472156720479,"[Acetylation on K], [Methylation on K], [Methylation on K]"
+480,COL1A1,0.027004701995170924,"[Citrullination on R], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [3-hydroxyproline on P], [4-hydroxyproline on P], [4-hydroxyproline on P], [Hydroxylation on K]"
+481,PPA1,0.00865051903114187,"[Hydroxylation on N], [Hydroxylation on P]"
+482,RBM39,0.0,
+483,DDX1,0.0,
+484,HSPA5,0.021090372245070127,"[Hydroxylation on N], [Hydroxylation on P], [Nitrosylation on Y], [Methylation on K], [Hydroxylation on K], [Methylation on K], [N6,N6,N6-trimethyllysine on K], [N6,N6-dimethyllysine on K]"
+485,TOR1AIP1,0.004919323101141283,"[HexNAc on S], [HexNAc on S], [HexNAc on S]"
+486,TRIO,0.0,
+487,PPP2CB,0.005779010633379566,[Hydroxylation on N]
+488,PPP2CA,0.0,
+489,LDHB,0.0,
+490,CD2AP,0.005905453686479463,"[Phosphoserine on S], [Phosphoserine on S]"
+491,AK1,0.0,
+492,KPNA2,0.0,
+493,GNS,0.006967670011148271,[HexNAc on Nxs]
+494,LTA4H,0.0,
+495,POLR1A,0.0,
+496,DDX6,0.0,
+497,ARL3,0.0,
+498,SNRPD1,0.0,
+499,PAFAH1B2,0.01898614011771407,"[N-acetylserine on S], [Hydroxylation on P]"
+500,ADSL,0.0035622684525505838,[N-acetylalanine on A]
+501,TP53BP1,0.006338742393509129,"[Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on T]"
+502,NLE1,0.0,
+503,CSTF3,0.0036702635249210897,[N-acetylserine on S]
+504,NUP62,0.014736221632773357,"[N-acetylserine on S], [Hydroxylation on N]"
+505,TWF2,0.004276611213274601,[N-acetylalanine on A]
+506,PARP1,0.0016715140574332231,[Trimethylation on K]
+507,SNRPD3,0.014974543276430068,[N-acetylserine on S]
+508,ME2,0.0,
+509,PRPF4,0.0,
+510,ZFR,0.002660281989890929,[Phosphoserine on S]
+511,BAIAP2L1,0.004348771472059144,[Phosphorylation on S]
+512,GFPT1,0.0,
+513,SRRT,0.013430029546065002,"[Phosphorylation on S], [Phosphorylation on T], [Hydroxylation on K], [Hydroxylation on K]"
+514,FXR1,0.003160209064295527,"[Methylation on K], [Methylation on K]"
+515,HACD3,0.01841620626151013,"[N-acetylmethionine on M], [Acetylation on K]"
+516,YTHDF3,0.00949667616334283,"[N-acetylserine on S], [HexNAc on T]"
+518,HNRNPUL1,0.0,
+519,CTNNAL1,0.0,
+520,IRF2BP2,0.0,
+521,AP1B1,0.0024505599529492487,[Carboxylation on E]
+522,SMG8,0.0,
+523,NUP160,0.0024549516374527424,[Phosphorylation on S]
+524,EPS15,0.0030164092664092665,[N-acetylalanine on A]
+525,GANAB,0.003923414940364093,"[Hydroxylation on N], [Citrullination on R]"
+526,GTPBP4,0.0,
+527,SDF2L1,0.010283833813245578,[Methylation on K]
+528,HEATR1,0.0013718173836698858,[N-acetylmethionine on M]
+529,RBM14,0.0035589721688376393,[Phosphothreonine on T]
+530,PCMT1,0.0,
+531,SNRPA,0.008246742536698003,[N-acetylalanine on A]
+532,ACO1,0.0025564986194907455,[Acetylation on X]
+533,APMAP,0.004217273954116059,[HexNAc on Nxt]
+534,USP13,0.0,
+535,CBR1,0.005084659582040982,[N-acetylserine on S]
+536,ERCC6L,0.0,
+537,PCBP1,0.003555681979803726,[N-acetylmethionine on M]
+538,TAGLN2,0.02512562814070352,"[Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on P], [Phosphorylation on S]"
+539,SMC2,0.0,
+540,HIST1H2AB,0.18315018315018314,"[N5-methylglutamine on Q], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Formylation on K], [Glutarylation on K], [Acetylation on K], [Trimethylation on K], [N6-crotonyllysine on K], [Formylation on K]"
+542,HIST2H2AC,0.12112403100775193,"[N5-methylglutamine on Q], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Formylation on K], [Glutarylation on K], [Acetylation on K], [Trimethylation on K], [N6-crotonyllysine on K], [Formylation on K]"
+544,SNX3,0.0102880658436214,[Omega-N-methylarginine on R]
+545,DDX18,0.0029850746268656717,[Phosphorylation on T]
+546,DLGAP5,0.0,
+547,EIF3A,0.0,
+548,EEF1B2,0.03418803418803419,"[Acetylation on X], [Nitrosylation on Y], [Methylation on K], [Hydroxylation on K], [Hydroxylation on P]"
+549,TRIM28,0.0019009599847923202,[N-acetylalanine on A]
+550,DNAJA3,0.0,
+551,PPP2R5D,0.0,
+552,TPT1,0.009228497600590625,"[Acetylation on K], [Acetylation on K], [Acetylation on K]"
+553,AGPS,0.0,
+554,MYO5B,0.006012506012506013,[Nitrosylation on Y]
+555,EEF1E1,0.011973180076628353,[N-acetylalanine on A]
+556,QTRT1,0.006706458319361544,[N-acetylalanine on A]
+557,LMO7,0.0,
+558,CCAR2,0.0029281719422564493,[Phosphoserine on S]
+559,CAPZA2,0.005463286713286714,[N-acetylalanine on A]
+560,CSNK2A1,0.0,
+561,DCTN4,0.006587615283267457,[N-acetylalanine on A]
+562,CPPED1,0.0075826508947528055,[Acetylation on X]
+563,PXN,0.009432182607055273,"[Phosphorylation on S], [Phosphorylation on S]"
+564,LMAN1,0.004001600640256103,[Hydroxylation on P]
+565,PABPN1,0.04084967320261438,"[N-acetylalanine on A], [Omega-N-methylarginine on R], [Dimethylation on R], [Omega-N-methylarginine on R], [Asymmetric dimethylarginine on R]"
+566,AP3B1,0.0,
+567,CDC5L,0.0,
+568,NPEPPS,0.0,
+569,FANCA,0.009818360333824251,[Phosphorylation on T]
+570,GPS1,0.006132711885195634,"[Butyrylation on K], [Butyrylation on K], [Butyrylation on K], [Butyrylation on K], [Butyrylation on K]"
+571,TOMM40,0.005771006463527239,[Hydroxylation on P]
+572,UFD1,0.005089576547231271,[N-acetylmethionine on M]
+573,GRSF1,0.004734848484848485,"[Phosphoserine on S], [Phosphoserine on S], [Citrullination on R], [Phosphoserine on S]"
+574,G3BP1,0.011099600414385083,"[Acetylation on X], [Phosphorylation on S], [Dimethylated arginine on R]"
+575,MAGEB2,0.0,
+576,FRYL,0.001659475605708596,[N-acetylserine on S]
+577,IMMT,0.0,
+578,TUBB3,0.026143790849673203,"[Nitrosylation on Y], [Hydroxylation on P], [Nitrosylation on Y], [Methylation on R], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K]"
+579,RPL3,0.0,
+580,AP2B1,0.0,
+581,PGM1,0.0,
+582,CTTN,0.007736943907156673,"[Phosphorylation on S], [Phosphorylation on S]"
+583,ALKBH4,0.03679175864606328,[Hydroxylation on P]
+584,PPIH,0.00649392817715436,[N-acetylalanine on A]
+585,USP11,0.003105590062111801,[Acetylation on X]
+586,DLST,0.0,
+587,IMPDH2,0.0,
+588,POTEE,0.020671834625323,"[Methylation on K], [Methylation on K], [Nitrosylation on Y], [Hydroxylation on P]"
+589,NECTIN2,0.006638343069569836,[Phosphorylation on S]
+590,AARS,0.007003782042302844,"[N-acetylmethionine on M], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K]"
+591,PSMA2,0.0,
+592,NUDC,0.0,
+593,ILVBL,0.00491431256858472,"[Methylation on K], [Methylation on K]"
+594,NOMO1,0.0,
+597,DDX47,0.008140008140008141,"[N-acetylalanine on A], [Phosphorylation on S]"
+598,STK26,0.006163708086785009,[N-acetylalanine on A]
+599,ERP29,0.0073681108163866785,[Hydroxylation on P]
+600,SON,0.005888587916617595,"[N-acetylalanine on A], [HexNAc on S], [N6-acetyllysine on K]"
+601,PFDN5,0.023470505398216244,"[N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on P]"
+602,CSNK2A2,0.0,
+604,GPKOW,0.004201680672268907,[Acetylation on K]
+606,STK24,0.006223549912870301,[Acetylation on X]
+607,SMARCC2,0.0,
+608,RANGAP1,0.0029887324785558447,[Acetylation on K]
+609,PRKAB1,0.007122507122507123,[Phosphoserine on S]
+610,RPS27A,0.08361204013377926,"[Phosphorylation on T], [Phosphorylation on T], [Glutarylation on K], [Phosphorylation on T], [Phosphorylation on T], [Hydroxylation on P], [Methylation on K], [Acetylation on K], [Glutarylation on K]"
+611,UBA52,0.06865816223832528,"[Phosphorylation on T], [Phosphorylation on T], [Glutarylation on K], [Phosphorylation on T], [Phosphorylation on T], [Hydroxylation on P], [Methylation on K], [Acetylation on K], [Glutarylation on K], [Glutarylation on K]"
+612,GON7,0.025877643132806355,"[Trimethylation on K], [N-acetylmethionine on M]"
+613,TRIM56,0.006971070059254096,[Acetylation on X]
+614,ABCE1,0.0,
+615,SND1,0.0016906170752324597,[N-acetylalanine on A]
+616,LBR,0.0,
+617,TCP1,0.0,
+618,ARVCF,0.0,
+619,NUTF2,0.010498687664041995,[Trimethylation on K]
+620,KPNB1,0.004506128334534967,"[N-acetylmethionine on M], [Hydroxylation on N], [Dimethylation on R]"
+621,ANXA6,0.0025618691397243432,"[Hydroxylation on K], [Hydroxylation on K]"
+622,PSMD3,0.0034048348655090228,[Citrullination on R]
+623,PDXP,0.007344300822561692,[Phosphorylation on S]
+624,SF3B1,0.0,
+625,TCOF1,0.00292192613370734,[Phosphoserine on S]
+626,ATP6V1B2,0.003993769719237989,[Hydroxylation on P]
+627,ZNF185,0.003819417920708884,[Phosphorylation on S]
+628,TUBA8,0.0436852964980959,"[Phosphorylation on T], [Methylation on R], [Dimethylation on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on K], [Methylation on R], [Phosphorylation on T], [Methylation on R], [Dimethylation on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on K], [Methylation on R]"
+629,MRPL28,0.0,
+630,PSMD1,0.0023318176518596244,[Citrullination on R]
+631,NAGK,0.005191029900332226,[N-acetylalanine on A]
+632,RBM42,0.00744047619047619,[N-acetylalanine on A]
+634,ALKBH8,0.0,
+635,TOMM22,0.011936022917164,[N-acetylalanine on A]
+636,LEMD3,0.005227118289686895,[N-acetylalanine on A]
+637,CYC1,0.0,
+638,PRDX3,0.0,
+639,MAGEA4,0.0,
+640,XPO5,0.004614248800295312,"[N-acetylalanine on A], [Hydroxylation on P]"
+641,SRP72,0.0030414550320873503,[N-acetylalanine on A]
+642,RPS21,0.03346720214190094,"[N-acetylmethionine on M], [Nitrosylation on C]"
+643,KLC1,0.0,[Phosphorylation on S]
+644,KLC2,0.0030917635419243136,[Phosphoserine on S]
+645,NECAP2,0.009749439407234085,[Acetylation on X]
+646,SBDS,0.008333333333333333,[N-acetylserine on S]
+647,MAEA,0.0,
+648,DDB1,0.001906941266209001,[Acetylation on K]
+649,NDUFA10,0.0,
+650,PPP1R7,0.004873294346978558,[Hydroxybutyrylation on K]
+651,UFL1,0.004062728528479727,[N-acetylalanine on A]
+652,LRPPRC,0.0025170530343074328,"[Hydroxylation on P], [Hydroxylation on P]"
+653,MCCC2,0.004130695196001487,[Hydroxylation on K]
+654,LRP1,0.0,
+655,CYB5B,0.015503875968992248,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+656,SYMPK,0.0,
+657,PDLIM5,0.005992329817833174,[N-acetylserine on S]
+658,PSMA5,0.007154099298898269,[Phosphoserine on S]
+659,TPP2,0.002163893276783589,[N-acetylalanine on A]
+660,ATIC,0.0022522522522522522,[N-acetylmethionine on M]
+661,HNRNPK,0.029169641551178738,"[Methylation on R], [Hydroxylation on P], [Methylation on K], [Acetylation on K], [Omega-N-methylarginine on R], [Phosphorylation on S], [Hydroxylation on N], [Acetylation on K], [Methylation on R], [Hydroxylation on P], [Methylation on K], [Acetylation on K], [Phosphorylation on S]"
+662,PEA15,0.038461538461538464,"[Hydroxylation on K], [Acetylation on K], [Phosphoserine on S]"
+663,OAT,0.0,
+665,POLD1,0.0,
+666,PSMA7,0.0,
+668,PPP2R1A,0.014892919905876746,"[Acetylation on K], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P]"
+669,NARS,0.0,
+670,EPRS,0.0045612114577631814,"[Acetylation on X], [Hydroxylation on K], [Hydroxylation on P], [Hydroxylation on N]"
+671,CAPZA1,0.0,
+672,HNRNPR,0.00734780851611007,"[Hydroxylation on N], [Methylation on R]"
+673,TBCE,0.003450060376056581,[N-acetylserine on S]
+674,GBE1,0.003165558721114277,[Formylation on K]
+675,RCC2,0.0,
+677,TBL1XR1,0.004988526389304599,[N-acetylserine on S]
+678,DCTN2,0.005305884225606197,[Hydroxylation on N]
+679,DDX21,0.006841817186644773,"[Phosphoserine on S], [Phosphoserine on S], [Hydroxylation on P]"
+680,HK1,0.004451071595486613,"[Methylation on K], [Phosphorylation on S]"
+681,FLII,0.0020737422753100243,[N-acetylmethionine on M]
+682,NUP35,0.006014675808973896,[Acetylation on X]
+683,ACAA2,0.0,
+684,AHNAK2,0.002809157854606016,"[Phosphorylation on S], [Phosphorylation on S], [Hydroxylation on P], [Methylation on K], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+685,MLH1,0.004133597883597884,[N-acetylserine on S]
+686,PFKP,0.0,
+687,LIMA1,0.007984988222142372,"[Phosphorylation on T], [Phosphorylation on S]"
+688,WDR33,0.003939489442168295,[Phosphorylation on S]
+689,ASS1,0.010328444536252842,"[Dimethylation on K], [Phosphothreonine on T]"
+690,ELAVL1,0.006390593047034765,[N-acetylserine on S]
+692,PDHA1,0.019194393182520544,"[Phosphoserine on S], [Phosphorylation on S], [Phosphorylation on S]"
+693,SFXN3,0.010742292405199269,"[Acetylation on X], [N-acetylmethionine on M], [Acetylation on X], [N-acetylmethionine on M]"
+694,HNRNPH1,0.013919821826280623,"[N-acetylmethionine on M], [N-acetylmethionine on M], [Hydroxylation on N]"
+695,POLA1,0.0,
+696,SART1,0.007142857142857143,"[Acetylation on K], [Phosphoserine on S]"
+697,UAP1,0.0,
+698,ETF1,0.0,
+699,PPP1R8,0.007305135510263716,[Acetylation on X]
+700,SEC31A,0.0021587328695912753,"[Phosphorylation on S], [Phosphorylation on S]"
+701,KIF22,0.004850836769342712,[Citrullination on R]
+702,UTP15,0.004196743327178109,[N-acetylalanine on A]
+703,PFAS,0.0,
+704,NSUN2,0.0,
+705,KARS,0.0029911462072266092,[N-acetylalanine on A]
+706,FTSJ3,0.004216562658121099,[Methylation on R]
+707,DLD,0.0,
+708,XPNPEP1,0.0,
+709,ARID1A,0.0025743338911056765,[N-acetylalanine on A]
+710,SMCHD1,0.0013479813978567094,[Methylation on R]
+711,OSBPL10,0.0,
+713,CAP2,0.0,
+714,P3H3,0.0,
+715,LRCH4,0.0,
+716,UQCRFS1,0.022344704305079698,"[Hydroxylation on P], [Hydroxylation on P], [Malonylation on K]"
+717,PEPD,0.004139586869230451,[N-acetylalanine on A]
+718,C9orf64,0.005533115697449234,[N-acetylmethionine on M]
+719,NME1,0.0,
+720,NME1-NME2,0.04055515501081471,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N], [Formylation on K], [Methylation on K], [Hydroxylation on K], [Formylation on K], [Acetylation on K], [Hydroxylation on P]"
+721,GOLGA4,0.0053811659192825115,"[Phosphoserine on S], [Malonylation on K], [Acetylation on K]"
+722,AKR1A1,0.005215123859191656,[N-acetylalanine on A]
+723,MTCH2,0.006227037798119435,[N-acetylalanine on A]
+724,DAP3,0.004652894100130281,[Hydroxylation on P]
+725,NUP107,0.0,
+726,PGD,0.010527423939362037,"[Citrullination on R], [Hydroxylation on P], [Crotonylation on K]"
+727,NOTCH2,0.0,
+728,SIN3A,0.0,
+729,AKR1C3,0.0,
+730,SH3BP4,0.004153686396677051,[Phosphorylation on S]
+731,HS1BP3,0.008503401360544218,[N-acetylmethionine on M]
+732,ENAH,0.004338583018786064,[Hydroxylation on P]
+733,QARS,0.001040582726326743,[N-acetylalanine on A]
+734,SRP68,0.0,
+735,KDM1A,0.0,
+736,CHORDC1,0.00412609341475491,[N-acetylalanine on A]
+737,ACAA1,0.0,
+738,CYB5R3,0.004885675200312683,[Hydroxylation on P]
+739,SARS,0.0,
+740,ARID4B,0.0,
+741,STK10,0.0,
+742,NCAPD2,0.005098399102681758,"[Acetylation on X], [Hydroxylation on P], [Hydroxylation on N]"
+743,FDXR,0.0,
+744,EXOSC10,0.002054442732408834,[Citrullination on R]
+745,RECQL,0.0,
+746,ATP2B4,0.0,
+747,SRSF1,0.02733734281027884,"[Asymmetric dimethylarginine on R], [Omega-N-methylarginine on R], [Omega-N-methylarginine on R], [Asymmetric dimethylarginine on R]"
+748,BAG2,0.0,
+749,PSMD13,0.0,
+750,PHB,0.0,
+751,EIF3M,0.004531858968548899,[N-acetylserine on S]
+752,ABLIM1,0.00571118573374866,"[Methylation on K], [Phosphoserine on S], [Methylation on K], [Phosphoserine on S]"
+753,GTF2E1,0.007854842510407667,[N-acetylalanine on A]
+754,SRM,0.005094243504839531,[N-acetylmethionine on M]
+755,DHX8,0.011177347242921014,"[Acetylation on X], [Hydroxylation on K], [Hydroxylation on N]"
+756,DRG2,0.0,
+757,SF3A3,0.005544466622310933,[N-acetylmethionine on M]
+758,ACTR1A,0.0045854732208363905,[N-acetylmethionine on M]
+759,CDH2,0.0,
+760,CLIC1,0.035164216892889795,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N]"
+761,PSMC4,0.007843752451172642,"[N-acetylmethionine on M], [Hydroxylation on P]"
+762,LRRC59,0.0,
+763,CAP1,0.0121246772512341,"[N-acetylalanine on A], [Phosphorylation on S], [Acetylation on K], [Phosphorylation on S], [Acetylation on K]"
+764,ACTR2,0.00619041723412158,[Hydroxylation on N]
+765,AIMP1,0.0,
+766,SIPA1L1,0.0036954915003695487,[Phosphoserine on S]
+767,HSPA6,0.012960082944530845,"[Hydroxylation on P], [Omega-N-methylarginine on R]"
+769,ACTA1,0.06947660954145438,"[Hydroxylation on K], [Acetylation on K], [Methylation on K], [Hydroxylation on P], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [Dimethylation on K], [Crotonylation on K], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on P]"
+770,ACTC1,0.08689289307600842,"[Hydroxylation on K], [Acetylation on K], [Methylation on K], [Trimethylation on K], [Hydroxylation on P], [Carboxylation on E], [Tele-methylhistidine on H], [Hydroxylation on N], [Carboxylation on D], [Crotonylation on K], [Acetylation on K], [Dimethylation on K], [Hydroxylation on P], [Formylation on K], [Nitrosylation on C], [Hydroxylation on N], [Nitrosylation on Y], [Hydroxylation on P], [Hydroxylation on P]"
+771,PATL1,0.005411255411255411,[Hydroxylation on K]
+772,GARS,0.0,
+773,SRPRB,0.0,
+774,NANS,0.0,
+775,UHRF1,0.004503693028283192,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+776,STOML2,0.0,
+777,HDAC2,0.0,
+778,DPH2,0.009738046547862499,[N-acetylmethionine on M]
+779,GSPT2,0.0,
+780,CBX3,0.011384335154826957,[Hydroxylation on K]
+781,BANF1,0.04993757802746567,"[Hydroxylation on P], [Acetylation on K]"
+782,CSRP1,0.0076196281621456865,[Phosphoserine on S]
+783,PSMD2,0.003337338139100254,"[Citrullination on R], [Acetylation on K]"
+784,RPL30,0.0,
+785,ARHGAP1,0.0,
+786,NOP56,0.0029025891094856615,[Phosphoserine on S]
+787,CALU,0.005473453749315818,[Hydroxylation on P]
+788,MRPS27,0.0,
+789,SF3A1,0.0,
+790,SLC3A2,0.0031746031746031746,[N-acetylmethionine on M]
+791,TARS,0.009377124504770613,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K]"
+792,MAPRE1,0.005487269534679543,[N-acetylalanine on A]
+794,CDCA2,0.004654843364520784,[Phosphoserine on S]
+795,CALM1,0.07193677338907836,"[Butyrylation on K], [Butyrylation on K], [Hydroxylation on N], [Dimethylation on K], [Butyrylation on K], [N6,N6,N6-trimethyllysine on K], [N-acetylalanine on A], [Butyrylation on K], [Phosphotyrosine on Y], [Hydroxylation on N], [Dimethylation on K], [N6,N6,N6-trimethyllysine on K], [Butyrylation on K]"
+796,CALM2,0.07829977628635346,"[N-acetylalanine on A], [Butyrylation on K], [Phosphotyrosine on Y], [Hydroxylation on N], [Dimethylation on K], [N6,N6,N6-trimethyllysine on K], [Butyrylation on K]"
+797,CALM3,0.07829977628635346,"[N-acetylalanine on A], [Butyrylation on K], [Phosphotyrosine on Y], [Hydroxylation on N], [Dimethylation on K], [N6,N6,N6-trimethyllysine on K], [Butyrylation on K]"
+798,ILF2,0.0,
+799,RAB1B,0.009045680687471733,[Acetylation on K]
+800,TEX10,0.0,
+801,OSBPL9,0.005661231884057972,[N-acetylalanine on A]
+802,GNL3,0.0,
+803,NF1,0.0,
+804,CHD4,0.0015342637838834596,"[Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q]"
+805,NOL11,0.0,
+806,TXNDC5,0.0,
+807,HSD17B10,0.0,
+808,CCNDBP1,0.023148148148148147,[N-acetylalanine on A]
+809,RUVBL1,0.003322700691121744,[Hydroxylation on P]
+810,HDLBP,0.0007583110895413735,[N-acetylserine on S]
+812,MCM4,0.002430172037298939,"[Hydroxylation on P], [Hydroxylation on P]"
+813,UBE2Z,0.007634753397465262,[Butyrylation on K]
+814,MCM3,0.005380972879896685,"[N-acetylalanine on A], [Phosphoserine on S]"
+815,EXOSC3,0.006493506493506494,[N-acetylalanine on A]
+817,NUP85,0.0044835007173601145,[N-acetylmethionine on M]
+818,PPIL3,0.013502565487442613,[N-acetylserine on S]
+819,SAFB,0.0036429872495446266,[N-acetylalanine on A]
+820,FCHO2,0.01665001665001665,[HexNAc on T]
+821,TPM1,0.0,
+822,TPM3,0.003918495297805643,[Acetylation on X]
+823,TIMP1,0.0,
+825,CALR,0.02503571550846649,"[Acetylation on K], [Acetylation on K], [Hydroxylation on K], [Formylation on K], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on K], [Formylation on K], [Hydroxylation on P]"
+826,RPE,0.0,
+827,AUP1,0.01016260162601626,[N-acetylmethionine on M]
+828,SSB,0.004154204054503157,[Phosphoserine on S]
+829,NUP133,0.00254427030327702,[N-acetylmethionine on M]
+830,MGST3,0.0,
+831,SYNPO,0.0033638320775026915,[Phosphoserine on S]
+832,EMC1,0.0,
+833,MED28,0.015605493133583021,[Acetylation on X]
+834,FARSA,0.004279356384799726,[N-acetylalanine on A]
+835,KIF23,0.0,
+836,BRD8,0.006482561908466226,"[Phosphorylation on T], [Phosphorylation on T], [Phosphorylation on T]"
+837,CSE1L,0.0021017675865402804,[Hydroxylation on P]
+839,CTSB,0.0,
+840,GSS,0.0043055196762249205,[N-acetylalanine on A]
+841,EIF4A3,0.004590735894963963,[N-acetylalanine on A]
+842,OGT,0.0,
+843,PNKP,0.011217835234950244,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P]"
+844,PAFAH1B3,0.005622083544161466,[N-acetylserine on S]
+845,XPO1,0.0,
+846,DOHH,0.005912961210974456,[N-acetylmethionine on M]
+847,MACF1,0.0010181744132769944,"[Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R]"
+848,UBAP2L,0.0,
+849,SNRPD2,0.012462612163509473,[N-acetylserine on S]
+850,PSMB1,0.0,
+851,WBP11,0.004457321149988857,[Hydroxylation on P]
+852,TSNAX,0.0,
+853,SAR1A,0.0,
+854,LIG1,0.0,
+855,RAD50,0.0,
+856,H2AFX,0.01840264998159735,[Hydroxylation on P]
+858,CWC15,0.01898614011771407,[N-acetylthreonine on T]
+859,VPS28,0.011036309458117205,[N-acetylmethionine on M]
+860,LZTFL1,0.00929022668153103,[Acetylation on X]
+861,PABPC1,0.0,
+862,LSM14B,0.0,
+863,LAP3,0.0,
+864,HNRNPF,0.011754334410813987,"[N-acetylmethionine on M], [N-acetylmethionine on M]"
+865,FKBP3,0.017857142857142856,"[N-acetylalanine on A], [Hydroxylation on P]"
+866,CTSD,0.0,
+868,WDR7,0.008389261744966443,[Acetylation on X]
+869,IARS,0.0015238327441180056,[N-acetylmethionine on M]
+870,BRIX1,0.0,
+871,NOB1,0.0,
+872,SYNCRIP,0.005424444319365163,"[Methylation on R], [N-acetylalanine on A], [Methylation on R]"
+873,ALDH18A1,0.002373323840037973,[Acetylation on K]
+874,BCAT1,0.006476683937823834,[ADP-ribosylation on S]
+875,PSME4,0.0018710124048122439,[Methylation on R]
+876,RPA3,0.024307243558580455,"[N-acetylvaline on V], [Hydroxylation on N]"
+877,TIPRL,0.006027000964320154,[HexNAc on S]
+878,TJP2,0.0,
+879,LARP1,0.002339509638779712,[N-acetylalanine on A]
+880,KIF2C,0.0,
+881,DKC1,0.0076295109483482115,"[N-acetylalanine on A], [Hydroxylation on K]"
+882,FBL,0.005877858108505261,[Phosphoserine on S]
+883,TCAF1,0.008352125615969264,[ADP-ribosylation on S]
+884,BIRC6,0.0,
+885,TWF1,0.005012531328320802,[N-acetylserine on S]
+886,TOP3B,0.0,
+887,TUT1,0.0,
+890,USP24,0.0,
+891,MRPS31,0.0,
+892,HNRNPA1,0.03840245775729647,"[Acetylation on X], [Phosphoserine on S], [Citrullination on R], [Methylation on K], [Hydroxylation on K], [Phosphoserine on S], [Carboxylation on E], [Methylation on R], [Hydroxylation on K], [Citrullination on R]"
+893,NUDCD1,0.003430531732418525,[Acetylation on X]
+894,ATG2A,0.0,
+895,RNPEP,0.003076923076923077,[N-acetylalanine on A]
+896,PRDX1,0.012721837033267604,"[Hydroxylation on N], [Hydroxylation on P]"
+897,RBM3,0.009799118079372856,[Omega-N-methylarginine on R]
+898,PGAM1,0.03192168546499255,"[Hydroxylation on P], [Acetylation on K], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on P], [Hydroxylation on N]"
+899,CAST,0.0,
+900,DDX19B,0.004032990814721917,"[Hydroxylation on P], [Hydroxylation on P]"
+901,MTMR3,0.0,
+902,PC,0.0,
+903,GIGYF2,0.006158583525789068,"[N-acetylalanine on A], [Omega-N-methylarginine on R]"
+904,PDLIM7,0.0037087861143047882,[HexNAc on S]
+905,S100A10,0.018409425625920472,[Hydroxylation on P]
+906,RANBP1,0.038270187523918864,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Hydroxylation on N], [Hydroxylation on P]"
+907,SNRPB,0.010416666666666666,[Omega-N-methylarginine on R]
+908,SF3B4,0.013873473917869035,[Hydroxylation on P]
+909,CANX,0.004968203497615262,"[Hydroxylation on P], [Hydroxylation on K], [Phosphoserine on S]"
+910,PSMB3,0.008410428931875526,[N-acetylserine on S]
+911,CBX1,0.0,
+912,LSM3,0.02450980392156863,[N-acetylalanine on A]
+913,IPO9,0.0033124648050614465,[N-acetylalanine on A]
+914,UBQLN2,0.0,
+915,ECHS1,0.006157635467980295,[Hydroxylation on P]
+916,BSG,0.012234142668925278,"[Hydroxylation on K], [Hydroxylation on K]"
+917,RANBP6,0.005027652086475615,[Hydroxylation on N]
+918,CORO1B,0.0,
+919,GLRX,0.014513788098693758,[N-acetylalanine on A]
+920,SNRPB2,0.0103359173126615,[Acetylation on X]
+921,UBE2N,0.011343012704174229,[Acetylation on K]
+922,GLOD4,0.006869075422448138,[Hydroxylation on K]
+923,ATAD2,0.002480774001488464,[Hydroxylation on P]
+924,EIF3L,0.0,
+925,PGM2,0.0036310820624546117,[Hydroxylation on N]
+926,PLAA,0.0011866619200189864,[Hydroxylation on N]
+927,RNH1,0.007747133560582584,"[N-acetylserine on S], [Hydroxylation on P]"
+928,CFL1,0.05414918099363747,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on K], [Methylation on K], [Formylation on K], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K]"
+929,COPZ1,0.013550861008488128,"[N-acetylmethionine on M], [N-acetylmethionine on M]"
+930,DCAF1,0.0,
+932,RAB1A,0.008869179600886918,[Acetylation on K]
+933,HMOX2,0.0189873417721519,"[N-acetylserine on S], [Carboxylation on E], [Dimethylation on R]"
+934,RPL10A,0.008694896095991653,[N6-acetyllysine on K]
+935,PSMC5,0.007037297677691767,"[N-acetylalanine on A], [Hydroxylation on K]"
+936,ZC3H15,0.0071133873950775355,[Hydroxylation on K]
+937,SLC38A2,0.0,
+938,SLC39A14,0.0,
+939,SUN2,0.0,
+940,PPM1G,0.0,
+941,PPP1CC,0.02343104570527317,"[N-acetylalanine on A], [Trimethylation on K], [Hydroxylation on P], [Hydroxylation on N], [N-acetylalanine on A], [Trimethylation on K], [Hydroxylation on P], [Hydroxylation on N]"
+942,PPP1CA,0.01063264221158958,"[Hydroxylation on P], [Hydroxylation on N]"
+943,PPP1CB,0.0163826998689384,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on N]"
+944,RAD23B,0.0,
+945,NSFL1C,0.005299417064122946,[Phosphoserine on S]
+946,PCBP2,0.0,
+947,CFL2,0.06178560395427866,"[N-acetylalanine on A], [Hydroxylation on K], [Methylation on K], [Formylation on K], [Hydroxylation on P], [Hydroxylation on P], [Acetylation on K], [Formylation on K]"
+948,SDCBP,0.004415400918403391,[N-acetylserine on S]
+949,VPS35,0.0,
+950,LAMTOR5,0.01277791975466394,[N-acetylmethionine on M]
+951,PKN2,0.002674368848951647,[Acetylation on K]
+952,S100A2,0.03759398496240601,[Acetylation on X]
+953,SMARCA2,0.0,
+954,API5,0.005952755552834133,"[Formylation on K], [Formylation on K]"
+955,ABRACL,0.03429355281207133,[N-acetylmethionine on M]
+956,P4HB,0.0013670166229221349,[Hydroxylation on P]
+958,NAP1L1,0.023900595458429874,"[Acetylation on X], [Hydroxylation on N], [Acetylation on X], [Hydroxylation on N], [Acetylation on X], [Hydroxylation on N]"
+959,POGZ,0.006167129201356768,"[Phosphorylation on S], [Phosphorylation on S]"
+960,CALB2,0.0,
+961,ZW10,0.0024686481682630592,[N-acetylalanine on A]
+962,RPL12,0.0,
+963,SMG1,0.0,
+964,STRIP1,0.006637461834594452,[N-acetylmethionine on M]
+965,HDGF,0.022222222222222223,"[Crotonylation on K], [Hydroxylation on N], [Hydroxylation on P], [Phosphoserine on S]"
+966,VRK2,0.0,
+967,WDR82,0.0,
+968,NDUFV1,0.010100828421471926,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P]"
+969,PTPN1,0.004337453914552158,[N-acetylmethionine on M]
+970,PSMA3,0.008912655971479501,[N-acetylserine on S]
+971,SEC13,0.013802622498274672,"[N-acetylvaline on V], [Acetylation on X]"
+972,HSPA9,0.002454590083456063,[Hydroxylation on P]
+973,PITPNB,0.0,
+974,ZMPSTE24,0.0,
+975,PPP6R3,0.0,
+976,KPNA5,0.0,
+977,KPNA6,0.0,
+978,KPNA1,0.0,
+979,HIBADH,0.0,
+980,PPIB,0.008122157244964262,[Hydroxylation on N]
+981,DECR1,0.007654037504783773,[N6-succinyllysine on K]
+982,DNAJC9,0.008012820512820514,[Phosphoserine on S]
+983,DOK1,0.00693000693000693,[N-acetylmethionine on M]
+984,MCM5,0.0,
+985,GNPNAT1,0.008491847826086956,[Acetylation on X]
+986,PREP,0.0032010243277848915,[N-acetylmethionine on M]
+987,EIF2A,0.0,
+988,TMOD3,0.0,
+989,POLR2B,0.00236607987885671,[N6-methyllysine on K]
+990,PABPC4,0.005441696723861763,"[ADP-ribosylation on S], [ADP-ribosylation on S], [Dimethylated arginine on R]"
+991,APAF1,0.0,
+992,AKAP8L,0.006191950464396285,[Phosphorylation on T]
+993,LARS,0.003955070400253125,"[Hydroxylation on P], [Hydroxylation on P]"
+994,TOM1,0.012703252032520325,"[N-acetylmethionine on M], [Hydroxylation on P]"
+995,TLN2,0.0018732906223071445,[Methylation on K]
+996,SRP54,0.004049238743116294,[Methylation on K]
+997,PMPCB,0.0,
+998,TGM2,0.006770251514843776,"[N-acetylalanine on A], [Hydroxylation on N]"
+999,ZPR1,0.007027900766041184,[Acetylation on X]
+1000,OXSR1,0.003872516748634938,[N-acetylserine on S]
+1001,NDUFS1,0.0,
+1002,PLOD3,0.0,
+1003,COPG1,0.0,
+1004,PBRM1,0.0,
+1005,HMGB1,0.03502273247636804,"[Hydroxylation on N], [Methylation on K], [Formylation on K], [Hydroxylation on N], [Methylation on K], [Formylation on K]"
+1006,MPP6,0.0,
+1007,RRM2,0.0048503662026483,[Phosphoserine on S]
+1008,EPPK1,0.0,
+1009,ARMC8,0.00646036565669617,[N-acetylalanine on A]
+1010,ZNF326,0.01145475372279496,"[Acetylation on X], [Omega-N-methylarginine on R]"
+1011,PDXK,0.0,
+1012,MALT1,0.00713877784123358,[N-acetylserine on S]
+1013,SEC24C,0.0026884611248521348,[Hydroxylation on P]
+1014,CFAP36,0.009714034011999374,"[Phosphorylation on T], [Phosphorylation on T]"
+1015,DDX39A,0.0,
+1016,CASP7,0.0,
+1017,CLTCL1,0.0040650406504065045,[Hydroxylation on N]
+1018,IPO4,0.002312673450508788,[N-acetylmethionine on M]
+1019,WASF2,0.009127418765972983,[Hydroxylation on K]
+1020,CCDC6,0.004057124310288867,[Phosphorylation on S]
+1021,DPP3,0.00294967848504513,[N-acetylalanine on A]
+1022,CDK1,0.03571064177124783,"[Phosphorylation on T], [Phosphorylation on Y], [Phosphothreonine on T], [Phosphothreonine on T], [Citrullination on R], [N6-succinyllysine on K], [Phosphoserine on S]"
+1023,TPX2,0.0,
+1024,SUCLA2,0.004591368227731864,"[Methylation on K], [Methylation on K], [Methylation on K]"
+1025,CORO1C,0.0,
+1026,DDX10,0.003657870685106536,"[Phosphorylation on S], [Phosphorylation on S]"
+1027,RPL4,0.004258037044922291,[Citrullination on R]
+1028,SPDL1,0.011806375442739079,[N-acetylmethionine on M]
+1029,SUGT1,0.004214963119072708,[N-acetylalanine on A]
+1030,NIFK,0.018283764017552412,"[N-acetylalanine on A], [Acetylation on K], [Phosphorylation on T]"
+1031,TNPO1,0.0,
+1032,SUPT16H,0.004897999167340142,"[N-acetylalanine on A], [Hydroxylation on P]"
+1033,HSF1,0.007876496534341526,[N-acetylmethionine on M]
+1034,NUP153,0.0,
+1035,EIF2D,0.0,
+1036,PSAT1,0.0,
+1037,DBNL,0.0,
+1038,GTF2F1,0.008791981712678037,[N-acetylalanine on A]
+1039,PLOD1,0.0,
+1040,CLK3,0.01044932079414838,[Phosphoserine on S]
+1041,RAB6A,0.0,
+1042,STRN,0.0,
+1043,EMG1,0.006403688524590164,[N-acetylalanine on A]
+1044,CNN3,0.012002816327894808,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P]"
+1045,CAT,0.0,
+1046,PAPSS1,0.004856254856254857,[N-acetylmethionine on M]
+1047,IPO8,0.0,
+1049,CPNE3,0.0,
+1050,PI4K2A,0.0,
+1051,EIF2B5,0.008668515950069348,"[N-acetylalanine on A], [Phosphoserine on S]"
+1052,PIN1,0.0,
+1053,RPL7,0.03665689149560117,"[N-acetylmethionine on M], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K]"
+1054,ARHGAP29,0.007552584872172501,"[Phosphorylation on S], [Phosphoserine on S]"
+1055,RBM19,0.0,
+1056,EIF3D,0.0,
+1057,SLC25A24,0.0,
+1058,MYH14,0.0043587228941920015,"[N-acetylalanine on A], [Hydroxylation on P]"
+1059,GSTP1,0.04456691841872491,"[Hydroxylation on P], [Methylation on K], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K]"
+1060,PARD3,0.00386970478474127,"[Phosphorylation on S], [Phosphorylation on S]"
+1061,LRWD1,0.005519982336056525,[Phosphorylation on T]
+1062,DR1,0.01721763085399449,[N-acetylalanine on A]
+1063,ATG4B,0.007951653944020356,[N-acetylmethionine on M]
+1064,HMGA1,0.023364485981308414,[N6-acetyllysine on K]
+1065,CIT,0.0,
+1066,TMSB10,0.06684491978609625,"[N-acetylalanine on A], [N6-acetyllysine on K]"
+1067,DOCK5,0.0,
+1068,SUMO1,0.045004500450045004,"[N-acetylserine on S], [Phosphorylation on T]"
+1069,NUP205,0.0017138548022211557,[N-acetylalanine on A]
+1070,SMU1,0.00464123271140815,[Hydroxylation on P]
+1071,DIDO1,0.002976190476190476,[Citrullination on R]
+1072,NPC2,0.019477989871445264,"[Hydroxylation on P], [Hydroxylation on P]"
+1073,WDR75,0.0030892801977139327,[Malonylation on K]
+1074,NUF2,0.0051313628899835794,[N-acetylmethionine on M]
+1075,DARS,0.0,
+1076,NUDT5,0.0,
+1078,COTL1,0.018057060310581435,"[Hydroxylation on N], [N6-acetyllysine on K]"
+1079,CCNB1,0.0,
+1080,PAPSS2,0.0,
+1081,MAPK14,0.0051440329218107,[N-acetylserine on S]
+1082,MAGOH,0.010222858311183807,[N-acetylmethionine on M]
+1083,MAGOHB,0.01008471157724889,[N-acetylalanine on A]
+1084,FUS,0.025924645696508816,"[Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R]"
+1085,PHACTR4,0.013354700854700856,"[Phosphoserine on S], [Phosphoserine on S], [Phosphorylation on T]"
+1086,HIGD2A,0.01849796522382538,[N-acetylalanine on A]
+1087,USO1,0.0028875028875028877,[Methylation on K]
+1088,CDK2,0.024027048845685614,"[Phosphorylation on T], [Phosphorylation on Y], [Phosphorylation on T], [Phosphothreonine on T], [Phosphorylation on T], [Phosphorylation on Y], [Phosphorylation on T], [Phosphothreonine on T]"
+1089,PUM1,0.005269814502529511,[Phosphorylation on S]
+1090,LRRC47,0.003649501842998431,[N-acetylalanine on A]
+1091,EIF2S1,0.00481000481000481,[Hydroxylation on K]
+1092,IPO5,0.0036463081130355514,"[Acetylation on K], [Hydroxylation on N]"
+1093,ALDH1B1,0.01160541586073501,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K]"
+1094,GPN1,0.007226477814713109,[N-acetylalanine on A]
+1095,UQCRC2,0.004505113303599585,[Trimethylation on K]
+1096,JUP,0.0044742729306487695,[N-acetylmethionine on M]
+1097,CDK11B,0.0046587467971115765,[Phosphothreonine on T]
+1098,CHERP,0.0060650169820475495,[N-acetylmethionine on M]
+1099,DST,0.0006020107157907411,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+1100,TSTA3,0.0,
+1101,CDC42EP1,0.010656436487638534,"[Phosphoserine on S], [Phosphoserine on S]"
+1102,USP10,0.004819741661846925,[Phosphorylation on S]
+1103,MCM2,0.04580899140478109,"[Phosphorylation on S], [Phosphorylation on S], [Phosphorylation on S]"
+1104,COMMD8,0.0,
+1105,HNRNPC,0.018147776090664057,"[Acetylation on K], [Phosphoserine on S], [Acetylation on K], [Phosphoserine on S]"
+1106,SCAF11,0.0,
+1107,LDHA,0.0153154992852767,"[N-acetylalanine on A], [Hydroxylation on P], [Hydroxylation on P]"
+1108,TUBA1A,0.07612951015979134,"[Butyrylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Butyrylation on K], [Formylation on K], [Hydroxylation on P], [Citrullination on R], [Methylation on R], [Citrullination on R], [Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K]"
+1109,MVK,0.006626083354969524,"[Acetylation on X], [Acetylation on X]"
+1110,MRPL4,0.007118803828114905,"[Malonylation on K], [Malonylation on K]"
+1111,GOLGB1,0.0,
+1113,FANCD2,0.0,
+1114,ACIN1,0.0035646501065944324,"[Acetylation on X], [Phosphorylation on S], [Phosphoserine on S]"
+1115,ZC3HAV1,0.0028426857695150382,[N-acetylalanine on A]
+1116,PPP2R1B,0.015478079170374956,"[Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P]"
+1117,SOWAHC,0.011204481792717087,[Acetylation on X]
+1118,MCM6,0.002537555826228177,[N-acetylmethionine on M]
+1119,TPD52L2,0.014490653528474133,"[N-acetylmethionine on M], [Phosphothreonine on T]"
+1120,ZC3H14,0.004528985507246377,[N-acetylmethionine on M]
+1121,XPOT,0.00297000297000297,[N-acetylmethionine on M]
+1122,BZW2,0.004438011071452037,"[Malonylation on K], [Malonylation on K]"
+1123,TOMM34,0.0,
+1124,SSR4,0.0,
+1125,PARP14,0.004271131422713877,[Acetylation on X]
+1126,SKIV2L,0.0030868008396098285,[Phosphoserine on S]
+1127,THUMPD3,0.0070442378134685825,[Acetylation on X]
+1128,BOP1,0.0,
+1129,EIF4A2,0.0,
+1130,NRDC,0.0,
+1131,ARL6IP5,0.024177949709864605,[N-acetylmethionine on M]
+1132,RPS15,0.05108556832694764,"[N-acetylalanine on A], [Hydroxylation on P], [Acetylation on K], [Hydroxylation on P]"
+1133,PDS5B,0.0,
+1134,PRKAR2A,0.005756389592447617,[N-acetylserine on S]
+1135,MYO1C,0.0017460169779363736,"[Hydroxylation on P], [Hydroxylation on P]"
+1136,ARHGEF1,0.0,
+1137,HSD17B11,0.0,
+1138,UNC13D,0.0,
+1139,ACTR1B,0.0059101654846335705,[N-acetylmethionine on M]
+1140,ENO3,0.013553808620222282,"[Hydroxylation on P], [Hydroxylation on N]"
+1141,F8A1,0.02073398299813394,[N-acetylalanine on A]
+1142,ATAD3A,0.004506534474988734,[N-acetylserine on S]
+1143,PDIA6,0.014506769825918761,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on P]"
+1144,RPL9,0.007548309178743962,[Hydroxylation on N]
+1145,IST1,0.0074672997809643775,"[Hydroxylation on P], [Hydroxylation on P]"
+1146,PRDX5,0.0,
+1147,CTBP1,0.0,
+1148,H1FX,0.009989012086704625,[N-acetylserine on S]
+1149,DARS2,0.0,
+1150,FUBP1,0.0028755463538072236,"[Omega-N-methylarginine on R], [Omega-N-methylarginine on R]"
+1151,ANKMY2,0.020780550734467787,"[Phosphorylation on T], [Phosphorylation on T]"
+1152,TPRKB,0.0,
+1153,RHOG,0.010471204188481676,[Nitrosylation on C]
+1154,C1QBP,0.0,
+1155,GSTM4,0.0,
+1156,COIL,0.0,
+1157,VPS13C,0.0,
+1158,CELF1,0.0074827895839569,[N-acetylmethionine on M]
+1159,ARMC9,0.015159383789547218,"[Acetylation on X], [Acetylation on X]"
+1160,PSMA6,0.012507817385866166,"[Acetylation on K], [Phosphoserine on S]"
+1161,FABP5,0.010147133434804667,[N-acetylalanine on A]
+1162,MAPK12,0.0,
+1163,SRSF2,0.01740341106856944,[N-acetylserine on S]
+1164,TFRC,0.0,
+1165,ERH,0.021853146853146856,[N-acetylserine on S]
+1166,PSPH,0.007532956685499058,[N-acetylmethionine on M]
+1167,COPS7B,0.030770837875154423,"[N-acetylalanine on A], [N-acetylalanine on A]"
+1168,COPS4,0.0,
+1169,RANBP3,0.0065321052975373965,[N-acetylalanine on A]
+1170,SHMT2,0.003815628815628816,[N6-acetyllysine on K]
+1171,WDR74,0.0,
+1172,IPO7,0.0026037598291933552,[N-acetylmethionine on M]
+1173,GFM2,0.0,
+1174,HAT1,0.0,
+1175,TMSB4X,0.07102272727272728,[N-acetylserine on S]
+1176,RPAP3,0.0,
+1177,SMPD4,0.01646090534979424,[Acetylation on X]
+1178,COQ8B,0.0,
+1179,DDX50,0.0,
+1180,ATXN2L,0.0039013732833957553,"[Phosphorylation on S], [N-acetylmethionine on M], [Acetylation on X]"
+1181,FHOD1,0.0,
+1183,UBE3A,0.0,
+1184,CNIH4,0.05002463097301095,"[Hydroxylation on P], [Hydroxylation on P]"
+1187,PRKCA,0.0,
+1188,YWHAZ,0.013382402141184344,"[N-acetylmethionine on M], [Acetylation on K]"
+1189,PRRC2C,0.0019707540104844114,[Acetylation on K]
+1190,GNL1,0.007406766416079845,"[Phosphorylation on S], [Citrullination on R]"
+1191,ATP6V1C1,0.002296316708000367,[N-acetylthreonine on T]
+1193,DSTN,0.016604400166044,"[N-acetylalanine on A], [Hydroxylation on P]"
+1194,ITGB1,0.0,
+1195,MAD1L1,0.004352367688022284,[N-acetylmethionine on M]
+1196,RPL23,0.0,
+1197,SRPK2,0.0,
+1198,STIP1,0.008124796880077998,"[N-acetylmethionine on M], [Hydroxylation on N], [Methylation on K]"
+1199,STARD4,0.0,
+1200,SACM1L,0.0,
+1201,RTN1,0.010738831615120275,[Acetylation on X]
+1202,PYGB,0.0,
+1203,SMS,0.0,
+1204,APEH,0.0042546442526562415,"[Glu to PyroGlu on Q], [Glu to PyroGlu on Q]"
+1205,CAPG,0.0066827051590483836,[N-acetylmethionine on M]
+1207,GCDH,0.016317091361760808,"[Hydroxylation on N], [Citrullination on R]"
+1208,LSM5,0.023889154323936932,[N-acetylalanine on A]
+1209,AP1M1,0.004728132387706856,[N-acetylserine on S]
+1210,YAP1,0.0,
+1211,YWHAQ,0.00728862973760933,[N-acetylmethionine on M]
+1212,MTA2,0.006804572672836145,"[Glu to PyroGlu on Q], [Hydroxylation on P]"
+1213,SMC4,0.0,
+1214,NOP14,0.0,
+1215,UACA,0.0,
+1216,CPSF4,0.010047221943132723,[Acetylation on X]
+1217,SCFD2,0.006091617933723197,[Acetylation on X]
+1218,AKAP2,0.0034000188271760107,"[Phosphoserine on S], [Phosphoserine on S]"
+1219,HLTF,0.0,
+1220,PFDN1,0.015762925598991173,[N-acetylalanine on A]
+1221,TTC27,0.005391998274560552,[Acetylation on X]
+1222,PPP1R9B,0.006449958087128975,"[Hydroxylation on P], [Hydroxylation on P]"
+1223,ACSL1,0.005116659844453541,[N-acetylmethionine on M]
+1224,EIF4EBP1,0.012281994595922378,[N-acetylserine on S]
+1225,SLC25A38,0.0,
+1226,ATP5PD,0.009270418095856122,[Hydroxylation on N]
+1227,MYO1B,0.0021489218357419433,"[Crotonylation on K], [Crotonylation on K]"
+1228,IGBP1,0.006860122110173561,[N-acetylalanine on A]
+1229,VPS11,0.0,
+1230,FAHD2A,0.0,
+1231,PA2G4,0.0,
+1232,TRNT1,0.0,
+1233,HECTD4,0.007548309178743962,[Acetylation on X]
+1234,NUP54,0.0,
+1235,GLO1,0.0,
+1236,RPL5,0.007805565261105617,"[Hydroxylation on P], [Hydroxylation on P]"
+1237,PFN1,0.0,
+1238,NSUN5,0.007063643427279791,[N-acetylglycine on G]
+1241,SECISBP2L,0.012975217334890361,[Hydroxylation on P]
+1242,SNRNP70,0.012043839576056847,"[N-acetylthreonine on T], [Phosphoserine on S]"
+1243,CENPF,0.0013380432455576965,[Acetylation on X]
+1244,CUX1,0.005664438654129376,"[Acetylation on X], [Acetylation on X], [Acetylation on X]"
+1245,NR2C2,0.008830801836806783,[Hydroxylation on N]
+1246,PHF8,0.0,
+1247,ECHDC1,0.0,
+1248,DPYSL4,0.0,
+1249,ARF6,0.012698412698412698,[Hydroxylation on N]
+1251,MYH11,0.009508113590263692,"[Carboxylation on D], [Hydroxylation on P], [Hydroxylation on K]"
+1252,CSK,0.00516795865633075,[N-acetylserine on S]
+1253,RAP1A,0.0,
+1254,STAU1,0.0,
+1255,TOP2A,0.0030379900657724846,"[N-acetylmethionine on M], [Phosphoserine on S]"
+1256,NSDHL,0.0,
+1257,YBX3,0.0,
+1258,DFFA,0.008165264962848045,[N-acetylmethionine on M]
+1259,STRN3,0.004825789016504199,[N-acetylmethionine on M]
+1260,TRADD,0.0,
+1261,POLE3,0.019436345966958212,[N-acetylalanine on A]
+1262,MRE11,0.0,
+1263,PCNA,0.005177591384487937,[Hydroxylation on P]
+1264,PTK7,0.0,
+1265,GBF1,0.0016810112963959118,[Phosphoserine on S]
+1266,POLR2I,0.02666666666666667,[N-acetylmethionine on M]
+1267,YARS,0.0025252525252525255,[Formylation on K]
+1268,ODR4,0.0,
+1269,UBE3C,0.0065954359583168445,[Carboxylation on K]
+1270,ESD,0.0,
+1271,NNMT,0.0,
+1272,HSP90AB4P,0.027002700270027005,"[Methylation on R], [Phosphorylation on T], [Trimethylation on K]"
+1274,LANCL2,0.0,
+1275,VAPA,0.015446400988569664,"[N-acetylalanine on A], [Hydroxylation on P]"
+1276,METAP2,0.0,
+1277,RNF216,0.0,
+1278,ZWILCH,0.0,
+1279,INCENP,0.00907770515613653,[Acetylation on X]
+1280,SNRPF,0.013842746400885937,[Acetylation on K]
+1281,GOLGA5,0.011399908800729594,[N-acetylserine on S]
+1282,PFDN2,0.012732365673542143,[Citrullination on R]
+1283,TIGAR,0.0,
+1284,ADNP,0.004321147696828278,[Acetylation on X]
+1285,RPS8,0.00874125874125874,[Phosphothreonine on T]
+1286,MTR,0.0046500813764240876,[Malonylation on K]
+1287,RSL1D1,0.004164931278633903,[N-acetylmethionine on M]
+1288,INTS2,0.0,
+1289,KLC4,0.004038772213247173,[N-acetylserine on S]
+1290,PSMC6,0.004074159286442065,"[Hydroxylation on N], [Hydroxylation on N]"
+1291,RCN3,0.007090187180941577,[HexNAc on T]
+1292,LBH,0.019446168295139343,"[Acetylation on X], [Acetylation on X]"
+1293,COX5A,0.0,
+1294,SRRM2,0.012112403100775194,"[N-acetylmethionine on M], [Phosphorylation on S], [Phosphoserine on S], [Phosphothreonine on T], [Phosphorylation on T], [Phosphorylation on T], [Phosphorylation on T]"
+1295,ANXA5,0.024801587301587304,"[Methylation on R], [N6-acetyllysine on K], [Phosphorylation on T], [Hydroxylation on N], [Methylation on K]"
+1296,HNRNPA3,0.047031158142269255,"[N-acetylmethionine on M], [Acetylation on K], [Phosphoserine on S], [Omega-N-methylarginine on R], [Dimethylated arginine on R], [Succinylation on K], [Hydroxylation on N], [Phosphorylation on S]"
+1297,DENR,0.02149151085321298,"[N-acetylalanine on A], [Phosphoserine on S]"
+1298,RYBP,0.03987240829346093,[Phosphorylation on S]
+1299,IARS2,0.0,
+1300,PPM1D,0.03305785123966942,[Acetylation on X]
+1301,PMM2,0.007669888019634913,[N-acetylalanine on A]
+1302,ARMT1,0.00781921964187974,[N-acetylalanine on A]
+1303,ERO1A,0.0,
+1304,RAB11A,0.0,
+1305,ANXA11,0.0,
+1306,RAP1GDS1,0.00531434341287134,[Acetylation on X]
+1307,RTRAF,0.005614192679092746,[Hydroxylation on P]
+1308,RPL6,0.0,
+1310,AIFM1,0.0,
+1311,TRA2B,0.01052188552188552,[Phosphorylation on T]
+1312,SEC23A,0.003734827264239029,[N-acetylthreonine on T]
+1313,TRMT6,0.0,
+1314,DYNLT1,0.11061946902654868,"[Hydroxylation on N], [Hydroxylation on N]"
+1315,RPL38,0.02857142857142857,[Formylation on K]
+1316,PSMG1,0.00992063492063492,[N-acetylalanine on A]
+1317,MOV10,0.0,
+1318,PUM3,0.0,
+1319,TCF20,0.0,
+1320,ACSL3,0.0,
+1321,FAM49B,0.005414771496642841,[HexNAc on T]
+1322,USP39,0.0,
+1323,TUBGCP3,0.0,
+1324,RFTN1,0.0,
+1325,PDCD6IP,0.0020946795140343527,[N-acetylalanine on A]
+1326,G3BP2,0.013385089010841924,"[Acetylation on X], [Hydroxylation on P]"
+1327,RRS1,0.00684931506849315,[N-acetylmethionine on M]
+1328,CSTB,0.012755102040816325,[N-acetylmethionine on M]
+1329,BCAP31,0.0,
+1330,PALLD,0.008034064433196755,"[Hydroxylation on K], [Crotonylation on K], [Phosphoserine on S], [Phosphoserine on S]"
+1331,ASL,0.0,
+1332,CHAMP1,0.0045612114577631814,[N-acetylmethionine on M]
+1333,ACTR10,0.0,
+1334,HNRNPA1L2,0.061141304347826095,"[Acetylation on X], [Citrullination on R], [Methylation on K], [Hydroxylation on K], [Phosphoserine on S], [Carboxylation on E], [Methylation on R], [Hydroxylation on K], [Citrullination on R]"
+1335,SLC25A3,0.0,
+1336,SPTBN2,0.0,
+1337,SPTB,0.0,
+1338,MDN1,0.0011168691922802002,[N-acetylmethionine on M]
+1339,PFN2,0.013401232913428035,[Citrullination on R]
+1340,ANXA3,0.004422821760283061,[N-acetylalanine on A]
+1341,HIGD1A,0.05659309564233163,[N-acetylserine on S]
+1343,ATAD3B,0.006430041152263374,[N-acetylserine on S]
+1344,RPP30,0.007939028262940616,[N-acetylalanine on A]
+1345,MRPS9,0.0,
+1346,STX8,0.0,
+1347,PLCB3,0.0035233598759777324,[N-acetylalanine on A]
+1348,DNAJB2,0.009956192751891677,[N-acetylalanine on A]
+1349,OTUB1,0.0,
+1350,ITGAV,0.0,
+1351,CCT8,0.002339509638779712,[Phosphoserine on S]
+1352,PAPOLA,0.0,
+1353,DOCK1,0.005332078615109499,"[Citrullination on R], [Citrullination on R]"
+1354,CASTOR2,0.0,
+1355,GALNT2,0.0,
+1356,MVB12A,0.013082155939298797,"[Acetylation on X], [Acetylation on X]"
+1357,RAB7A,0.0,
+1358,SNW1,0.004909662215239591,[N-acetylalanine on A]
+1359,TATDN1,0.0,
+1360,CHAF1A,0.0,
+1361,RNF7,0.029498525073746312,[N-acetylalanine on A]
+1362,HIST1H1E,0.010871928680147858,[N-acetylserine on S]
+1364,HIST1H1C,0.028169014084507043,"[N-acetylserine on S], [N6-(2-hydroxyisobutyryl)lysine on K], [ADP-ribosylation on S]"
+1365,CDC73,0.00588512241054614,[N-acetylalanine on A]
+1366,EBP,0.02557544757033248,[N-acetylthreonine on T]
+1367,XRCC6,0.011827443950252977,"[Nitrosylation on Y], [Formylation on K], [Methylation on K], [Hydroxylation on P], [N-acetylserine on S], [Formylation on K], [Methylation on K], [Hydroxylation on P]"
+1368,FAF1,0.0,
+1369,TIAL1,0.0,
+1370,PCK2,0.0032552083333333335,[Acetylation on K]
+1371,PPID,0.0,
+1372,ATP6V1E1,0.0,
+1373,GLUD1,0.0,
+1374,ETFA,0.0,
+1375,MCTS1,0.0,
+1376,AGL,0.0,
+1377,PSME1,0.0,
+1378,NRBP1,0.0,
+1379,ELOA,0.014392630972941852,[Acetylation on X]
+1380,YWHAB,0.0,
+1381,NSF,0.0,
+1382,TRMT61A,0.012357884330202669,[N-acetylserine on S]
+1384,PCID2,0.005332480136511491,[N-acetylalanine on A]
+1385,ERCC3,0.0045670442089879425,[Hydroxylation on P]
+1386,ATP5MD,0.0,
+1387,GPX1,0.008210180623973728,[Succinylation on K]
+1388,TAX1BP3,0.020161290322580645,[N-acetylserine on S]
+1389,MTA3,0.006235191420376606,"[Glu to PyroGlu on Q], [Glu to PyroGlu on Q], [Glu to PyroGlu on Q]"
+1390,MTA1,0.008297283839079505,"[Glu to PyroGlu on Q], [Glu to PyroGlu on Q]"
+1391,EPS15L1,0.0046205129225179355,"[HexNAc on S], [N-acetylalanine on A], [HexNAc on S]"
+1392,USP47,0.0,
+1393,DBI,0.04154549231408393,"[N-acetylserine on S], [Acetylation on K], [Hydroxylation on P]"
+1394,ERLIN1,0.014450867052023121,"[Hydroxylation on K], [Citrullination on R]"
+1395,PSMD5,0.004409171075837742,[N-acetylalanine on A]
+1396,P4HA1,0.0039013732833957553,[Hydroxylation on P]
+1397,RBM12B,0.00868696520870434,"[Acetylation on K], [Phosphoserine on S]"
+1399,MYO1E,0.0,
+1400,ATXN7L3B,0.023430178069353328,[Acetylation on X]
+1401,PSMD11,0.010610454834830587,"[N-acetylalanine on A], [Acetylation on K], [Hydroxylation on N]"
+1402,COPS3,0.0038755183505793903,[N-acetylalanine on A]
+1403,MAN2A1,0.0,
+1404,EXOC5,0.0,
+1405,AHCYL1,0.0067385444743935305,[N-acetylserine on S]
+1406,MDH1,0.0,
+1407,NQO1,0.0,
+1408,ARPC5,0.0,
+1409,IPO11,0.005128205128205128,[N-acetylmethionine on M]
+1410,PIK3C2A,0.0,
+1411,FAM136A,0.012281994595922378,[N-acetylalanine on A]
+1412,METTL2A,0.007780890133831309,[N-acetylalanine on A]
+1413,NOL9,0.006475006475006475,[N-acetylalanine on A]
+1414,ERLEC1,0.0,
+1415,DOCK7,0.0,
+1416,PBXIP1,0.007599939200486396,[Acetylation on X]
+1417,PRMT5,0.003737758839799656,[N-acetylalanine on A]
+1419,OGDH,0.002613832401066444,"[Citrullination on R], [Citrullination on R], [Citrullination on R]"
+1420,TAB2,0.012025012025012025,[Acetylation on X]
+1421,TFAP4,0.0,
+1422,RPL19,0.0,
+1423,PRPS1,0.0,
+1424,PRPS2,0.0,
+1425,MYOF,0.0,
+1426,YTHDF2,0.00616827041697508,[N-acetylserine on S]
+1427,ZC3HAV1L,0.010416666666666666,[N-acetylalanine on A]
+1428,OGFR,0.008103069095683571,"[Phosphorylation on S], [Phosphorylation on S]"
+1429,TMEM209,0.009902951079421667,[Phosphorylation on S]
+1430,DNMBP,0.0063411540900443885,"[Dimethylation on R], [Hydroxylation on P]"
+1431,TBC1D15,0.0,
+1432,ABI2,0.008333333333333333,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+1433,MRTO4,0.0,
+1434,AP2M1,0.0,
+1435,RPS5,0.029411764705882353,"[N-acetylmethionine on M], [HexNAc on T], [Methylation on K]"
+1436,MRPL1,0.0,
+1437,KANK2,0.009039139473922084,[Acetylation on X]
+1438,ARHGAP35,0.0035111126716056316,[Phosphorylation on S]
+1439,COPS8,0.009780934710089183,"[Hydroxylation on P], [Hydroxylation on P]"
+1440,TAOK1,0.0,
+1441,CTCF,0.0,
+1442,GUF1,0.0,
+1443,RBM34,0.0,
+1444,PAK2,0.005612932195779075,"[N-acetylserine on S], [Phosphoserine on S]"
+1445,CDC16,0.004887585532746823,[Phosphoserine on S]
+1446,RPL23A,0.013082155939298797,[Hydroxylation on P]
+1447,NT5DC2,0.0,
+1448,ADAM17,0.03033980582524272,"[Phosphoserine on S], [Phosphorylation on T]"
+1449,PRPF6,0.0036644801934845542,[Hydroxylation on N]
+1450,VRK1,0.0,
+1451,YIF1B,0.01592356687898089,[N-acetylmethionine on M]
+1452,NUCB2,0.0,
+1453,RAI14,0.003401360544217687,[Hydroxylation on P]
+1454,PPM1A,0.005569789461958338,[Citrullination on R]
+1456,LYN,0.0,
+1457,SCARB2,0.0,
+1458,GOSR2,0.00924898261191269,[N-acetylmethionine on M]
+1459,NFIB,0.01615664703958385,"[Acetylation on X], [Acetylation on X]"
+1460,PPP2R2A,0.00508440105755542,[N-acetylalanine on A]
+1461,DHX15,0.0025157232704402514,[Hydroxylation on N]
+1462,DYNC1LI2,0.0,
+1463,HIST1H3A,0.19545793000744602,"[N6,N6-dimethyllysine on K], [N6-methyllysine on K], [N6,N6,N6-trimethyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [Trimethylation on K], [N6-acetyllysine on K], [N6-butyryllysine on K], [N6-acetyllysine on K], [N6-methyllysine on K], [N6,N6-dimethyllysine on K], [N6,N6,N6-trimethyllysine on K], [Formylation on K], [N6-acetyllysine on K], [Acetylation on K], [Hydroxylation on P], [N6,N6-dimethyllysine on K], [N6-methyllysine on K], [N6,N6,N6-trimethyllysine on K], [N6,N6-dimethyllysine on K], [N6-methyllysine on K]"
+1464,CYP20A1,0.0,
+1465,RDX,0.0,
+1466,IMP3,0.0,
+1467,TMA16,0.0,
+1468,RRAGC,0.0092824654228163,[N-acetylserine on S]
+1469,ACBD3,0.004619364375461937,[N-acetylalanine on A]
+1470,EIF3H,0.023640661938534282,"[Hydroxylation on K], [Hydroxylation on P]"
+1471,SULT1A1,0.007883326763894364,[Acetylation on X]
+1472,EML4,0.0,
+1473,NAXE,0.0,
+1474,OCLN,0.0,
+1475,MYO5A,0.0,
+1476,DDX55,0.006666666666666667,[Acetylation on X]
+1477,PHKB,0.007624275693809088,[Acetylation on K]
+1478,KIF11,0.0,
+1479,GMPR2,0.0,
+1480,AKT1S1,0.018601190476190476,[Acetylation on X]
+1481,PSMF1,0.015375153751537514,[N-acetylalanine on A]
+1483,ATP1A1,0.0,
+1484,ACTBL2,0.04342162396873643,"[Hydroxylation on K], [Hydroxylation on N], [Methylation on R], [Nitrosylation on Y], [Hydroxylation on P], [Hydroxylation on P], [Methylation on K], [Hydroxylation on N]"
+1485,RPS24,0.03667705849990831,"[N-acetylmethionine on M], [Acetylation on K]"
+1486,PSMD6,0.004590525156077855,[HexNAc on S]
+1487,TIMM13,0.019493177387914232,[N-acetylmethionine on M]
+1488,FKBP10,0.004521613311629589,[Hydroxylation on P]
+1489,EIF3E,0.0,
+1490,ANP32A,0.022233611525975396,"[Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on P]"
+1491,ANP32B,0.036218761318362915,"[ADP-ribosylation on S], [Hydroxylation on N], [Hydroxylation on P]"
+1492,LMNB1,0.005987665409256931,"[N-acetylalanine on A], [Phosphorylation on S]"
+1493,RNASEH2A,0.019111323459149544,"[N-acetylmethionine on M], [Hydroxylation on K]"
+1494,RUVBL2,0.0,
+1495,NRDE2,0.017182130584192438,[N-acetylalanine on A]
+1496,TK1,0.014486455164421265,"[N-acetylserine on S], [Phosphorylation on S]"
+1497,NUP37,0.0,
+1498,PPAT,0.004395990856339019,[HexNAc on S]
+1499,GMPPA,0.0,
+1500,CAPN1,0.0035014005602240893,[N-acetylserine on S]
+1501,SLTM,0.007439369141496802,"[N-acetylalanine on A], [Phosphoserine on S]"
+1502,FAM192A,0.015748031496062992,[N-acetylmethionine on M]
+1503,NAPG,0.007631257631257632,[Hydroxylation on K]
+1504,VAMP3,0.019230769230769232,[N-acetylserine on S]
+1505,CCDC22,0.004984051036682616,[Hydroxybutyrylation on K]
+1506,SPTLC2,0.0,
+1507,MAPK1IP1L,0.05830903790087464,[N-acetylserine on S]
+1508,GTF3C5,0.004480889008379263,[N-acetylalanine on A]
+1509,RPL26,0.0,
+1510,RPL26L1,0.0,
+1511,THOC2,0.0,
+1512,PTPN11,0.0,
+1513,NUP188,0.0,
+1514,SNAP23,0.008463100880162491,[N-acetylmethionine on M]
+1516,CASK,0.0,
+1517,HIST1H2BK,0.09122422915526364,"[N6-acetyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [Acetylation on K], [Acetylation on K], [N6,N6-dimethyllysine on K], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R]"
+1518,HIST1H2BC,0.09122422915526364,"[N6-acetyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [N6-acetyllysine on K], [Acetylation on K], [Acetylation on K], [N6,N6-dimethyllysine on K], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R]"
+1520,EDF1,0.012285012285012284,[N-acetylalanine on A]
+1521,NUP43,0.008223684210526315,[N-acetylmethionine on M]
+1522,SRGAP2,0.0,
+1523,NGDN,0.008818342151675485,[N-acetylalanine on A]
+1524,EWSR1,0.016046213093709884,"[Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R]"
+1525,RBMX,0.005441584589432442,"[N-acetylvaline on V], [N-acetylmethionine on M]"
+1526,RBMXL1,0.005698005698005698,[N-acetylmethionine on M]
+1527,RPS4X,0.011350093638272515,"[Hydroxylation on P], [Acetylation on K]"
+1528,STT3A,0.0,
+1529,ZC3H8,0.056695245698682124,"[Acetylation on X], [Acetylation on X]"
+1530,ACAD9,0.0,
+1531,EHD4,0.00377230374589762,[N-acetylmethionine on M]
+1533,SCP2,0.00962186086789185,[Succinylation on K]
+1534,RAB5C,0.0,
+1535,PLOD2,0.0,
+1536,GLRX3,0.0,
+1537,PAICS,0.007714561234329798,"[N-acetylalanine on A], [Dimethylation on K]"
+1538,GTF3C4,0.0038017031630170313,[Citrullination on R]
+1539,RAB32,0.0,
+1540,DDAH1,0.005752085130859937,[N-acetylalanine on A]
+1541,GPX8,0.03905868567522703,"[N-acetylmethionine on M], [Formylation on K], [Hydroxylation on K], [Hydroxylation on P]"
+1542,PBK,0.004635209047928061,[N-acetylmethionine on M]
+1543,ILKAP,0.005668934240362812,[N-acetylmethionine on M]
+1544,RPS3A,0.007752883589219153,"[Phosphorylation on S], [Phosphorylation on S]"
+1545,LUC7L2,0.0,
+1546,TFG,0.008064516129032258,[N-acetylmethionine on M]
+1547,FAH,0.005821060597240818,[N-acetylserine on S]
+1548,CKAP5,0.0,
+1549,S100A11,0.0,
+1550,RAB2A,0.014080540692762603,"[N-acetylalanine on A], [Hydroxylation on N]"
+1551,UBE2S,0.011261261261261262,[N-acetylmethionine on M]
+1552,GCLC,0.003828923689550867,[Hydroxylation on K]
+1553,TBC1D23,0.0,
+1554,MRPS30,0.009111617312072893,[Acetylation on K]
+1555,DHX36,0.0032002048131080387,[Acetylation on X]
+1556,VASP,0.0,
+1557,SMAD4,0.0,
+1558,WDR18,0.0,
+1559,PSIP1,0.004492362982929021,[Phosphoserine on S]
+1560,APOBEC3B,0.0,
+1561,AKR1B1,0.0,
+1562,MCAM,0.009674922600619196,[Hydroxylation on P]
+1565,HIBCH,0.0,
+1566,GSTM3,0.0,
+1567,GTF2I,0.0,
+1570,CAND1,0.0020325203252032522,[N-acetylalanine on A]
+1571,COPG2,0.0,
+1572,EIF2B3,0.004338018393197987,[N-acetylmethionine on M]
+1573,FHL2,0.006269985579033168,"[Citrullination on R], [Citrullination on R], [Citrullination on R]"
+1574,ZNF281,0.0,
+1575,MYBBP1A,0.002596593269630245,[N6-acetyllysine on K]
+1576,STXBP2,0.0,
+1577,VPS13A,0.0,
+1578,PI4KA,0.003171582619727244,[Hydroxylation on P]
+1580,CARS,0.0,
+1581,FANCI,0.0,
+1582,GOLPH3L,0.0,
+1583,GEMIN7,0.025445292620865142,[N-acetylmethionine on M]
+1584,LACTB2,0.0,
+1585,UBE2D3,0.0,
+1586,UBE2D2,0.0,
+1587,UBE2D4,0.0,
+1588,TRA2A,0.02727768685215494,"[Phosphothreonine on T], [Phosphorylation on Y]"
+1589,AAR2,0.00744047619047619,[N-acetylalanine on A]
+1590,ASRGL1,0.017088174982911822,[N-acetylmethionine on M]
+1591,ITCH,0.0,
+1592,ELOVL5,0.08361204013377926,[N-acetylmethionine on M]
+1593,DDX17,0.0,
+1594,MED24,0.0,
+1595,SCD,0.0,
+1596,RAB11FIP1,0.006495193556767992,[Dimethylation on K]
+1597,RBM22,0.008503401360544218,[Methylation on K]
+1600,MAP3K20,0.004166666666666667,[N-acetylserine on S]
+1601,ZBTB2,0.024319066147859923,[Acetylation on X]
+1602,ARHGEF11,0.0,
+1603,B2M,0.024009603841536616,[Hydroxylation on N]
+1604,SRPRA,0.0,
+1605,ATAD1,0.007289692374981775,[Hydroxylation on P]
+1606,CEP97,0.0054497086901078825,"[Hydroxylation on P], [Hydroxylation on P]"
+1607,B4GALT1,0.0,
+1608,TERF2,0.006833401667350007,[Phosphoserine on S]
+1609,CA2,0.010683760683760684,[N-acetylserine on S]
+1610,REEP4,0.01691761123329386,[Phosphorylation on S]
+1611,OCIAD1,0.012368583797155226,[Phosphorylation on S]
+1612,WDR36,0.002841958677920823,[Hydroxylation on N]
+1613,RBBP6,0.0,
+1614,FOXK1,0.005931549913992526,[Phosphoserine on S]
+1615,XRN2,0.0030075187969924814,[Phosphoserine on S]
+1616,MAGI1,0.03179650238473768,[Butyrylation on K]
+1617,SNX27,0.0,
+1618,PON2,0.0,
+1619,ACSL4,0.0,
+1620,LSS,0.0,
+1621,PRRC1,0.0,
+1622,PGM3,0.0049865363518500055,[N-acetylmethionine on M]
+1623,VAPB,0.0,
+1624,REPS1,0.007389890629618682,[Phosphoserine on S]
+1625,CMTR1,0.0,
+1626,WDR43,0.0,
+1627,CUL3,0.0,
+1628,EIF5,0.0,
+1629,MMUT,0.005333333333333333,[Phosphoserine on S]
+1630,UBTF,0.0,
+1631,ATP5PB,0.0,
+1632,NAA15,0.0026243963888305686,[Hydroxylation on P]
+1633,CSDC2,0.013906271728549576,[Acetylation on X]
+1634,YLPM1,0.00603558834541803,"[Citrullination on R], [Citrullination on R]"
+1635,TXN,0.0,
+1636,TRMT1L,0.006496459429610862,[Phosphothreonine on T]
+1637,PPP2R5E,0.006907508461697865,[N-acetylserine on S]
+1638,PLEK2,0.0,
+1639,DRG1,0.0,
+1640,DNTTIP2,0.0,
+1641,ZC3H11A,0.004748338081671415,[Phosphorylation on S]
+1642,DNAJB6,0.0,
+1643,HOOK3,0.006632179334129195,[N-acetylmethionine on M]
+1644,KIF20B,0.0,
+1646,TRRAP,0.001993342236928658,[N-acetylalanine on A]
+1647,XPO7,0.0036798528058877645,[N-acetylalanine on A]
+1648,RIC1,0.03024278844655118,"[Malonylation on K], [Malonylation on K]"
+1649,SV2A,0.0,
+1650,NOC3L,0.0,
+1651,STAU2,0.0,
+1652,PYCR3,0.0,
+1653,WDR5,0.0074850299401197605,[Acetylation on K]
+1654,CBX5,0.009878494517435542,[Hydroxylation on K]
+1655,PSME2,0.0,
+1656,TRIM16,0.0073877068557919616,[Acetylation on X]
+1657,SRRD,0.058997050147492625,[Acetylation on X]
+1658,CCZ1B,0.0061020258725897,[N-acetylalanine on A]
+1659,CCZ1,0.0061020258725897,[N-acetylalanine on A]
+1660,NAF1,0.04048582995951417,[N-acetylmethionine on M]
+1661,GET4,0.01609528408176404,[N-acetylalanine on A]
+1662,RAP1B,0.0,
+1663,LUC7L3,0.0,
+1664,KIF21A,0.003513950383020592,[Phosphoserine on S]
+1665,JPT2,0.007412898443291327,[N-acetylmethionine on M]
+1666,COX5B,0.035236081747709654,"[Malonylation on K], [Malonylation on K]"
+1667,ADRM1,0.0129315918789603,[Acetylation on X]
+1668,AGO3,0.007267441860465116,[N-acetylmethionine on M]
+1670,SZRD1,0.03462603878116344,"[Phosphoserine on S], [Phosphoserine on S]"
+1671,NCAPG,0.005629838142153413,"[Butyrylation on K], [Phosphoserine on S]"
+1672,YKT6,0.017120356103406953,"[Hydroxylation on P], [Hydroxylation on P]"
+1673,DPF2,0.006912283127116887,[N-acetylalanine on A]
+1674,BAIAP2,0.0,
+1675,GLTP,0.019138755980861243,[N-acetylalanine on A]
+1676,METTL3,0.005070993914807302,[N-acetylserine on S]
+1677,RABGGTB,0.0,
+1678,LSM1,0.0192789666473877,[Acetylation on X]
+1679,VIRMA,0.0,
+1680,RAC1,0.010629251700680272,[Nitrosylation on C]
+1681,UXS1,0.008818342151675485,[Hydroxylation on N]
+1682,CDC42,0.008310479514667997,[Nitrosylation on C]
+1683,RAB34,0.008775008775008775,[N-acetylmethionine on M]
+1684,TMED2,0.0,
+1685,ARFGAP2,0.013237143424449004,"[N-acetylalanine on A], [Phosphoserine on S]"
+1686,EXOSC2,0.0,
+1687,GOLPH3,0.0,
+1688,INTS8,0.007730962504831852,[Carboxylation on D]
+1689,GNG12,0.0,
+1690,PLEKHF2,0.0,
+1691,TOP2B,0.0,
+1692,SHMT1,0.008281573498964804,[N6-acetyllysine on K]
+1693,LAMC1,0.0,
+1694,SNF8,0.0,
+1695,SNX17,0.005750431282346175,[Acetylation on X]
+1696,IL18,0.008224360555966773,[Acetylation on X]
+1697,UBE2C,0.0,
+1698,ACADM,0.0,[Acetylation on K]
+1699,SPC25,0.0,
+1700,LSM8,0.023148148148148147,[N-acetylthreonine on T]
+1701,DNAJC2,0.004600874166091558,[N-acetylmethionine on M]
+1702,MYL6,0.02207505518763797,"[N-acetylcysteine on C], [Hydroxylation on P]"
+1703,AAK1,0.004162330905306972,[Phosphothreonine on T]
+1704,PSMB2,0.0,
+1705,NUDT1,0.0,
+1706,RPS20,0.0,
+1707,PAIP1,0.041666666666666664,[Acetylation on X]
+1708,CDC23,0.005583472920156337,[N-acetylalanine on A]
+1709,IFI16,0.0,
+1710,ABAT,0.0,
+1711,NDRG2,0.014186409419775855,[N-acetylalanine on A]
+1712,UBE2I,0.014064697609001408,[N-acetylserine on S]
+1713,ASPSCR1,0.010637166258908625,[N-acetylalanine on A]
+1714,GNA13,0.0,
+1715,PDCD4,0.008200754469411186,[Phosphoserine on S]
+1716,PDCL3,0.008902341315766046,[Glutarylation on K]
+1717,NTPCR,0.007855459544383346,[Phosphorylation on T]
+1718,NENF,0.010382059800664452,[Hydroxylation on K]
+1719,ANKRD28,0.0,
+1720,RPS10,0.01756697408871322,"[Symmetric dimethylarginine on R], [Symmetric dimethylarginine on R]"
+1721,PSME3,0.0,
+1724,SACS,0.0,
+1725,ADA,0.009838646202282565,[N-acetylalanine on A]
+1726,ZFYVE16,0.0,
+1727,RAPH1,0.006666666666666667,[Hydroxylation on P]
+1728,ATP5F1C,0.006991051454138703,[Malonylation on K]
+1729,SPATS2L,0.005430650591940915,[N-acetylalanine on A]
+1730,LIMCH1,0.005771006463527239,[Acetylation on X]
+1731,RPS2,0.02258230027176682,"[Hydroxylation on P], [Acetylation on K], [Methylation on K], [Phosphoserine on S], [Hydroxylation on P], [Acetylation on K], [Phosphoserine on S]"
+1732,GOLT1B,0.04301426186416596,"[N-acetylmethionine on M], [N-acetylmethionine on M]"
+1733,UNC45A,0.002714736385035451,"[Malonylation on K], [Malonylation on K]"
+1734,HNRNPDL,0.031746031746031744,"[Phosphorylation on S], [Hydroxylation on K], [HexNAc on T], [Dimethylated arginine on R]"
+1735,AKAP8,0.009031791907514452,[Omega-N-methylarginine on R]
+1736,RSPRY1,0.0,
+1737,ITSN2,0.0,
+1738,DNAJC13,0.0,
+1739,ALG5,0.0,
+1740,FUCA2,0.0,
+1741,SNTB2,0.0,
+1742,CARHSP1,0.015460729746444031,[N-acetylserine on S]
+1743,RHOC,0.0,
+1744,RHOA,0.0,
+1745,RPRD1B,0.00681663258350375,[N-acetylserine on S]
+1746,TSTD1,0.014738393515106855,[Acetylation on X]
+1747,CAPZB,0.0,[N-acetylserine on S]
+1748,SLK,0.0,
+1749,GTSE1,0.008680555555555556,[Phosphoserine on S]
+1750,GRB2,0.0,
+1751,YES1,0.0,
+1752,TMEM147,0.034154025322503584,"[Methylation on R], [Methylation on R]"
+1753,ALDH16A1,0.0,
+1754,ATP1B3,0.0,
+1755,OCRL,0.005841462702260646,[Acetylation on X]
+1756,LRPAP1,0.006669334400426837,[Hydroxylation on K]
+1757,NUP58,0.0,
+1758,USP34,0.0,
+1759,FKBP5,0.0,
+1760,MLST8,0.010577533319229955,[N-acetylmethionine on M]
+1761,PIP4K2A,0.009852216748768473,[N-acetylalanine on A]
+1762,CCND2,0.02035416242621616,[Acetylation on X]
+1763,ME1,0.0,
+1764,MYO9B,0.0,
+1765,TCERG1,0.0,
+1766,PAK1,0.004267121826328142,[N-acetylserine on S]
+1767,MOCS2,0.040584415584415584,[Acetylation on X]
+1768,MRPL3,0.0,
+1769,EPB41,0.0,
+1770,RPS13,0.062476571285767835,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on K], [Methylation on K], [Formylation on K]"
+1771,ARFGEF2,0.0,
+1772,PAK4,0.0,
+1773,LIN7C,0.0,
+1774,CEP170,0.008234519104084322,"[Acetylation on X], [Phosphoserine on S], [Phosphorylation on S]"
+1775,CNPY2,0.0,
+1776,TAF15,0.03378378378378378,"[Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R], [Asymmetric dimethylarginine on R]"
+1777,ORMDL2,0.019223375624759707,[Acetylation on X]
+1778,THRAP3,0.011367942402425162,"[Hydroxylation on K], [Hydroxylation on P], [Phosphorylation on S]"
+1779,MSRA,0.0,
+1780,TBC1D10B,0.006513809275664408,[Acetylation on X]
+1781,ITGA3,0.004136846895296405,[Hydroxylation on P]
+1782,UBXN7,0.007303534910896875,[N-acetylalanine on A]
+1783,SHCBP1,0.005511463844797178,[N-acetylalanine on A]
+1784,MIPEP,0.009350163627863487,[Citrullination on R]
+1786,SLC27A4,0.0,
+1787,MRPS5,0.0,
+1788,MYCBP2,0.0,
+1789,NDUFB9,0.011886366337810532,[N-acetylalanine on A]
+1790,KBTBD2,0.0,
+1791,TERF2IP,0.016169455897809038,"[N-acetylalanine on A], [Phosphorylation on S]"
+1792,SLC25A5,0.020545130803999452,"[N-acetylthreonine on T], [N-acetylmethionine on M], [N6,N6,N6-trimethyllysine on K]"
+1793,COG1,0.0,
+1794,UBL7,0.010121457489878543,[Acetylation on X]
+1795,RAB5B,0.0,
+1796,CCM2,0.01029230135858378,"[Methylation on R], [Methylation on R], [Methylation on R]"
+1797,RPL11,0.009686168151879117,[N-acetylalanine on A]
+1798,URI1,0.0058411214953271035,[N-acetylmethionine on M]
+1799,MTRF1L,0.0,
+1800,TPM4,0.0070741369552914535,[N-acetylalanine on A]
+1801,NEXN,0.00644122383252818,[Phosphoserine on S]
+1802,WFS1,0.0,
+1803,CTNNBL1,0.006343567622430856,[N-acetylmethionine on M]
+1804,KCNN4,0.0,
+1805,PPP1R2,0.012836970474967907,[N-acetylalanine on A]
+1806,GGCT,0.0,
+1807,RPS6,0.00892458723784025,[Hydroxylation on K]
+1808,ALDH9A1,0.0049372963365261185,[N-acetylserine on S]
+1809,PDLIM2,0.00883452485014985,"[Acetylation on X], [Acetylation on X]"
+1810,HSPE1,0.05299417064122946,"[N6-succinyllysine on K], [Hydroxylation on K], [Methylation on K], [Methylation on R]"
+1812,CARM1,0.01827485380116959,"[N-acetylalanine on A], [Hydroxylation on N], [Hydroxylation on P]"
+1813,GLB1,0.0,
+1814,POLDIP3,0.004948535233570863,[N-acetylalanine on A]
+1815,IWS1,0.015262515262515264,"[Phosphoserine on S], [Phosphoserine on S]"
+1816,SSBP1,0.0,
+1817,CD44,0.0,
+1818,CNOT9,0.010451505016722408,[N-acetylmethionine on M]
+1819,ANKS1A,0.009062065175968022,"[Phosphorylation on T], [Phosphorylation on T]"
+1820,ARHGDIA,0.03380662609871535,"[N-acetylalanine on A], [Phosphoserine on S], [Acetylation on K], [Hydroxylation on N]"
+1821,IDE,0.0,
+1822,KIF18A,0.0,
+1825,SF3A2,0.016578249336870028,[N-acetylmethionine on M]
+1826,SUB1,0.012908222537756552,[Hydroxylation on P]
+1827,SMARCA5,0.0,
+1828,HIRIP3,0.032701111837802485,"[Phosphothreonine on T], [Phosphoserine on S]"
+1829,UBE2G1,0.011764705882352941,[N-acetylmethionine on M]
+1830,TMTC3,0.006428801028608164,[Hydroxylation on N]
+1831,TPK1,0.05618509367337858,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+1832,GALNT7,0.0,
+1833,DNAJC10,0.0,
+1834,IMP4,0.0,
+1835,GGH,0.007669888019634913,[Nitrosylation on Y]
+1836,SUPV3L1,0.0,
+1837,PBDC1,0.009537434430138294,[Phosphoserine on S]
+1838,RPS25,0.0,
+1839,RIPK1,0.0,
+1840,SLC16A1,0.0,
+1841,RPL15,0.00980392156862745,[Hydroxylation on N]
+1842,PTMA,0.025025025025025023,[N-acetylserine on S]
+1843,ENSA,0.0,
+1844,RBM12,0.0,
+1846,GCLM,0.0,
+1847,PRPSAP1,0.0,
+1848,FTO,0.0,
+1849,GIGYF1,0.01610305958132045,[Acetylation on X]
+1850,MOB1B,0.015964240102171137,[N-acetylserine on S]
+1851,MOB1A,0.015964240102171137,[N-acetylserine on S]
+1852,NR3C1,0.0,
+1853,SLC9A3R1,0.005270369979972594,[N-acetylserine on S]
+1854,PCCB,0.012368583797155226,"[N6-succinyllysine on K], [N6-succinyllysine on K]"
+1855,XRN1,0.0,
+1856,SNX5,0.0055005500550055,[N-acetylalanine on A]
+1857,C12orf10,0.0,
+1858,SOD2,0.0,
+1860,RAN,0.017470300489168412,"[N-acetylalanine on A], [Hydroxylation on N]"
+1861,RCL1,0.006702412868632708,[Acetylation on X]
+1862,PDPK1,0.00781983109164842,[Phosphoserine on S]
+1863,SMARCAD1,0.005414771496642841,[N-acetylmethionine on M]
+1864,MRPL40,0.0,
+1865,UTP3,0.010987803538072738,[Citrulline on R]
+1866,ISG20L2,0.0141643059490085,[Acetylation on X]
+1867,ADD3,0.004884243430692586,[Phosphoserine on S]
+1868,TXNDC12,0.0,
+1869,TUBA4B,0.0,
+1870,PNN,0.023719165085388995,"[Phosphoserine on S], [Acetylation on K], [Phosphorylation on S], [Phosphorylation on S]"
+1871,MED8,0.0,
+1872,CHP1,0.011655011655011656,[Citrullination on R]
+1873,GNPAT,0.0,
+1874,STAT5B,0.012706480304955527,[Formylation on K]
+1875,LSM4,0.01560072122547973,"[N-acetylmethionine on M], [N-acetylmethionine on M]"
+1876,LEMD2,0.010463534581981794,[N-acetylalanine on A]
+1877,CHRAC1,0.030534351145038167,[N-acetylalanine on A]
+1879,RSBN1L,0.0,
+1880,ATP5MG,0.011422044545973729,[Carboxylation on E]
+1881,RBM28,0.005270092226613966,[N-acetylalanine on A]
+1882,H2AFZ,0.0,
+1883,H2AFV,0.0,
+1884,KIN,0.007710694733595497,"[N6,N6,N6-trimethyllysine on K]"
+1885,NIT2,0.0,
+1887,TALDO1,0.006594131223211341,[Hydroxylation on N]
+1888,SNX7,0.0103359173126615,[Methylation on R]
+1889,PRPF38B,0.010773540185304893,[Phosphoserine on S]
+1890,MRPS16,0.0,
+1891,MITD1,0.0,
+1892,SSU72,0.0,
+1893,SH3GL1,0.0,
+1894,EMC8,0.0,
+1895,ORMDL1,0.015561780267662619,[Acetylation on X]
+1896,RPS19,0.0,
+1897,CUL4B,0.010683760683760684,[Acetylation on X]
+1898,ILK,0.005822077317186773,[N-acetylmethionine on M]
+1899,RBM27,0.0052410901467505235,[Dimethylation on R]
+1900,GAMT,0.010088781275221953,[N-acetylserine on S]
+1901,PPP1R12A,0.006067961165048544,"[Phosphoserine on S], [Phosphoserine on S]"
+1902,RPS26,0.0,
+1903,PPFIA1,0.0,
+1904,CLPX,0.0,
+1906,KIRREL1,0.010940147519290132,"[Hydroxylation on P], [Hydroxylation on P]"
+1908,PTP4A2,0.018712574850299403,[Acetylation on X]
+1909,DHFR,0.0,
+1910,KRT17,0.0,
+1911,AKR7A2,0.0,
+1912,TTI1,0.009182736455463728,[Acetylation on X]
+1913,EXOSC1,0.0,
+1914,CYHR1,0.0,
+1915,TRIP4,0.011474469305794606,[N-acetylalanine on A]
+1917,TRIM32,0.010209290454313425,[N-acetylalanine on A]
+1918,TAB3,0.028089887640449437,[N-acetylalanine on A]
+1919,SETD2,0.0,
+1920,FANCE,0.020305200307277397,"[Acetylation on X], [Acetylation on X]"
+1921,SH3GLB1,0.00944733112895607,[N-acetylmethionine on M]
+1922,HEBP2,0.012195121951219513,[N-acetylalanine on A]
+1923,KIF16B,0.0,
+1924,MARCKSL1,0.01768346595932803,[Phosphoserine on S]
+1925,COLGALT1,0.0,
+1926,IVD,0.0,
+1927,NDFIP1,0.05656108597285068,[N-acetylalanine on A]
+1928,MED22,0.0,
+1929,ELOVL1,0.039824771007566706,[N-acetylmethionine on M]
+1930,RPL13,0.0,
+1931,YWHAH,0.007817385866166354,[N-acetylglycine on G]
+1933,LRRC1,0.0,
+1934,UBE2V2,0.014992503748125937,[N-acetylalanine on A]
+1935,ATR,0.007564296520423602,[Acetylation on X]
+1936,OGDHL,0.0,
+1937,RPS16,0.009382623381497467,[Acetylation on X]
+1938,YWHAG,0.00880126738250308,[N-acetylvaline on V]
+1939,PDCD5,0.011940298507462687,[N-acetylalanine on A]
+1940,ATG3,0.006923289947382997,[N-acetylmethionine on M]
+1941,DPM1,0.0,
+1942,RHOQ,0.023228803716608595,[Nitrosylation on C]
+1943,MYO1F,0.0,
+1944,IAH1,0.011859582542694497,[Acetylation on X]
+1945,ATAD2B,0.008573388203017833,[Hydroxylation on P]
+1946,CDK12,0.011185682326621923,"[Glutarylation on K], [Phosphothreonine on T]"
+1948,SRSF4,0.0,
+1949,HNRNPD,0.0,
+1950,ARPC5L,0.0,
+1951,NCLN,0.0,
+1952,PTPMT1,0.04057095475005923,"[Acetylation on X], [Acetylation on X]"
+1953,GOSR1,0.015384615384615385,[N-acetylalanine on A]
+1954,RBMS2,0.015356265356265355,[N-acetylmethionine on M]
+1955,RAB18,0.008989572096368213,[N-acetylmethionine on M]
+1956,NOP2,0.0033284516043136734,[Phosphorylation on S]
+1957,RRP7A,0.00830564784053156,[Methylation on K]
+1959,TBC1D1,0.004506128334534968,[Phosphorylation on S]
+1960,KCTD5,0.01858045336306206,[N-acetylalanine on A]
+1961,HNRNPAB,0.0,"[Dimethylated arginine on R], [Omega-N-methylarginine on R]"
+1962,DNAJA2,0.006223549912870301,[Hydroxylation on N]
+1963,INTS12,0.027604715104715103,"[Acetylation on X], [Acetylation on X]"
+1965,SRSF9,0.015082956259426848,"[Phosphorylation on S], [Phosphoserine on S]"
+1966,VPS50,0.006915629322268327,[Phosphoserine on S]
+1967,P3H1,0.0,
+1968,DYNLRB1,0.01255020080321285,[N-acetylalanine on A]
+1969,RPL7A,0.0,
+1970,TMEM205,0.017730998123154984,"[Hydroxylation on P], [Hydroxylation on P]"
+1971,DERL1,0.0,
+1972,MICAL2,0.0,
+1973,STMN1,0.05375338479627685,"[Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S], [Phosphoserine on S], [N-acetylalanine on A], [Phosphorylation on S], [Phosphorylation on S], [Phosphoserine on S], [Phosphoserine on S]"
+1974,SYAP1,0.009164222873900292,[Phosphothreonine on T]
+1975,STX7,0.01277139208173691,[N-acetylserine on S]
+1976,TRIP13,0.01052188552188552,"[N-acetylmethionine on M], [Carboxylation on D]"
+1977,DDX27,0.0,
+1978,RABIF,0.018066847335140017,[N-acetylmethionine on M]
+1979,DNAJC5,0.04208754208754208,"[Phosphorylation on T], [Pyridoxal phosphate on K]"
+1980,RPL18,0.013297872340425532,"[Acetylation on K], [Acetylation on K], [Acetylation on K]"
+1981,LIN9,0.007397585469255256,"[Hydroxylation on P], [Hydroxylation on P]"
+1982,SCRN1,0.005139274334463973,[N-acetylalanine on A]
+1983,PANK3,0.0,
+1984,RBBP9,0.0,
+1985,WNK4,0.0,
+1986,PARVA,0.0,
+1987,BRPF3,0.0,
+1988,CHTF8,0.027262813522355506,[Dimethylation on R]
+1989,POLR2C,0.0,
+1990,KCTD21,0.0,
+1991,KRR1,0.00771962328238382,[N-acetylalanine on A]
+1992,GTF2H5,0.0,
+1993,RMDN1,0.0,
+1994,MARK2,0.0,
+1995,DPP9,0.0,
+1996,COMMD7,0.0,
+1997,NRBF2,0.013401232913428035,[Acetylation on X]
+1998,TIMM8A,0.013049719431032234,[Acetylation on X]
+1999,GLMN,0.01295001295001295,[N-acetylalanine on A]
+2000,TRMT61B,0.017273401610704425,"[Hydroxylation on P], [Hydroxylation on P]"
+2001,POP7,0.0,
+2002,COL4A2,0.008344459279038718,[Hydroxylation on P]
+2003,BPTF,0.0,
+2004,ATP6V1G1,0.02824858757062147,[N-acetylalanine on A]
+2005,ATM,0.005453752181500873,[N-acetylserine on S]
+2006,UCHL5,0.0,
+2007,LASP1,0.0,
+2008,WDR62,0.005067396371744198,[Phosphorylation on S]
+2009,RPS27L,0.0,
+2010,EIF4E,0.010473397570171763,[N-acetylalanine on A]
+2011,CDC37L1,0.013508067105989955,"[Acetylation on X], [Acetylation on X]"
+2012,ALDH1L2,0.0,
+2013,BUB1B,0.005012531328320802,[Nitrosylation on C]
+2014,PRR11,0.0,
+2015,MYO1D,0.005217340461312306,"[Citrullination on R], [Citrullination on R]"
+2016,SASS6,0.0380517503805175,[Acetylation on X]
+2017,RPL24,0.0,
+2018,MRPS33,0.02007226013649137,[N-acetylserine on S]
+2019,RPL22,0.0,
+2020,KIF20A,0.0,
+2021,DTL,0.0,
+2022,INTS13,0.005058680696074464,[Hydroxylation on N]
+2023,ARID1B,0.0,
+2024,RBX1,0.038580246913580245,[N-acetylalanine on A]
+2026,UBE2V1,0.0,
+2027,HDDC2,0.010004001600640256,[N-acetylalanine on A]
+2028,RPL27A,0.04606879606879607,"[(3S)-3-hydroxyhistidine on H], [Phosphorylation on T], [N6-acetyllysine on K]"
+2030,RPS28,0.0,
+2031,PSMB5,0.0,
+2032,RETREG3,0.019508388607101055,[N-acetylalanine on A]
+2033,H1F0,0.036818851251840944,"[N-acetylthreonine on T], [N-acetylmethionine on M]"
+2035,TPM2,0.0,
+2036,TIMM44,0.01670843776106934,[Pyridoxal phosphate on K]
+2037,RAB13,0.0,
+2038,C8orf33,0.024260067928190198,[N-acetylalanine on A]
+2039,RPL35,0.0,
+2040,SRSF6,0.0,
+2041,RABEP2,0.0,
+2042,HIP1,0.007417847340701728,[ADP-ribosylation on S]
+2043,RPL18A,0.0,
+2044,AMD1,0.0499001996007984,[Acetylation on X]
+2045,SEC61G,0.0397456279809221,[N-acetylmethionine on M]
+2047,AP3S1,0.0,
+2048,SMARCA1,0.0,
+2049,ELOB,0.029222676797194622,"[N-acetylmethionine on M], [Butyrylation on K]"
+2050,NME3,0.0,
+2051,ATXN2,0.0,
+2052,AP5Z1,0.011265067027148813,[Acetylation on X]
+2053,BLOC1S2,0.035211267605633804,[N-acetylalanine on A]
+2054,DIABLO,0.0,
+2055,RPS23,0.01998001998001998,[3-hydroxyproline on P]
+2056,GLUD2,0.0,
+2057,SKA1,0.011534025374855825,[N-acetylalanine on A]
+2058,LMNB2,0.010295126973232671,"[Citrullination on R], [Hydroxylation on K], [Phosphorylation on S]"
+2059,TAGLN,0.006218905472636815,[Methylation on K]
+2060,PRPF39,0.0,
+2061,CD59,0.0,
+2062,LIG3,0.0,
+2063,MLEC,0.0,
+2064,UBLCP1,0.009827044025157232,[N-acetylalanine on A]
+2065,MRGBP,0.04595588235294117,"[Phosphoserine on S], [Phosphorylation on S], [Phosphorylation on S]"
+2066,MGRN1,0.0,
+2067,DAPK3,0.0,
+2069,ARHGEF28,0.0,
+2070,PAXX,0.012254901960784315,[Acetylation on X]
+2071,TMEM70,0.015384615384615385,[Carboxylation on E]
+2072,NTMT1,0.020857232245281052,"[N-acetylthreonine on T], [N-acetylmethionine on M]"
+2073,WDHD1,0.0,
+2074,RPL13A,0.010708931248661385,[N-acetylalanine on A]
+2075,RPL36AL,0.019654088050314465,[N6-methyllysine on K]
+2076,ANKRD11,0.01877581674802854,"[Phosphoserine on S], [Hydroxylation on N]"
+2077,NGLY1,0.00804764204088202,[N-acetylalanine on A]
+2078,TAX1BP1,0.013874663461463512,"[Acetylation on X], [Acetylation on X]"
+2079,NUCKS1,0.01959631589261219,[Phosphoserine on S]
+2080,LRRC8A,0.006858710562414266,[N-acetylmethionine on M]
+2081,MARCH5,0.011241007194244606,[Hydroxylation on P]
+2082,DCK,0.0,
+2083,AEBP2,0.06447453255963895,[N-acetylalanine on A]
+2084,PPIC,0.0,
+2085,TAOK2,0.0,
+2086,TRIM33,0.0,
+2087,TNIK,0.0,
+2088,CDS2,0.0149812734082397,[Phosphorylation on S]
+2089,GPX4,0.0,
+2090,RWDD1,0.0,
+2092,RPS27,0.030525030525030528,[Phosphoserine on S]
+2093,ZFYVE26,0.02625705658395694,"[Hydroxylation on P], [Hydroxylation on P]"
+2094,MBLAC2,0.039824771007566706,[N-acetylserine on S]
+2095,PLEKHM1,0.01893939393939394,[Acetylation on X]
+2096,YTHDC1,0.021161781822029414,"[Phosphoserine on S], [Phosphorylation on S]"
+2097,RPS18,0.021222410865874366,"[N-acetylserine on S], [Methylation on R]"
+2098,MYO19,0.0073637702503681875,[Citrullination on R]
+2099,STAT6,0.0,
+2100,CAPN7,0.0,
+2101,ARFRP1,0.022614201718679332,[N-acetylmethionine on M]
+2103,SMAD3,0.010230179028132993,[N-acetylserine on S]
+2104,SMAD2,0.0237925291458482,[N-acetylserine on S]
+2105,PPP1R16A,0.06501047261916827,"[Acetylation on X], [Acetylation on X]"
+2106,EDRF1,0.0,
+2107,HAX1,0.013274923669188903,[N-acetylserine on S]
+2108,PPCS,0.010718113612004287,[N-acetylalanine on A]
+2109,SUMO2,0.0,
+2111,TMSB15A,0.07168458781362008,[Acetylation on X]
+2112,LITAF,0.016786973308712438,[Acetylation on X]
+2113,RTF1,0.007042253521126761,[Citrullination on R]
+2114,ATG101,0.0,
+2116,SUMO3,0.0,
+2117,KLHDC8B,0.012840267077555215,[Formylation on K]
+2118,AMDHD2,0.0,
+2119,MAGEA8,0.0,
+2120,CYTH3,0.0,
+2121,PLCG2,0.0,
+2122,TRAF2,0.015968063872255488,"[N-acetylalanine on A], [Phosphoserine on S]"
+2123,RAMAC,0.0,
+2124,CREBBP,0.005118755118755119,[Phosphoserine on S]
+2125,NSD2,0.0,
+2126,MTFR1L,0.01902587519025875,[Hydroxylation on P]
+2127,PLIN2,0.006356470887363336,[N-acetylalanine on A]
+2128,MTSS2,0.0,
+2129,YTHDC2,0.0,
+2130,UBL5,0.029146021568055958,[Phosphorylation on T]
+2131,DAD1,0.025284450063211127,[N-acetylserine on S]
+2132,LUC7L,0.0,
+2133,RPL35A,0.0,
+2134,MAP2,0.012163230554035152,"[Phosphothreonine on T], [Citrullination on R]"
+2135,CCDC86,0.010683760683760684,[Phosphorylation on S]
+2136,NAA50,0.01038098204090107,[N6-acetyllysine on K]
+2137,MICAL3,0.01665001665001665,"[Citrullination on R], [Citrullination on R]"
+2138,PALM,0.011745360582569885,[N-acetylmethionine on M]
+2139,SESTD1,0.023946360153256706,[Acetylation on X]
+2140,MTMR6,0.0,
+2141,THOC1,0.007247952453431906,[N-acetylmethionine on M]
+2142,NAA30,0.009208103130755065,[Acetylation on X]
+2143,CCDC51,0.0,
+2144,RCN2,0.0,
+2145,ANP32C,0.0,
+2146,MZT2B,0.015820281996964586,"[Acetylation on X], [Acetylation on X]"
+2147,MZT2A,0.01582278481012658,[Acetylation on X]
+2148,ZYG11B,0.0,
+2149,NACA4P,0.015144631228229592,[Hydroxylation on K]
+2150,CTTNBP2NL,0.0,
+2151,PDCD2L,0.015518311607697084,[N-acetylalanine on A]
+2152,GEMIN2,0.01818181818181818,[Acetylation on X]
+2153,TENT2,0.02551085478574656,"[Hydroxylation on P], [Hydroxylation on P]"
+2154,NEFL,0.0,
+2155,GYG1,0.012422360248447204,[N-acetylthreonine on T]
+2156,LRCH1,0.0,
+2157,GABPA,0.011013215859030838,[Citrullination on R]
+2158,BICD1,0.010166496139893963,"[Acetylation on X], [Acetylation on X]"
+2159,NBN,0.0,
+2160,DCAKD,0.0,
+2161,SUPT20H,0.033029908745883796,"[Acetylation on X], [Acetylation on X]"
+2162,MYL6B,0.0,
+2163,QRSL1,0.0,
+2164,ATP5PF,0.0,
+2165,DDX58,0.008316008316008316,[Citrullination on R]
+2166,FAM49A,0.010675776662752216,[Hydroxylation on P]
+2167,SPAG7,0.016943409013893594,[N-acetylalanine on A]
+2168,TMEM106B,0.0,
+2169,CD55,0.0,
+2170,LAMTOR2,0.0,
+2171,UNC50,0.04826254826254826,[N-acetylmethionine on M]
+2172,SMARCAL1,0.017470300489168412,[Nitrosylation on Y]
+2174,AAMDC,0.028304613724140493,"[Acetylation on X], [Acetylation on X]"
+2175,COX6B1,0.0,
+2176,NDUFA12,0.012099213551119176,[N-acetylmethionine on M]
+2177,SGO2,0.026350461133069828,[Acetylation on X]
+2178,AKNA,0.0,
+2179,BTRC,0.0,
+2180,FBXW11,0.0,
+2181,RER1,0.019623233908948195,[N-acetylserine on S]
+2182,TXNL4A,0.015309246785058177,[Acetylation on X]
+2183,BAZ1A,0.005355612682090831,[Acetylation on K]
+2184,TADA1,0.02487562189054726,[Acetylation on X]
+2185,FEM1B,0.0,
+2186,HDDC3,0.03990422984836393,[N-acetylglycine on G]
+2187,EDEM3,0.0,
+2188,FRA10AC1,0.01984126984126984,[N-acetylmethionine on M]
+2189,RANBP17,0.04595588235294117,[Hydroxylation on P]
+2190,NIN,0.0,
+2191,ORMDL3,0.019223375624759707,[Acetylation on X]
+2192,ARMC1,0.022163120567375887,[N-acetylmethionine on M]
+2193,ADNP2,0.01768346595932803,[Acetylation on X]
+2194,CCND1,0.02421307506053269,[Acetylation on X]
+2195,PIR,0.008841732979664015,[Hydroxylation on P]
+2196,TUBB1,0.018477457501847747,[Citrullination on R]
+2197,ZC3H18,0.006558237145855195,[Phosphorylation on S]
+2198,SNRPG,0.0,
+2199,REXO2,0.009589566551591868,"[Hydroxylation on P], [Hydroxylation on P], [Hydroxylation on P]"
+2200,PPIG,0.0,
+2201,RPL36A,0.0,
+2202,DPF1,0.06297229219143577,[Acetylation on X]
+2203,XRCC3,0.02627430373095113,[N-acetylmethionine on M]
+2204,MBOAT2,0.0,
+2205,RPS9,0.0,
+2206,ACBD7,0.0,
+2207,MRPS2,0.0,
+2208,DCTN5,0.04995004995004995,[N-acetylmethionine on M]
+2209,VMP1,0.0,
+2210,GTDC1,0.07225433526011561,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+2211,RPL28,0.012805736970162632,[N-acetylserine on S]
+2212,TMEM201,0.01876876876876877,[N-acetylmethionine on M]
+2213,CHD1L,0.0,
+2214,NDUFB11,0.0,
+2215,ATP5MF,0.023640661938534282,[N-acetylalanine on A]
+2216,SPTY2D1,0.0,
+2217,SFXN2,0.03450655624568668,"[N-acetylmethionine on M], [Hydroxylation on K]"
+2218,GPN2,0.014025245441795233,[N-acetylalanine on A]
+2219,KIF7,0.0,
+2220,HERPUD2,0.06666666666666667,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+2221,EXOSC4,0.014074595355383534,[N-acetylalanine on A]
+2222,ZNF740,0.028785261945883704,[Acetylation on X]
+2223,NSRP1,0.019876827672526597,"[Acetylation on K], [Acetylation on K]"
+2224,HSDL1,0.017825311942959002,[N-acetylalanine on A]
+2225,SLC31A1,0.0,
+2226,ASPM,0.009586808551433228,[Phosphorylation on T]
+2227,IGSF8,0.0,
+2228,RAC2,0.008400537634408602,[Nitrosylation on C]
+2229,RBL2,0.01755926251097454,[Citrullination on R]
+2231,OXR1,0.0,
+2232,NFYC,0.015503875968992248,"[Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X], [Acetylation on X]"
+2233,WDR13,0.020618556701030927,[Acetylation on X]
+2234,CHST14,0.01773049645390071,[Hydroxylation on P]
+2236,SARNP,0.011337868480725623,[N-acetylalanine on A]
+2238,SP1,0.025477707006369428,[N-acetylserine on S]
+2239,DPCD,0.037893141341417205,[Acetylation on X]
+2240,ABT1,0.010813148788927335,[N-acetylmethionine on M]
+2241,HSPB8,0.01457725947521866,[Acetylation on X]
+2243,FOXRED2,0.0,
+2244,ZNF207,0.0,
+2245,DCXR,0.0075895567698846395,[N-acetylmethionine on M]
+2246,PAN2,0.0,
+2247,RILPL1,0.0,
+2248,KHNYN,0.04214075010535188,"[Phosphorylation on S], [Phosphorylation on S]"
+2249,BLOC1S1,0.0,
+2250,ARPP19,0.015664160401002505,[N-acetylserine on S]
+2251,CEP63,0.07112375533428164,[N-acetylmethionine on M]
+2252,FAM53C,0.08503401360544217,[N-acetylmethionine on M]
+2253,DYNLL2,0.0,
+2254,RAB33B,0.0,
+2255,MPLKIP,0.08594757198109154,"[Asymmetric dimethylarginine on R], [Phosphoserine on S]"
+2256,BRCA2,0.0,
+2258,PIK3CA,0.0,
+2259,STX10,0.040160642570281124,[N-acetylserine on S]
+2260,ZMYND8,0.00468427955780401,[Phosphoserine on S]
+2261,ALKBH5,0.08984725965858041,[Phosphorylation on S]
+2262,CDAN1,0.016299918500407497,[N-acetylalanine on A]
+2263,FYN,0.0,
+2264,TMEM50A,0.05790387955993052,[N-acetylserine on S]
+2266,MTURN,0.027262813522355506,[Acetylation on X]
+2267,GPRIN1,0.0,
+2268,MYH3,0.034364261168384876,"[Carboxylation on E], [Malonylation on K]"
+2269,MYH1,0.025786487880350695,[Carboxylation on E]
+2272,MYH2,0.02575991756826378,[Carboxylation on E]
+2273,MYH4,0.017190991920233798,[Carboxylation on E]
+2274,KAT8,0.0,
+2275,DCTN3,0.015360983102918589,[N-acetylalanine on A]
+2276,LAMTOR4,0.10101010101010101,[N-acetylthreonine on T]
+2277,CLTA,0.0,
+2278,MAGEA6,0.0,
+2279,HDAC7,0.016852039096730703,[Citrullination on R]
+2280,AFAP1,0.04566210045662101,[N-acetylmethionine on M]
+2281,NEURL4,0.03250975292587776,"[Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R], [Citrullination on R]"
+2282,KIF27,0.0,
+2284,MTO1,0.02324500232450023,[Acetylation on K]
+2285,POLR1D,0.02425418384671356,[N-acetylmethionine on M]
+2286,CHMP1A,0.021258503401360544,[N-acetylmethionine on M]
+2287,MPDU1,0.05060728744939271,[N-acetylalanine on A]
+2288,METTL21A,0.03042369179050877,"[Acetylation on X], [Acetylation on X]"
+2289,PPP2R5A,0.0,
+2290,ELF1,0.08130081300813008,[Phosphorylation on S]
+2291,PLEKHM2,0.0,
+2293,EIF4EBP2,0.013440860215053762,[Acetylation on X]
+2294,C1orf131,0.0,
+2295,CMC1,0.05896226415094339,[N-acetylalanine on A]
+2296,ZNF106,0.0,
+2297,FAIM,0.023277467411545624,[N-acetylthreonine on T]
+2298,AGTPBP1,0.0,
+2299,MTMR9,0.020238818053025704,[N-acetylmethionine on M]
+2300,CLTB,0.0,
+2301,SLC6A8,0.0,
+2302,MIEN1,0.0,
+2303,MSRB3,0.0,
+2304,CDH11,0.0,
+2305,CD63,0.0,
+2306,SYTL2,0.0,
+2308,TINF2,0.07390983000739099,[N-acetylalanine on A]
+2309,MAN2C1,0.0,
+2310,METTL26,0.054466230936819175,[N-acetylmethionine on M]
+2313,TMEM256,0.1264222503160556,[Acetylation on X]
+2314,MAPK8IP3,0.0,
+2315,GAPDHS,0.0,
+2316,MNT,0.0859106529209622,[N-acetylserine on S]
+2318,PLXNA2,0.0,
+2319,DCAF4,0.0,
+2320,SASH1,0.013365410318096767,[Hydroxylation on P]
+2322,FBXO33,0.0,
+2323,EFEMP1,0.0,
+2324,DCAF12,0.03679175864606328,[Hydroxylation on K]
+2325,GLI3,0.021506226472146627,"[Citrullination on R], [Citrullination on R]"
+2326,SSH2,0.0234246896228625,[Phosphoserine on S]
+2327,CCNB2,0.0,
+2328,OMA1,0.0,
+2329,JAM3,0.0,
+2330,CHMP2A,0.07507507507507508,[N-acetylmethionine on M]
+2331,TMEM50B,0.04868549172346641,[N-acetylalanine on A]
+2332,TMEM258,0.12706664944458795,"[N-acetylmethionine on M], [N-acetylmethionine on M]"
+2333,GABPB1,0.06329113924050632,[N-acetylserine on S]
+2334,SNX24,0.01849112426035503,[N-acetylmethionine on M]
+2335,RWDD4,0.0,
+2337,PI4KAP2,0.0,
+2338,SS18L2,0.04995004995004995,[Acetylation on X]
+2339,RIPOR2,0.01918647859134824,"[Citrullination on R], [Citrullination on R]"
+2340,DUSP19,0.07680491551459294,[Citrullination on R]
+2345,TOPORS,0.09569377990430622,"[Citrullination on R], [Hydroxylation on P]"
+2347,DIXDC1,0.0,
+2349,DPY19L2P1,0.08264462809917356,[Acetylation on K]
+2351,FAM83B,0.09891196834817013,[Phosphorylation on T]
+2352,CROCC,0.024789291026276646,[Citrullination on R]
+2353,RPUSD1,0.08012820512820512,[N-acetylmethionine on M]
+2354,ACADS,0.030488530363601753,"[Phosphorylation on T], [Phosphorylation on T]"
+2356,KLF13,0.01827485380116959,[Hydroxylation on P]
+2359,CLCN7,0.022197558268590458,[Methylation on R]
+2361,CDKN3,0.0,
+2362,CCDC57,0.04371584699453552,"[Acetylation on K], [Citrullination on R]"
+2363,ACVR1B,0.024752475247524754,[Hydroxylation on P]
+2364,STK35,0.0,
+2365,PDIK1L,0.0,
+2368,CEP70,0.056007252241231126,"[Hydroxylation on P], [Hydroxylation on P]"
+2369,CCDC184,0.0,
+2370,TNK1,0.07507507507507508,[Phosphoserine on S]
+2371,BNIP2,0.035385704175513094,[Phosphoserine on S]
+2373,PNMA2,0.09157509157509157,[N-acetylalanine on A]
+2375,ZNF365,0.0,
+2377,HACE1,0.0,
