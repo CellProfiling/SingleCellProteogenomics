@@ -328,3 +328,15 @@ plt.close()
 
 #%% Okay, next I do want to incorporate the occupancy to see if it makes this more robust
 
+#%% [markdown]
+# Bulk U2OS analysis results
+# It turns out the significance went away when I filtered out an artifact I missed (iron adducts),
+# and then after checking all transcript-regulated CCD genes, rather than just the 
+# set in Diana's study, it all went away.
+# 
+# On the bright side, there are some really interesting modifications even in the 
+# bulk sequencing: plenty of phosphorylations and even a nitrosylation on BUB1B that's
+# not in UniProt.
+
+
+#%%
