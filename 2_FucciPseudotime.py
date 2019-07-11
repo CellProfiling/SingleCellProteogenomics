@@ -32,8 +32,9 @@ S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
 
 #%% Read data into scanpy; Read phases and FACS intensities
-from ac_RNASeqData import read_counts_and_phases
-adata, phases_filt = read_counts_and_phases("All", "Counts") # no qc, yet
+from methods_RNASeqData import read_counts_and_phases
+adata, phases_filt = read_counts_and_phases("All", "Counts", False) # no qc, yet
+
 
 #%% Fucci plots based on FACS intensities
 colormap = { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
@@ -55,21 +56,13 @@ plt.close()
 
 # scatters
 def fucci_scatter(phases_filtered, outfile):
-    plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["StageAJC"].apply(lambda x: colormap[x]))
+    plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["Stage"].apply(lambda x: colormap[x]))
     plt.legend(legendboxes, labels)
     plt.tight_layout()
     plt.savefig(outfile)
     plt.close()
 
-phases_filtIntAjc = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.StageAJC)]
-fucci_scatter(phases_filtIntAjc, f"figures/FucciPlot{tt}ByPhaseAJC.png")
 fucci_scatter(phasesFiltintSeqCenter, f"figures/FucciPlot{tt}ByPhase.png")
-
-for tt in ["355", "356", "357"]:
-    phasesfilt355 = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage) & phases_filt.Well_Plate.str.endswith(tt)]
-    phasesfilt355ajc = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.StageAJC)  & phases_filt.Well_Plate.str.endswith(tt)]
-    fucci_scatter(phasesfilt355, f"figures/FucciPlot{tt}ByPhase.png")
-    fucci_scatter(phasesfilt355ajc, f"figures/FucciPlot{tt}ByPhaseAJC.png")
 
 #%% Convert FACS intensities to pseudotime
 phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
@@ -125,7 +118,7 @@ pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
 pol_sort_norm_rev = 1 - pol_sort_norm 
 pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
 plt.tight_layout()
-plt.savefig(f"figures/Fucci{dd}PseudotimeHist.png")
+plt.savefig(f"figures/FucciAllPseudotimeHist.png")
 plt.show()
 
 # Apply uniform radius (rho) and convert back
@@ -140,7 +133,7 @@ phasesFilt["fucci_time"] = fucci_time
 plt.scatter(phasesFilt["Green530"], phasesFilt["Red585"], c = phasesFilt["fucci_time"])
 plt.tight_layout()
 plt.colorbar()
-plt.savefig(f"figures/Fucci{dd}FucciPseudotime.png")
+plt.savefig(f"figures/FucciAllFucciPseudotime.png")
 plt.show()
 
 #%% Save fucci times, so they can be used in other workbooks

@@ -1,0 +1,16 @@
+,gene,modcts,modlist
+406,NCAPH,0.0,
+567,MKI67,0.0025523226135783566,"[Phosphoserine on S], [Phosphothreonine on T], [ADP-ribosylation on S], [Phosphothreonine on T], [ADP-ribosylation on S]"
+617,ANLN,0.0,
+716,KPNA2,0.0,
+824,DLGAP5,0.0,
+1259,CDCA2,0.0012422360248447205,[Phosphoserine on S]
+1345,KIF23,0.0,
+1431,KIF2C,0.0,
+1508,ATAD2,0.0010080645161290322,[Hydroxylation on P]
+1591,RACGAP1,0.0,
+1645,RRM2,0.00546448087431694,[Phosphoserine on S]
+1686,TPX2,0.0,
+1803,CCNB1,0.0,
+2187,CENPF,0.00042354934349851756,[Acetylation on X]
+2236,FAM111B,0.0,

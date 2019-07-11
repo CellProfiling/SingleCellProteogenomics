@@ -5,13 +5,271 @@ import requests
 import sys
 import re
 import math
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 
 #%% Import the genes names we're analyzing
 allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
 dianaccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
 dianaccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
 genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+
+# Read in RNA-Seq data again and the CCD gene lists
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
+dd = "All"
+count_or_rpkm = "Tpms" # so that the results match for cross-gene comparisons
+adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm, False)
+qc_filtering(adata, False)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+
+allccd_transcript_regulated = set(ccd_gene_names(allccd_transcript_regulated))
+dianaccd_transcript_regulated = set(ccd_gene_names(dianaccd_transcript_regulated))
+dianaccd_nontranscript_regulated = set(ccd_gene_names(dianaccd_nontranscript_regulated))
+genes_analyzed = set(ccd_gene_names(genes_analyzed))
+ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
+ccd_filtered = set(ccd_gene_names(ccd_filtered))
+nonccd_filtered = set(ccd_gene_names(nonccd_filtered))
+
+#%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
+# one or the other
+# Idea: PTM annotation counts are pretty biased; PTM data might be better
+# Execution: 
+#   Take in the results from analyzing U2OS data with MetaMorpheus.
+#   Count mods for each protein, excluding oxidations
+# Output: # of PTMs per protein in each class and for all proteins
+
+# Read in the protein group results
+filenameCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\2019-06-19-15-54-09_CommonPtmsWithOccupancy\\Task1-SearchTask\\AllProteinGroups.tsv'
+filenameCommonAndLessCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv'
+file = pd.read_csv(filenameCommon, sep="\t", index_col=False)
+targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
+modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
+modifications = [re.findall('\[.*?\]',s) for s in modifiedProteins["Sequence Coverage with Mods"]]
+unique_mods = set([item for sublist in modifications for item in sublist])
+
+genes = list(targets["Gene"])
+seqmods = list(targets["Sequence Coverage with Mods"])
+seqs = list(targets["Sequence Coverage"])
+genemods = {}
+blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
+    "fe[i", "zinc", "cu[i" , # metals
+    "sodium", "potassium", "calcium", "magnesium",] # counterions
+    
+for idx in range(len(genes)):
+    genesplit = str(genes[idx]).split("|")
+    seqmod = seqmods[idx].split("|")
+    seq = seqs[idx].split("|")
+    for idxx in range(len(genesplit)):
+        mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in blacklist)]
+        # mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if "phospho" in m.lower()]
+        covered_fraction = float(sum([1 for c in seq[idxx] if c.islower()])) / float(len(seq[idxx]))
+        effective_length = float(len(seq[idxx])) * covered_fraction
+        # mods_per_eff_base = math.log10(float(len(mods) + 1) / float(effective_length))
+        mods_per_eff_base = float(len(mods)) / float(effective_length)
+        genegene = genesplit[idxx]
+        if genegene in genemods: 
+            genemods[genegene][0].append(mods_per_eff_base)
+            genemods[genegene][1].extend(mods)
+        else: genemods[genegene] = ([mods_per_eff_base], mods)
+
+print(f"{str(len(targets))} proteins")
+print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
+print(f"{str(len([g for g in genemods.keys() if g in allccd_transcript_regulated]))}: number of all transcript regulated CCD genes of {len(allccd_transcript_regulated)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in dianaccd_transcript_regulated]))}: number of transcript regulated CCD genes from Diana's study of {len(dianaccd_transcript_regulated)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in dianaccd_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(dianaccd_nontranscript_regulated)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of proteins of {len(genes_analyzed)} detected.")
+
+unambigenes = []
+modcts = []
+modsss = []
+for gene in genemods.keys():
+    unambigenes.append(gene)
+    modcts.append(np.median(genemods[gene][0]))
+    modsss.append(", ".join(genemods[gene][1]))
+
+df = pd.DataFrame({"gene" : unambigenes, "modcts" : modcts, "modlist" : modsss})
+
+all_modctsdf = df[df["gene"].isin(genes_analyzed)]
+all_modctsdf.to_csv("output/ProteinModCounts.csv")
+all_modcts = all_modctsdf["modcts"]
+all_modcts.hist()
+plt.title("All, modcts")
+plt.show()
+plt.savefig("")
+plt.close()
+
+ccd_rt_modctsdf = df[df["gene"].isin(ccd_regev_filtered)]
+ccd_rt_modctsdf.to_csv("output/ProteinModCountsTransRegRegevCcd.csv")
+ccd_rt_modcts = ccd_rt_modctsdf["modcts"]
+ccd_rt_modcts.hist()
+plt.title("Regev CCD Transcript Reg, modcts")
+plt.show()
+plt.close()
+
+ccd_at_modctsdf = df[df["gene"].isin(allccd_transcript_regulated)]
+ccd_at_modctsdf.to_csv("output/ProteinModCountsTransRegAllCcd.csv")
+ccd_at_modcts = ccd_at_modctsdf["modcts"]
+ccd_at_modcts.hist()
+plt.title("All CCD Transcript Reg, modcts")
+plt.show()
+plt.close()
+
+ccd_t_modctsdf = df[df["gene"].isin(dianaccd_transcript_regulated)]
+ccd_t_modctsdf.to_csv("output/ProteinModCountsTransRegDianaCcd.csv")
+ccd_t_modcts = ccd_t_modctsdf["modcts"]
+ccd_t_modcts.hist()
+plt.title("Diana's CCD Transcript Reg, modcts")
+plt.show()
+plt.close()
+
+ccd_n_modctsdf = df[df["gene"].isin(dianaccd_nontranscript_regulated)]
+ccd_n_modctsdf.to_csv("output/ProteinModCountsNonTransRegDianaCcd.csv")
+ccd_n_modcts = ccd_n_modctsdf["modcts"]
+ccd_n_modcts.hist()
+plt.title("Diana's CCD Non-Transcript Reg, modcts")
+plt.show()
+plt.close()
+
+# Just number of proteins with mods
+print(f"{str(len(all_modcts[all_modcts == 0]))} modified proteins ({str(round(float(len(all_modcts[all_modcts == 0]))/float(len(all_modcts))*100,2))}%) in all genes detected")
+print(f"{str(len(ccd_rt_modcts[ccd_rt_modcts == 0]))} modified proteins ({str(round(float(len(ccd_rt_modcts[ccd_rt_modcts == 0]))/float(len(ccd_rt_modcts))*100,2))}%) in Regev CCD")
+print(f"{str(len(ccd_at_modcts[ccd_at_modcts == 0]))} modified proteins ({str(round(float(len(ccd_at_modcts[ccd_at_modcts == 0]))/float(len(ccd_at_modcts))*100,2))}%) in all transcript CCD genes")
+print(f"{str(len(ccd_t_modcts[ccd_t_modcts == 0]))} modified proteins ({str(round(float(len(ccd_t_modcts[ccd_t_modcts == 0]))/float(len(ccd_t_modcts))*100,2))}%) in Diana's CCD proteins")
+print(f"{str(len(ccd_n_modcts[ccd_n_modcts == 0]))} modified proteins ({str(round(float(len(ccd_n_modcts[ccd_n_modcts == 0]))/float(len(ccd_n_modcts))*100,2))}%) in Diana's non-CCD proteins")
+
+# The t-test isn't good here because these counts don't form a normal distribution... it works with the log(x+1 / len) distribution
+print(f"mean number of mods / seq length for all proteins: {np.mean(all_modcts)}")
+print(f"mean number of mods / seq length for all transcriptionally regulated CCD: {np.mean(ccd_at_modcts)}")
+print(f"mean number of mods / seq length for Diana's transcriptionally regulated CCD: {np.mean(ccd_t_modcts)}")
+print(f"mean number of mods / seq length for Diana's non-transcriptionally regulated CCD: {np.mean(ccd_n_modcts)}")
+t, p = scipy.stats.ttest_ind(ccd_t_modcts, ccd_n_modcts)
+print(f"two-sided t-test for same means of transcript and non-transcriptionally regulated: {p}")
+t, p = scipy.stats.ttest_ind(all_modcts, ccd_t_modcts)
+print(f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}")
+print()
+print(f"median number of mods / seq length for all proteins: {np.median(all_modcts)}")
+print(f"median number of mods / seq length for all transcriptionally regulated CCD: {np.median(ccd_at_modcts)}")
+print(f"median number of mods / seq length for Diana's transcriptionally regulated CCD: {np.median(ccd_t_modcts)}")
+print(f"median number of mods / seq length for Diana's non-transcriptionally regulated: {np.median(ccd_n_modcts)}")
+t, p = scipy.stats.kruskal(ccd_at_modcts, ccd_n_modcts)
+print(f"one-sided kruskal for same medians of all transcriptionally reg. and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(ccd_t_modcts, ccd_n_modcts)
+print(f"one-sided kruskal for same medians of Diana's transcriptionally reg. and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts)
+print(f"one-sided kruskal for same medians of all genes and Diana's transcriptionally reg: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts)
+print(f"one-sided kruskal for same medians of all genes and all transcriptionally reg: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_rt_modcts)
+print(f"one-sided kruskal for same medians of all genes and regev transcriptionally reg: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_n_modcts)
+print(f"one-sided kruskal for same medians of all genes and non-transcriptionally reg: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts, ccd_n_modcts)
+print(f"one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: {2*p}")
+t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts, ccd_n_modcts)
+print(f"one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: {2*p}")
+print()
+
+# Generate a histogram of effective mod counts with bins normalized to 1'''
+def weights(vals):
+    '''normalizes all histogram bins to sum to 1'''
+    return np.ones_like(vals)/float(len(vals))
+
+# bar histogram
+bins=np.histogram(np.hstack((all_modcts, ccd_t_modcts, ccd_n_modcts)), bins=40)[1] #get the bin edges
+plt.hist(all_modcts, bins=bins, weights=weights(all_modcts), histtype="bar", alpha=0.4, label="All Proteins")
+plt.hist(ccd_t_modcts, bins=bins, weights=weights(ccd_t_modcts), histtype="bar", alpha=0.4, label="Transcript Reg. CCD")
+plt.hist(ccd_n_modcts, bins=bins, weights=weights(ccd_n_modcts), histtype="bar", alpha=0.5, label="Non-Transcript Reg. CCD")
+plt.legend(loc="upper right")
+plt.xlabel("Modifications per Covered Base")
+plt.savefig("figures/ModsPerCoveredBaseHistogram.png")
+plt.show()
+plt.close()
+
+# line histogram
+xx = [all_modcts, ccd_t_modcts, ccd_n_modcts]
+ww = [weights(all_modcts), weights(ccd_t_modcts), weights(ccd_n_modcts)]
+ll = ["All Proteins", "Trans Reg CCD", "Non-Trans Reg CCD"]
+binEdges=np.histogram(np.hstack((all_modcts, ccd_t_modcts, ccd_n_modcts)), bins=40)[1] #get the bin edges
+allHist = np.histogram(all_modcts, bins=binEdges, weights=weights(all_modcts))[0]
+ccdtHist = np.histogram(ccd_t_modcts, bins=binEdges, weights=weights(ccd_t_modcts))[0]
+ccdnHist = np.histogram(ccd_n_modcts, bins=binEdges, weights=weights(ccd_n_modcts))[0]
+bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
+plt.figure(figsize=(10,10))
+plt.plot(bincenters, allHist, label="All Proteins")
+plt.plot(bincenters, ccdtHist, label="Trans Reg CCD")
+plt.plot(bincenters, ccdnHist, label="Non-Trans Reg CCD")
+# plt.hist(ccd_t_modcts, bins=bins, weights=weights(ccd_t_modcts), histtype="bar", alpha=0.4, label="Transcript Reg. CCD")
+# plt.hist(ccd_n_modcts, bins=bins, weights=weights(ccd_n_modcts), histtype="bar", alpha=0.5, label="Non-Transcript Reg. CCD")
+plt.legend(loc="upper right")
+plt.xlabel("Modifications per Covered Base")
+plt.savefig("figures/ModsPerCoveredBaseLineHistogram.png")
+plt.show()
+plt.close()
+
+# Generate boxplots for effective mod counts
+mmmm = np.concatenate((all_modcts, ccd_t_modcts, ccd_rt_modcts, ccd_at_modcts, ccd_n_modcts))
+cccc = (["All"] * len(all_modcts))
+cccc.extend(["Diana's Transcript CCD"] * len(ccd_t_modcts))
+cccc.extend(["Regev Transcript CCD"] * len(ccd_rt_modcts))
+cccc.extend(["All Transcript CCD"] * len(ccd_at_modcts))
+cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
+moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
+boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
+boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
+boxplot.set_ylabel("Modifications per Covered Base", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=16)
+plt.title("")
+plt.savefig("figures/ModsPerCoveredBaseBoxplot.png")
+plt.show()
+plt.close()
+
+# Generate violin plots
+# dddd = [sorted(x) for x in [all_modcts, ccd_t_modcts, ccd_n_modcts]]
+# # cccc = (["All"] * len(all_modcts))
+# # cccc.extend(["Transcript CCD"] * len(ccd_t_modcts))
+# # cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
+# ax = plt.violinplot(dddd, showextrema=False, showmedians=True)
+# plt.ylim(top=0.06)
+# # moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
+# # boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
+# ax.xlabel("Protein Set", size=36,fontname='Arial')
+# ax.ylabel("Modifications per Covered Base", size=36,fontname='Arial')
+# # boxplot.tick_params(axis="both", which="major", labelsize=16)
+# # plt.title("")
+# plt.savefig("figures/ModsPerCoveredBaseViolin.png")
+# plt.show()
+# plt.close()
+
+# print(f"{str(len(modifiedPeptides))} interesting modified peptides ({str(round(float(len(modPeptides))/float(len(file))*100,2))}%)")
+
+#%% Okay, next I do want to incorporate the occupancy to see if it makes this more robust
+
+#%% Meh that might not help.
+# Also, pulling in CORUM and looking for differences of PTMs within
+# the modules of protein complexes.
+# Idea: count number of modifications on genes and per base on the complexes
+corum = pd.read_csv("C:\\Users\\antho\\Box\\ProjectData\\ProteinClusters\\allComplexes.txt", sep="\t")
+human_corum = corum[corum.organism == "Human"]
+human_corum_genes = list(human_corum["subunits(Gene name)"])
+
+# split the gene lists
+
+# sum/average the mods counts for all of the genes
+
+# plot the modcount plots and list the number of clusters with mods
+
+
+#%% [markdown]
+# Bulk U2OS analysis results
+# It turns out the significance went away when I filtered out an artifact I missed (iron adducts),
+# and then after checking all transcript-regulated CCD genes, rather than just the 
+# set in Diana's study, it all went away.
+# 
+# On the bright side, there are some really interesting modifications even in the 
+# bulk sequencing: plenty of phosphorylations and even a nitrosylation on BUB1B that's
+# not in UniProt.
+#
+# This also doesn't work with the metals anymore, nor does it work with
+# just phosphorylations.
 
 
 #%% Download uniprot PTM information
@@ -132,211 +390,6 @@ print(f"one-sided Wilcoxon test for same median all and non-transcriptionally re
 # and 11 for non-transcriptionally regulated CCD proteins. These differences are significant.
 
 
-#%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
-# one or the other
-# Idea: PTM annotation counts are pretty biased; PTM data might be better
-# Execution: 
-#   Take in the results from analyzing U2OS data with MetaMorpheus.
-#   Count mods for each protein, excluding oxidations
-# Output: # of PTMs per protein in each class and for all proteins
-
-# Read in the protein group results
-filenameCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\2019-06-19-15-54-09_CommonPtmsWithOccupancy\\Task1-SearchTask\\AllProteinGroups.tsv'
-filenameCommonAndLessCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv'
-file = pd.read_csv(filenameCommon, sep="\t", index_col=False)
-targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
-modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
-modifications = [re.findall('\[.*?\]',s) for s in modifiedProteins["Sequence Coverage with Mods"]]
-unique_mods = set([item for sublist in modifications for item in sublist])
-
-genes = list(modifiedProteins["Gene"])
-seqmods = list(modifiedProteins["Sequence Coverage with Mods"])
-seqs = list(modifiedProteins["Sequence Coverage"])
-coverage = list(modifiedProteins["Sequence Coverage %"])
-genemods = {}
-blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
-    "zinc", "fe[i", "magnesium", "cu[i", # metals
-    "sodium", "potassium", "calcium"] # counterions
-    
-for idx in range(len(genes)):
-    genesplit = str(genes[idx]).split("|")
-    seqmod = seqmods[idx].split("|")
-    seq = seqs[idx].split("|")
-    cov = coverage[idx].split("|")
-    for idxx in range(len(genesplit)):
-        mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in blacklist)]
-        effective_length = float(len(seq[idxx])) * float(cov[idxx][:-1]) / 100
-        # mods_per_eff_base = math.log10(float(len(mods) + 1) / float(effective_length))
-        mods_per_eff_base = float(len(mods)) / float(effective_length)
-        genegene = genesplit[idxx]
-        if genegene in genemods: 
-            genemods[genegene][0].append(mods_per_eff_base)
-            genemods[genegene][1].extend(mods)
-        else: genemods[genegene] = ([mods_per_eff_base], mods)
-
-print(f"{str(len(targets))} proteins")
-print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
-print(f"{str(len([g for g in genemods.keys() if g in allccd_transcript_regulated]))}: number of all transcript regulated CCD genes of {len(allccd_transcript_regulated)} detected.")
-print(f"{str(len([g for g in genemods.keys() if g in dianaccd_transcript_regulated]))}: number of transcript regulated CCD genes from Diana's study of {len(dianaccd_transcript_regulated)} detected.")
-print(f"{str(len([g for g in genemods.keys() if g in dianaccd_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(dianaccd_nontranscript_regulated)} detected.")
-print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of proteins of {len(genes_analyzed)} detected.")
-
-unambigenes = []
-modcts = []
-modsss = []
-for gene in genemods.keys():
-    unambigenes.append(gene)
-    modcts.append(np.median(genemods[gene][0]))
-    modsss.append(", ".join(genemods[gene][1]))
-
-df = pd.DataFrame({"gene" : unambigenes, "modcts" : modcts, "modlist" : modsss})
-
-all_modctsdf = df[np.isin(df["gene"], genes_analyzed)]
-all_modctsdf.to_csv("output/ProteinModCounts.csv")
-all_modcts = all_modctsdf["modcts"]
-all_modcts.hist()
-plt.title("All, modcts")
-plt.show()
-plt.savefig("")
-plt.close()
-
-ccd_at_modctsdf = df[np.isin(df["gene"], allccd_transcript_regulated)]
-ccd_at_modctsdf.to_csv("output/ProteinModCountsTransRegCcd.csv")
-ccd_at_modcts = ccd_at_modctsdf["modcts"]
-ccd_at_modcts.hist()
-plt.title("All CCD Transcript Reg, modcts")
-plt.show()
-plt.close()
-
-ccd_t_modctsdf = df[np.isin(df["gene"], dianaccd_transcript_regulated)]
-ccd_t_modctsdf.to_csv("output/ProteinModCountsTransRegCcd.csv")
-ccd_t_modcts = ccd_t_modctsdf["modcts"]
-ccd_t_modcts.hist()
-plt.title("Diana's CCD Transcript Reg, modcts")
-plt.show()
-plt.close()
-
-ccd_n_modctsdf = df[np.isin(df["gene"], dianaccd_nontranscript_regulated)]
-ccd_n_modctsdf.to_csv("output/ProteinModCountsNonTransRegCcd.csv")
-ccd_n_modcts = ccd_n_modctsdf["modcts"]
-ccd_n_modcts.hist()
-plt.title("Diana's CCD Non-Transcript Reg, modcts")
-plt.show()
-plt.close()
-
-# The t-test isn't good here because these counts don't form a normal distribution... it works with the log(x+1 / len) distribution
-print(f"mean number of mods / seq length for all proteins: {np.mean(all_modcts)}")
-print(f"mean number of mods / seq length for all transcriptionally regulated CCD: {np.mean(ccd_at_modcts)}")
-print(f"mean number of mods / seq length for Diana's transcriptionally regulated CCD: {np.mean(ccd_t_modcts)}")
-print(f"mean number of mods / seq length for Diana's non-transcriptionally regulated CCD: {np.mean(ccd_n_modcts)}")
-# t, p = scipy.stats.ttest_ind(ccd_t_modcts, ccd_n_modcts)
-# print(f"two-sided t-test for same means of transcript and non-transcriptionally regulated: {p}")
-# t, p = scipy.stats.ttest_ind(all_modcts, ccd_t_modcts)
-# print(f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}")
-print()
-print(f"median number of mods / seq length for all proteins: {np.median(all_modcts)}")
-print(f"median number of mods / seq length for all transcriptionally regulated CCD: {np.median(ccd_at_modcts)}")
-print(f"median number of mods / seq length for Diana's transcriptionally regulated CCD: {np.median(ccd_t_modcts)}")
-print(f"median number of mods / seq length for Diana's non-transcriptionally regulated: {np.median(ccd_n_modcts)}")
-t, p = scipy.stats.kruskal(ccd_at_modcts, ccd_n_modcts)
-print(f"one-sided kruskal for same medians of all transcriptionally reg. and non-transcriptionally regulated: {2*p}")
-t, p = scipy.stats.kruskal(ccd_t_modcts, ccd_n_modcts)
-print(f"one-sided kruskal for same medians of Diana's transcriptionally reg. and non-transcriptionally regulated: {2*p}")
-t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts)
-print(f"one-sided kruskal for same medians of all genes and Diana's transcriptionally reg: {2*p}")
-t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts)
-print(f"one-sided kruskal for same medians of all genes and all transcriptionally reg: {2*p}")
-t, p = scipy.stats.kruskal(all_modcts, ccd_n_modcts)
-print(f"one-sided kruskal for same medians of all genes and non-transcriptionally reg: {2*p}")
-t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts, ccd_n_modcts)
-print(f"one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: {2*p}")
-t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts, ccd_n_modcts)
-print(f"one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: {2*p}")
-print()
-
-# Generate a histogram of effective mod counts with bins normalized to 1'''
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-
-# bar histogram
-bins=np.histogram(np.hstack((all_modcts, ccd_t_modcts, ccd_n_modcts)), bins=40)[1] #get the bin edges
-plt.hist(all_modcts, bins=bins, weights=weights(all_modcts), histtype="bar", alpha=0.4, label="All Proteins")
-plt.hist(ccd_t_modcts, bins=bins, weights=weights(ccd_t_modcts), histtype="bar", alpha=0.4, label="Transcript Reg. CCD")
-plt.hist(ccd_n_modcts, bins=bins, weights=weights(ccd_n_modcts), histtype="bar", alpha=0.5, label="Non-Transcript Reg. CCD")
-plt.legend(loc="upper right")
-plt.xlabel("Modifications per Covered Base")
-plt.savefig("figures/ModsPerCoveredBaseHistogram.png")
-plt.show()
-plt.close()
-
-# line histogram
-xx = [all_modcts, ccd_t_modcts, ccd_n_modcts]
-ww = [weights(all_modcts), weights(ccd_t_modcts), weights(ccd_n_modcts)]
-ll = ["All Proteins", "Trans Reg CCD", "Non-Trans Reg CCD"]
-binEdges=np.histogram(np.hstack((all_modcts, ccd_t_modcts, ccd_n_modcts)), bins=40)[1] #get the bin edges
-allHist = np.histogram(all_modcts, bins=binEdges, weights=weights(all_modcts))[0]
-ccdtHist = np.histogram(ccd_t_modcts, bins=binEdges, weights=weights(ccd_t_modcts))[0]
-ccdnHist = np.histogram(ccd_n_modcts, bins=binEdges, weights=weights(ccd_n_modcts))[0]
-bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
-plt.figure(figsize=(10,10))
-plt.plot(bincenters, allHist, label="All Proteins")
-plt.plot(bincenters, ccdtHist, label="Trans Reg CCD")
-plt.plot(bincenters, ccdnHist, label="Non-Trans Reg CCD")
-# plt.hist(ccd_t_modcts, bins=bins, weights=weights(ccd_t_modcts), histtype="bar", alpha=0.4, label="Transcript Reg. CCD")
-# plt.hist(ccd_n_modcts, bins=bins, weights=weights(ccd_n_modcts), histtype="bar", alpha=0.5, label="Non-Transcript Reg. CCD")
-plt.legend(loc="upper right")
-plt.xlabel("Modifications per Covered Base")
-plt.savefig("figures/ModsPerCoveredBaseLineHistogram.png")
-plt.show()
-plt.close()
-
-# Generate boxplots for effective mod counts
-mmmm = np.concatenate((all_modcts, ccd_t_modcts, ccd_at_modcts, ccd_n_modcts))
-cccc = (["All"] * len(all_modcts))
-cccc.extend(["Diana's Transcript CCD"] * len(ccd_t_modcts))
-cccc.extend(["All Transcript CCD"] * len(ccd_at_modcts))
-cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
-moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
-boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
-boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
-boxplot.set_ylabel("Modifications per Covered Base", size=36,fontname='Arial')
-boxplot.tick_params(axis="both", which="major", labelsize=16)
-plt.title("")
-plt.savefig("figures/ModsPerCoveredBaseBoxplot.png")
-plt.show()
-plt.close()
-
-# Generate violin plots
-# dddd = [sorted(x) for x in [all_modcts, ccd_t_modcts, ccd_n_modcts]]
-# # cccc = (["All"] * len(all_modcts))
-# # cccc.extend(["Transcript CCD"] * len(ccd_t_modcts))
-# # cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
-# ax = plt.violinplot(dddd, showextrema=False, showmedians=True)
-# plt.ylim(top=0.06)
-# # moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
-# # boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
-# ax.xlabel("Protein Set", size=36,fontname='Arial')
-# ax.ylabel("Modifications per Covered Base", size=36,fontname='Arial')
-# # boxplot.tick_params(axis="both", which="major", labelsize=16)
-# # plt.title("")
-# plt.savefig("figures/ModsPerCoveredBaseViolin.png")
-# plt.show()
-# plt.close()
-
-# print(f"{str(len(modifiedPeptides))} interesting modified peptides ({str(round(float(len(modPeptides))/float(len(file))*100,2))}%)")
-
-#%% Okay, next I do want to incorporate the occupancy to see if it makes this more robust
-
-#%% [markdown]
-# Bulk U2OS analysis results
-# It turns out the significance went away when I filtered out an artifact I missed (iron adducts),
-# and then after checking all transcript-regulated CCD genes, rather than just the 
-# set in Diana's study, it all went away.
-# 
-# On the bright side, there are some really interesting modifications even in the 
-# bulk sequencing: plenty of phosphorylations and even a nitrosylation on BUB1B that's
-# not in UniProt.
 
 
 #%%

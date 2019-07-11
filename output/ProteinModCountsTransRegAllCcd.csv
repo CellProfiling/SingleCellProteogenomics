@@ -1,0 +1,36 @@
+,gene,modcts,modlist
+212,CIP2A,0.0,
+310,FEN1,0.005714285714285714,[Hydroxylation on P]
+316,SPC24,0.0,
+329,TMPO,0.0,
+338,BUB1,0.0,
+406,NCAPH,0.0,
+567,MKI67,0.0025523226135783566,"[Phosphoserine on S], [Phosphothreonine on T], [ADP-ribosylation on S], [Phosphothreonine on T], [ADP-ribosylation on S]"
+586,KNL1,0.0,
+617,ANLN,0.0,
+638,TUBA3C,0.15384615384615385,"[Succinylation on K], [Hydroxylation on N], [Methylation on K], [Acetylation on K], [Formylation on K], [Butyrylation on K], [Hydroxylation on P], [Citrullination on R], [Citrullination on R], [Hydroxylation on N], [Hydroxylation on N], [Methylation on R], [Hydroxylation on P], [Hydroxylation on N], [Hydroxylation on N], [Hydroxylation on P], [Hydroxylation on K], [Methylation on R]"
+690,MGME1,0.0,
+716,KPNA2,0.0,
+824,DLGAP5,0.0,
+828,NDC80,0.0,
+1082,KIF22,0.002164502164502164,[Citrullination on R]
+1125,CDC20,0.0,
+1259,CDCA2,0.0012422360248447205,[Phosphoserine on S]
+1306,MCM3,0.004597701149425287,"[N-acetylalanine on A], [Phosphoserine on S]"
+1345,KIF23,0.0,
+1383,H2AFX,0.011363636363636364,[Hydroxylation on P]
+1431,KIF2C,0.0,
+1508,ATAD2,0.0010080645161290322,[Hydroxylation on P]
+1591,RACGAP1,0.0,
+1609,MCM5,0.0,
+1645,RRM2,0.00546448087431694,[Phosphoserine on S]
+1683,CDK1,0.07,"[Phosphorylation on T], [Phosphorylation on Y], [Phosphothreonine on T], [Phosphothreonine on T], [Citrullination on R], [N6-succinyllysine on K], [Phosphoserine on S]"
+1686,TPX2,0.0,
+1803,CCNB1,0.0,
+1892,MCM6,0.0023255813953488367,[N-acetylmethionine on M]
+2091,PLK1,0.0,
+2187,CENPF,0.00042354934349851756,[Acetylation on X]
+2226,TOP2A,0.0022753128555176336,"[N-acetylmethionine on M], [Phosphoserine on S]"
+2236,FAM111B,0.0,
+2238,HMGB2,0.0,
+2381,CENPK,0.0,

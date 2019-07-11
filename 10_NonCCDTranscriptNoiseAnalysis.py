@@ -5,8 +5,8 @@ import numpy as np
 #%% Read in RNA-Seq data again and the CCD gene lists
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
-count_or_rpkm = "Rpkms" # so that the results match for cross-gene comparisons
-adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm)
+count_or_rpkm = "Tpms" # so that the results match for cross-gene comparisons
+adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm, False)
 qc_filtering(adata, False)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 

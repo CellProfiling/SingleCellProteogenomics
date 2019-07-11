@@ -1,11 +1,15 @@
 #%% Imports
 from imports import *
 from Bio import SeqIO
+from methods_RNASeqData import ccd_gene_names
 
 #%% Import the genes names we're analyzing
 ccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
 ccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
 genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+genes_analyzed = set(ccd_gene_names(genes_analyzed))
+ccd_transcript_regulated = set(ccd_gene_names(ccd_transcript_regulated))
+ccd_nontranscript_regulated = set(ccd_gene_names(ccd_nontranscript_regulated))
 
 #%% Let's take a look at protein stability
 # Idea: Is there a difference in protein stability or turnover for the proteins that are
@@ -17,8 +21,8 @@ genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
 def plot_protein_stabilities(filename, title, splitname):
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
-    ccd_t_stab = df[np.isin(df["ProteinName"], ccd_transcript_regulated)]
-    ccd_n_stab = df[np.isin(df["ProteinName"], ccd_nontranscript_regulated)]
+    ccd_t_stab = df[df["ProteinName"].isin(ccd_transcript_regulated)]
+    ccd_n_stab = df[df["ProteinName"].isin(ccd_nontranscript_regulated)]
 
     df1 = df["Protein stability class"].value_counts().reindex(["non-stable", "medium", "stable", "non-melter"]).fillna(0)
     df2 = ccd_t_stab["Protein stability class"].value_counts().reindex(["non-stable", "medium", "stable", "non-melter"]).fillna(0)
@@ -76,8 +80,8 @@ def add_temps(filename, title, splitname, merged):
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
     if len(merged) == 0: merged = df
     else: pd.merge(merged, df, on="ProteinName", suffixes=("", title))
-    ccd_t_stab = df[np.isin(df["ProteinName"], ccd_transcript_regulated)]
-    ccd_n_stab = df[np.isin(df["ProteinName"], ccd_nontranscript_regulated)]
+    ccd_t_stab = df[df["ProteinName"].isin(ccd_transcript_regulated)]
+    ccd_n_stab = df[df["ProteinName"].isin(ccd_nontranscript_regulated)]
 
     all_temps.extend(df[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
     transcript_reg.extend(ccd_t_stab[pd.notna(ccd_t_stab["Melting point [°C]"])]["Melting point [°C]"])

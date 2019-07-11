@@ -1,0 +1,51 @@
+,gene,modcts,modlist
+21,NAT10,0.0017825311942959,[Glutarylation on K]
+75,CALD1,0.005855046421084156,"[Acetylation on X], [Acetylation on X], [Phosphorylation on S]"
+158,CLTC,0.0077279752704791345,"[N-acetylalanine on A], [Methylation on K], [Hydroxylation on N], [Acetylation on K], [Hydroxylation on P]"
+163,UGDH,0.0,
+216,ALDH7A1,0.004329004329004329,"[Methylation on K], [Methylation on K], [Methylation on K]"
+271,DCTN1,0.001447178002894356,[Dimethylation on K]
+376,ASNS,0.0,
+397,ADAR,0.0,
+456,MAGED2,0.0,
+569,SEPT2,0.0,
+698,PHLDB1,0.0,
+750,DESI1,0.0,
+787,UNC119B,0.0,
+813,SMC2,0.0,
+825,EIF3A,0.0,
+864,FRYL,0.00041476565740356696,[N-acetylserine on S]
+880,GSK3B,0.0,
+898,STK26,0.00392156862745098,[N-acetylalanine on A]
+930,PSMD3,0.004132231404958678,[Citrullination on R]
+964,RINT1,0.0,
+982,MAEA,0.0,
+1042,APPL1,0.0,
+1045,DDX21,0.008771929824561403,"[Phosphoserine on S], [Phosphoserine on S], [Hydroxylation on P]"
+1065,ID1,0.0,
+1116,ITGA2,0.0,
+1151,PIN4,0.0,
+1232,DPH2,0.0026041666666666665,[N-acetylmethionine on M]
+1290,EAF1,0.0,
+1397,LAP3,0.0,
+1437,BIRC6,0.0,
+1472,PC,0.0,
+1487,PSMB3,0.011627906976744186,[N-acetylserine on S]
+1559,CHMP5,0.0,
+1628,TGM2,0.005076142131979695,"[N-acetylalanine on A], [Hydroxylation on N]"
+1629,NFAT5,0.0,
+1659,MALT1,0.001466275659824047,[N-acetylserine on S]
+1734,PAPSS1,0.002398081534772182,[N-acetylmethionine on M]
+1791,NUF2,0.0037313432835820895,[N-acetylmethionine on M]
+1801,SEPT7,0.0045045045045045045,[Phosphoserine on S]
+1972,ASH2L,0.0,
+1976,PLEKHG3,0.0,
+2092,CAPG,0.005076142131979695,[N-acetylmethionine on M]
+2098,JUND,0.0,
+2155,CEP55,0.0,
+2266,HMMR,0.0,
+2291,INCENP,0.0012437810945273632,[Acetylation on X]
+2298,PPP6R1,0.0,
+2316,SYNE2,0.0,
+2322,PRKCI,0.0,
+2374,RPL6,0.0,

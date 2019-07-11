@@ -16,13 +16,15 @@ from imports import *
 # Use RPKMs for comparing genes
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
-counts_or_rpkms = "Rpkms"
-adata, phases_filt = read_counts_and_phases(dd, counts_or_rpkms)
+counts_or_rpkms = "Tpms"
+use_spike_ins = False
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins)
 
 #%% QC and filtering
 do_log_normalization = True
 sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
 shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
+
 qc_filtering(adata, do_log_normalization)
 
 # Post filtering QC
@@ -46,8 +48,6 @@ sc.tl.umap(adata)
 plt.rcParams['figure.figsize'] = (10, 10)
 sc.pl.umap(adata, color=["phase"], show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqCenterPhase.pdf")
-sc.pl.umap(adata, color = ["phase_ajc"], show=True, save=True)
-shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsAjcPhase.pdf")
 
 
 #%% UMAP with just the Regev cell-cycle dependent genes (CCD) 
@@ -59,8 +59,8 @@ adata_ccdregev = adata[:, ccd_regev_filtered]
 adata_ccdregev.var_names_make_unique()
 sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_ccdregev)
-sc.pl.umap(adata_ccdregev, color="phase_ajc", show=True, save=True)
-shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsAjcPhaseCcdRegev.pdf")
+sc.pl.umap(adata_ccdregev, color="phase", show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseCcdRegev.pdf")
 
 #%% There is a nodule in the UMAP; are there any highly expressing genes in there?
 # Execution: subset the cells in that corner of the UMAP
@@ -72,11 +72,10 @@ shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsAjcPhaseCcdRegev.pdf")
 # Output: lots of UMAPs
 
 dd = "All"
-counts_or_rpkms = "Counts"
-do_log_normalization = False
-adata, phases_filt = read_counts_and_phases(dd, counts_or_rpkms)
+counts_or_rpkms = "Tpms"
+do_log_normalization = True
+adata, phases_filt = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins)
 qc_filtering(adata, do_log_normalization)
-ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 # UMAP statistics first
 sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
@@ -159,3 +158,6 @@ def plot_expression_umap(genelist, outfolder):
 # sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
 # shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
 
+
+
+#%%
