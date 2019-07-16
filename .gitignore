@@ -3,3 +3,7 @@ figures/
 .vscode/
 __pycache__/
 .pybiomart.sqlite
+input/Counts.csv
+input/Tpms.csv
+~$*
+*/~$*

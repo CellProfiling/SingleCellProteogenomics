@@ -1,12 +1,23 @@
 from imports import *
 
-def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins):
+def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     '''
     Read data into scanpy; Read phases and FACS intensities
     * dd: "All", "355", "356", "357"
     * count_or_rpkm: "Counts" or "Tpms"
     '''
-    adata = sc.read_csv(f"input/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else ""))
+    read_file = f"input/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else "")
+    if biotype_to_use != None and len(biotype_to_use) > 0:
+        print(f"filtering for biotype: {biotype_to_use}")
+        biotype_file = f"{read_file}.{biotype_to_use}.csv"
+        if not os.path.exists(biotype_file):
+            gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+            prot_coding = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
+            pd.read_csv(read_file)[prot_coding].to_csv(biotype_file)
+        read_file = biotype_file
+
+    adata = sc.read_csv(read_file)
+    print(f"data shape: {adata.X.shape}")
     # adata.raw = adata
 
     phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
@@ -39,6 +50,7 @@ def qc_filtering(adata, do_log_normalize):
     phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
     phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
     phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
+    print(f"data shape after filtering: {adata.X.shape}")
     return phases_filt
 
 

@@ -38,7 +38,9 @@ nonccd_filtered = set(ccd_gene_names(nonccd_filtered))
 # Output: # of PTMs per protein in each class and for all proteins
 
 # Read in the protein group results
-filenameCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\2019-06-19-15-54-09_CommonPtmsWithOccupancy\\Task1-SearchTask\\AllProteinGroups.tsv'
+search = "2019-06-19-15-54-09_CommonPtmsWithOccupancy"
+search = "2019-07-12_NoMetalOccupancyFix"
+filenameCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\' + search + 'Task1-SearchTask\\AllProteinGroups.tsv'
 filenameCommonAndLessCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv'
 file = pd.read_csv(filenameCommon, sep="\t", index_col=False)
 targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
@@ -49,6 +51,7 @@ unique_mods = set([item for sublist in modifications for item in sublist])
 genes = list(targets["Gene"])
 seqmods = list(targets["Sequence Coverage with Mods"])
 seqs = list(targets["Sequence Coverage"])
+modinfos = list(targets["Modification Info List"])
 genemods = {}
 blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
     "fe[i", "zinc", "cu[i" , # metals
@@ -58,9 +61,11 @@ for idx in range(len(genes)):
     genesplit = str(genes[idx]).split("|")
     seqmod = seqmods[idx].split("|")
     seq = seqs[idx].split("|")
+    modinfo = [x.strip(';') for x in modinfos[idx].split("|")]
     for idxx in range(len(genesplit)):
         mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in blacklist)]
         # mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if "phospho" in m.lower()]
+        occupancies = [o for o in re.findall('=([\d\.]+)'), modinfo[idxx]]
         covered_fraction = float(sum([1 for c in seq[idxx] if c.islower()])) / float(len(seq[idxx]))
         effective_length = float(len(seq[idxx])) * covered_fraction
         # mods_per_eff_base = math.log10(float(len(mods) + 1) / float(effective_length))
