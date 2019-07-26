@@ -8,6 +8,28 @@ import math
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 
 
+#%% Import the genes names we're analyzing
+allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
+dianaccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
+dianaccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
+genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+
+# Read in RNA-Seq data again and the CCD gene lists
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
+dd = "All"
+count_or_rpkm = "Tpms" # so that the results match for cross-gene comparisons
+adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm, False, "")
+qc_filtering(adata, False)
+ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+
+allccd_transcript_regulated = set(ccd_gene_names(allccd_transcript_regulated))
+dianaccd_transcript_regulated = set(ccd_gene_names(dianaccd_transcript_regulated))
+dianaccd_nontranscript_regulated = set(ccd_gene_names(dianaccd_nontranscript_regulated))
+genes_analyzed = set(ccd_gene_names(genes_analyzed))
+ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
+ccd_filtered = set(ccd_gene_names(ccd_filtered))
+nonccd_filtered = set(ccd_gene_names(nonccd_filtered))
+
 #%% Download uniprot PTM information
 BASE = 'http://www.uniprot.org'
 KB_ENDPOINT = '/uniprot/'
