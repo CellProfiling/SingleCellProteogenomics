@@ -3,7 +3,9 @@ figures/
 .vscode/
 __pycache__/
 .pybiomart.sqlite
-input/Counts.csv
-input/Tpms.csv
+input/Counts*.csv
+input/Tpms*.csv
 ~$*
 */~$*
+output/ProteinMod*
+output_devin/*ccd

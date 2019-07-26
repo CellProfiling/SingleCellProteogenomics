@@ -12,8 +12,8 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
         biotype_file = f"{read_file}.{biotype_to_use}.csv"
         if not os.path.exists(biotype_file):
             gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-            prot_coding = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
-            pd.read_csv(read_file)[prot_coding].to_csv(biotype_file)
+            biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
+            pd.read_csv(read_file)[biotyped ].to_csv(biotype_file)
         read_file = biotype_file
 
     adata = sc.read_csv(read_file)

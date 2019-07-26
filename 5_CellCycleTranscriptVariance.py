@@ -7,7 +7,9 @@ from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_li
 dd = "All"
 count_or_rpkm = "Tpms" # so that the gene-specific results scales match for cross-gene comparisons
 print("reading scRNA-Seq data")
-adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use="protein_coding")
+biotype_to_use="protein_coding"
+# biotype_to_use="lincRNA" # there are only 10 genes marked lincRNA, so need to analyze isoform data, I think
+adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use=biotype_to_use)
 qc_filtering(adata, do_log_normalize=False)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
@@ -72,7 +74,7 @@ anova_tests = pd.DataFrame(
     "reject_BH" : reject_, 
     "pvaladj_B" : pvals_correctedBonf_unsorted, 
     "reject_B" : rejectBonf_unsorted})
-anova_tests.to_csv("output/transcript_regulation.csv")
+anova_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv")
 
 #%% [markdown]
 ## Summary of ANOVA analysis
@@ -162,7 +164,7 @@ plt.legend(loc="upper left")
 plt.xlabel("Mean Expression")
 plt.ylabel("Stdev Expression") 
 plt.tight_layout()
-plt.savefig("figures/stdev_expression.png")
+plt.savefig(f"figures/stdev_expression{biotype_to_use}.png")
 plt.show()
 plt.close()
 
@@ -185,7 +187,7 @@ plt.legend(loc="upper right")
 plt.xlabel("Stdev Expression")
 plt.ylabel("Count, Normalized to 1")
 plt.tight_layout()
-plt.savefig("figures/stdev_expression_hist.png")
+plt.savefig(f"figures/stdev_expression_hist_{biotype_to_use}.png")
 plt.show()
 plt.close()
  
@@ -193,7 +195,7 @@ plt.close()
 #%% Redo inputs:
 # Log normalize and use RPKMS because we're comparing genes in the next cell
 count_or_rpkm = "Tpms"
-adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, "protein_coding")
+adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
 qc_filtering(adata, True)
 
 adata_spikeins, phases_spikeins = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=True, biotype_to_use="")
@@ -231,7 +233,7 @@ def plot_variances(total_var, percent_var, expression_color, title, file_tag):
     cbar = plt.colorbar()
     cbar.ax.get_yaxis().labelpad = 24
     cbar.ax.set_ylabel("Median Log-Normalized RNA-Seq Counts", rotation=270,size=24,fontname='Arial')
-    plt.savefig(f"figures/VariancePlot{file_tag}.png")
+    plt.savefig(f"figures/VariancePlot{file_tag}_{biotype_to_use}.png")
     plt.show()
     plt.close()
 
@@ -301,7 +303,7 @@ plt.subplot(223)
 plot_variances_tf(total_variance[dianaccdgenes], percent_ccd_variance[dianaccdgenes], (rejectBonf_unsorted[dianaccdgenes]) & (percent_ccd_variance[dianaccdgenes] > percent_var_cutoff) & (total_variance[dianaccdgenes] > total_var_cutoff), "Diana CCD Genes", "DianaCcd", percent_var_cutoff, total_var_cutoff)
 plt.subplot(224)
 plot_variances_tf(total_variance[diananonccdgenes], percent_ccd_variance[diananonccdgenes], (rejectBonf_unsorted[diananonccdgenes]) & (percent_ccd_variance[diananonccdgenes] > percent_var_cutoff) & (total_variance[diananonccdgenes] > total_var_cutoff), "Diana Non-CCD Genes", "DianaNonCCD", percent_var_cutoff, total_var_cutoff)
-plt.savefig("figures/VarianceSignificancePlots.png")
+plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.png")
 plt.show()
 
 # Let's output those
@@ -323,7 +325,7 @@ percent_variance_tests = pd.DataFrame(
     "regev_ccd" : regevccdgenes,
     "diana_ccd" : dianaccdgenes,
     "diana_nonccd" : diananonccdgenes})
-percent_variance_tests.to_csv("output/transcript_regulation.csv")
+percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv")
 
 # And output the CCD genes that aren't in diana's CCD gene set
 percent_variance_tests[(percent_variance_tests.significant) & (~percent_variance_tests.diana_ccd)].to_csv("output/transcript_regulation_significant_ccd_notindianasset.csv")
