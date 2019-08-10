@@ -368,6 +368,7 @@ x_fit = np.linspace(0,1,num=200)
 ccd_coeff_list = []
 not_ccd_coeff_list = []
 model_free_list = []
+model_free_list_all = []
 xvals = np.linspace(0,1,num=21)
 ccd_pvals = []
 not_ccd_pvals = []
@@ -527,6 +528,45 @@ for well in u_well_plates:
     mean_err = np.mean(fit_coeffs.fun)
     if np.abs(mean_err)>1e-4: print('bad fit!')
 
+    #compute the model free max
+    curr_ab_df = pd.DataFrame({outsuff:curr_ab_norm})
+    curr_pol_df = pd.DataFrame({outsuff:curr_pol})
+    winsize = np.min([len(curr_ab_norm),30])
+    model_free_ab = curr_ab_df.rolling(window=winsize)
+    model_free_ab = model_free_ab.mean()
+    model_free_ab_np = np.asarray(model_free_ab)
+    model_free_pol = curr_pol_df.rolling(window=winsize)
+    model_free_pol = model_free_pol.mean()
+    model_free_pol_np = np.asarray(model_free_pol)
+    max_loc = np.argmax(model_free_ab_np[~np.isnan(model_free_ab_np)])
+    max_pol = model_free_pol_np[max_loc]
+    binned_values = []
+    for xval in xvals:
+        if xval==0:
+            prev_xval = xval
+            continue
+        curr_less_inds = curr_pol<xval
+        curr_greater_inds = curr_pol>=prev_xval
+
+        binned_values.append(np.median(curr_ab_norm[curr_less_inds&curr_greater_inds]))
+        prev_xval = xval
+    #fix any nans because they are probably missing data. Use average of surrounding
+    binned_values = binned_values/np.nanmax(binned_values)
+    binned_values = fix_nans(binned_values)
+
+    max_loc = np.nanargmax(binned_values)
+    if np.isnan(xvals[max_loc]):
+        print('what')
+    print(perc_var_compartment)
+
+    model_free_list_all.append((well,
+            plate_well_to_ab[plate][well][0],
+            binned_values[max_loc],
+            xvals[max_loc],
+            binned_values,
+            [perc_var_compartment],
+            plate_well_to_ab[plate][well][7]))
+
     if perc_var_compartment>PERCVAR_CUT and curr_fdr<FDR_CUT:
         ccd_coeff_list.append(experiment(outsuff, curr_compartment,
             perc_var_cell, perc_var_nuc, perc_var_cyto,
@@ -534,37 +574,6 @@ for well in u_well_plates:
             curr_pval, var_compartment, gini_compartment, curr_fdr,
             perc_var_fred, perc_var_fgreen))
         ccd_pvals.append(curr_pval)
-
-        #compute the model free max
-        curr_ab_df = pd.DataFrame({outsuff:curr_ab_norm})
-        curr_pol_df = pd.DataFrame({outsuff:curr_pol})
-        winsize = np.min([len(curr_ab_norm),30])
-        model_free_ab = curr_ab_df.rolling(window=winsize)
-        model_free_ab = model_free_ab.mean()
-        model_free_ab_np = np.asarray(model_free_ab)
-        model_free_pol = curr_pol_df.rolling(window=winsize)
-        model_free_pol = model_free_pol.mean()
-        model_free_pol_np = np.asarray(model_free_pol)
-        max_loc = np.argmax(model_free_ab_np[~np.isnan(model_free_ab_np)])
-        max_pol = model_free_pol_np[max_loc]
-        binned_values = []
-        for xval in xvals:
-            if xval==0:
-                prev_xval = xval
-                continue
-            curr_less_inds = curr_pol<xval
-            curr_greater_inds = curr_pol>=prev_xval
-
-            binned_values.append(np.median(curr_ab_norm[curr_less_inds&curr_greater_inds]))
-            prev_xval = xval
-        #fix any nans because they are probably missing data. Use average of surrounding
-        binned_values = binned_values/np.nanmax(binned_values)
-        binned_values = fix_nans(binned_values)
-
-        max_loc = np.nanargmax(binned_values)
-        if np.isnan(xvals[max_loc]):
-            print('what')
-        print(perc_var_compartment)
         model_free_list.append((well,
             plate_well_to_ab[plate][well][0],
             binned_values[max_loc],
@@ -688,10 +697,14 @@ prot_list = []
 sorted_gene_array = []
 sorted_ensg_array = []
 sorted_maxpol_array = []
+sorted_expression_table_ccd = []
+sorted_expression_table_all = []
 for i,response in enumerate(model_free_list):
     sorted_gene_array.append(response[4]) # this is the expression values
     sorted_maxpol_array.append(response[3])
     sorted_ensg_array.append(response[6])
+    for i, exp in enumerate(response[4]):
+        sorted_expression_table_ccd.append([response[6], (i + 1) / len(response[4]), exp])
     curr_well = response[0]
     #set all other rows that share a loc to 1
     curr_locs = loc_mat[i,:]
@@ -700,8 +713,14 @@ for i,response in enumerate(model_free_list):
     prob_interact[i,:] = match_rows
     prot_list.append(response[1])
 
+for i, response in enumerate(model_free_list_all):
+    for i, exp in enumerate(response[4]):
+        sorted_expression_table_all.append([response[6], (i + 1) / len(response[4]), exp])   
+
 fig, ax = plt.subplots(figsize=(10, 10))
 sc = ax.imshow(sorted_gene_array, interpolation='nearest')
+np.savetxt("output/temporal_protein_expression_ccd.tsv", np.array(sorted_expression_table_ccd), fmt="%s", delimiter="\t")
+np.savetxt("output/temporal_protein_expression_all.tsv", np.array(sorted_expression_table_all), fmt="%s", delimiter="\t")
 
 #Arange the x ticks
 xtick_labels = [str(np.around(x * TOT_LEN,decimals=2)) for x in np.linspace(0,1,11)]
@@ -921,5 +940,3 @@ def plot_avg_rna_and_prot(namelist, outfolder):
 
 plot_avg_rna_and_prot(name_prot_list, "figures/RNAProteinCCDAvgs")
 
-
-#%%
