@@ -811,13 +811,16 @@ print(f"length of CCD RNA genes: {len(allccd_transcript_regulated_names)}")
 print(f"length of intersection betweeen CCD prot and RNA: {len(prot_genes.intersection(rna_genes))}")
 print(f"length of intersection betweeen CCD prot and CCD RNA: {len(prot_genes.intersection(allccd_transcript_regulated_names))}")
 
-# Sort them to the protein arrays
+# Sort them to the protein arrays 
+# (take only intersection of CCD proteins and CCD transcripts)
+#
 # prot_list # this one is the gene name (protein name) for the protein list
 # sorted_ensg_array # this one is the sorted ensg for the proteins
 # sorted_maxpol_array # this one is the protein max pol
-name_prot_loc = [name_rna_list.index(name) for name in prot_list if name in name_rna_list and name in allccd_transcript_regulated_names]
-name_prot_list = np.take(name_rna_list, name_prot_loc)
-max_rna_avg_prot_pol = np.take(max_moving_avg_pol, name_prot_loc)
+
+name_ccdprot_ccdtrans_loc = [name_rna_list.index(name) for name in prot_list if name in name_rna_list and name in allccd_transcript_regulated_names]
+name_prot_list = np.take(name_rna_list, name_ccdprot_ccdtrans_loc)
+max_rna_avg_prot_pol = np.take(max_moving_avg_pol, name_ccdprot_ccdtrans_loc)
 prot_list_filter_loc = np.isin(prot_list, name_prot_list)
 prot_maxpol_filter_array = np.array(sorted_maxpol_array)[prot_list_filter_loc]
 diff_max_pol = prot_maxpol_filter_array - max_rna_avg_prot_pol
