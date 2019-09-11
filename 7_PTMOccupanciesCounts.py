@@ -426,7 +426,7 @@ boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
 boxplot.set_ylabel("Occupancy per Modified Residue", size=36,fontname='Arial')
 boxplot.tick_params(axis="both", which="major", labelsize=16)
 plt.title("")
-plt.savefig("figures/ModsOccupancyBoxplot.png")
+plt.savefig("figures/ModsOccupancyBoxplot.pdf")
 plt.show()
 plt.close()
 
@@ -512,3 +512,9 @@ ccd_n_modctsoccdf[(ccd_n_modctsoccdf.occupancy >= 0.5)]
 # Exec: Group the modifications by type; calculate the differences in occupancy between categories
 # Output: Table of modification categories and statistical results comparing the categories
 
+
+
+#%%
+
+
+#%%

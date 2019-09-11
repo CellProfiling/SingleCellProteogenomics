@@ -33,7 +33,7 @@ S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
 #%% Read data into scanpy; Read phases and FACS intensities
 from methods_RNASeqData import read_counts_and_phases
-adata, phases_filt = read_counts_and_phases("All", "Counts", False) # no qc, yet
+adata, phases_filt = read_counts_and_phases("All", "Counts", False, "protein_coding") # no qc, yet
 
 
 #%% Fucci plots based on FACS intensities
@@ -130,11 +130,17 @@ fucci_time = pol_sort_norm_rev[pol_unsort]
 adata.obs["fucci_time"] = fucci_time
 phasesFilt["fucci_time"] = fucci_time
 
+plt.figure(figsize=(6,5))
 plt.scatter(phasesFilt["Green530"], phasesFilt["Red585"], c = phasesFilt["fucci_time"])
+cbar = plt.colorbar()
+cbar.set_label('Pseudotime',fontname='Arial',size=20)
+cbar.ax.tick_params(labelsize=18)
+plt.xlabel("log10(GMNN GFP Intensity)",fontname='Arial',size=20)
+plt.ylabel("log10(CDT1 RFP Intensity)",fontname='Arial',size=20)
 plt.tight_layout()
-plt.colorbar()
-plt.savefig(f"figures/FucciAllFucciPseudotime.png")
+plt.savefig(f"figures/FucciAllFucciPseudotime.pdf")
 plt.show()
+plt.close()
 
 #%% Save fucci times, so they can be used in other workbooks
 pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")

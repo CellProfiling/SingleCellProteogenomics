@@ -26,7 +26,7 @@ ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 # Exec: pandas
 # Output: fucci plot from the immunofluorescence data
 print("reading protein IF data")
-my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases.csv")
+my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
 print("loaded")
 
 green_fucci = np.asarray(my_df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
@@ -209,8 +209,9 @@ OUTLIER_NAMES = ['KIAA2026_HPA002109',
 PERCVAR_CUT = 0.1 #Min % of the variance explained by the cell cycle.
 FDR_CUT = 0.05 #False discovery rate we will tolerate
 WINDOW = 20 #Number of points for moving average window, arbitrary choice
-DO_PLOTS = False #flag of whether to plot each well and save the plot
-TPLOT_MODE = 'psin' #can have values of: 'avg', 'psin'
+DO_PLOTS = True #flag of whether to plot each well and save the plot
+TPLOT_MODE = 'avg' #can have values of: 'avg', 'psin'
+HIGHLIGHTS = ['ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
 
 def fun(p, x, y):
     #return x[0] * np.exp(-x[1] * t) * np.sin(x[2] * t) - y
@@ -298,18 +299,59 @@ def fix_nans(binned_values):
             binned_values[i] = np.mean([prevval,nextval])
     return binned_values
     
+# def plot_expression_avg_pseudotime(genelist, outfolder):
+#     if not os.path.exists(outfolder): os.mkdir(outfolder)
+#     for gene in genelist:
+#         nexp = norm_exp_sort[:,list(adata.var_names).index(gene)]
+#         df = pd.DataFrame({"fucci_time" : fucci_time_sort, gene : nexp})
+#         # plt.scatter(df["fucci_time"], df[gene], label="Normalized Expression")
+#         bin_size = 100
+#         plt.plot(df["fucci_time"], 
+#             df[gene].rolling(bin_size).mean(), 
+#             color="blue", 
+#             label=f"Moving Average by {bin_size} Cells")
+#         plt.fill_between(df["fucci_time"], 
+#             df[gene].rolling(bin_size).quantile(0.10),
+#             df[gene].rolling(bin_size).quantile(0.90), 
+#             color="lightsteelblue", 
+#             label="10th & 90th Percentiles")
+#         # plt.plot(df["fucci_time"], color="orange", label="Normalized Expression, 10th Percentile")
+#         # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() + 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
+#         # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() - 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
+#         plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
+#         plt.ylabel("RNA-Seq Counts, Normalized By Cell",size=36,fontname='Arial')
+#         plt.xticks(size=14)
+#         plt.yticks(size=14)
+#         plt.title(gene,size=36,fontname='Arial')
+#         plt.legend(fontsize=14)
+#         plt.tight_layout()
+#         plt.savefig(f"{outfolder}/{gene}.png")
+#         plt.close()
+
 def temporal_mov_avg(curr_pol,curr_ab_norm,x_fit,y_fit,outname,outsuff):
     plt.close()
     outfile = os.path.join(outname,outsuff+'_mvavg.pdf')
     if os.path.exists(outfile): return
     #plot data
-    plt.scatter(curr_pol,curr_ab_norm,c='c')
-    plt.plot(x_fit,y_fit,'m')
+    bin_size = 25
+    df = pd.DataFrame({"time" : curr_pol, "intensity" : curr_ab_norm})
+    # plt.scatter(curr_pol,curr_ab_norm,c='c')
+    plt.figure(figsize=(5,5))
+    plt.plot(df["time"],df["intensity"].rolling(bin_size).mean(),color="blue")
+    plt.fill_between(df["time"], 
+        df["intensity"].rolling(bin_size).quantile(0.10),
+        df["intensity"].rolling(bin_size).quantile(0.90),
+        color="lightsteelblue",
+        label="10th & 90th Percentiles")
     #label stuff
     plt.ylim([0,1])
     plt.xlim([0,1])
-    plt.xlabel('pseudo-time')
-    plt.ylabel(outsuff+' expression')
+    plt.xlabel('Pseudotime')
+    # plt.ylabel(outsuff+' expression')
+    plt.ylabel(outsuff.split('_')[0] + ' Protein Expression')
+    plt.xticks(size=14)
+    plt.yticks(size=14)
+    # plt.legend(fontsize=14)
     plt.tight_layout()
     if not os.path.exists(os.path.dirname(outfile)):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
@@ -593,7 +635,7 @@ for well in u_well_plates:
         not_ccd_pvals.append(curr_pval)
 
     #visualize the correlation
-    if DO_PLOTS:
+    if DO_PLOTS:# and any([h in outsuff for h in HIGHLIGHTS]):
         outname = os.path.join("output_devin",plate_well_to_ab[plate][well][2])
         if TPLOT_MODE == 'avg':
             temporal_mov_avg(
@@ -661,10 +703,11 @@ plist_tot = np.concatenate([plist,nc_plist])
 # temporal heatmap
 # def temporal_heatmap(model_free_list, plate_well_to_ab, loc_set,outfolder):
 #PROTEINS SELECTED FOR HIGHLIGHTING
-HIGHLIGHTS = ['ORC6','CCNE1','PHLDB1','DPH2']
-HIGHLIGHTS_MINOR = [ 'MCM10', 'ZNF32', 'JUN',  
-                'DUSP19', 'CCNB1', 'AURKB', 'BUB1B', 'PAPSS1',
-                'N6AMT1', 'FLI1']
+HIGHLIGHTS = ['ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
+# HIGHLIGHTS = ['ORC6','CCNE1','PHLDB1','DPH2']
+# HIGHLIGHTS_MINOR = [ 'MCM10', 'ZNF32', 'JUN',  
+#                 'DUSP19', 'CCNB1', 'AURKB', 'BUB1B', 'PAPSS1',
+#                 'N6AMT1', 'FLI1']
 #HIGHLIGHTS['ORC6','MCM10','ZNF32','JUN','CCNE1','DUSP19',
 #   'CCNB1','AURKB','BUB1B','PAPSS1','N6AMT1','PHLDB1','DPH2','FLI1']
 #TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
@@ -741,11 +784,11 @@ plt.yticks(size=10,fontname='Arial')
 
 #Do the y ticks
 ytick_locs = [prot_list.index(p) for p in HIGHLIGHTS]
-ytick_locs_minor = [prot_list.index(p) for p in HIGHLIGHTS_MINOR]
+# ytick_locs_minor = [prot_list.index(p) for p in HIGHLIGHTS_MINOR]
 ax.set_yticks(ytick_locs,minor=False)
 ax.set_yticklabels(HIGHLIGHTS,minor=False)
-ax.set_yticks(ytick_locs_minor,minor=True)
-ax.set_yticklabels(HIGHLIGHTS_MINOR,minor=True)
+# ax.set_yticks(ytick_locs_minor,minor=True)
+# ax.set_yticklabels(HIGHLIGHTS_MINOR,minor=True)
 ax.tick_params(direction='out', length=12, width=2, colors='k', 
                 axis='x',which='major')
 ax.tick_params(direction='out', length=56, width=1, colors='k', 
@@ -838,7 +881,7 @@ ax1 = fig.add_subplot(111)
 ax1.hist(prot_maxpol_filter_array * TOT_LEN, alpha=0.5, label="Peak Protein Expression Time, hrs")
 ax1.hist(max_rna_avg_prot_pol * TOT_LEN, alpha=0.5, label="Peak RNA Expression Time, hrs")
 plt.legend(loc="upper left")
-plt.xlabel("Psueodtime")
+plt.xlabel("Division Cycle, hrs")
 plt.ylabel("Count of Cell Cycle Genes")
 plt.tight_layout()
 plt.savefig(f"figures/DelayPeakProteinRNA_separate.png")
@@ -858,8 +901,9 @@ plt.savefig("figures/DelayPeakProteinRNA_boxplot.png")
 plt.show()
 plt.close()
 
-print(f"Median RNA expression time for CCD proteins: {np.median(max_rna_avg_prot_pol)}")
-print(f"Median protein expression time for CCD proteins: {np.median(prot_maxpol_filter_array)}")
+print(f"Median delay of RNA and protein expression time for CCD proteins: {TOT_LEN * np.median(diff_max_pol)}")
+print(f"Median RNA expression time for CCD proteins: {TOT_LEN * np.median(max_rna_avg_prot_pol)}")
+print(f"Median protein expression time for CCD proteins: {TOT_LEN * np.median(prot_maxpol_filter_array)}")
 t, p = scipy.stats.kruskal(max_rna_avg_prot_pol, prot_maxpol_filter_array)
 print(f"One-sided kruskal for median protein expression time higher than median RNA expression time: {2*p}")
 t, p = scipy.stats.ttest_1samp(diff_max_pol, 0)

@@ -117,13 +117,25 @@ def stat_tests(title):
 def temp_hist(title):
     '''Generates a histogram of melting points with bins normalized to 1'''
     bins=np.histogram(np.hstack((all_temps, transcript_reg, nontranscr_reg)), bins=40)[1] #get the bin edges
-    plt.hist(all_temps, bins=bins, weights=weights(all_temps), alpha=0.5, label="All Proteins")
-    plt.hist(transcript_reg, bins=bins, weights=weights(transcript_reg), alpha=0.5, label="Transcript Reg. CCD")
-    plt.hist(nontranscr_reg, bins=bins, weights=weights(nontranscr_reg), alpha=0.6, label="Non-Transcript Reg. CCD")
+    plt.hist(all_temps, bins=bins, weights=weights(all_temps), color="#3753A4", alpha=0.5, label="All Proteins")
+    plt.hist(transcript_reg, bins=bins, weights=weights(transcript_reg), color="#FF0000", alpha=0.5, label="Transcript Reg. CCD")
+    plt.hist(nontranscr_reg, bins=bins, weights=weights(nontranscr_reg), color="#2CE100", alpha=0.6, label="Non-Transcript Reg. CCD")
     plt.legend(loc="upper right")
     plt.xlabel("Melting Point (°C)")
     plt.title(title)
     stat_tests(title)
+
+def temp_box(title):
+    mmmm = np.concatenate((all_temps, transcript_reg, nontranscr_reg))
+    cccc = (["All Proteins"] * len(all_temps))
+    cccc.extend(["Transcript's\nReg\nCCD"] * len(transcript_reg))
+    cccc.extend(["Non-Transcript\nReg\nCCD"] * len(nontranscr_reg))
+    moddf = pd.DataFrame({"temps": mmmm, "category" : cccc})
+    boxplot = moddf.boxplot("temps", by="category", figsize=(12, 8), showfliers=False)
+    boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
+    boxplot.set_ylabel("Melting Point (°C)", size=36,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=16) 
+    plt.title(title)
 
 
 # Individual histograms
@@ -172,6 +184,10 @@ add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", 
 add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
 temp_hist("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPoints.png")
+plt.show()
+plt.close()
+temp_box("Aggregated Melting Poitns")
+plt.savefig("figures/ProteinMeltingPointBox.pdf")
 plt.show()
 plt.close()
 

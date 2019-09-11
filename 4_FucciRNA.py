@@ -17,7 +17,7 @@ from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_li
 dd = "All"
 counts_or_rpkms = "Tpms"
 do_log_normalization = True
-adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False)
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False, "protein_coding")
 phases_filt = qc_filtering(adata, do_log_normalization)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
@@ -177,6 +177,7 @@ def plot_expression_avg_pseudotime(genelist, outfolder):
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
 
+plot_expression_avg_pseudotime(["ENSG00000104833"], "figures/OtherGeneProfileAvgs")
 # plot_expression_avg_pseudotime(ccd_regev_filtered, "figures/RegevGeneProfileAvgs")
 # plot_expression_avg_pseudotime(ccd_filtered, "figures/DianaCcdGeneProfileAvgs")
 # plot_expression_avg_pseudotime(nonccd_filtered, "figures/DianaNonCcdGeneProfileAvgs")
@@ -197,7 +198,7 @@ def plot_expression_avg_pseudotime(genelist, outfolder):
 dd = "All"
 counts_or_rpkms = "Counts"
 do_log_normalization = False
-adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False)
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False, "protein_coding")
 expression_data = adata.X
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)

@@ -291,8 +291,8 @@ print(f"mean +/- stdev of spike-in variance explained by cell cycle: {np.mean(pe
 print(f"mean of spike-in variance explained by cell cycle: {np.median(percent_ccd_variance_spike)}")
 
 # Okay, we're going to take the ones that passed ANOVA and have > 10% variance explained
-total_var_cutoff = np.mean(total_variance_spike) + 3 * np.std(total_variance_spike)
-percent_var_cutoff = np.mean(percent_ccd_variance_spike) + 3 * np.std(percent_ccd_variance_spike)
+total_var_cutoff = np.mean(total_variance_spike) + 2 * np.std(total_variance_spike)
+percent_var_cutoff = np.mean(percent_ccd_variance_spike) + 2 * np.std(percent_ccd_variance_spike)
 print(f"using total variance cutoff {total_var_cutoff} and percent CCD variance cutoff {percent_var_cutoff}")
 plt.figure(figsize=(15,15))
 plt.subplot(221)
