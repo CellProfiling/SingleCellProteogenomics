@@ -203,6 +203,14 @@ expression_data = adata.X
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 exp_sort = np.take(expression_data, fucci_time_inds, axis=0)
+moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
+max_exp_inds = np.argmax(moving_averages, 0)
+moving_avg_peak_inds = np.argsort(max_exp_inds)
+moving_avg_sort = np.take(moving_averages, moving_avg_peak_inds, axis=1)
+gene_id_sort = np.take(np.array(adata.var))
+
+# take the moving average and sort by max time
+
 
 # Total counts per cell, moving average
 exp = exp_sort.sum(axis=1)
@@ -268,3 +276,127 @@ shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseNotListed.pdf")
 # Conclusion:
 # There is information about the cell cycle in the genes that aren't cell cycle dependent
 
+#%% Make the peak RNA heatmap
+# Idea: generate a heatmap similar to the one for protein data
+# Execution: use the list of significantly differentially expressed genes to pluck the normalized intensities for those genes
+#      and order them by the time of peak expression
+# output: heatmap
+
+def mvavg(yvals, mv_window):
+    return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
+
+# imports
+dd = "All"
+counts_or_rpkms = "Counts"
+do_log_normalization = True
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False, "protein_coding")
+expression_data = adata.X # log normalized
+normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T # divide for cell
+# normalized_exp_data = (normalized_exp_data / np.max(normalized_exp_data, axis=1)[:,None]) # divide for gene
+fucci_time_inds = np.argsort(adata.obs["fucci_time"])
+fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
+norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
+
+#%%
+
+# take the moving average and sort by max time
+moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
+max_exp_inds = np.argmax(moving_averages, 0)
+moving_avg_peak_inds = np.argsort(max_exp_inds)
+moving_avg_sort = np.take(moving_averages, moving_avg_peak_inds, axis=1)
+gene_id_sort = np.take(np.array(adata.var_names), moving_avg_peak_inds)
+plt.figure(figsize=(10,10))
+allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
+plt.imshow(moving_avg_sort.T[np.isin(gene_id_sort, allccd_transcript_regulated)], interpolation="nearest")
+plt.tight_layout()
+plt.legend()
+# plt.savefig(os.path.join("figures",'RNA_heatmap.pdf'), transparent=True)
+plt.show()
+plt.close()
+
+#%%
+
+#create localization matrix
+#sort the coefficients based on the max value point
+loc_mat = np.zeros([len(model_free_list),len(loc_set)])
+for i,response in enumerate(model_free_list):
+    curr_well = response[0]
+    plate = int(curr_well.split("_")[-1])
+    print(curr_well)
+    print(plate_well_to_ab[plate][curr_well])
+    curr_locs = plate_well_to_ab[plate][curr_well][3]
+    loc_mat[i,curr_locs] = 1
+
+model_free_list.sort(key=operator.itemgetter(3))
+prob_interact = np.zeros([len(model_free_list),len(model_free_list)])
+sum_rows = []
+prot_list = []
+sorted_gene_array = []
+sorted_ensg_array = []
+sorted_maxpol_array = []
+sorted_expression_table_ccd = []
+sorted_expression_table_all = []
+for i,response in enumerate(model_free_list):
+    sorted_gene_array.append(response[4]) # this is the expression values
+    sorted_maxpol_array.append(response[3])
+    sorted_ensg_array.append(response[6])
+    for i, exp in enumerate(response[4]):
+        sorted_expression_table_ccd.append([response[6], (i + 1) / len(response[4]), exp])
+    curr_well = response[0]
+    #set all other rows that share a loc to 1
+    curr_locs = loc_mat[i,:]
+    match_rows = np.greater(np.sum(loc_mat*curr_locs,axis=1),0)*response[3]
+    sum_rows.append(np.sum(match_rows))
+    prob_interact[i,:] = match_rows
+    prot_list.append(response[1])
+
+for i, response in enumerate(model_free_list_all):
+    for i, exp in enumerate(response[4]):
+        sorted_expression_table_all.append([response[6], (i + 1) / len(response[4]), exp])   
+
+fig, ax = plt.subplots(figsize=(10, 10))
+sc = ax.imshow(sorted_gene_array, interpolation='nearest')
+np.savetxt("output/temporal_protein_expression_ccd.tsv", npv.array(sorted_expression_table_ccd), fmt="%s", delimiter="\t")
+np.savetxt("output/temporal_protein_expression_all.tsv", np.array(sorted_expression_table_all), fmt="%s", delimiter="\t")
+
+#Arange the x ticks
+xtick_labels = [str(np.around(x * TOT_LEN,decimals=2)) for x in np.linspace(0,1,11)]
+xtick_labels = xtick_labels#+['G1/S','S/G2']
+xphase_labels = ['G1/S','S/G2']
+my_xticks = np.arange(-.5, 20, 2)
+num_ticks = 20
+
+phase_trans = np.asarray([G1_PROP*num_ticks-0.5, G1_S_PROP*num_ticks-0.5])
+
+ax.set_xticks(my_xticks,minor=True)
+ax.set_xticklabels(xtick_labels,minor=True)
+ax.set_xticks(phase_trans, minor=False)
+ax.set_xticklabels(xphase_labels, minor=False)
+ax.tick_params(length=12)
+plt.xticks(size=12,fontname='Arial')
+plt.yticks(size=10,fontname='Arial')
+
+#Do the y ticks
+ytick_locs = [prot_list.index(p) for p in HIGHLIGHTS]
+# ytick_locs_minor = [prot_list.index(p) for p in HIGHLIGHTS_MINOR]
+ax.set_yticks(ytick_locs,minor=False)
+ax.set_yticklabels(HIGHLIGHTS,minor=False)
+# ax.set_yticks(ytick_locs_minor,minor=True)
+# ax.set_yticklabels(HIGHLIGHTS_MINOR,minor=True)
+ax.tick_params(direction='out', length=12, width=2, colors='k', 
+                axis='x',which='major')
+ax.tick_params(direction='out', length=56, width=1, colors='k', 
+                axis='y',which='major')
+ax.set_aspect('auto')
+plt.xlabel('Division Cycle, hrs',size=20,fontname='Arial')
+plt.ylabel('Gene',size=20,fontname='Arial')
+
+divider1 = make_axes_locatable(ax)
+cax1 = divider1.append_axes("right", size="5%", pad=0.05)
+cbar = plt.colorbar(sc,cax = cax1)
+cbar.set_label('Relative expression',fontname='Arial',size=20)
+cbar.ax.tick_params(labelsize=18)
+
+plt.tight_layout()
+plt.savefig(os.path.join("output_devin",'sorted_heatmap21_sw30_take4.pdf'), transparent=True)
+plt.show()

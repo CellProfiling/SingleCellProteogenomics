@@ -1,0 +1,106 @@
+INFO: [2019-09-19 17:32:42] genewalk.resources - Using ./ccd_proteins/resources as resource folder.
+INFO: [2019-09-19 17:32:42] genewalk.resources - Downloading http://snapshot.geneontology.org/ontology/go.obo into ./ccd_proteins/resources/go.obo
+INFO: [2019-09-19 17:32:45] genewalk.resources - Downloading http://geneontology.org/gene-associations/goa_human.gaf.gz and extracting into ./ccd_proteins/resources/goa_human.gaf
+INFO: [2019-09-19 17:32:46] genewalk.resources - Downloading http://www.pathwaycommons.org/archives/PC2/v11/PathwayCommons11.All.hgnc.sif.gz and extracting into ./ccd_proteins/resources/PathwayCommons11.All.hgnc.sif
+WARNING: [2019-09-19 17:32:49] genewalk.gene_lists - Could not get HGNC ID for symbol FAM206A
+WARNING: [2019-09-19 17:32:49] genewalk.gene_lists - Could not get HGNC ID for symbol 7-Sep
+WARNING: [2019-09-19 17:32:49] genewalk.gene_lists - Could not get HGNC ID for symbol 2-Sep
+WARNING: [2019-09-19 17:32:49] genewalk.gene_lists - Could not get HGNC ID for symbol C8orf59
+INFO: [2019-09-19 17:32:49] genewalk.cli - Saving into ./ccd_proteins/proteinccd/genes.pkl...
+INFO: [2019-09-19 17:32:53] genewalk.nx_mg_assembler - Adding gene edges from Pathway Commons to graph.
+INFO: [2019-09-19 17:33:11] genewalk.nx_mg_assembler - Number of PC originating nodes 285
+INFO: [2019-09-19 17:33:12] genewalk.nx_mg_assembler - Adding GO annotations for genes in graph.
+INFO: [2019-09-19 17:53:21] genewalk.resources - Using ./ccd_proteins/resources as resource folder.
+WARNING: [2019-09-19 17:53:21] genewalk.gene_lists - Could not get HGNC ID for symbol FAM206A
+WARNING: [2019-09-19 17:53:21] genewalk.gene_lists - Could not get HGNC ID for symbol SEPT7
+WARNING: [2019-09-19 17:53:21] genewalk.gene_lists - Could not get HGNC ID for symbol SEPT2
+WARNING: [2019-09-19 17:53:21] genewalk.gene_lists - Could not get HGNC ID for symbol C8orf59
+INFO: [2019-09-19 17:53:21] genewalk.cli - Saving into ./ccd_proteins/proteinccd/genes.pkl...
+INFO: [2019-09-19 17:53:25] genewalk.nx_mg_assembler - Adding gene edges from Pathway Commons to graph.
+INFO: [2019-09-19 17:53:45] genewalk.nx_mg_assembler - Number of PC originating nodes 285
+INFO: [2019-09-19 17:53:45] genewalk.nx_mg_assembler - Adding GO annotations for genes in graph.
+INFO: [2019-09-19 17:53:48] genewalk.nx_mg_assembler - Adding GO ontology edges to graph.
+INFO: [2019-09-19 17:53:49] genewalk.cli - Saving into ./ccd_proteins/proteinccd/multi_graph.pkl...
+INFO: [2019-09-19 17:53:49] genewalk.cli - 1/3
+INFO: [2019-09-19 17:53:49] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 17:56:06] genewalk.deepwalk - 594765/15860400 walks complete in 136.96s
+INFO: [2019-09-19 17:56:23] genewalk.resources - Using ./ccd_proteins/resources as resource folder.
+WARNING: [2019-09-19 17:56:23] genewalk.gene_lists - Could not get HGNC ID for symbol FAM206A
+WARNING: [2019-09-19 17:56:23] genewalk.gene_lists - Could not get HGNC ID for symbol SEPT7
+WARNING: [2019-09-19 17:56:23] genewalk.gene_lists - Could not get HGNC ID for symbol SEPT2
+WARNING: [2019-09-19 17:56:23] genewalk.gene_lists - Could not get HGNC ID for symbol C8orf59
+INFO: [2019-09-19 17:56:23] genewalk.cli - Saving into ./ccd_proteins/proteinccd/genes.pkl...
+INFO: [2019-09-19 17:56:26] genewalk.nx_mg_assembler - Adding gene edges from Pathway Commons to graph.
+INFO: [2019-09-19 17:56:45] genewalk.nx_mg_assembler - Number of PC originating nodes 285
+INFO: [2019-09-19 17:56:46] genewalk.nx_mg_assembler - Adding GO annotations for genes in graph.
+INFO: [2019-09-19 17:56:49] genewalk.nx_mg_assembler - Adding GO ontology edges to graph.
+INFO: [2019-09-19 17:56:49] genewalk.cli - Saving into ./ccd_proteins/proteinccd/multi_graph.pkl...
+INFO: [2019-09-19 17:56:50] genewalk.cli - 1/3
+INFO: [2019-09-19 17:56:50] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 18:11:34] genewalk.deepwalk - 3568590/15860400 walks complete in 884.52s
+INFO: [2019-09-19 18:22:39] genewalk.deepwalk - 7137180/15860400 walks complete in 1549.22s
+INFO: [2019-09-19 18:33:16] genewalk.deepwalk - 10705770/15860400 walks complete in 2186.67s
+INFO: [2019-09-19 18:42:42] genewalk.deepwalk - 14274360/15860400 walks complete in 2752.53s
+INFO: [2019-09-19 18:44:15] genewalk.deepwalk - Running random walks done in 2845.82s
+INFO: [2019-09-19 18:44:15] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 18:56:42] genewalk.deepwalk - Generating node vectors done in 746.39s
+INFO: [2019-09-19 18:56:43] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_1.pkl...
+INFO: [2019-09-19 18:56:45] genewalk.cli - 2/3
+INFO: [2019-09-19 18:56:45] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 19:12:04] genewalk.deepwalk - 3568590/15860400 walks complete in 918.48s
+INFO: [2019-09-19 19:20:59] genewalk.deepwalk - 7137180/15860400 walks complete in 1453.98s
+INFO: [2019-09-19 19:29:06] genewalk.deepwalk - 10705770/15860400 walks complete in 1940.62s
+INFO: [2019-09-19 19:36:37] genewalk.deepwalk - 14274360/15860400 walks complete in 2391.82s
+INFO: [2019-09-19 19:38:03] genewalk.deepwalk - Running random walks done in 2477.43s
+INFO: [2019-09-19 19:38:03] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 19:48:51] genewalk.deepwalk - Generating node vectors done in 648.52s
+INFO: [2019-09-19 19:48:52] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_2.pkl...
+INFO: [2019-09-19 19:48:54] genewalk.cli - 3/3
+INFO: [2019-09-19 19:48:54] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 20:00:17] genewalk.deepwalk - 3568590/15860400 walks complete in 683.27s
+INFO: [2019-09-19 20:07:38] genewalk.deepwalk - 7137180/15860400 walks complete in 1123.76s
+INFO: [2019-09-19 20:14:18] genewalk.deepwalk - 10705770/15860400 walks complete in 1524.48s
+INFO: [2019-09-19 20:21:15] genewalk.deepwalk - 14274360/15860400 walks complete in 1941.10s
+INFO: [2019-09-19 20:22:33] genewalk.deepwalk - Running random walks done in 2019.38s
+INFO: [2019-09-19 20:22:33] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 20:33:14] genewalk.deepwalk - Generating node vectors done in 640.37s
+INFO: [2019-09-19 20:33:14] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_3.pkl...
+INFO: [2019-09-19 20:33:16] genewalk.cli - Loading ./ccd_proteins/proteinccd/multi_graph.pkl...
+INFO: [2019-09-19 20:33:17] genewalk.cli - 1/3
+INFO: [2019-09-19 20:33:20] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 20:45:19] genewalk.deepwalk - 3762697/16723100 walks complete in 719.52s
+INFO: [2019-09-19 20:53:10] genewalk.deepwalk - 7525394/16723100 walks complete in 1190.52s
+INFO: [2019-09-19 21:00:19] genewalk.deepwalk - 11288091/16723100 walks complete in 1618.85s
+INFO: [2019-09-19 21:07:21] genewalk.deepwalk - 15050788/16723100 walks complete in 2040.82s
+INFO: [2019-09-19 21:08:47] genewalk.deepwalk - Running random walks done in 2127.59s
+INFO: [2019-09-19 21:08:47] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 21:21:06] genewalk.deepwalk - Generating node vectors done in 739.02s
+INFO: [2019-09-19 21:21:07] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_rand_1.pkl...
+INFO: [2019-09-19 21:21:11] genewalk.cli - 2/3
+INFO: [2019-09-19 21:21:13] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 21:32:52] genewalk.deepwalk - 3761865/16719400 walks complete in 698.38s
+INFO: [2019-09-19 21:40:40] genewalk.deepwalk - 7523730/16719400 walks complete in 1167.03s
+INFO: [2019-09-19 21:47:45] genewalk.deepwalk - 11285595/16719400 walks complete in 1591.65s
+INFO: [2019-09-19 21:54:46] genewalk.deepwalk - 15047460/16719400 walks complete in 2012.62s
+INFO: [2019-09-19 21:56:10] genewalk.deepwalk - Running random walks done in 2096.35s
+INFO: [2019-09-19 21:56:10] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 22:08:08] genewalk.deepwalk - Generating node vectors done in 718.10s
+INFO: [2019-09-19 22:08:09] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_rand_2.pkl...
+INFO: [2019-09-19 22:08:12] genewalk.cli - 3/3
+INFO: [2019-09-19 22:08:15] genewalk.deepwalk - Running random walks...
+INFO: [2019-09-19 22:20:11] genewalk.deepwalk - 3763282/16725700 walks complete in 715.42s
+INFO: [2019-09-19 22:27:37] genewalk.deepwalk - 7526564/16725700 walks complete in 1161.51s
+INFO: [2019-09-19 22:34:46] genewalk.deepwalk - 11289846/16725700 walks complete in 1590.45s
+INFO: [2019-09-19 22:41:50] genewalk.deepwalk - 15053128/16725700 walks complete in 2014.94s
+INFO: [2019-09-19 22:43:05] genewalk.deepwalk - Running random walks done in 2089.75s
+INFO: [2019-09-19 22:43:05] genewalk.deepwalk - Generating node vectors...
+INFO: [2019-09-19 22:55:03] genewalk.deepwalk - Generating node vectors done in 718.43s
+INFO: [2019-09-19 22:55:04] genewalk.cli - Saving into ./ccd_proteins/proteinccd/deepwalk_node_vectors_rand_3.pkl...
+INFO: [2019-09-19 22:55:08] genewalk.cli - Saving into ./ccd_proteins/proteinccd/genewalk_rand_simdists.pkl...
+INFO: [2019-09-19 22:55:08] genewalk.cli - Loading ./ccd_proteins/proteinccd/multi_graph.pkl...
+INFO: [2019-09-19 22:55:09] genewalk.cli - Loading ./ccd_proteins/proteinccd/genes.pkl...
+INFO: [2019-09-19 22:55:09] genewalk.cli - Loading ./ccd_proteins/proteinccd/deepwalk_node_vectors_1.pkl...
+INFO: [2019-09-19 22:55:09] genewalk.cli - Loading ./ccd_proteins/proteinccd/deepwalk_node_vectors_2.pkl...
+INFO: [2019-09-19 22:55:09] genewalk.cli - Loading ./ccd_proteins/proteinccd/deepwalk_node_vectors_3.pkl...
+INFO: [2019-09-19 22:55:09] genewalk.cli - Loading ./ccd_proteins/proteinccd/genewalk_rand_simdists.pkl...
+INFO: [2019-09-19 22:55:10] genewalk.cli - Saving final results into ./ccd_proteins/proteinccd/genewalk_results.csv
