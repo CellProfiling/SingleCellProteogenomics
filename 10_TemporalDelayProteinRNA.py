@@ -26,7 +26,7 @@ ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 # Exec: pandas
 # Output: fucci plot from the immunofluorescence data
 print("reading protein IF data")
-my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
+my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases.csv")
 print("loaded")
 
 green_fucci = np.asarray(my_df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)

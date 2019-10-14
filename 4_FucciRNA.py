@@ -203,13 +203,6 @@ expression_data = adata.X
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 exp_sort = np.take(expression_data, fucci_time_inds, axis=0)
-moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
-max_exp_inds = np.argmax(moving_averages, 0)
-moving_avg_peak_inds = np.argsort(max_exp_inds)
-moving_avg_sort = np.take(moving_averages, moving_avg_peak_inds, axis=1)
-gene_id_sort = np.take(np.array(adata.var))
-
-# take the moving average and sort by max time
 
 
 # Total counts per cell, moving average
@@ -298,6 +291,16 @@ fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 
 #%%
+#hours (for the G1/S cutoff)
+G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
+#M_LEN = 0.5
+#We are excluding Mphase from this analysis
+TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
+G1_PROP = G1_LEN/TOT_LEN
+G1_S_PROP = G1_S_TRANS/TOT_LEN+G1_PROP
+S_G2_PROP = S_G2_LEN/TOT_LEN+G1_S_PROP
 
 # take the moving average and sort by max time
 moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
@@ -307,10 +310,23 @@ moving_avg_sort = np.take(moving_averages, moving_avg_peak_inds, axis=1)
 gene_id_sort = np.take(np.array(adata.var_names), moving_avg_peak_inds)
 plt.figure(figsize=(10,10))
 allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
-plt.imshow(moving_avg_sort.T[np.isin(gene_id_sort, allccd_transcript_regulated)], interpolation="nearest")
+fig, ax = plt.subplots(figsize=(10,10))
+ax.imshow(moving_avg_sort.T[np.isin(gene_id_sort, allccd_transcript_regulated)], interpolation="nearest")
+ax.set_aspect("auto")
+xtick_labels = [str(np.around(TOT_LEN*x,decimals=2)) for x in np.linspace(0,1,11)]
+xtick_labels = xtick_labels#+['G1/S','S/G2']
+
+# my_xticks = np.arange(-.5, 20, 2)
+# num_ticks = 20
+# phase_trans = np.asarray([G1_PROP*num_ticks-0.5, G1_S_PROP*num_ticks-0.5])
+
+# ax.set_xticks(xtick_labels,minor=True)
+# ax.set_xticklabels(xtick_labels,minor=True)
+# ax.set_xticks(phase_trans, minor=False)
+# ax.set_xticklabels(xphase_labels, minor=False)
 plt.tight_layout()
 plt.legend()
-# plt.savefig(os.path.join("figures",'RNA_heatmap.pdf'), transparent=True)
+plt.savefig(os.path.join("figures",'RNA_heatmap.pdf'), transparent=True)
 plt.show()
 plt.close()
 

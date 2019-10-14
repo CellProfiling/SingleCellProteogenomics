@@ -5,6 +5,7 @@ from stretch_time import stretch_time
 from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
+from sklearn.mixture import GaussianMixture
 import collections
 import fucci_plotting
 import operator
@@ -15,7 +16,7 @@ from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_li
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
 count_or_rpkm = "Tpms" # so that the gene-specific results scales match for cross-gene comparisons
-print("reading scRNA-Seq data")
+print("Reading scRNA-Seq data")
 biotype_to_use="protein_coding"
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use=biotype_to_use)
 qc_filtering(adata, do_log_normalize=False)
@@ -23,29 +24,240 @@ ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
+#       use the mean intensity and integrated intensity for different cutoffs (ab and microtubules)
 # Exec: pandas
 # Output: fucci plot from the immunofluorescence data
 print("reading protein IF data")
-my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
+my_df1 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
+my_df2 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
+my_df = pd.concat((my_df1, my_df2), sort=True)
 print("loaded")
 
+# Sample information (FucciWellPlateGene is still missing some information)
+plate = np.asarray(my_df.plate)
+u_plate = np.unique(plate)
+well_plate = np.asarray(my_df.well_plate)
+imgnb = np.asarray(my_df.ImageNumber)
+u_well_plates = np.unique(well_plate)
+ab_objnum = np.asarray(my_df.ObjectNumber)
+name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
+wppp, ensggg, abbb, rrrr = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"])
+# name_df = pd.read_csv("input\\FucciWellPlateGene.csv")
+# wppp, ensggg, abbb = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"])
+ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
+ab_dict = dict([(wppp[i], abbb[i]) for i in range(len(wppp))])
+result_dict = dict([(wppp[i], rrrr[i]) for i in range(len(wppp))])
+ENSG = np.asarray([ensg_dict[wp] if wp in result_dict else "" for wp in well_plate])
+antibody = np.asarray([ab_dict[wp] if wp in result_dict else "" for wp in well_plate])
+result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
+neg="neg"
+print(f"{len([s for s in result if s.lower().startswith(neg)])}: number of negative stainings")
+
+# Let's take a look at cell area to see if that's a good cutoff
+# Looks fine. They already filtered on the area of the object; the area of the cell looks relatively normal.
+# area_object = np.asarray(my_df.AreaShape_Area)
+# bins = plt.hist(np.log10(area_object), bins=100)
+# plt.vlines(np.mean(np.log10(area_object)), 0, np.max(bins[0]))
+# area_object_mean = np.mean(np.log10(area_object))
+# upper_area_cutoff = area_object_mean + 4 * np.std(np.log10(area_object))
+# lower_area_cutoff = area_object_mean - 4 * np.std(np.log10(area_object))
+# plt.vlines(upper_area_cutoff, 0, np.max(bins[0]))
+# plt.vlines(lower_area_cutoff, 0, np.max(bins[0]))
+# plt.show()
+# plt.
+# area_cell = np.asarray(my_df.Area_cell)
+# area_cyto = np.asarray(my_df.Area_cyto)
+# bins = plt.hist(np.log10(area_cell), bins=100)
+# plt.vlines(np.mean(np.log10(area_cell)), 0, np.max(bins[0]))
+# area_cell_mean = np.mean(np.log10(area_cell))
+# upper_area_cutoff = area_cell_mean + 4 * np.std(np.log10(area_cell))
+# lower_area_cutoff = area_cell_mean - 4 * np.std(np.log10(area_cell))
+# plt.vlines(upper_area_cutoff, 0, np.max(bins[0]))
+# plt.vlines(lower_area_cutoff, 0, np.max(bins[0]))
+# plt.show()
+# plt.hist(np.log10(area_cyto), bins=100)
+# plt.show()
+
+# Fucci data (mean intensity)
+# The microscope used for the new plates has a wider dynamic range, and the gain is set for the highest expressing well on the whole plate.
+# It appears this also makes the 
+green_offset = dict([
+    (6716,0),
+    (6718,0.002),
+    (6719,0),
+    (6720,0.002),
+    (6721,0.004),
+    (6722,0.004),
+    (6724,0.004),
+    (6725,0.004),
+    (6731,0),
+    (6734,0),
+    (6735,0.004),
+    (6736,0),
+    (6745,0.002)])
 green_fucci = np.asarray(my_df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
-log_green_fucci = np.log10(green_fucci)
+green_fucci_new = [green_fucci[i] + green_offset[plate[i]] if plate[i] in green_offset else green_fucci[i] for i in range(len(green_fucci))]
 red_fucci = np.asarray(my_df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
 log_red_fucci = np.log10(red_fucci)
 fucci_data = np.column_stack([log_green_fucci,log_red_fucci])
+plt.hist2d(np.log10(green_fucci_new),np.log10(red_fucci),bins=200)
+plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
+plt.show()
+plt.close()
+for p in u_plate:
+    plt.hist2d(np.log10(green_fucci[plate == p]),np.log10(red_fucci[plate == p]),bins=200)
+    plt.savefig(f"figures/FucciPlotProteinIFData_filterNegativeStains{p}.png")
+    plt.title(f"FUCCI mean intensities, plate {p}")
+    plt.show()
+    plt.close()
 
+# Fucci data (integrated intensity)
+green_fucci_int = np.asarray(my_df.Intensity_IntegratedIntensity_CorrResizedGreenFUCCI)
+log_green_fucci_int = np.log10(green_fucci_int)
+red_fucci_int = np.asarray(my_df.Intensity_IntegratedIntensity_CorrResizedRedFUCCI)
+log_red_fucci_int = np.log10(red_fucci_int)
+fucci_data_int = np.column_stack([log_green_fucci_int,log_red_fucci_int])
+plt.hist2d(np.log10(green_fucci_int),np.log10(red_fucci_int),bins=200)
+plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
+plt.show()
+plt.close()
+
+# Antibody data (mean intensity)
 ab_nuc = np.asarray(my_df.Intensity_MeanIntensity_ResizedAb)
 ab_cyto = np.asarray(my_df.Mean_ab_Cyto)
 ab_cell = np.asarray(my_df.Mean_ab_cell)
-well_plate = np.asarray(my_df.well_plate)
-u_well_plates = np.unique(well_plate)
-ab_objnum = np.asarray(my_df.ObjectNumber)
+mt_cell = np.asarray(my_df.Mean_mt_cell)
+bins = plt.hist(np.log10(ab_cell), bins=100)
+plt.vlines(np.mean(np.log10(ab_cell)), 0, np.max(bins[0]))
+ab_cell_mean = np.mean(np.log10(ab_cell))
+upper_ab_cell_cutoff = ab_cell_mean + 3 * np.std(np.log10(ab_cell))
+lower_ab_cell_cutoff = ab_cell_mean - 3 * np.std(np.log10(ab_cell))
+lower_ab_cell_heuristic_cutoff = -2.4
+plt.vlines(upper_ab_cell_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_ab_cell_heuristic_cutoff, 0, np.max(bins[0]))
+plt.title("All Mean Intensities in Antibody Channel including Neg Controls")
+plt.show()
 
+# Negative controls (mean intensity)
+neg_control = np.asarray([s.startswith("H12") for s in well_plate])
+neg_control_ab_cell = ab_cell[neg_control]
+bins = plt.hist(np.log10(neg_control_ab_cell), bins=100)
+plt.vlines(np.mean(np.log10(neg_control_ab_cell)), 0, np.max(bins[0]))
+neg_control_ab_cell_mean = np.mean(np.log10(neg_control_ab_cell))
+upper_neg_control_ab_cell_cutoff = neg_control_ab_cell_mean + 3 * np.std(np.log10(neg_control_ab_cell))
+lower_neg_control_ab_cell_cutoff = neg_control_ab_cell_mean - 3 * np.std(np.log10(neg_control_ab_cell))
+plt.vlines(upper_neg_control_ab_cell_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_neg_control_ab_cell_cutoff, 0, np.max(bins[0]))
+plt.title("All Mean Intensities in Antibody Channel of Neg Controls")
+plt.show()
+
+# Antibody data (integrated intensity)
+ab_nuc_int = np.asarray(my_df.Intensity_IntegratedIntensity_ResizedAb)
+ab_cyto_int = np.asarray(my_df.Integrated_ab_cyto)
+ab_cell_int = np.asarray(my_df.Integrated_ab_cell)
+mt_cell_int = np.asarray(my_df.Integrated_mt_cell)
+bins = plt.hist(np.log10(ab_cell_int), bins=100)
+plt.vlines(np.mean(np.log10(ab_cell_int)), 0, np.max(bins[0]))
+ab_cell_int_mean = np.mean(np.log10(ab_cell_int))
+upper_ab_cell_int_cutoff = ab_cell_int_mean + 3 * np.std(np.log10(ab_cell_int))
+lower_ab_cell_int_cutoff = ab_cell_int_mean - 3 * np.std(np.log10(ab_cell_int))
+plt.vlines(upper_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.title("All Integrated Intensities in Antibody Channel including Neg Controls")
+plt.show()
+
+# Negative controls (integrated intensity)
+neg_control_ab_cell_int = ab_cell_int[neg_control]
+bins = plt.hist(np.log10(neg_control_ab_cell_int), bins=100)
+plt.vlines(np.mean(np.log10(neg_control_ab_cell_int)), 0, np.max(bins[0]))
+neg_control_ab_cell_int_mean = np.mean(np.log10(neg_control_ab_cell_int))
+upper_neg_control_ab_cell_int_cutoff = neg_control_ab_cell_int_mean + 1 * np.std(np.log10(neg_control_ab_cell_int))
+lower_neg_control_ab_cell_int_cutoff = neg_control_ab_cell_int_mean - 1 * np.std(np.log10(neg_control_ab_cell_int))
+plt.vlines(upper_neg_control_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_neg_control_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.title("All Mean Intensities in Antibody Channel of Neg Controls")
+plt.show()
+
+# Negative staining (mean intensity)
+ab_cell_neg = ab_cell[[s.lower().startswith("neg") for s in result]]
+bins = plt.hist(np.log10(ab_cell_neg), bins=100)
+plt.title("Negative staining (mean intensity)")
+plt.show()
+ab_cell_int_neg = ab_cell_int[[s.lower().startswith("neg") for s in result]]
+bins = plt.hist(np.log10(ab_cell_int_neg), bins=100)
+plt.title("Negative staining (integrated intensity)")
+plt.show()
+
+# Filter out negative staining
+# pass_filter_ab_cell_mean = (np.log10(ab_cell) > lower_ab_cell_heuristic_cutoff) & (log_green_fucci > lower_ab_cell_heuristic_cutoff) & (log_red_fucci > lower_ab_cell_heuristic_cutoff)
+pass_filter_ab_cell_mean = (np.log10(ab_cell_int) > upper_neg_control_ab_cell_int_cutoff) & (~neg_control)
+green_fucci = green_fucci[pass_filter_ab_cell_mean]
+log_green_fucci = log_green_fucci[pass_filter_ab_cell_mean]
+red_fucci = red_fucci[pass_filter_ab_cell_mean]
+log_red_fucci = log_red_fucci[pass_filter_ab_cell_mean]
+fucci_data = fucci_data[pass_filter_ab_cell_mean]
+ab_nuc = ab_nuc[pass_filter_ab_cell_mean]
+ab_cyto = ab_cyto[pass_filter_ab_cell_mean]
+ab_cell = ab_cell[pass_filter_ab_cell_mean]
+mt_cell = mt_cell[pass_filter_ab_cell_mean]
+ab_nuc_int = ab_nuc_int[pass_filter_ab_cell_mean]
+ab_cyto_int = ab_cyto_int[pass_filter_ab_cell_mean]
+ab_cell_int = ab_cell_int[pass_filter_ab_cell_mean]
+mt_cell_int = mt_cell_int[pass_filter_ab_cell_mean]
+ENSG = ENSG[pass_filter_ab_cell_mean]
+antibody = antibody[pass_filter_ab_cell_mean]
+result = result[pass_filter_ab_cell_mean]
+neg="neg"
+print(f"{len([s for s in result if s.lower().startswith(neg)])}: number of negative stainings")
+
+# New antibody intensity plots with cutoffs
+bins = plt.hist(np.log10(ab_cell), bins=100)
+plt.vlines(np.mean(np.log10(ab_cell)), 0, np.max(bins[0]))
+ab_cell_mean = np.mean(np.log10(ab_cell))
+upper_ab_cell_cutoff = ab_cell_mean + 3 * np.std(np.log10(ab_cell))
+lower_ab_cell_cutoff = ab_cell_mean - 3 * np.std(np.log10(ab_cell))
+plt.vlines(upper_ab_cell_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_ab_cell_heuristic_cutoff, 0, np.max(bins[0]))
+plt.show()
+bins = plt.hist(np.log10(ab_cell_int), bins=100)
+plt.vlines(np.mean(np.log10(ab_cell_int)), 0, np.max(bins[0]))
+ab_cell_int_mean = np.mean(np.log10(ab_cell_int))
+upper_ab_cell_int_cutoff = ab_cell_int_mean + 3 * np.std(np.log10(ab_cell_int))
+lower_ab_cell_int_cutoff = ab_cell_int_mean - 3 * np.std(np.log10(ab_cell_int))
+plt.vlines(upper_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.vlines(lower_ab_cell_int_cutoff, 0, np.max(bins[0]))
+plt.show()
+ab_cell_neg = ab_cell[[s.lower().startswith("neg") for s in result]]
+bins = plt.hist(np.log10(ab_cell_neg), bins=100)
+plt.title("Negative staining (mean intensity)")
+plt.show()
+ab_cell_int_neg = ab_cell_int[[s.lower().startswith("neg") for s in result]]
+bins = plt.hist(np.log10(ab_cell_int_neg), bins=100)
+plt.title("Negative staining (integrated intensity)")
+plt.show()
+
+# Plot FUCCI intensities
 plt.hist2d(np.log10(green_fucci),np.log10(red_fucci),bins=200)
-plt.savefig("figures/FucciPlotProteinIFData.png")
+plt.savefig("figures/FucciPlotProteinIFData_filterNegativeStains.png")
 plt.show()
 plt.close()
+
+#%%
+plt.hist2d(np.log10(ab_cell), np.log10(ab_cell_int), bins=200)
+
+#%%a
+
+
+#%%
+# Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
+# Exec: sklearn.mixture.GaussianMixture & scipy.stats.kruskal
+# Output: FDR for cell cycle variation per well
+
+# out_of_focus_well_plate_imagenb = pd.read_csv("input/outoffocusimages.txt") # not doing this for now; use all the data, since there are surely more that are out of focus
+for plate in u_plate:
+    gaussian = GaussianMixture(n_components=3, random_state=1, max_iter=500)
+    use_idx = my_df.plate == plate
+    gaussian.fit_predict(log_green_fucci[my_df.plate == plate], log_red_fucci[my_df.plate == plate])
 
 #%% 
 # Idea: Calculate the polar coordinates and other stuff
@@ -74,7 +286,7 @@ def pol2cart(rho, phi):
     y = rho * np.sin(phi)
     return(x, y)
 
-#Center data
+# Center data
 x0 = np.ones(5)
 x = fucci_data[:,0]
 y = fucci_data[:,1]
@@ -86,52 +298,51 @@ R_2        = Ri_2.mean()
 residu_2   = sum((Ri_2 - R_2)**2)
 centered_data = fucci_data-center_2.x
 
-#Convert data to polar
+# Convert data to polar
 pol_data = cart2pol(centered_data[:,0],centered_data[:,1])
 pol_sort_inds = np.argsort(pol_data[1])
 pol_sort_rho = pol_data[0][pol_sort_inds]
 pol_sort_phi = pol_data[1][pol_sort_inds]
-ab_nuc_sort = ab_nuc[pol_sort_inds]
-ab_cyto_sort = ab_cyto[pol_sort_inds]
-ab_cell_sort = ab_cell[pol_sort_inds]
-well_plate_sort = well_plate[pol_sort_inds]
 centered_data_sort0 = centered_data[pol_sort_inds,0]
 centered_data_sort1 = centered_data[pol_sort_inds,1]
+
+# Sort data by polar coordinates
+def pol_sort(inds, nuc, cyto, cell, mt):
+    return nuc[inds], cyto[inds], cell[inds], mt[inds]
+well_plate_sort = well_plate[pol_sort_inds]
+ab_nuc_sort, ab_cyto_sort, ab_cell_sort, mt_cell_sort = pol_sort(pol_sort_inds,ab_nuc,ab_cyto,ab_cell,mt_cell)
+ab_nuc_sort_int, ab_cyto_sort_int, ab_cell_sort_int, mt_cell_sort_int = pol_sort(pol_sort_inds,ab_nuc_int,ab_cyto_int,ab_cell_int,mt_cell_int)
 fred_sort = red_fucci[pol_sort_inds]
 fgreen_sort = green_fucci[pol_sort_inds]
-#rezero to minimum --resoning, cells disappear during mitosis, so we should have the fewest detected cells there
+
+# Rezero to minimum --reasoning, cells disappear during mitosis, so we should have the fewest detected cells there
 bins = plt.hist(pol_sort_phi,NBINS)
 start_phi = bins[1][np.argmin(bins[0])]
 
-#move those points to the other side
+# Move those points to the other side
 more_than_start = np.greater(pol_sort_phi,start_phi)
 less_than_start = np.less_equal(pol_sort_phi,start_phi)
-pol_sort_rho_reorder = np.concatenate((pol_sort_rho[more_than_start],pol_sort_rho[less_than_start]))
-pol_sort_inds_reorder = np.concatenate((pol_sort_inds[more_than_start],pol_sort_inds[less_than_start]))
-pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
-pol_sort_ab_nuc = np.concatenate((ab_nuc_sort[more_than_start],ab_nuc_sort[less_than_start]))
-pol_sort_ab_cyto = np.concatenate((ab_cyto_sort[more_than_start],ab_cyto_sort[less_than_start]))
-pol_sort_ab_cell = np.concatenate((ab_cell_sort[more_than_start],ab_cell_sort[less_than_start]))
-pol_sort_well_plate = np.concatenate((well_plate_sort[more_than_start],well_plate_sort[less_than_start]))
-pol_sort_centered_data0 = np.concatenate((centered_data_sort0[more_than_start],centered_data_sort0[less_than_start]))
-pol_sort_centered_data1 = np.concatenate((centered_data_sort1[more_than_start],centered_data_sort1[less_than_start]))
-pol_sort_fred = np.concatenate((fred_sort[more_than_start],fred_sort[less_than_start]))#+abs(np.min(fred_sort))
-pol_sort_fgreen = np.concatenate((fgreen_sort[more_than_start],fgreen_sort[less_than_start]))#+abs(np.min(fgreen_sort))
+def pol_reord(arr):
+    return np.concatenate((arr[more_than_start],arr[less_than_start]))
 
-#shift and re-scale "time"
+pol_sort_well_plate = pol_reord(well_plate_sort)
+# gene, antibody, Uniprot, ENSG
+pol_sort_rho_reorder = pol_reord(pol_sort_rho)
+pol_sort_inds_reorder = pol_reord(pol_sort_inds)
+pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
+pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort), pol_reord(ab_cyto_sort), pol_reord(ab_cell_sort), pol_reord(mt_cell_sort)
+pol_sort_ab_nuc_int, pol_sort_ab_cyto_int, pol_sort_ab_cell_int, pol_sort_mt_cell_int = pol_reord(ab_nuc_sort_int), pol_reord(ab_cyto_sort_int), pol_reord(ab_cell_sort_int), pol_reord(mt_cell_sort_int)
+pol_sort_centered_data0, pol_sort_centered_data1 = pol_reord(centered_data_sort0), pol_reord(centered_data_sort1)
+pol_sort_fred = pol_reord(fred_sort)
+pol_sort_fgreen = pol_reord(fgreen_sort)
+
+#shift and re-scale "time"; reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
 pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
 pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
-#reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
 pol_sort_norm_rev = 1-pol_sort_norm
-#stretch time so that each data point is
 pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
-#reverse the order of the rho as well
-#pol_sort_rho_rev = pol_sort_rho_reorder[::-1]
-#pol_sort_inds_rev = pol_sort_inds_reorder*-1+np.max(pol_sort_inds_reorder)
-
 
 #apply uniform radius (rho) and convert back
-#cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
 cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
 
 def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
@@ -158,45 +369,51 @@ def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
 #visualize that result
 start_pt = pol2cart(R_2,start_phi)
 fucci_hist2d(centered_data,cart_data_ur,start_pt)
+fucci_hist2d(centered_data,cart_data_ur,start_pt)
 
 #%% Load the antibody information
-ab_df = pd.read_excel("..\\CellCycleSingleCellRNASeq\\fucci_screen\\file_kruskal_by_compartment2.xlsx")
-plate_well_to_ab = collections.defaultdict(dict)
-plate_dict = collections.defaultdict(dict)
-ab_list = ab_df.Antibody
-pval_list = ab_df.X_p_value_compartment
-gene_list = ab_df.Gene
-ensg_list = ab_df.ENSG
-plate_well_list = ab_df.well_plate
-is_ccd_list = ab_df.correlation
-loc_list = ab_df.IF_intensity_var_1
-compartment_list = ab_df.Compartments
-loc_set = {}
-loc_num_pair = [[],[]]
-for gene,ab,plate_well,is_ccd,locs,p_val,compartment,ensg in zip(
-        gene_list,ab_list,plate_well_list,is_ccd_list,
-        loc_list,pval_list,compartment_list,ensg_list):
-    plate_num = int(plate_well.split('_')[-1])
-    locs_sep = locs.split(';')
-    locs_num = []
-    for loc in locs_sep:
-        if loc not in loc_set:
-            loc_set[loc] = len(loc_set)
-            loc_num_pair[0].append(loc)
-            loc_num_pair[1].append(len(loc_set)-1)
-        locs_num.append(loc_set[loc])
+# Thinking of redoing this; this is pretty much just statistics for each sample
+# well_plate unique
+# decides ccd/nonccd
+# some lookups from that File_Devin file...?
+# # some statistics based on kruskal for G1/S/G2
+# ab_df = pd.read_excel("..\\CellCycleSingleCellRNASeq\\fucci_screen\\file_kruskal_by_compartment2.xlsx")
+# plate_well_to_ab = collections.defaultdict(dict)
+# plate_dict = collections.defaultdict(dict)
+# ab_list = ab_df.Antibody
+# pval_list = ab_df.X_p_value_compartment
+# gene_list = ab_df.Gene
+# ensg_list = ab_df.ENSG
+# plate_well_list = ab_df.well_plate
+# is_ccd_list = ab_df.correlation
+# loc_list = ab_df.IF_intensity_var_1
+# compartment_list = ab_df.Compartments
+# loc_set = {}
+# loc_num_pair = [[],[]]
+# for gene,ab,plate_well,is_ccd,locs,p_val,compartment,ensg in zip(
+#         gene_list,ab_list,plate_well_list,is_ccd_list,
+#         loc_list,pval_list,compartment_list,ensg_list):
+#     plate_num = int(plate_well.split('_')[-1])
+#     locs_sep = locs.split(';')
+#     locs_num = []
+#     for loc in locs_sep:
+#         if loc not in loc_set:
+#             loc_set[loc] = len(loc_set)
+#             loc_num_pair[0].append(loc)
+#             loc_num_pair[1].append(len(loc_set)-1)
+#         locs_num.append(loc_set[loc])
 
-    plate_dict[plate_num][plate_well] = [
-        gene,ab,is_ccd,locs_num,locs_sep,p_val,compartment,ensg]
+#     plate_dict[plate_num][plate_well] = [
+#         gene,ab,is_ccd,locs_num,locs_sep,p_val,compartment,ensg]
 
-plate_well_to_ab = plate_dict
+# plate_well_to_ab = plate_dict
 
 #%%
 # Idea: process the well data
 # Exec: use Devin's code
-# Output: we'll see
+# Output: the moving average plots for each gene studied
 PSIN_INIT = [np.nan,1,1,np.nan]
-PSIN_BOUNDS = ((0, 1/6, 1/2, 0),(1, 100, 100, 1))
+PSIN_BOUNDS = ((0, 1/6, 1/2, 0), (1, 100, 100, 1))
 OUTLIER_NAMES = ['KIAA2026_HPA002109',
                 'FEN1_HPA006581',
                 'FASN_HPA006461',
@@ -298,35 +515,6 @@ def fix_nans(binned_values):
                 count = count+1
             binned_values[i] = np.mean([prevval,nextval])
     return binned_values
-    
-# def plot_expression_avg_pseudotime(genelist, outfolder):
-#     if not os.path.exists(outfolder): os.mkdir(outfolder)
-#     for gene in genelist:
-#         nexp = norm_exp_sort[:,list(adata.var_names).index(gene)]
-#         df = pd.DataFrame({"fucci_time" : fucci_time_sort, gene : nexp})
-#         # plt.scatter(df["fucci_time"], df[gene], label="Normalized Expression")
-#         bin_size = 100
-#         plt.plot(df["fucci_time"], 
-#             df[gene].rolling(bin_size).mean(), 
-#             color="blue", 
-#             label=f"Moving Average by {bin_size} Cells")
-#         plt.fill_between(df["fucci_time"], 
-#             df[gene].rolling(bin_size).quantile(0.10),
-#             df[gene].rolling(bin_size).quantile(0.90), 
-#             color="lightsteelblue", 
-#             label="10th & 90th Percentiles")
-#         # plt.plot(df["fucci_time"], color="orange", label="Normalized Expression, 10th Percentile")
-#         # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() + 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
-#         # plt.plot(df["fucci_time"], df[gene].rolling(bin_size).mean() - 2 * df[gene].rolling(bin_size).std(), color="purple", label="Normalized Expression, 95% CI")
-#         plt.xlabel("Fucci Pseudotime",size=36,fontname='Arial')
-#         plt.ylabel("RNA-Seq Counts, Normalized By Cell",size=36,fontname='Arial')
-#         plt.xticks(size=14)
-#         plt.yticks(size=14)
-#         plt.title(gene,size=36,fontname='Arial')
-#         plt.legend(fontsize=14)
-#         plt.tight_layout()
-#         plt.savefig(f"{outfolder}/{gene}.png")
-#         plt.close()
 
 def temporal_mov_avg(curr_pol,curr_ab_norm,x_fit,y_fit,outname,outsuff):
     plt.close()
@@ -343,38 +531,13 @@ def temporal_mov_avg(curr_pol,curr_ab_norm,x_fit,y_fit,outname,outsuff):
         df["intensity"].rolling(bin_size).quantile(0.90),
         color="lightsteelblue",
         label="10th & 90th Percentiles")
-    #label stuff
     plt.ylim([0,1])
     plt.xlim([0,1])
     plt.xlabel('Pseudotime')
-    # plt.ylabel(outsuff+' expression')
     plt.ylabel(outsuff.split('_')[0] + ' Protein Expression')
     plt.xticks(size=14)
     plt.yticks(size=14)
     # plt.legend(fontsize=14)
-    plt.tight_layout()
-    if not os.path.exists(os.path.dirname(outfile)):
-        os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
-    plt.savefig(outfile)
-
-def temporal_psin(curr_pol,curr_ab_norm,fit_coeffs,outname,outsuff,n_pts=200):
-    x_fit = np.linspace(0,1,n_pts)
-    plt.close()
-    outfile = os.path.join(outname,outsuff+'_psin.pdf')
-    if os.path.exists(outfile): return
-    fig, ax = plt.subplots(figsize=(10, 10),facecolor='None')
-    #plot data
-    plt.scatter(curr_pol,curr_ab_norm,c='grey')
-    #plot fit
-    y_fit = psin_predict(fit_coeffs.x,x_fit)
-    plt.plot(x_fit,y_fit,'m')
-    #label stuff
-    plt.ylim([0,1])
-    plt.xlim([0,1])
-    plt.xticks(size=12,fontname='Arial')
-    plt.yticks(size=12,fontname='Arial')
-    plt.xlabel('pseudo-time',size=20,fontname='Arial')
-    plt.ylabel(str.split(outsuff,'_')[0]+' normalized expression', size=20, fontname='Arial')
     plt.tight_layout()
     if not os.path.exists(os.path.dirname(outfile)):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
@@ -405,7 +568,6 @@ class experiment:
         self.max_val_compartment = get_val_compartment(
             [max_val_cell, max_val_nuc, max_val_cyto], curr_compartment)
                 
-missed = []
 x_fit = np.linspace(0,1,num=200)
 ccd_coeff_list = []
 not_ccd_coeff_list = []
@@ -414,10 +576,17 @@ model_free_list_all = []
 xvals = np.linspace(0,1,num=21)
 ccd_pvals = []
 not_ccd_pvals = []
-perc_green_list = []
-perc_red_list = []
-neigh = RadiusNeighborsRegressor(radius=0.1)
-fdr_df = pd.read_excel("..\\CellCycleSingleCellRNASeq\\fucci_screen\\file_kruskal_by_compartment2.xlsx")
+
+var_fred, var_fgreen = [],[] # variance of mean FUCCI intensities
+var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
+var_cell_int, var_nuc_int, var_cyto_int, var_mt_int = [],[],[],[] # integrated intensity variances per antibody
+
+# These are tuples of (perc_var, y_val_avgs) where perc_var is the value described in the comments below, and the y_val_avgs are the moving averages
+perc_var_fred, perc_var_fgreen = [],[] # percent variance attributed to cell cycle (FUCCI colors)
+perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
+perc_var_cell_int, perc_var_nuc_int, perc_var_cyto_int, perc_var_mt_int = [],[],[],[] # percent variance attributed to cell cycle (integrated POI intensities)
+mvavg_xvals = [] # this is a 2D array of xvals (rows) for all the antibodies (columns) for the moving average calculation
+
 for well in u_well_plates:
     plt.close('all')
 #    well = 'H05_55405991'#GMNN well, used for testing
@@ -426,164 +595,124 @@ for well in u_well_plates:
     curr_fred = pol_sort_fred[curr_well_inds]
     curr_fgreen = pol_sort_fgreen[curr_well_inds]
 
-    plate = int(well.split("_")[-1])
-    if well in plate_well_to_ab[plate]:
-        outsuff = plate_well_to_ab[plate][well][0]+'_'+plate_well_to_ab[plate][well][1]
-    else:
-        print(well+' was not found.')
-        missed.append(well)
-        continue
+    print(well)
 
-    print(outsuff)
+    # check if the protein is expressed in the cyto,nuc,or both (cell)
+    # curr_locs = plate_well_to_ab[plate][well][4]
+    # curr_pval = plate_well_to_ab[plate][well][5]
+    # curr_compartment = plate_well_to_ab[plate][well][6].lower()
+    # curr_ensg = plate_well_to_ab[plate][well][7]
 
-    try:
-        curr_fdr = list(fdr_df[fdr_df['well_plate']==well].fdr_pvalue_comp)[0]
-    except:
-        print(well)
-        print(fdr_df['well_plate']==well)
-        print(f'could not find fdr for {well}')
-
-    #check if the protein is expressed in the cyto,nuc,or both (cell)
-    curr_locs = plate_well_to_ab[plate][well][4]
-    curr_pval = plate_well_to_ab[plate][well][5]
-    curr_compartment = plate_well_to_ab[plate][well][6].lower()
-    curr_ensg = plate_well_to_ab[plate][well][7]
-    curr_ab_cell = pol_sort_ab_cell[curr_well_inds]
-    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
-    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
-    curr_ab_cell_norm = curr_ab_cell/np.max(curr_ab_cell)
-    curr_ab_nuc_norm = curr_ab_nuc/np.max(curr_ab_nuc)
-    curr_ab_cyto_norm = curr_ab_cyto/np.max(curr_ab_cyto)
+    # Normalize FUCCI colors
     curr_fred_norm = curr_fred/np.max(curr_fred)
     curr_fgreen_norm = curr_fgreen/np.max(curr_fgreen)
+    # Normalize the mean intensities
+    curr_ab_cell, curr_ab_nuc, curr_ab_cyto, curr_mt_cell = pol_sort_ab_cell[curr_well_inds], pol_sort_ab_nuc[curr_well_inds],pol_sort_ab_cyto[curr_well_inds], pol_sort_mt_cell[curr_well_inds]
+    curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm = curr_ab_cell/np.max(curr_ab_cell), curr_ab_nuc/np.max(curr_ab_nuc), curr_ab_cyto/np.max(curr_ab_cyto), curr_mt_cell/np.max(curr_mt_cell)
+    # Normalize the integrated intensities
+    curr_ab_cell_int, curr_ab_nuc_int, curr_ab_cyto_int, curr_mt_cell_int = pol_sort_ab_cell_int[curr_well_inds], pol_sort_ab_nuc_int[curr_well_inds],pol_sort_ab_cyto_int[curr_well_inds], pol_sort_mt_cell_int[curr_well_inds]
+    curr_ab_cell_norm_int, curr_ab_nuc_norm_int, curr_ab_cyto_norm_int, curr_mt_cell_norm_int = curr_ab_cell_int/np.max(curr_ab_cell_int), curr_ab_nuc_int/np.max(curr_ab_nuc_int), curr_ab_cyto_int/np.max(curr_ab_cyto_int), curr_mt_cell_int/np.max(curr_mt_cell_int)
 
-    #fit psin model
-    ###THIS COULD ACTUALLY LITERALLY BE DONE WITH JUST A SMOOTHED MOVING AVERAGE
-    #Init all the params
-    PSIN_INIT_cell = PSIN_INIT
-    PSIN_INIT_nuc = PSIN_INIT
-    PSIN_INIT_cyto = PSIN_INIT
-    PSIN_INIT_cell[0] = np.max(curr_ab_cell_norm)-np.min(curr_ab_cell_norm)
-    PSIN_INIT_nuc[0] = np.max(curr_ab_nuc_norm)-np.min(curr_ab_nuc_norm)
-    PSIN_INIT_cyto[0] = np.max(curr_ab_cyto_norm)-np.min(curr_ab_cyto_norm)
-    PSIN_INIT_cell[-1] = np.mean(curr_ab_cell_norm)
-    PSIN_INIT_nuc[-1] = np.mean(curr_ab_nuc_norm)
-    PSIN_INIT_cyto[-1] = np.mean(curr_ab_cyto_norm)
+    # Variance calculation FUCCI
+    var_fred.append(np.var(curr_fred_norm))
+    var_fgreen.append(np.var(curr_fgreen_norm))
+    # Variance calculation -- mean intensities
+    var_cell.append(np.var(curr_ab_cell_norm))
+    var_nuc.append(np.var(curr_ab_nuc_norm))
+    var_cyto.append(np.var(curr_ab_cyto_norm))
+    var_mt.append(np.var(curr_mt_cell_norm))
+    # Variance calculation -- integrated intensities
+    var_cell_int.append(np.var(curr_ab_cell_norm_int))
+    var_nuc_int.append(np.var(curr_ab_nuc_norm_int))
+    var_cyto_int.append(np.var(curr_ab_cyto_norm_int))
+    var_mt_int.append(np.var(curr_mt_cell_norm_int))
 
-    #Fit the params
-    fit_coeffs_cell = least_squares(psin_fit, PSIN_INIT_cell, args=(
-        curr_pol, curr_ab_cell_norm),bounds=PSIN_BOUNDS,method='trf')
-    fit_coeffs_nuc = least_squares(psin_fit, PSIN_INIT_nuc, args=(
-        curr_pol, curr_ab_nuc_norm),bounds=PSIN_BOUNDS,method='trf')
-    fit_coeffs_cyto = least_squares(psin_fit, PSIN_INIT_cyto, args=(
-        curr_pol, curr_ab_cyto_norm),bounds=PSIN_BOUNDS,method='trf')
-    fit_coeffs_fred = least_squares(psin_fit, PSIN_INIT_cyto, args=(
-        curr_pol, curr_fred_norm),bounds=PSIN_BOUNDS,method='trf')
-    fit_coeffs_fgreen = least_squares(psin_fit, PSIN_INIT_cyto, args=(
-        curr_pol, curr_fgreen_norm),bounds=PSIN_BOUNDS,method='trf')
-    #Variance calculation
-    var_cell = np.var(curr_ab_cell_norm)
-    var_nuc = np.var(curr_ab_nuc_norm)
-    var_cyto = np.var(curr_ab_cyto_norm)
-    var_fred = np.var(curr_fred_norm)
-    var_fgreen = np.var(curr_fgreen_norm)
-    #Gini coeff calculation
-    gini_cell = gini(curr_ab_cell_norm)
-    gini_nuc = gini(curr_ab_nuc_norm)
-    gini_cyto = gini(curr_ab_cyto_norm)
-    #Compute Percent var
-    if WINDOW>0:
-        perc_var_cell,yval_cell = mvavg_perc_var(curr_ab_cell_norm,WINDOW)
-        perc_var_nuc,yval_nuc = mvavg_perc_var(curr_ab_nuc_norm,WINDOW)
-        perc_var_cyto,yval_cyto = mvavg_perc_var(curr_ab_cyto_norm,WINDOW)
-        perc_var_fred, yval_fred = mvavg_perc_var(curr_fred_norm,WINDOW)
-        perc_var_fgreen, yval_fgreen = mvavg_perc_var(curr_fgreen_norm,WINDOW)
-        #Get X values
-        _, curr_xvals = mvavg_perc_var(curr_pol,WINDOW)
-        #get y for the specific compartment we are in
-        yvals_compartment = get_val_compartment(
-            [yval_cell,yval_nuc,yval_cyto],curr_compartment)
-        #get the maximum values
-        max_val_cell = np.max(yval_cell)
-        max_val_nuc = np.max(yval_nuc)
-        max_val_cyto = np.max(yval_cyto)
+    # Compute Percent var, # if WINDOW>0: # always true for this use case, so I removed the other case
+    perc_var_fred.append(mvavg_perc_var(curr_fred_norm, WINDOW))
+    perc_var_fgreen.append(mvavg_perc_var(curr_fgreen_norm, WINDOW))
+    # Compute percent variance due to the cell cycle (mean intensities)
+    perc_var_cell.append(mvavg_perc_var(curr_ab_cell_norm,WINDOW))
+    perc_var_nuc.append(mvavg_perc_var(curr_ab_nuc_norm, WINDOW))
+    perc_var_cyto.append(mvavg_perc_var(curr_ab_cyto_norm, WINDOW))
+    perc_var_mt.append(mvavg_perc_var(curr_mt_cell, WINDOW))
+    # Compute percent variance due to the cell cycle (integrated intensities)
+    perc_var_cell_int.append(mvavg_perc_var(curr_ab_cell_norm_int,WINDOW))
+    perc_var_nuc_int.append(mvavg_perc_var(curr_ab_nuc_norm_int, WINDOW))
+    perc_var_cyto_int.append(mvavg_perc_var(curr_ab_cyto_norm_int, WINDOW))
+    perc_var_mt_int.append(mvavg_perc_var(curr_mt_cell_int, WINDOW))
+    # Get x values for the moving average
+    mvavg_xvals.append(mvavg_perc_var(curr_pol, WINDOW))
 
+#%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
+# Idea: create cutoffs for percent variance and 
+# Execution: create cutoffs for perc_var and total variance per compartment and for integrated intensity and mean intensity
+# Output: Graphs that illustrate the cutoffs (integrated, mean)
+# Output: Overlap of the total variance cutoffs with the original filtering done manually
+total_var_cutoff = np.mean(var_mt) + 2 * np.std(var_mt)
+total_var_cutoff_int = np.mean(var_mt_int) + 2 * np.std(var_mt_int)
+percent_var_cutoff = np.mean([a[0] for a in perc_var_mt if not np.isinf(a[0])]) + 2 * np.std([a[0] for a in perc_var_mt if not np.isinf(a[0])])
+percent_var_cutoff_int = np.mean([a[0] for a in perc_var_mt_int if not np.isinf(a[0])]) + 2 * np.std([a[0] for a in perc_var_mt_int if not np.isinf(a[0])])
 
-    else:
-        perc_var_cell = 1-np.var(fit_coeffs_cell.fun)/var_cell
-        perc_var_nuc = 1-np.var(fit_coeffs_nuc.fun)/var_nuc
-        perc_var_cyto = 1-np.var(fit_coeffs_cyto.fun)/var_cyto
-        perc_var_fred = 1-np.var(fit_coeffs_fred.fun)/var_fred
-        perc_var_fgreen = 1-np.var(fit_coeffs_fgreen.fun)/var_fgreen
+does_vary_cell = (np.array(var_cell) > total_var_cutoff) | (np.array(var_cell_int) > total_var_cutoff_int)
+does_vary_nuc = (np.array(var_nuc) > total_var_cutoff) | (np.array(var_nuc_int) > total_var_cutoff_int)
+does_vary_cyto = (np.array(var_cyto) > total_var_cutoff) | (np.array(var_cyto_int) > total_var_cutoff_int)
 
-        #find the function maximum in our range
-        max_val_cell = minimize_scalar(
-            lambda x: -psin_predict(fit_coeffs_cell.x,x),
-            bounds=[0,1], method='bounded')
-        max_val_nuc = minimize_scalar(
-            lambda x: -psin_predict(fit_coeffs_nuc.x,x),
-            bounds=[0,1], method='bounded')
-        max_val_cyto = minimize_scalar(
-            lambda x: -psin_predict(fit_coeffs_cyto.x,x),
-            bounds=[0,1], method='bounded')
+does_perc_vary_cell = (np.array([a[0] for a in perc_var_cell]) > percent_var_cutoff) | (np.array([a[0] for a in perc_var_cell_int]) > percent_var_cutoff_int)
+does_perc_vary_nuc = (np.array([a[0] for a in perc_var_nuc]) > percent_var_cutoff) | (np.array([a[0] for a in perc_var_nuc_int]) > percent_var_cutoff_int)
+does_perc_vary_cyto = (np.array([a[0] for a in perc_var_cyto]) > percent_var_cutoff) | (np.array([a[0] for a in perc_var_cyto_int]) > percent_var_cutoff_int)
 
-    perc_green_list.append(perc_var_fgreen)
-    perc_red_list.append(perc_var_fred)
+df = pd.DataFrame({"well_plate" : u_well_plates, 
+    "does_vary_cell":does_vary_cell,
+    "does_vary_nuc":does_vary_nuc,
+    "does_vary_cyto":does_vary_cyto,
+    "does_perc_vary_cell":does_perc_vary_cell,
+    "does_perc_vary_nuc":does_perc_vary_nuc,
+    "does_perc_vary_cyto":does_perc_vary_cyto})
+df.to_csv("output/wellplatevary.csv")
+
+#%%
+# Idea: generate a histogram of cell intensities
+# Execution: pyplot
+# Output: show histogram
+plt.hist([np.std(a[1]) for a in perc_var_mt])
+plt.show()
+
+#%%
+
+    # y for the specific compartment we are in, and the maximum y values
+    yvals_compartment = get_val_compartment([yval_cell,yval_nuc,yval_cyto], curr_compartment)
+    max_val_cell, max_val_nuc, max_val_cyto = np.max(yval_cell), np.max(yval_nuc), np.max(yval_cyto)
+
 
     #Set values for the current compartment
     #where the protein of interest is expressed
-    curr_ab_norm = get_val_compartment(
-        [curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm], curr_compartment)
-    fit_coeffs = get_val_compartment(
-        [fit_coeffs_cell, fit_coeffs_nuc, fit_coeffs_cyto], curr_compartment)
-    perc_var_compartment = get_val_compartment(
-        [perc_var_cell,perc_var_nuc,perc_var_cyto],curr_compartment)
-    var_compartment = get_val_compartment(
-        [var_cell,var_nuc,var_cyto],curr_compartment)
-    gini_compartment = get_val_compartment(
-        [gini_cell,gini_nuc,gini_cyto],curr_compartment)
-    max_val_compartment = get_val_compartment(
-        [max_val_cell, max_val_nuc, max_val_cyto], curr_compartment)
+    curr_ab_norm = get_val_compartment([curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm], curr_compartment)
+    perc_var_compartment = get_val_compartment([perc_var_cell,perc_var_nuc,perc_var_cyto],curr_compartment)
+    var_compartment = get_val_compartment([var_cell,var_nuc,var_cyto],curr_compartment)
+    gini_compartment = get_val_compartment([gini_cell,gini_nuc,gini_cyto],curr_compartment)
+    max_val_compartment = get_val_compartment([max_val_cell, max_val_nuc, max_val_cyto], curr_compartment)
 
-    #Compute the mean of the data surrounding the fit. It should be near 0
-    #If not near 0, throw an error!
-    outname = os.path.join("output_devin",plate_well_to_ab[plate][well][2])
+    #Compute the mean of the data surrounding the fit. 
+    outname = os.path.join("output_devin", plate_well_to_ab[plate][well][2])
     if any(outsuff == i for i in OUTLIER_NAMES):
-        fucci_plotting.hist2d_time(green_fucci,red_fucci,
-            curr_fgreen,curr_fred,
-            curr_pol,outname,outsuff,NBINS)
-        #if we have the gmnn antibody, make the pseudo-time plots for
-        #fucci-red(CDT1) and fucci-green(GMNN)
-        if outsuff == 'GMNN_HPA054597':
-            temporal_psin(
-                    curr_pol,curr_fred_norm,
-                    fit_coeffs_fred,outname,outsuff+'_CDT1_fucci')
-            temporal_psin(
-                    curr_pol,curr_fgreen_norm,
-                    fit_coeffs_fgreen,outname,outsuff+'_GMNN_fucci')
+        fucci_plotting.hist2d_time(green_fucci,red_fucci,curr_fgreen,curr_fred,curr_pol,outname,outsuff,NBINS)
 
     if perc_var_fred>0.8 and perc_var_fgreen>0.8:
-        fucci_plotting.hist2d_time(green_fucci,red_fucci,
-            curr_fgreen,curr_fred,
-            curr_pol,outname,outsuff,NBINS)
-
-    mean_err = np.mean(fit_coeffs.fun)
-    if np.abs(mean_err)>1e-4: print('bad fit!')
+        fucci_plotting.hist2d_time(green_fucci,red_fucci,curr_fgreen,curr_fred,curr_pol,outname,outsuff,NBINS)
 
     #compute the model free max
     curr_ab_df = pd.DataFrame({outsuff:curr_ab_norm})
     curr_pol_df = pd.DataFrame({outsuff:curr_pol})
     winsize = np.min([len(curr_ab_norm),30])
     model_free_ab = curr_ab_df.rolling(window=winsize)
-    model_free_ab = model_free_ab.mean()
-    model_free_ab_np = np.asarray(model_free_ab)
+    model_free_ab = np.asarray(model_free_ab.mean())
     model_free_pol = curr_pol_df.rolling(window=winsize)
     model_free_pol = model_free_pol.mean()
     model_free_pol_np = np.asarray(model_free_pol)
-    max_loc = np.argmax(model_free_ab_np[~np.isnan(model_free_ab_np)])
+    max_loc = np.argmax(model_free_ab[~np.isnan(model_free_ab)])
     max_pol = model_free_pol_np[max_loc]
     binned_values = []
-    for xval in xvals:
+    for xval in xvals: # x values for the plot
         if xval==0:
             prev_xval = xval
             continue
@@ -638,12 +767,7 @@ for well in u_well_plates:
     if DO_PLOTS:# and any([h in outsuff for h in HIGHLIGHTS]):
         outname = os.path.join("output_devin",plate_well_to_ab[plate][well][2])
         if TPLOT_MODE == 'avg':
-            temporal_mov_avg(
-                    curr_pol,curr_ab_norm,
-                    curr_xvals,yvals_compartment,outname,outsuff)
-        elif TPLOT_MODE == 'psin':
-            temporal_psin(
-                    curr_pol,curr_ab_norm,fit_coeffs,outname,outsuff)
+            temporal_mov_avg(curr_pol,curr_ab_norm,curr_xvals,yvals_compartment,outname,outsuff)
         else:
             os.error('Unreckognized TPLOT_MODE.')
 
@@ -743,7 +867,7 @@ sorted_maxpol_array = []
 sorted_expression_table_ccd = []
 sorted_expression_table_all = []
 for i,response in enumerate(model_free_list):
-    sorted_gene_array.append(response[4]) # this is the expression values
+    sorted_gene_array.append(response[4]) # these are the expression values
     sorted_maxpol_array.append(response[3])
     sorted_ensg_array.append(response[6])
     for i, exp in enumerate(response[4]):
