@@ -37,8 +37,8 @@ def read_sample_info(df):
     ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
     ab_dict = dict([(wppp[i], abbb[i]) for i in range(len(wppp))])
     result_dict = dict([(wppp[i], rrrr[i]) for i in range(len(wppp))])
-    ENSG = np.asarray([ensg_dict[wp] if wp in result_dict else "" for wp in well_plate])
-    antibody = np.asarray([ab_dict[wp] if wp in result_dict else "" for wp in well_plate])
+    ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
+    antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
     result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
     return plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
 
@@ -80,8 +80,8 @@ ab_cell_neg_max_zeroc = np.array(ab_cell_neg_max)
 ab_cell_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_wp])
 ab_cell_neg_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_neg_max_wp])
 
-upper_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) + 0.5 * np.std(ab_cell_neg_max_zeroc)
-lower_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) - 0.5 * np.std(ab_cell_neg_max_zeroc)
+upper_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) #+ 0.5 * np.std(ab_cell_neg_max_zeroc)
+lower_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) #- 0.5 * np.std(ab_cell_neg_max_zeroc)
 
 bins = plt.hist(ab_cell_neg_max_zeroc, bins=100, alpha=0.5, label="Negative Staining")
 bins = plt.hist(ab_cell_max_zeroc, bins=100, alpha=0.5, label="Positive Staining")
@@ -195,6 +195,7 @@ def _ecdf(x):
     return np.arange(1,nobs+1)/float(nobs)
 
 def benji_hoch(alpha, pvals):
+    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
     pvals_sortind = np.argsort(pvals)
     pvals_sorted = np.take(pvals, pvals_sortind)
     ecdffactor = _ecdf(pvals_sorted)
@@ -226,7 +227,7 @@ print(f"{sum(wp_pass_bh_cell)}: number of passing genes at 5% FDR in cell")
 print(f"{sum(wp_pass_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
 print(f"{sum(wp_pass_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
 
-# Pickle the results
+#%% Pickle the results
 np.save("output/plate.filterNegStain.npy", plate, allow_pickle=True)
 np.save("output/u_plate.filterNegStain.npy", u_plate, allow_pickle=True)
 np.save("output/well_plate.filterNegStain.npy", well_plate, allow_pickle=True)
@@ -249,5 +250,6 @@ np.save("output/wp_cyto_kruskal_adj.filterNegStain.npy", wp_cyto_kruskal_adj, al
 np.save("output/wp_pass_bh_cell.filterNegStain.npy", wp_pass_bh_cell, allow_pickle=True)
 np.save("output/wp_pass_bh_nuc.filterNegStain.npy", wp_pass_bh_nuc, allow_pickle=True)
 np.save("output/wp_pass_bh_cyto.filterNegStain.npy", wp_pass_bh_cyto, allow_pickle=True)
+np.save("output/fucci_data.filterNegStain.npy", fucci_data, allow_pickle=True)
 
 #%%
