@@ -449,6 +449,23 @@ plt.close()
 
 # print(f"{str(len(modifiedPeptides))} interesting modified peptides ({str(round(float(len(modPeptides))/float(len(file))*100,2))}%)")
 
+#%% Pickle the results
+pd.DataFrame({
+    "all_modocc":all_modocc,
+    "all_modocc_genes":all_modctsoccdf["gene"],
+    "ccd_t_modocc":ccd_t_modocc,
+    "ccd_t_modocc_genes":ccd_t_modctsoccdf["gene"],
+    "ccd_rt_modocc":ccd_rt_modocc,
+    "ccd_rt_modocc_genes":ccd_rt_modctsoccdf["gene"],
+    "ccd_at_modocc":ccd_at_modocc,
+    "ccd_at_modocc_genes":ccd_at_modctsoccdf["gene"],
+    "ccd_n_modocc":ccd_n_modocc,
+    "ccd_n_modocc_genes":ccd_n_modctsoccdf["gene"],
+    "nonccd_modocc":nonccd_modocc,
+    "nonccd_modocc_genes":nonccd_modctsoccdf["gene"],
+}).to_pickle("output/modocc.pkl")
+
+
 #%% [markdown]
 # # Bulk U2OS analysis results (modification counts)
 #
