@@ -49,8 +49,9 @@ temp_modocc_plot(modocc, ccd_n_modocc_genes, "ccd_n_modocc_genes", "ccd_n_modocc
 plt.xlabel("Median Modification Occupancy Per Protein")
 plt.ylabel("Median Melting Temperature Per Protein")
 plt.legend()
-plt.show()
 plt.savefig("figures/TempModocc.png")
+plt.show()
+plt.close()
 
 temp_modocc_plot(modocc, all_modocc_genes, "all_modocc_genes", "all_modocc", all_temp_genes, all_temps, "All Proteins")
 temp_modocc_plot(modocc, ccd_at_modocc_genes, "ccd_at_modocc_genes", "ccd_at_modocc", t_reg_temp_genes, t_reg_temps, "Transcript Regulated CCD")
@@ -59,8 +60,8 @@ temp_modocc_plot(modocc, nonccd_modocc_genes, "nonccd_modocc_genes", "nonccd_mod
 plt.xlabel("Median Modification Occupancy Per Protein")
 plt.ylabel("Median Melting Temperature Per Protein")
 plt.legend()
-plt.show()
 plt.savefig("figures/TempModoccWithNonccd.png")
+plt.show()
 plt.close()
 
 #%%
