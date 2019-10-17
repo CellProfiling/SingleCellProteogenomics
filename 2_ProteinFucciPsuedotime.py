@@ -62,11 +62,6 @@ def cart2pol(x, y):
     phi = np.arctan2(y, x)
     return(rho, phi)
 
-def pol2cart(rho, phi):
-    x = rho * np.cos(phi)
-    y = rho * np.sin(phi)
-    return(x, y)
-
 # Center data
 x0 = np.ones(5)
 x = fucci_data[:,0]
@@ -124,6 +119,11 @@ pol_sort_norm_rev = 1-pol_sort_norm
 pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
 
 #apply uniform radius (rho) and convert back
+def pol2cart(rho, phi):
+    x = rho * np.cos(phi)
+    y = rho * np.sin(phi)
+    return(x, y)
+
 cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
 
 def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
@@ -173,91 +173,9 @@ DO_PLOTS = True #flag of whether to plot each well and save the plot
 TPLOT_MODE = 'avg' #can have values of: 'avg', 'psin'
 HIGHLIGHTS = ['ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
 
-def fun(p, x, y):
-    #return x[0] * np.exp(-x[1] * t) * np.sin(x[2] * t) - y
-    return np.abs(x/p[0])**p[1] + np.abs(y/p[2])**p[3] * (1+p[4]*x)/(1-p[4]*x)
-
-def psin_fit(p,x,y):
-    return p[0]*np.sin(np.pi*x**p[1])**p[2]+p[3]-y
-
-def psin_eq(x,b,a,g,c):
-    return b*np.sin(np.pi*x**a)**g+c
-
-def psin_predict(p,x):
-    return p[0]*np.sin(np.pi*x**p[1])**p[2]+p[3]
-
-def get_val_compartment(var_vec,curr_compartment):
-    #var vec is ordered [cell,nuc,cyto]
-    if curr_compartment=='cell':
-        return var_vec[0]
-    elif curr_compartment=='nucleus':
-        return var_vec[1]
-    elif curr_compartment=='cytosol':
-        return var_vec[2]
-    else:
-        return -1
-
 def mvavg_perc_var(yvals,mv_window):
     yval_avg = np.convolve(yvals,np.ones((mv_window,))/mv_window, mode='valid')
     return np.var(yval_avg)/np.var(yvals),yval_avg
-
-def gini(array):
-    """Calculate the Gini coefficient of a numpy array."""
-    # based on bottom eq:
-    # http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
-    # from:
-    # http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
-    # All values are treated equally, arrays must be 1d:
-    #Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
-    array = array.flatten()
-    if np.amin(array) < 0:
-        # Values cannot be negative:
-        array -= np.amin(array)
-    # Values cannot be 0:
-    array += 0.0000001
-    # Values must be sorted:
-    array = np.sort(array)
-    # Index per array element:
-    index = np.arange(1,array.shape[0]+1)
-    # Number of array elements:
-    n = array.shape[0]
-    # Gini coefficient:
-    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array)))
-
-def fix_nans(binned_values):
-    for i,val in enumerate(binned_values):
-        if np.isnan(val):
-            if i==(len(binned_values)-1):
-                prevval = i-1
-                nextval = i+1
-            else:
-                prevval = binned_values[i-1]
-                nextval = binned_values[i+1]
-            prevval = np.nan
-            jind = i
-            count = 1
-            while np.isnan(prevval) and count<len(binned_values):
-                if jind>0:
-                    jind = jind-1
-                    prevval = binned_values[jind]
-                elif jind==0:
-                    jind = len(binned_values)-1
-                    prevval = binned_values[jind]
-                count = count+1
-            nextval = np.nan
-            jind = i
-            count = 1
-            while np.isnan(nextval) and count<len(binned_values):
-                if jind<(len(binned_values)-1):
-                    jind = jind+1
-                    nextval = binned_values[jind]
-                elif jind==(len(binned_values)-1):
-                    print('doing the end of list')
-                    jind = 0
-                    nextval = binned_values[jind]
-                count = count+1
-            binned_values[i] = np.mean([prevval,nextval])
-    return binned_values
 
 def temporal_mov_avg(curr_pol,curr_ab_norm,x_fit,y_fit,outname,outsuff):
     plt.close()
@@ -286,31 +204,6 @@ def temporal_mov_avg(curr_pol,curr_ab_norm,x_fit,y_fit,outname,outsuff):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
     plt.savefig(outfile)
 
-class experiment:
-    def __init__(self, outsuff, curr_compartment,
-               perc_var_cell, perc_var_nuc, perc_var_cyto,
-               max_val_cell, max_val_nuc, max_val_cyto,
-               curr_pval, var_compartment, gini_compartment, curr_fdr,
-               perc_var_fred, perc_var_fgreen):
-        self.outsuff = outsuff
-        self.compartment = curr_compartment
-        self.perc_var_cell =  perc_var_cell
-        self.perc_var_nuc = perc_var_nuc
-        self.perc_var_cyto = perc_var_cyto
-        self.max_val_cell = max_val_cell
-        self.max_val_nuc = max_val_nuc
-        self.max_val_cyto = max_val_cyto
-        self.pval = curr_pval
-        self.var_compartment = var_compartment
-        self.gini_compartment = gini_compartment
-        self.curr_fdr = curr_fdr
-        self.perc_var_fred = perc_var_fred
-        self.perc_var_fgreen = perc_var_fgreen
-        self.perc_var_compartment = get_val_compartment(
-            [perc_var_cell, perc_var_nuc, perc_var_cyto], curr_compartment)
-        self.max_val_compartment = get_val_compartment(
-            [max_val_cell, max_val_nuc, max_val_cyto], curr_compartment)
-                
 x_fit = np.linspace(0,1,num=200)
 ccd_coeff_list = []
 not_ccd_coeff_list = []
