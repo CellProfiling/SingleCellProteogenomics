@@ -321,6 +321,7 @@ ccd_pvals = []
 not_ccd_pvals = []
 
 var_fred, var_fgreen = [],[] # variance of mean FUCCI intensities
+var_mt_unorm = []
 var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
 # var_cell_int, var_nuc_int, var_cyto_int, var_mt_int = [],[],[],[] # integrated intensity variances per antibody
 
@@ -364,6 +365,7 @@ for well in u_well_plates:
     var_nuc.append(np.var(curr_ab_nuc_norm))
     var_cyto.append(np.var(curr_ab_cyto_norm))
     var_mt.append(np.var(curr_mt_cell_norm))
+    var_mt_unorm.append(np.var(curr_mt_cell))
     # Variance calculation -- integrated intensities
     # var_cell_int.append(np.var(curr_ab_cell_norm_int))
     # var_nuc_int.append(np.var(curr_ab_nuc_norm_int))
