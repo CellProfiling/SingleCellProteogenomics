@@ -1,0 +1,2806 @@
+well_plate,IF antibody state,IF main antibody location,IF additional antibody location
+A01_55185977,1000: Finished IF,Nucleoplasm,Cytosol
+B01_55185977,1000: Finished IF,Nucleus,
+C01_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+D01_55185977,1000: Finished IF,Mitochondria,
+E01_55185977,1000: Finished IF,Nucleus;Nucleoli fibrillar center,Cytosol
+F01_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+G01_55185977,1000: Finished IF,Plasma membrane;Cytosol,
+H01_55185977,1000: Finished IF,Nucleoplasm;Cytosol,
+A02_55185977,1000: Finished IF,Nucleus,Nuclear bodies;Golgi apparatus;Actin filaments
+B02_55185977,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+C02_55185977,1000: Finished IF,Nucleoli;Mitochondria,Nucleus
+D02_55185977,1000: Finished IF,Nucleus,
+E02_55185977,1000: Finished IF,Mitochondria,Nucleoli
+F02_55185977,1000: Finished IF,Nucleus,Centrosome;Cytosol
+G02_55185977,1000: Finished IF,Nuclear bodies;Cytosol,
+H02_55185977,1000: Finished IF,Cytosol,
+A03_55185977,1000: Finished IF,Intermediate filaments,
+B03_55185977,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm;Vesicles
+C03_55185977,1000: Finished IF,Nucleus;Nucleoli,
+D03_55185977,1000: Finished IF,Nucleus;Cytosol,Nucleoli;Microtubule organizing center
+E03_55185977,1000: Finished IF,Actin filaments,Plasma membrane;Cytosol
+F03_55185977,1000: Finished IF,Golgi apparatus,
+G03_55185977,1000: Finished IF,Nucleoplasm,Cytosol
+H03_55185977,1000: Finished IF,Nucleus,Nucleoli
+A04_55185977,1000: Finished IF,Nucleus,Vesicles;Plasma membrane
+B04_55185977,1000: Finished IF,Vesicles;Cytosol,Nucleus
+C04_55185977,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+D04_55185977,1000: Finished IF,Nucleus;Vesicles,Cytosol
+E04_55185977,1000: Finished IF,Intermediate filaments,
+F04_55185977,1000: Finished IF,Nuclear bodies,
+G04_55185977,1000: Finished IF,Nucleus,Nucleoli
+H04_55185977,1000: Finished IF,Nucleoplasm,
+A05_55185977,1000: Finished IF,Cytosol,Nucleus
+B05_55185977,1000: Finished IF,Intermediate filaments,
+C05_55185977,1000: Finished IF,Cytosol,Nucleus
+D05_55185977,1000: Finished IF,Nucleoli,
+E05_55185977,1000: Finished IF,Cytosol,
+F05_55185977,1000: Finished IF,Nucleus;Nucleoli fibrillar center,Vesicles;Cytosol
+G05_55185977,1000: Finished IF,Plasma membrane,
+H05_55185977,1000: Finished IF,Mitochondria,
+A06_55185977,1000: Finished IF,Cytosol,Nucleus
+B06_55185977,1000: Finished IF,Nucleoplasm,
+C06_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+D06_55185977,1000: Finished IF,Actin filaments;Focal adhesion sites,
+E06_55185977,1000: Finished IF,Nucleus,
+F06_55185977,1000: Finished IF,Cytosol,Mitochondria
+G06_55185977,1000: Finished IF,Nucleoplasm,
+H06_55185977,1000: Finished IF,Nucleus;Nucleoli;Nuclear bodies;Centrosome,
+A07_55185977,1000: Finished IF,Vesicles,
+B07_55185977,1000: Finished IF,Nucleoplasm,
+C07_55185977,1000: Finished IF,Nucleoplasm,
+D07_55185977,1000: Finished IF,Nucleoplasm,
+E07_55185977,1000: Finished IF,Nucleoplasm,
+F07_55185977,1000: Finished IF,Microtubule organizing center;Cytosol,Mitochondria
+G07_55185977,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+H07_55185977,1000: Finished IF,Nucleus,
+A08_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+B08_55185977,1000: Finished IF,Nucleus;Mitochondria,Cytosol
+C08_55185977,1000: Finished IF,Mitochondria,Nucleus
+D08_55185977,1000: Finished IF,Cytosol,
+E08_55185977,1000: Finished IF,Nucleoplasm,Nuclear bodies
+F08_55185977,1000: Finished IF,Vesicles,
+G08_55185977,1000: Finished IF,Endoplasmic reticulum;Cytosol,Centrosome
+H08_55185977,1000: Finished IF,Nucleoplasm;Nuclear bodies,Cytosol
+A09_55185977,1000: Finished IF,Nuclear bodies,
+B09_55185977,1000: Finished IF,Mitochondria,
+C09_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+D09_55185977,1000: Finished IF,Nucleoplasm;Centrosome,Cytosol
+E09_55185977,1000: Finished IF,Nucleoplasm,Cytosol
+F09_55185977,1000: Finished IF,Nucleus,Nucleoli
+G09_55185977,1000: Finished IF,Plasma membrane;Cytosol,Golgi apparatus
+H09_55185977,1000: Finished IF,Nucleus,Nucleoli;Plasma membrane;Mitochondria
+A10_55185977,1000: Finished IF,Nucleoplasm,Nuclear bodies
+B10_55185977,1000: Finished IF,Cytosol,
+C10_55185977,1000: Finished IF,Nuclear bodies,Nucleus;Mitochondria
+D10_55185977,1000: Finished IF,Nucleoplasm,
+E10_55185977,1000: Finished IF,Nuclear bodies,Nucleoplasm;Focal adhesion sites
+F10_55185977,1000: Finished IF,Plasma membrane,
+G10_55185977,1000: Finished IF,Nucleus,
+H10_55185977,1000: Finished IF,Cytosol,Intermediate filaments;Rods & Rings
+A11_55185977,1000: Finished IF,Cytosol,Nucleoplasm
+B11_55185977,1000: Finished IF,Nucleoplasm,
+C11_55185977,1000: Finished IF,Nucleoli fibrillar center;Cytosol,
+D11_55185977,1000: Finished IF,Nucleus,Nuclear bodies;Cytosol
+E11_55185977,1000: Finished IF,Nucleus;Nucleoplasm;Nucleoli,
+F11_55185977,1000: Finished IF,Nucleoplasm;Nuclear bodies,Plasma membrane
+G11_55185977,1000: Finished IF,Golgi apparatus,
+H11_55185977,1000: Finished IF,Mitochondria,
+A12_55185977,1000: Finished IF,Endoplasmic reticulum,Cytosol
+B12_55185977,1000: Finished IF,Vesicles,
+C12_55185977,1000: Finished IF,Cytosol,
+D12_55185977,1000: Finished IF,Plasma membrane;Actin filaments,Vesicles
+E12_55185977,1000: Finished IF,Vesicles,
+F12_55185977,1000: Finished IF,Vesicles;Cytosol,Plasma membrane
+G12_55185977,1000: Finished IF,Mitochondria,Vesicles
+A01_55195978,1000: Finished IF,Microtubules;Cytosol,
+B01_55195978,1000: Finished IF,Cytosol,
+C01_55195978,1000: Finished IF,Cytosol,
+D01_55195978,1000: Finished IF,Nucleoli,Nucleus;Intermediate filaments
+E01_55195978,1000: Finished IF,Nucleus;Nucleoli fibrillar center,
+F01_55195978,1000: Finished IF,Nucleus,
+G01_55195978,1000: Finished IF,Cytosol,
+H01_55195978,1000: Finished IF,Golgi apparatus,
+A02_55195978,1000: Finished IF,Vesicles;Plasma membrane,
+B02_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+C02_55195978,1000: Finished IF,Cytosol,Nucleoli fibrillar center
+D02_55195978,1000: Finished IF,Cytosol,
+E02_55195978,1000: Finished IF,Nucleoplasm;Mitochondria,
+F02_55195978,1000: Finished IF,Vesicles;Plasma membrane,
+G02_55195978,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+H02_55195978,1000: Finished IF,Nucleus;Vesicles;Plasma membrane,
+A03_55195978,1000: Finished IF,Plasma membrane,
+B03_55195978,1000: Finished IF,Nucleoli fibrillar center;Vesicles,Lipid droplets
+C03_55195978,1000: Finished IF,Mitochondria,Nucleoli
+D03_55195978,1000: Finished IF,Cytosol,Nucleus;Vesicles
+E03_55195978,1000: Finished IF,Nucleus;Nucleoli,Nuclear membrane;Cytosol
+F03_55195978,1000: Finished IF,Golgi apparatus,
+G03_55195978,1000: Finished IF,Nucleoplasm,Mitotic spindle
+H03_55195978,1000: Finished IF,Intermediate filaments,Plasma membrane;Cytosol
+A04_55195978,1000: Finished IF,Cytosol,
+B04_55195978,1000: Finished IF,Vesicles,
+C04_55195978,1000: Finished IF,Vesicles,
+D04_55195978,1000: Finished IF,Cytosol,Plasma membrane
+E04_55195978,1000: Finished IF,Vesicles;Actin filaments;Cytosol,
+F04_55195978,1000: Finished IF,Nucleoplasm,Nucleoli
+G04_55195978,1000: Finished IF,Mitochondria,Nucleoplasm
+H04_55195978,1000: Finished IF,Cytosol,
+A05_55195978,1000: Finished IF,Cytosol,
+B05_55195978,1000: Finished IF,Nucleus;Nucleoli;Nucleoli fibrillar center,
+C05_55195978,1000: Finished IF,Mitochondria,
+D05_55195978,1000: Finished IF,Cytosol,
+E05_55195978,1000: Finished IF,Endoplasmic reticulum,Nucleus
+F05_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+G05_55195978,1000: Finished IF,Nucleoplasm;Vesicles,
+H05_55195978,1000: Finished IF,Intermediate filaments,Nucleoplasm
+A06_55195978,1000: Finished IF,Mitochondria,
+B06_55195978,1000: Finished IF,Nucleoplasm,
+C06_55195978,1000: Finished IF,Nucleoplasm,Golgi apparatus
+D06_55195978,1000: Finished IF,Nucleoplasm;Nucleoli fibrillar center,Cytosol
+E06_55195978,1000: Finished IF,Plasma membrane,
+F06_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+G06_55195978,1000: Finished IF,Actin filaments,
+H06_55195978,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+A07_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+B07_55195978,1000: Finished IF,Nucleoplasm,Mitochondria
+C07_55195978,1000: Finished IF,Vesicles,
+D07_55195978,1000: Finished IF,Cell Junctions,
+E07_55195978,1000: Finished IF,Vesicles,
+F07_55195978,1000: Finished IF,Nucleoplasm,
+G07_55195978,1000: Finished IF,Intermediate filaments,
+H07_55195978,1000: Finished IF,Nucleus,
+A08_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+B08_55195978,1000: Finished IF,Nucleoplasm,Cytosol
+C08_55195978,1000: Finished IF,Nucleus,Nuclear bodies
+D08_55195978,1000: Finished IF,Cytosol,
+E08_55195978,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+F08_55195978,1000: Finished IF,Mitochondria,
+G08_55195978,1000: Finished IF,Nucleoplasm,Nuclear speckles;Golgi apparatus;Cytosol
+H08_55195978,1000: Finished IF,Nucleoplasm,
+A09_55195978,1000: Finished IF,Plasma membrane;Microtubule organizing center,
+B09_55195978,1000: Finished IF,Nucleoplasm;Cytosol,
+C09_55195978,1000: Finished IF,Nucleus;Nucleoli,
+D09_55195978,1000: Finished IF,Cytosol,Nucleoplasm;Actin filaments
+E09_55195978,1000: Finished IF,Nucleoplasm,Vesicles
+F09_55195978,1000: Finished IF,Cytosol,
+G09_55195978,1000: Finished IF,Centrosome,Cytosol
+H09_55195978,1000: Finished IF,Mitochondria,
+A10_55195978,1000: Finished IF,Nucleus;Nucleoli;Microtubules,Focal adhesion sites
+B10_55195978,1000: Finished IF,Nucleus,Nucleoli
+C10_55195978,1000: Finished IF,Microtubule organizing center;Cytosol,
+D10_55195978,1000: Finished IF,Cytosol,Golgi apparatus
+E10_55195978,1000: Finished IF,Nucleoplasm,
+F10_55195978,1000: Finished IF,Nucleoplasm,
+G10_55195978,1000: Finished IF,Nucleoplasm,
+H10_55195978,1000: Finished IF,Nucleoplasm;Mitochondria,
+A11_55195978,1000: Finished IF,Cytosol,Nucleus
+B11_55195978,1000: Finished IF,Nucleoplasm,
+C11_55195978,1000: Finished IF,Cytosol,
+D11_55195978,1000: Finished IF,Mitochondria,
+E11_55195978,1000: Finished IF,Mitochondria,
+F11_55195978,1000: Finished IF,Mitochondria,Nucleoplasm;Vesicles
+G11_55195978,1000: Finished IF,Nucleus;Nucleoli fibrillar center,
+H11_55195978,1000: Finished IF,Cytosol,
+A12_55195978,1000: Finished IF,Nucleus,
+B12_55195978,1000: Finished IF,Centrosome,Cytosol
+C12_55195978,1000: Finished IF,Plasma membrane;Cytosol,
+D12_55195978,1000: Finished IF,Nucleoplasm,Plasma membrane
+E12_55195978,1000: Finished IF,Nuclear speckles,Cytosol
+F12_55195978,1000: Finished IF,Microtubules;Mitochondria,Cytosol
+G12_55195978,1000: Finished IF,Vesicles,Cytosol
+A01_55235979,1000: Finished IF,Nucleoplasm,Cytosol
+B01_55235979,1000: Finished IF,Nucleus;Cytosol,
+C01_55235979,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+D01_55235979,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli
+E01_55235979,1000: Finished IF,Vesicles,
+F01_55235979,1000: Finished IF,Mitochondria;Cytosol,
+G01_55235979,1000: Finished IF,Mitochondria,Golgi apparatus
+H01_55235979,1000: Finished IF,Nucleoplasm,
+A02_55235979,1000: Finished IF,Mitochondria,
+B02_55235979,1000: Finished IF,Nucleus,Vesicles
+C02_55235979,1000: Finished IF,Golgi apparatus,Vesicles
+D02_55235979,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+E02_55235979,1000: Finished IF,Mitochondria,
+F02_55235979,1000: Finished IF,Mitochondria,
+G02_55235979,1000: Finished IF,Nucleus;Nucleoli,
+H02_55235979,1000: Finished IF,Nucleoplasm,Nuclear speckles;Mitochondria
+A03_55235979,1000: Finished IF,Cytosol,
+B03_55235979,1000: Finished IF,Plasma membrane;Cytosol,
+C03_55235979,1000: Finished IF,Nucleus;Cytosol,
+D03_55235979,1000: Finished IF,Nucleoplasm,Cytosol
+E03_55235979,1000: Finished IF,Mitochondria,
+F03_55235979,1000: Finished IF,Cytosol,
+G03_55235979,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+H03_55235979,1000: Finished IF,Cytosol,Nucleoplasm
+A04_55235979,1000: Finished IF,Microtubule organizing center;Cytosol,Nuclear speckles
+B04_55235979,1000: Finished IF,Cytosol,Nucleus
+C04_55235979,1000: Finished IF,Cytosol,Nucleus
+D04_55235979,1000: Finished IF,Nucleoplasm;Vesicles;Cytosol,
+E04_55235979,1000: Finished IF,Nucleoplasm,
+F04_55235979,1000: Finished IF,Mitochondria;Cytosol,
+G04_55235979,1000: Finished IF,Nucleoplasm,Nuclear speckles
+H04_55235979,1000: Finished IF,Nucleus,Nucleoli;Vesicles
+A05_55235979,1000: Finished IF,Nucleoli,
+B05_55235979,1000: Finished IF,Nucleoplasm;Cytosol,
+C05_55235979,1000: Finished IF,Nucleus,
+D05_55235979,1000: Finished IF,Nucleus,Nucleoli
+E05_55235979,1000: Finished IF,Cytosol,
+F05_55235979,1000: Finished IF,Nucleoplasm,
+G05_55235979,1000: Finished IF,Nuclear speckles,
+H05_55235979,1000: Finished IF,Nucleoli,Nucleus
+A06_55235979,1000: Finished IF,Nucleoplasm,
+B06_55235979,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane;Mitochondria
+C06_55235979,1000: Finished IF,Vesicles,Mitochondria
+D06_55235979,1000: Finished IF,Nuclear bodies,Nucleoplasm
+E06_55235979,1000: Finished IF,Mitochondria,
+F06_55235979,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+G06_55235979,1000: Finished IF,Mitochondria,
+H06_55235979,1000: Finished IF,Nucleoplasm,Mitochondria
+A07_55235979,1000: Finished IF,Plasma membrane;Cytosol,
+B07_55235979,1000: Finished IF,Cytosol,
+C07_55235979,1000: Finished IF,Intermediate filaments;Cytosol,
+D07_55235979,1000: Finished IF,Nucleoplasm,Cytosol
+E07_55235979,1000: Finished IF,Cytosol,Vesicles
+F07_55235979,1000: Finished IF,Cytosol,
+G07_55235979,1000: Finished IF,Cytosol,Nucleoplasm
+H07_55235979,1000: Finished IF,Mitochondria,Nucleoplasm;Cytosol
+A08_55235979,1000: Finished IF,Nucleoplasm,Cytosol
+B08_55235979,1000: Finished IF,Cytosol,
+C08_55235979,1000: Finished IF,Mitochondria,Cytosol
+D08_55235979,1000: Finished IF,Cytosol,Nucleoplasm
+E08_55235979,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+F08_55235979,1000: Finished IF,Nuclear membrane;Mitochondria,Intermediate filaments
+G08_55235979,1000: Finished IF,Plasma membrane,
+H08_55235979,1000: Finished IF,Mitochondria,
+A09_55235979,1000: Finished IF,Nucleus,Nuclear bodies
+B09_55235979,1000: Finished IF,Nucleoplasm,
+C09_55235979,1000: Finished IF,Nucleoplasm,
+D09_55235979,1000: Finished IF,Mitochondria,
+E09_55235979,1000: Finished IF,Plasma membrane,Cytosol
+F09_55235979,1000: Finished IF,Nucleoplasm,Mitochondria
+G09_55235979,1000: Finished IF,Nucleoplasm;Cytosol,
+H09_55235979,1000: Finished IF,Nucleoplasm,
+A10_55235979,1000: Finished IF,Vesicles,Cytosol
+B10_55235979,1000: Finished IF,Mitochondria,Nucleoplasm;Cell Junctions
+C10_55235979,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane
+D10_55235979,1000: Finished IF,Nucleus;Plasma membrane,Cell Junctions;Cytosol
+E10_55235979,1000: Finished IF,Nucleus,
+F10_55235979,1000: Finished IF,Plasma membrane;Cytosol,
+G10_55235979,1000: Finished IF,Nucleus,Nucleoli
+H10_55235979,1000: Finished IF,Mitochondria,Nuclear speckles
+A11_55235979,1000: Finished IF,Actin filaments,
+B11_55235979,1000: Finished IF,Nucleus;Microtubule ends,Nuclear bodies;Cytosol
+C11_55235979,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+D11_55235979,1000: Finished IF,Nucleoplasm,
+E11_55235979,1000: Finished IF,Cytosol,
+F11_55235979,1000: Finished IF,Nucleoli;Golgi apparatus;Vesicles,Nucleoplasm;Cytosol
+G11_55235979,1000: Finished IF,Vesicles,Cytosol
+H11_55235979,1000: Finished IF,Nucleoplasm;Cytosol,Intermediate filaments
+A12_55235979,1000: Finished IF,Cytosol,
+B12_55235979,1000: Finished IF,Cytosol,
+C12_55235979,1000: Finished IF,Nucleoli,
+D12_55235979,1000: Finished IF,Nucleus,Nuclear bodies;Cytosol
+E12_55235979,1000: Finished IF,Vesicles,
+F12_55235979,1000: Finished IF,Cytosol,Nucleoplasm
+G12_55235979,1000: Finished IF,Nucleoli,
+A01_55205980,1000: Finished IF,Mitochondria,
+B01_55205980,1000: Finished IF,Intermediate filaments,
+C01_55205980,1000: Finished IF,Nucleoplasm,
+D01_55205980,1000: Finished IF,Nuclear membrane,Vesicles
+E01_55205980,1000: Finished IF,Nucleoplasm;Cytosol,
+F01_55205980,1000: Finished IF,Nucleus;Nuclear membrane,Nucleoli
+G01_55205980,1000: Finished IF,Mitochondria,Cytosol
+H01_55205980,1000: Finished IF,Nucleoli;Cytosol,
+A02_55205980,1000: Finished IF,Vesicles,
+B02_55205980,1000: Finished IF,Nucleus;Centrosome,Plasma membrane;Cytosol
+C02_55205980,1000: Finished IF,Mitochondria,Nuclear speckles
+D02_55205980,1000: Finished IF,Golgi apparatus,
+E02_55205980,1000: Finished IF,Nucleoplasm,Cytosol
+F02_55205980,1000: Finished IF,Cytosol,Nucleus;Nucleoli
+G02_55205980,1000: Finished IF,Endoplasmic reticulum,
+H02_55205980,1000: Finished IF,Nucleus;Nucleoli,
+A03_55205980,1000: Finished IF,Actin filaments,Cytosol
+B03_55205980,1000: Finished IF,Vesicles,
+C03_55205980,1000: Finished IF,Plasma membrane,
+D03_55205980,1000: Finished IF,Golgi apparatus,Nucleoplasm
+E03_55205980,1000: Finished IF,Nucleoplasm,Mitochondria;Cytosol
+F03_55205980,1000: Finished IF,Cytosol,Nucleoplasm
+G03_55205980,1000: Finished IF,Mitochondria;Cytosol,
+H03_55205980,1000: Finished IF,Nucleoplasm,Cytosol
+A04_55205980,1000: Finished IF,Nucleoplasm,
+B04_55205980,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+C04_55205980,1000: Finished IF,Cytosol,
+D04_55205980,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+E04_55205980,1000: Finished IF,Nuclear bodies,Nuclear membrane;Golgi apparatus
+F04_55205980,1000: Finished IF,Cytosol,Plasma membrane
+G04_55205980,1000: Finished IF,Golgi apparatus,Plasma membrane;Cytosol
+H04_55205980,1000: Finished IF,Cytosol,
+A05_55205980,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+B05_55205980,1000: Finished IF,Nucleus,Nucleoli
+C05_55205980,1000: Finished IF,Nucleoplasm,
+D05_55205980,1000: Finished IF,Endoplasmic reticulum;Vesicles,Nucleoplasm;Cytosol
+E05_55205980,1000: Finished IF,Nucleoplasm,Nucleoli
+F05_55205980,1000: Finished IF,Cytosol,Nucleoli
+G05_55205980,1000: Finished IF,Nucleus,
+H05_55205980,1000: Finished IF,Cytosol,
+A06_55205980,1000: Finished IF,Endoplasmic reticulum,
+B06_55205980,1000: Finished IF,Nucleus;Nucleoli,Nuclear bodies;Cytokinetic bridge
+C06_55205980,1000: Finished IF,Intermediate filaments,Golgi apparatus
+D06_55205980,1000: Finished IF,Vesicles,
+E06_55205980,1000: Finished IF,Vesicles,
+F06_55205980,1000: Finished IF,Nucleoplasm;Cytosol,
+G06_55205980,1000: Finished IF,Nucleoplasm;Mitochondria,Nucleoli
+H06_55205980,1000: Finished IF,Nucleoplasm;Cytosol,
+A07_55205980,1000: Finished IF,Nucleoli fibrillar center,Mitochondria
+B07_55205980,1000: Finished IF,Nucleoplasm,Nucleoli
+C07_55205980,1000: Finished IF,Mitochondria,
+D07_55205980,1000: Finished IF,Endoplasmic reticulum;Vesicles,
+E07_55205980,1000: Finished IF,Vesicles;Cytosol,
+F07_55205980,1000: Finished IF,Cytosol,
+G07_55205980,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+H07_55205980,1000: Finished IF,Plasma membrane;Cytosol,
+A08_55205980,1000: Finished IF,Mitochondria;Cytosol,Nucleoli;Intermediate filaments
+B08_55205980,1000: Finished IF,Nucleus,
+C08_55205980,1000: Finished IF,Vesicles,Endoplasmic reticulum
+D08_55205980,1000: Finished IF,Nucleoplasm,Nuclear membrane;Cytosol
+E08_55205980,1000: Finished IF,Nucleoplasm,Focal adhesion sites;Cytosol
+F08_55205980,1000: Finished IF,Cytosol,
+G08_55205980,1000: Finished IF,Nucleus,Nuclear membrane;Nucleoli
+H08_55205980,1000: Finished IF,Nucleus,Centrosome
+A09_55205980,1000: Finished IF,Cytosol,Nucleoplasm
+B09_55205980,1000: Finished IF,Nucleoplasm,
+C09_55205980,1000: Finished IF,Plasma membrane;Cytosol,
+D09_55205980,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+E09_55205980,1000: Finished IF,Nucleoli,Nucleus
+F09_55205980,1000: Finished IF,Cytosol,
+G09_55205980,1000: Finished IF,Nucleus,
+H09_55205980,1000: Finished IF,Mitochondria,
+A10_55205980,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane
+B10_55205980,1000: Finished IF,Nucleus;Intermediate filaments,Cytosol
+C10_55205980,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+D10_55205980,1000: Finished IF,Nucleoplasm,
+E10_55205980,1000: Finished IF,Golgi apparatus,
+F10_55205980,1000: Finished IF,Cytosol,Nucleoplasm
+G10_55205980,1000: Finished IF,Nucleoplasm,
+H10_55205980,1000: Finished IF,Intermediate filaments;Cytosol,Nucleoplasm
+A11_55205980,1000: Finished IF,Centrosome,Plasma membrane
+B11_55205980,1000: Finished IF,Cytosol,
+C11_55205980,1000: Finished IF,Plasma membrane;Cytosol,
+D11_55205980,1000: Finished IF,Nuclear bodies,Nuclear membrane;Cytosol
+E11_55205980,1000: Finished IF,Nucleoplasm,Cytosol
+F11_55205980,1000: Finished IF,Cytosol,
+G11_55205980,1000: Finished IF,Nucleoli fibrillar center,Mitochondria
+H11_55205980,1000: Finished IF,Nucleoplasm,Cytosol
+A12_55205980,1000: Finished IF,Mitochondria;Cytosol,
+B12_55205980,1000: Finished IF,Mitochondria;Cytosol,Nuclear bodies
+C12_55205980,1000: Finished IF,Nucleoplasm;Cytosol,
+D12_55205980,1000: Finished IF,Nucleus;Nucleoli,
+E12_55205980,1000: Finished IF,Cytosol,
+F12_55205980,1000: Finished IF,Nucleus,Nucleoli;Nucleoli fibrillar center
+G12_55205980,1000: Finished IF,Nucleoplasm;Cytosol,
+A01_55245981,1000: Finished IF,Nucleoplasm;Cytosol,
+B01_55245981,1000: Finished IF,Cytosol,
+C01_55245981,1000: Finished IF,Mitochondria,Nucleus;Nucleoli
+D01_55245981,1000: Finished IF,Nucleoplasm;Vesicles,Cytosol
+E01_55245981,1000: Finished IF,Nucleoplasm;Golgi apparatus,Cytosol
+F01_55245981,1000: Finished IF,Nucleus,Nucleoli;Plasma membrane;Cytosol
+G01_55245981,1000: Finished IF,Mitochondria,Nucleoplasm
+H01_55245981,1000: Finished IF,Mitochondria,
+A02_55245981,1000: Finished IF,Nuclear bodies,Golgi apparatus
+B02_55245981,1000: Finished IF,Nucleoplasm,
+C02_55245981,1000: Finished IF,Cell Junctions,
+D02_55245981,1000: Finished IF,Nuclear bodies,
+E02_55245981,1000: Finished IF,Nucleus,
+F02_55245981,1000: Finished IF,Nucleoplasm,Nuclear bodies
+G02_55245981,1000: Finished IF,Mitochondria,Cytosol
+H02_55245981,1000: Finished IF,Mitochondria,
+A03_55245981,1000: Finished IF,Vesicles,
+B03_55245981,1000: Finished IF,Nucleoplasm,Cytosol
+C03_55245981,1000: Finished IF,Cytosol,Mitochondria
+D03_55245981,1000: Finished IF,Plasma membrane,
+E03_55245981,1000: Finished IF,Nucleoli,Nucleus
+F03_55245981,1000: Finished IF,Intermediate filaments;Cytosol,
+G03_55245981,1000: Finished IF,Intermediate filaments,
+H03_55245981,1000: Finished IF,Nuclear bodies;Plasma membrane,
+A04_55245981,1000: Finished IF,Nuclear bodies,Nucleoplasm
+B04_55245981,1000: Finished IF,Cytosol,
+C04_55245981,1000: Finished IF,Nucleoplasm,
+D04_55245981,1000: Finished IF,Nucleoplasm;Mitochondria,
+E04_55245981,1000: Finished IF,Mitochondria,
+F04_55245981,1000: Finished IF,Nucleus,Nucleoli
+G04_55245981,1000: Finished IF,Mitochondria,Nucleoli
+H04_55245981,1000: Finished IF,Nucleoplasm,Nuclear bodies
+A05_55245981,1000: Finished IF,Intermediate filaments,Cytosol
+B05_55245981,1000: Finished IF,Plasma membrane,
+C05_55245981,1000: Finished IF,Cytosol,Golgi apparatus
+D05_55245981,1000: Finished IF,Nucleoplasm,
+E05_55245981,1000: Finished IF,Nucleoplasm;Mitochondria,
+F05_55245981,1000: Finished IF,Mitochondria,
+G05_55245981,1000: Finished IF,Vesicles,Nuclear bodies
+H05_55245981,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+A06_55245981,1000: Finished IF,Nucleoplasm;Cytosol,Vesicles
+B06_55245981,1000: Finished IF,Cytosol,Nucleus
+C06_55245981,1000: Finished IF,Nucleoplasm;Cytosol,
+D06_55245981,1000: Finished IF,Nucleus,Microtubules
+E06_55245981,1000: Finished IF,Nucleoplasm,Cytosol
+F06_55245981,1000: Finished IF,Nucleoplasm,
+G06_55245981,1000: Finished IF,Plasma membrane;Cytosol,
+H06_55245981,1000: Finished IF,Nucleoplasm,
+A07_55245981,1000: Finished IF,Mitochondria,Nucleus
+B07_55245981,1000: Finished IF,Nucleus;Nuclear membrane,
+C07_55245981,1000: Finished IF,Mitochondria,
+D07_55245981,1000: Finished IF,Nucleus;Nucleoli,
+E07_55245981,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+F07_55245981,1000: Finished IF,Nucleoplasm;Cytoplasmic bodies,
+G07_55245981,1000: Finished IF,Vesicles,
+H07_55245981,1000: Finished IF,Cytosol,Vesicles
+A08_55245981,1000: Finished IF,Plasma membrane;Cytosol,
+B08_55245981,1000: Finished IF,Plasma membrane;Cytosol,
+C08_55245981,1000: Finished IF,Mitochondria,
+D08_55245981,1000: Finished IF,Plasma membrane;Microtubules,Nucleoplasm
+E08_55245981,1000: Finished IF,Nucleoplasm,
+F08_55245981,1000: Finished IF,Plasma membrane;Cytosol,
+G08_55245981,1000: Finished IF,Nuclear bodies;Endoplasmic reticulum;Cytosol,Nucleoli
+H08_55245981,1000: Finished IF,Centrosome,Nucleoplasm;Mitochondria
+A09_55245981,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+B09_55245981,1000: Finished IF,Focal adhesion sites,
+C09_55245981,1000: Finished IF,Nucleus,Nuclear bodies
+D09_55245981,1000: Finished IF,Nucleus,Nuclear bodies
+E09_55245981,1000: Finished IF,Nucleoli,Cytosol
+F09_55245981,1000: Finished IF,Cytosol,Nucleus;Nuclear bodies;Mitotic spindle
+G09_55245981,1000: Finished IF,Vesicles,
+H09_55245981,1000: Finished IF,Nucleoli,Cytosol
+A10_55245981,1000: Finished IF,Nucleoplasm,Cell Junctions;Centrosome
+B10_55245981,1000: Finished IF,Nucleoplasm,Nucleoli;Vesicles
+C10_55245981,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+D10_55245981,1000: Finished IF,Intermediate filaments,
+E10_55245981,1000: Finished IF,Nuclear membrane,
+F10_55245981,1000: Finished IF,Nucleus,Nuclear bodies;Cytosol
+G10_55245981,1000: Finished IF,Nuclear speckles,Cytoplasmic bodies
+H10_55245981,1000: Finished IF,Nucleus,Nucleoli
+A11_55245981,1000: Finished IF,Mitochondria,
+B11_55245981,1000: Finished IF,Nuclear bodies,Nucleoplasm
+C11_55245981,1000: Finished IF,Plasma membrane,
+D11_55245981,1000: Finished IF,Cytosol,
+E11_55245981,1000: Finished IF,Nucleoplasm,Cytokinetic bridge;Mitotic spindle
+F11_55245981,1000: Finished IF,Nucleoplasm,
+G11_55245981,1000: Finished IF,Plasma membrane;Actin filaments;Cytosol,
+H11_55245981,1000: Finished IF,Vesicles;Cytosol,
+A12_55245981,1000: Finished IF,Cytosol,
+B12_55245981,1000: Finished IF,Nucleus,
+C12_55245981,1000: Finished IF,Vesicles,Microtubules
+D12_55245981,1000: Finished IF,Nucleoplasm,Cytosol
+E12_55245981,1000: Finished IF,Cytosol,
+F12_55245981,1000: Finished IF,Mitochondria,
+G12_55245981,1000: Finished IF,Mitochondria,Cytosol
+A01_55215982,1000: Finished IF,Nucleus,Vesicles;Cytosol
+B01_55215982,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+C01_55215982,1000: Finished IF,Vesicles,
+D01_55215982,1000: Finished IF,Mitochondria,Nucleoplasm
+E01_55215982,1000: Finished IF,Nuclear membrane,Nucleus
+F01_55215982,1000: Finished IF,Mitochondria,
+G01_55215982,1000: Finished IF,Cytosol,
+H01_55215982,1000: Finished IF,Nucleoplasm,
+A02_55215982,1000: Finished IF,Mitochondria;Cytosol,
+B02_55215982,1000: Finished IF,Nucleus;Nucleoli,
+C02_55215982,1000: Finished IF,Nucleus,Nuclear membrane;Nucleoli fibrillar center
+D02_55215982,1000: Finished IF,Nucleoplasm,
+E02_55215982,1000: Finished IF,Vesicles,Plasma membrane
+F02_55215982,1000: Finished IF,Nucleus,Nuclear bodies;Actin filaments
+G02_55215982,1000: Finished IF,Nucleoli,Nuclear bodies
+H02_55215982,1000: Finished IF,Mitochondria,Nucleoplasm
+A03_55215982,1000: Finished IF,Nucleus,Nucleoli
+B03_55215982,1000: Finished IF,Cytosol,
+C03_55215982,1000: Finished IF,Nucleus,
+D03_55215982,1000: Finished IF,Nucleus;Plasma membrane,Nuclear membrane;Nuclear bodies
+E03_55215982,1000: Finished IF,Mitochondria,
+F03_55215982,1000: Finished IF,Cytosol,
+G03_55215982,1000: Finished IF,Nucleoli,
+H03_55215982,1000: Finished IF,Mitochondria,
+A04_55215982,1000: Finished IF,Nucleoplasm;Golgi apparatus,
+B04_55215982,1000: Finished IF,Mitochondria,Nucleoplasm
+C04_55215982,1000: Finished IF,Mitochondria,Nucleoplasm
+D04_55215982,1000: Finished IF,Nucleus;Nucleoli,Nuclear bodies
+E04_55215982,1000: Finished IF,Aggresome,Intermediate filaments
+F04_55215982,1000: Finished IF,Nucleoplasm;Cell Junctions,
+G04_55215982,1000: Finished IF,Nucleoplasm;Cytosol,
+H04_55215982,1000: Finished IF,Nucleus,Nucleoli
+A05_55215982,1000: Finished IF,Nuclear bodies;Cytosol,Nucleus
+B05_55215982,1000: Finished IF,Nucleoplasm,Midbody
+C05_55215982,1000: Finished IF,Mitochondria,
+D05_55215982,1000: Finished IF,Actin filaments,Nucleoli;Nuclear bodies
+E05_55215982,1000: Finished IF,Nuclear membrane,Nucleoplasm;Cytosol
+F05_55215982,1000: Finished IF,Nucleus;Nucleoli fibrillar center;Vesicles,
+G05_55215982,1000: Finished IF,Plasma membrane;Cytosol,
+H05_55215982,1000: Finished IF,Nucleoplasm,Golgi apparatus;Cytosol
+A06_55215982,1000: Finished IF,Nucleoplasm;Mitochondria,
+B06_55215982,1000: Finished IF,Nucleoplasm,Cytosol
+C06_55215982,1000: Finished IF,Nucleus,Nucleoli fibrillar center
+D06_55215982,1000: Finished IF,Cytosol,
+E06_55215982,1000: Finished IF,Cytosol,
+F06_55215982,1000: Finished IF,Nuclear membrane,Nucleoplasm;Mitochondria
+G06_55215982,1000: Finished IF,Nucleoplasm;Nuclear membrane,Mitochondria
+H06_55215982,1000: Finished IF,Nucleoplasm,Nucleoli;Nuclear speckles;Cytosol
+A07_55215982,1000: Finished IF,Nucleus;Nucleoli,
+B07_55215982,1000: Finished IF,Nucleus;Nucleoli,Plasma membrane;Cytosol
+C07_55215982,1000: Finished IF,Cytosol,
+D07_55215982,1000: Finished IF,Nucleoplasm,
+E07_55215982,1000: Finished IF,Golgi apparatus,
+F07_55215982,1000: Finished IF,Nucleus;Nucleoli,
+G07_55215982,1000: Finished IF,Cytosol,Nucleus;Plasma membrane
+H07_55215982,1000: Finished IF,Endoplasmic reticulum,
+A08_55215982,1000: Finished IF,Mitochondria,Cytosol
+B08_55215982,1000: Finished IF,Plasma membrane,Nuclear speckles;Actin filaments;Focal adhesion sites
+C08_55215982,1000: Finished IF,Vesicles;Cytosol,
+D08_55215982,1000: Finished IF,Plasma membrane;Cytosol,
+E08_55215982,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli
+F08_55215982,1000: Finished IF,Nucleus,Cytosol
+G08_55215982,1000: Finished IF,Nucleoli,Golgi apparatus
+H08_55215982,1000: Finished IF,Nucleoplasm,
+A09_55215982,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+B09_55215982,1000: Finished IF,Nucleus;Cytosol,Focal adhesion sites
+C09_55215982,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center
+D09_55215982,1000: Finished IF,Nucleus,
+E09_55215982,1000: Finished IF,Nucleoplasm,
+F09_55215982,1000: Finished IF,Nucleoplasm,Cytosol
+G09_55215982,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+H09_55215982,1000: Finished IF,Nucleoplasm,
+A10_55215982,1000: Finished IF,Actin filaments,
+B10_55215982,1000: Finished IF,Golgi apparatus;Cytosol,
+C10_55215982,1000: Finished IF,Plasma membrane,Cytosol
+D10_55215982,1000: Finished IF,Nucleoplasm,
+E10_55215982,1000: Finished IF,Nucleoplasm,Intermediate filaments
+F10_55215982,1000: Finished IF,Cytosol,Plasma membrane
+G10_55215982,1000: Finished IF,Mitochondria,
+H10_55215982,1000: Finished IF,Cytosol,
+A11_55215982,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+B11_55215982,1000: Finished IF,Nucleoli,Nucleus;Nuclear membrane;Golgi apparatus;Cytosol
+C11_55215982,1000: Finished IF,Nucleoplasm,Cytosol
+D11_55215982,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+E11_55215982,1000: Finished IF,Nucleus;Nucleoli;Cytosol,Cell Junctions
+F11_55215982,1000: Finished IF,Nucleoli,Nucleus
+G11_55215982,1000: Finished IF,Plasma membrane,Nucleoplasm
+H11_55215982,1000: Finished IF,Nuclear speckles,Nuclear membrane;Cytosol
+A12_55215982,1000: Finished IF,Nucleus;Nuclear membrane,Cytosol
+B12_55215982,1000: Finished IF,Intermediate filaments,
+C12_55215982,1000: Finished IF,Nucleus,Cytosol
+D12_55215982,1000: Finished IF,Golgi apparatus,Nucleus
+E12_55215982,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane
+F12_55215982,1000: Finished IF,Cytosol,
+G12_55215982,1000: Finished IF,Nucleus,Mitochondria
+A01_55225983,1000: Finished IF,Nucleoplasm;Nuclear speckles,
+B01_55225983,1000: Finished IF,Centrosome,Nucleus;Nucleoli
+C01_55225983,1000: Finished IF,Nuclear speckles,Nucleoli fibrillar center;Cytosol
+D01_55225983,1000: Finished IF,Plasma membrane;Cytosol,Golgi apparatus
+E01_55225983,1000: Finished IF,Golgi apparatus,
+F01_55225983,1000: Finished IF,Nucleoli,
+G01_55225983,1000: Finished IF,Nucleoplasm;Cytosol,Cytokinetic bridge
+H01_55225983,1000: Finished IF,Cytosol,Nucleoplasm
+A02_55225983,1000: Finished IF,Nucleoplasm;Nuclear bodies,Nuclear membrane;Mitochondria
+B02_55225983,1000: Finished IF,Nuclear bodies,Nucleus;Cytokinetic bridge;Cytosol
+C02_55225983,1000: Finished IF,Vesicles,Intermediate filaments
+D02_55225983,1000: Finished IF,Nuclear speckles,Actin filaments
+E02_55225983,1000: Finished IF,Nuclear membrane,Nucleoli
+F02_55225983,1000: Finished IF,Vesicles,
+G02_55225983,1000: Finished IF,Centrosome;Cytosol,
+H02_55225983,1000: Finished IF,Cytosol,Endoplasmic reticulum
+A03_55225983,1000: Finished IF,Nucleoplasm,Nuclear bodies
+B03_55225983,1000: Finished IF,Nucleoplasm,
+C03_55225983,1000: Finished IF,Mitochondria,
+D03_55225983,1000: Finished IF,Nucleoplasm,Mitochondria
+E03_55225983,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center;Centrosome
+F03_55225983,1000: Finished IF,Plasma membrane;Cytosol,Actin filaments;Mitochondria
+G03_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+H03_55225983,1000: Finished IF,Golgi apparatus,
+A04_55225983,1000: Finished IF,Nucleus,Golgi apparatus;Cytosol
+B04_55225983,1000: Finished IF,Cytosol,Nucleoli
+C04_55225983,1000: Finished IF,Nucleus,
+D04_55225983,1000: Finished IF,Nucleoli fibrillar center,
+E04_55225983,1000: Finished IF,Golgi apparatus,Cytosol
+F04_55225983,1000: Finished IF,Mitochondria,Vesicles
+G04_55225983,1000: Finished IF,Cytosol,Nuclear bodies
+H04_55225983,1000: Finished IF,Cytosol,Nucleoplasm
+A05_55225983,1000: Finished IF,Plasma membrane;Mitochondria,Nucleus
+B05_55225983,1000: Finished IF,Nucleoplasm;Microtubules,Nucleoli
+C05_55225983,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+D05_55225983,1000: Finished IF,Nucleoplasm,Vesicles
+E05_55225983,1000: Finished IF,Nucleus;Nucleoli,
+F05_55225983,1000: Finished IF,Vesicles,Plasma membrane;Cytosol
+G05_55225983,1000: Finished IF,Mitochondria,
+H05_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+A06_55225983,1000: Finished IF,Nucleoli,Nucleus
+B06_55225983,1000: Finished IF,Nucleus;Nucleoli,
+C06_55225983,1000: Finished IF,Plasma membrane,Cytosol
+D06_55225983,1000: Finished IF,Nucleoli;Cytosol,
+E06_55225983,1000: Finished IF,Nuclear speckles,Nucleoli fibrillar center;Cytosol
+F06_55225983,1000: Finished IF,Nucleoplasm,
+G06_55225983,1000: Finished IF,Mitochondria,Nucleoplasm
+H06_55225983,1000: Finished IF,Cytosol,Nucleoplasm
+A07_55225983,1000: Finished IF,Vesicles,
+B07_55225983,1000: Finished IF,Plasma membrane;Cytosol,
+C07_55225983,1000: Finished IF,Cytosol,
+D07_55225983,1000: Finished IF,Actin filaments,Cell Junctions;Cytosol
+E07_55225983,1000: Finished IF,Nucleoplasm;Cytosol,
+F07_55225983,1000: Finished IF,Actin filaments;Cytosol,
+G07_55225983,1000: Finished IF,Nucleoplasm;Cytosol,Mitochondria
+H07_55225983,1000: Finished IF,Nucleus,Cytosol
+A08_55225983,1000: Finished IF,Mitochondria,
+B08_55225983,1000: Finished IF,Cytosol,Nucleoplasm;Plasma membrane
+C08_55225983,1000: Finished IF,Mitochondria;Cytosol,
+D08_55225983,1000: Finished IF,Nucleoli,Nucleus;Nuclear bodies
+E08_55225983,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+F08_55225983,1000: Finished IF,Cytosol,
+G08_55225983,1000: Finished IF,Nucleoli,Nucleus
+H08_55225983,1000: Finished IF,Nucleoplasm,Golgi apparatus
+A09_55225983,1000: Finished IF,Cell Junctions,
+B09_55225983,1000: Finished IF,Nucleoli,Nucleus;Mitochondria
+C09_55225983,1000: Finished IF,Nucleoli;Mitochondria,Nucleus;Cytosol
+D09_55225983,1000: Finished IF,Nucleoplasm,
+E09_55225983,1000: Finished IF,Nucleus,Nucleoli;Plasma membrane
+F09_55225983,1000: Finished IF,Cytosol,Plasma membrane
+G09_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+H09_55225983,1000: Finished IF,Intermediate filaments,Nucleoplasm
+A10_55225983,1000: Finished IF,Nucleoplasm,
+B10_55225983,1000: Finished IF,Nucleoplasm;Vesicles,
+C10_55225983,1000: Finished IF,Intermediate filaments,
+D10_55225983,1000: Finished IF,Nucleoplasm,Plasma membrane
+E10_55225983,1000: Finished IF,Nucleoli;Cytosol,Golgi apparatus
+F10_55225983,1000: Finished IF,Nucleoplasm;Plasma membrane,Cytosol
+G10_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+H10_55225983,1000: Finished IF,Mitochondria,
+A11_55225983,1000: Finished IF,Plasma membrane,Nucleoplasm;Cytosol
+B11_55225983,1000: Finished IF,Nucleus,Mitochondria
+C11_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+D11_55225983,1000: Finished IF,Mitochondria,
+E11_55225983,1000: Finished IF,Nucleus;Nucleoli,
+F11_55225983,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm;Centrosome
+G11_55225983,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+H11_55225983,1000: Finished IF,Plasma membrane;Cytosol,
+A12_55225983,1000: Finished IF,Nucleoplasm,Cytosol
+B12_55225983,1000: Finished IF,Golgi apparatus,
+C12_55225983,1000: Finished IF,Nucleus;Cytosol,Nucleoli
+D12_55225983,1000: Finished IF,Intermediate filaments,Cytosol
+E12_55225983,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+F12_55225983,1000: Finished IF,Nuclear speckles,Cell Junctions
+G12_55225983,1000: Finished IF,Nucleoli;Cytosol,Nucleus
+A01_55335984,1000: Finished IF,Nucleus;Nucleoli,
+B01_55335984,1000: Finished IF,Nuclear membrane,Nucleoli;Cytosol
+C01_55335984,1000: Finished IF,Nucleus,Nucleoli fibrillar center;Cytosol
+D01_55335984,1000: Finished IF,Nucleus,
+E01_55335984,1000: Finished IF,Golgi apparatus;Vesicles,
+F01_55335984,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+G01_55335984,1000: Finished IF,Nuclear speckles,Cytosol
+H01_55335984,1000: Finished IF,Mitochondria,
+A02_55335984,1000: Finished IF,Golgi apparatus,Nucleoli;Vesicles
+B02_55335984,1000: Finished IF,Nucleoli,
+C02_55335984,1000: Finished IF,Nucleoli,Nucleus
+D02_55335984,1000: Finished IF,Nuclear membrane,Nucleoplasm
+E02_55335984,1000: Finished IF,Nucleus,Cytosol
+F02_55335984,1000: Finished IF,Nucleoli,Nucleus
+G02_55335984,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+H02_55335984,1000: Finished IF,Nucleus,
+A03_55335984,1000: Finished IF,Golgi apparatus,
+B03_55335984,1000: Finished IF,Cytosol,
+C03_55335984,1000: Finished IF,Actin filaments,
+D03_55335984,1000: Finished IF,Golgi apparatus,
+E03_55335984,1000: Finished IF,Vesicles,Nucleoplasm
+F03_55335984,1000: Finished IF,Nuclear speckles,Cytosol;Cytoplasmic bodies
+G03_55335984,1000: Finished IF,Actin filaments,Microtubule organizing center
+H03_55335984,1000: Finished IF,Nucleoplasm,
+A04_55335984,1000: Finished IF,Nucleoplasm,Plasma membrane;Focal adhesion sites
+B04_55335984,1000: Finished IF,Mitochondria,Nucleoplasm
+C04_55335984,1000: Finished IF,Nucleoplasm,
+D04_55335984,1000: Finished IF,Cytosol,
+E04_55335984,1000: Finished IF,Microtubules,
+F04_55335984,1000: Finished IF,Cell Junctions,
+G04_55335984,1000: Finished IF,Plasma membrane;Cytosol,
+H04_55335984,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center
+A05_55335984,1000: Finished IF,Nucleoplasm,Cytosol
+B05_55335984,1000: Finished IF,Nucleus,Midbody
+C05_55335984,1000: Finished IF,Nucleoplasm,
+D05_55335984,1000: Finished IF,Nucleus;Nucleoli,
+E05_55335984,1000: Finished IF,Intermediate filaments,Cytosol
+F05_55335984,1000: Finished IF,Nucleoplasm,Microtubules;Cytosol
+G05_55335984,1000: Finished IF,Nucleoplasm,
+H05_55335984,1000: Finished IF,Nucleus,
+A06_55335984,1000: Finished IF,Cytosol,Microtubule organizing center
+B06_55335984,1000: Finished IF,Nucleus,Microtubule organizing center
+C06_55335984,1000: Finished IF,Mitochondria,
+D06_55335984,1000: Finished IF,Nuclear speckles,
+E06_55335984,1000: Finished IF,Nucleus,
+F06_55335984,1000: Finished IF,Nucleus,Cytosol
+G06_55335984,1000: Finished IF,Nucleoli;Endoplasmic reticulum,
+H06_55335984,1000: Finished IF,Nucleoplasm;Mitochondria,
+A07_55335984,1000: Finished IF,Vesicles;Cytosol,
+B07_55335984,1000: Finished IF,Vesicles,Cytosol
+C07_55335984,1000: Finished IF,Plasma membrane;Cytosol,
+D07_55335984,1000: Finished IF,Endoplasmic reticulum,
+E07_55335984,1000: Finished IF,Nucleoplasm,
+F07_55335984,1000: Finished IF,Nucleus,
+G07_55335984,1000: Finished IF,Nucleus;Mitochondria,Vesicles;Cell Junctions;Cytosol
+H07_55335984,1000: Finished IF,Golgi apparatus,Cytosol
+A08_55335984,1000: Finished IF,Nucleoplasm,
+B08_55335984,1000: Finished IF,Nucleoplasm,Nuclear membrane;Nucleoli
+C08_55335984,1000: Finished IF,Actin filaments,
+D08_55335984,1000: Finished IF,Vesicles;Intermediate filaments,
+E08_55335984,1000: Finished IF,Nuclear speckles,Nuclear membrane
+F08_55335984,1000: Finished IF,Nucleoli,Nucleus
+G08_55335984,1000: Finished IF,Mitochondria,
+H08_55335984,1000: Finished IF,Cytosol,
+A09_55335984,1000: Finished IF,Nucleoplasm;Golgi apparatus,Nuclear bodies
+B09_55335984,1000: Finished IF,Vesicles,
+C09_55335984,1000: Finished IF,Nucleus,Nucleoli
+D09_55335984,1000: Finished IF,Mitochondria,
+E09_55335984,1000: Finished IF,Nucleus,
+F09_55335984,1000: Finished IF,Nucleoplasm,Golgi apparatus
+G09_55335984,1000: Finished IF,Nucleoplasm;Cytosol,
+H09_55335984,1000: Finished IF,Nucleoli,
+A10_55335984,1000: Finished IF,Nucleus;Nucleoli,
+B10_55335984,1000: Finished IF,Nucleoli,Nucleus
+C10_55335984,1000: Finished IF,Vesicles,
+D10_55335984,1000: Finished IF,Nucleus,Mitochondria;Cytosol
+E10_55335984,1000: Finished IF,Nucleoplasm;Intermediate filaments,
+F10_55335984,1000: Finished IF,Plasma membrane,Nuclear speckles;Cytosol
+G10_55335984,1000: Finished IF,Endoplasmic reticulum,
+H10_55335984,1000: Finished IF,Nucleoplasm;Cytosol,
+A11_55335984,1000: Finished IF,Cytosol,Nucleoli
+B11_55335984,1000: Finished IF,Cytosol,
+C11_55335984,1000: Finished IF,Nucleoplasm,
+D11_55335984,1000: Finished IF,Mitochondria,
+E11_55335984,1000: Finished IF,Mitochondria,
+F11_55335984,1000: Finished IF,Cytosol,
+G11_55335984,1000: Finished IF,Nucleoplasm,Cytosol
+H11_55335984,1000: Finished IF,Golgi apparatus,Nucleoli;Vesicles;Cytosol
+A12_55335984,1000: Finished IF,Endoplasmic reticulum,
+B12_55335984,1000: Finished IF,Golgi apparatus;Plasma membrane,
+C12_55335984,1000: Finished IF,Nucleus,
+D12_55335984,1000: Finished IF,Nuclear speckles,Cytosol
+E12_55335984,1000: Finished IF,Mitochondria,
+F12_55335984,1000: Finished IF,Plasma membrane,
+G12_55335984,1000: Finished IF,Intermediate filaments;Cytosol,
+A01_55345985,1000: Finished IF,Golgi apparatus,
+B01_55345985,1000: Finished IF,Nucleoplasm,Vesicles
+C01_55345985,1000: Finished IF,Nuclear speckles,Microtubules;Cytosol
+D01_55345985,1000: Finished IF,Cytosol,
+E01_55345985,1000: Finished IF,Nucleoplasm,Cytosol
+F01_55345985,1000: Finished IF,Cytosol,
+G01_55345985,1000: Finished IF,Nuclear bodies,Cytosol
+H01_55345985,1000: Finished IF,Cytosol,Nucleoplasm
+A02_55345985,1000: Finished IF,Mitochondria,Nuclear bodies
+B02_55345985,1000: Finished IF,Nucleoli;Mitochondria,Nucleus
+C02_55345985,1000: Finished IF,Nucleoli,Nucleus
+D02_55345985,1000: Finished IF,Nucleoli,Nucleus;Nuclear bodies
+E02_55345985,1000: Finished IF,Vesicles;Plasma membrane;Cytosol,
+F02_55345985,1000: Finished IF,Cytosol,
+G02_55345985,1000: Finished IF,Nuclear speckles,Cytosol
+H02_55345985,1000: Finished IF,Actin filaments,Mitochondria;Cytosol
+A03_55345985,1000: Finished IF,Nuclear membrane,
+B03_55345985,1000: Finished IF,Nucleoplasm,
+C03_55345985,1000: Finished IF,Nucleoplasm,
+D03_55345985,1000: Finished IF,Nucleus,Nucleoli
+E03_55345985,1000: Finished IF,Vesicles,
+F03_55345985,1000: Finished IF,Nucleoli,
+G03_55345985,1000: Finished IF,Nucleus,
+H03_55345985,1000: Finished IF,Nucleoplasm,
+A04_55345985,1000: Finished IF,Nucleoplasm,Vesicles
+B04_55345985,1000: Finished IF,Plasma membrane,
+C04_55345985,1000: Finished IF,Nucleoplasm;Vesicles,
+D04_55345985,1000: Finished IF,Mitochondria,Nucleoplasm;Nuclear speckles
+E04_55345985,1000: Finished IF,Vesicles,Golgi apparatus
+F04_55345985,1000: Finished IF,Nucleus,
+G04_55345985,1000: Finished IF,Cytosol,Nucleoplasm
+H04_55345985,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+A05_55345985,1000: Finished IF,Nucleus;Nucleoli,
+B05_55345985,1000: Finished IF,Vesicles,
+C05_55345985,1000: Finished IF,Nucleoli;Mitochondria,
+D05_55345985,1000: Finished IF,Nucleoli;Nucleoli fibrillar center,Cytosol
+E05_55345985,1000: Finished IF,Nucleus;Nuclear bodies,
+F05_55345985,1000: Finished IF,Nucleoplasm,Nucleoli;Cell Junctions
+G05_55345985,1000: Finished IF,Nucleus,Nuclear membrane;Nucleoli
+H05_55345985,1000: Finished IF,Nucleus,Nucleoli
+A06_55345985,1000: Finished IF,Nucleoplasm,
+B06_55345985,1000: Finished IF,Nucleoplasm;Nuclear bodies,Cytosol
+C06_55345985,1000: Finished IF,Cytosol,
+D06_55345985,1000: Finished IF,Nucleoplasm;Cytosol,
+E06_55345985,1000: Finished IF,Mitochondria,
+F06_55345985,1000: Finished IF,Nucleoplasm,
+G06_55345985,1000: Finished IF,Nucleus;Nucleoli,
+H06_55345985,1000: Finished IF,Nuclear bodies,
+A07_55345985,1000: Finished IF,Nucleus;Vesicles,
+B07_55345985,1000: Finished IF,Vesicles,
+C07_55345985,1000: Finished IF,Nucleoli;Plasma membrane,Nucleus
+D07_55345985,1000: Finished IF,Vesicles,
+E07_55345985,1000: Finished IF,Nucleoli,Plasma membrane
+F07_55345985,1000: Finished IF,Nucleoplasm,
+G07_55345985,1000: Finished IF,Golgi apparatus,
+H07_55345985,1000: Finished IF,Nucleoplasm,
+A08_55345985,1000: Finished IF,Mitochondria,
+B08_55345985,1000: Finished IF,Plasma membrane,Focal adhesion sites
+C08_55345985,1000: Finished IF,Nucleoplasm,Mitochondria
+D08_55345985,1000: Finished IF,Nucleoplasm;Nuclear bodies;Mitochondria,
+E08_55345985,1000: Finished IF,Cytosol,Nucleoli
+F08_55345985,1000: Finished IF,Nucleoli,Vesicles
+G08_55345985,1000: Finished IF,Nucleoli fibrillar center,Nucleus;Intermediate filaments
+H08_55345985,1000: Finished IF,Nuclear membrane;Cytosol,
+A09_55345985,1000: Finished IF,Nucleoplasm,
+B09_55345985,1000: Finished IF,Nucleus,Mitochondria
+C09_55345985,1000: Finished IF,Nucleoli,Nucleus
+D09_55345985,1000: Finished IF,Nucleoplasm,Nucleoli
+E09_55345985,1000: Finished IF,Nucleoplasm;Vesicles,
+F09_55345985,1000: Finished IF,Cytosol,
+G09_55345985,1000: Finished IF,Intermediate filaments,
+H09_55345985,1000: Finished IF,Microtubule organizing center,Nucleoplasm
+A10_55345985,1000: Finished IF,Nucleoplasm,Golgi apparatus;Cytosol
+B10_55345985,1000: Finished IF,Cytosol,
+C10_55345985,1000: Finished IF,Nuclear membrane;Intermediate filaments,Aggresome
+D10_55345985,1000: Finished IF,Nucleoplasm;Midbody,Cytosol
+E10_55345985,1000: Finished IF,Nucleoplasm,Vesicles
+F10_55345985,1000: Finished IF,Nuclear speckles,Cytosol
+G10_55345985,1000: Finished IF,Nuclear membrane,Nucleoplasm;Cytosol
+H10_55345985,1000: Finished IF,Vesicles;Cytokinetic bridge,
+A11_55345985,1000: Finished IF,Endoplasmic reticulum;Vesicles,
+B11_55345985,1000: Finished IF,Centrosome,Nucleoplasm;Plasma membrane;Cytosol
+C11_55345985,1000: Finished IF,Nucleoplasm,
+D11_55345985,1000: Finished IF,Golgi apparatus,
+E11_55345985,1000: Finished IF,Nucleoplasm,
+F11_55345985,1000: Finished IF,Nucleus,Nucleoli;Nuclear bodies;Cytosol
+G11_55345985,1000: Finished IF,Nucleoplasm,
+H11_55345985,1000: Finished IF,Actin filaments,
+A12_55345985,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane
+B12_55345985,1000: Finished IF,Golgi apparatus,
+C12_55345985,1000: Finished IF,Golgi apparatus,Nucleus;Nucleoli
+D12_55345985,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+E12_55345985,1000: Finished IF,Nucleoplasm,Golgi apparatus
+F12_55345985,1000: Finished IF,Nuclear speckles,Mitochondria
+G12_55345985,1000: Finished IF,Golgi apparatus;Cytosol,
+A01_55355986,1000: Finished IF,Cytosol,Nucleus
+B01_55355986,1000: Finished IF,Nucleoplasm,
+C01_55355986,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+D01_55355986,1000: Finished IF,Nuclear speckles,Intermediate filaments
+E01_55355986,1000: Finished IF,Nucleus;Nuclear membrane;Nucleoli;Mitochondria,
+F01_55355986,1000: Finished IF,Vesicles;Cytosol,
+G01_55355986,1000: Finished IF,Focal adhesion sites,Cytosol
+H01_55355986,1000: Finished IF,Nucleoplasm;Cytosol,Golgi apparatus
+A02_55355986,1000: Finished IF,Nucleoplasm,
+B02_55355986,1000: Finished IF,Golgi apparatus,
+C02_55355986,1000: Finished IF,Nuclear bodies,
+D02_55355986,1000: Finished IF,Nucleoplasm,Golgi apparatus;Actin filaments
+E02_55355986,1000: Finished IF,Cytosol,Intermediate filaments
+F02_55355986,1000: Finished IF,Nucleoplasm,Golgi apparatus
+G02_55355986,1000: Finished IF,Nucleoplasm;Cytoplasmic bodies,Aggresome;Cytosol
+H02_55355986,1000: Finished IF,Nucleus,
+A03_55355986,1000: Finished IF,Mitochondria,
+B03_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+C03_55355986,1000: Finished IF,Plasma membrane;Cell Junctions,Cytosol
+D03_55355986,1000: Finished IF,Nucleoplasm,Nuclear speckles
+E03_55355986,1000: Finished IF,Nuclear membrane,
+F03_55355986,1000: Finished IF,Nucleoli,Cytokinetic bridge
+G03_55355986,1000: Finished IF,Microtubule organizing center,Vesicles
+H03_55355986,1000: Finished IF,Nucleus,Nucleoli
+A04_55355986,1000: Finished IF,Nucleus;Vesicles,Cytosol
+B04_55355986,1000: Finished IF,Nucleus,
+C04_55355986,1000: Finished IF,Cytoplasmic bodies,Plasma membrane;Actin filaments
+D04_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+E04_55355986,1000: Finished IF,Nucleoplasm,Nuclear bodies
+F04_55355986,1000: Finished IF,Mitochondria,Nucleoli;Intermediate filaments
+G04_55355986,1000: Finished IF,Cytosol,
+H04_55355986,1000: Finished IF,Cytosol,
+A05_55355986,1000: Finished IF,Nucleoli fibrillar center,Nucleus
+B05_55355986,1000: Finished IF,Endoplasmic reticulum,
+C05_55355986,1000: Finished IF,Nucleoplasm,
+D05_55355986,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+E05_55355986,1000: Finished IF,Nucleoli,Vesicles;Cytosol
+F05_55355986,1000: Finished IF,Nucleus;Nucleoli,
+G05_55355986,1000: Finished IF,Nucleoplasm,Nuclear speckles;Mitochondria
+H05_55355986,1000: Finished IF,Nucleus,Nucleoli;Nuclear bodies
+A06_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+B06_55355986,1000: Finished IF,Nucleus;Nucleoli,Vesicles
+C06_55355986,1000: Finished IF,Nuclear speckles,Nucleoplasm;Nuclear bodies
+D06_55355986,1000: Finished IF,Nuclear speckles,
+E06_55355986,1000: Finished IF,Mitochondria,
+F06_55355986,1000: Finished IF,Nucleus;Nucleoli,Golgi apparatus
+G06_55355986,1000: Finished IF,Golgi apparatus,Cytosol
+H06_55355986,1000: Finished IF,Nucleus,Nucleoli fibrillar center
+A07_55355986,1000: Finished IF,Cytosol,
+B07_55355986,1000: Finished IF,Nucleus,Cytosol
+C07_55355986,1000: Finished IF,Nuclear bodies,
+D07_55355986,1000: Finished IF,Mitochondria,
+E07_55355986,1000: Finished IF,Nucleoli,Nucleus
+F07_55355986,1000: Finished IF,Plasma membrane;Actin filaments,Nucleoli
+G07_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+H07_55355986,1000: Finished IF,Nucleus;Nucleoli,
+A08_55355986,1000: Finished IF,Nucleus;Cytosol,
+B08_55355986,1000: Finished IF,Golgi apparatus,Nucleoplasm
+C08_55355986,1000: Finished IF,Nucleus;Nucleoli fibrillar center,Microtubules;Cytokinetic bridge
+D08_55355986,1000: Finished IF,Mitochondria,Nucleus
+E08_55355986,1000: Finished IF,Nucleoli,Vesicles
+F08_55355986,1000: Finished IF,Vesicles,Nucleoplasm;Cytosol
+G08_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+H08_55355986,1000: Finished IF,Nucleoli;Nucleoli fibrillar center,Nucleus
+A09_55355986,1000: Finished IF,Cytosol,
+B09_55355986,1000: Finished IF,Plasma membrane,Cell Junctions;Focal adhesion sites
+C09_55355986,1000: Finished IF,Mitochondria,
+D09_55355986,1000: Finished IF,Nucleoplasm,Golgi apparatus
+E09_55355986,1000: Finished IF,Vesicles,
+F09_55355986,1000: Finished IF,Vesicles,
+G09_55355986,1000: Finished IF,Mitochondria,Nucleoplasm
+H09_55355986,1000: Finished IF,Vesicles,
+A10_55355986,1000: Finished IF,Nuclear bodies,Nucleus;Cytosol
+B10_55355986,1000: Finished IF,Nuclear bodies,Nucleoplasm;Golgi apparatus;Cytosol
+C10_55355986,1000: Finished IF,Nucleoplasm,
+D10_55355986,1000: Finished IF,Nuclear bodies,Nucleus;Vesicles
+E10_55355986,1000: Finished IF,Cytosol,Nucleus
+F10_55355986,1000: Finished IF,Nucleoli,Nucleus
+G10_55355986,1000: Finished IF,Golgi apparatus;Cytosol,
+H10_55355986,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+A11_55355986,1000: Finished IF,Cytosol,
+B11_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+C11_55355986,1000: Finished IF,Nucleus,Nucleoli
+D11_55355986,1000: Finished IF,Nucleoplasm,Vesicles
+E11_55355986,1000: Finished IF,Cytosol,Aggresome
+F11_55355986,1000: Finished IF,Plasma membrane,Nucleoplasm
+G11_55355986,1000: Finished IF,Nucleoli,Cytosol
+H11_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+A12_55355986,1000: Finished IF,Vesicles,
+B12_55355986,1000: Finished IF,Nucleoplasm,Nucleoli;Cytosol
+C12_55355986,1000: Finished IF,Nucleus,Cytosol
+D12_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+E12_55355986,1000: Finished IF,Nucleoli,Cytosol
+F12_55355986,1000: Finished IF,Nuclear bodies,
+G12_55355986,1000: Finished IF,Nucleoplasm,Cytosol
+A01_55365987,1000: Finished IF,Cytosol,
+B01_55365987,1000: Finished IF,Nucleoplasm,
+C01_55365987,1000: Finished IF,Focal adhesion sites;Cytosol,Plasma membrane
+D01_55365987,1000: Finished IF,Vesicles,Cytosol
+E01_55365987,1000: Finished IF,Cytosol,Nuclear bodies;Centrosome
+F01_55365987,1000: Finished IF,Nuclear bodies,Nucleoplasm
+G01_55365987,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+H01_55365987,1000: Finished IF,Nucleoplasm,Vesicles
+A02_55365987,1000: Finished IF,Nucleoplasm,
+B02_55365987,1000: Finished IF,Nucleus,Mitochondria
+C02_55365987,1000: Finished IF,Cytosol,
+D02_55365987,1000: Finished IF,Nucleoplasm,
+E02_55365987,1000: Finished IF,Nucleoplasm,
+F02_55365987,1000: Finished IF,Vesicles,
+G02_55365987,1000: Finished IF,Nucleus;Cytosol,Vesicles
+H02_55365987,1000: Finished IF,Golgi apparatus,Cytosol
+A03_55365987,1000: Finished IF,Nucleoli,Nucleus
+B03_55365987,1000: Finished IF,Nucleoli,Nucleus
+C03_55365987,1000: Finished IF,Vesicles;Intermediate filaments,Cytosol
+D03_55365987,1000: Finished IF,Nuclear bodies,Golgi apparatus;Vesicles
+E03_55365987,1000: Finished IF,Nucleoplasm,Plasma membrane;Microtubule organizing center
+F03_55365987,1000: Finished IF,Nucleoplasm,
+G03_55365987,1000: Finished IF,Mitochondria,
+H03_55365987,1000: Finished IF,Nucleoplasm,
+A04_55365987,1000: Finished IF,Nucleus,Cytosol
+B04_55365987,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+C04_55365987,1000: Finished IF,Intermediate filaments,Nucleoplasm
+D04_55365987,1000: Finished IF,Nucleoplasm;Vesicles,
+E04_55365987,1000: Finished IF,Nucleoplasm,
+F04_55365987,1000: Finished IF,Nucleoplasm,Cytosol
+G04_55365987,1000: Finished IF,Intermediate filaments,
+H04_55365987,1000: Finished IF,Nucleus,
+A05_55365987,1000: Finished IF,Mitochondria,Cytosol
+B05_55365987,1000: Finished IF,Vesicles,
+C05_55365987,1000: Finished IF,Cytosol,
+D05_55365987,1000: Finished IF,Golgi apparatus,
+E05_55365987,1000: Finished IF,Mitochondria,Nuclear bodies
+F05_55365987,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+G05_55365987,1000: Finished IF,Microtubules,Vesicles
+H05_55365987,1000: Finished IF,Actin filaments,
+A06_55365987,1000: Finished IF,Microtubules,Nucleoli
+B06_55365987,1000: Finished IF,Nucleoplasm,
+C06_55365987,1000: Finished IF,Nuclear bodies,Nucleoplasm
+D06_55365987,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+E06_55365987,1000: Finished IF,Nucleoplasm;Mitochondria,
+F06_55365987,1000: Finished IF,Cytosol,
+G06_55365987,1000: Finished IF,Nucleus,Cytokinetic bridge
+H06_55365987,1000: Finished IF,Nuclear bodies,
+A07_55365987,1000: Finished IF,Nucleoli,Nucleus
+B07_55365987,1000: Finished IF,Cytosol,
+C07_55365987,1000: Finished IF,Nucleoplasm,Cytosol
+D07_55365987,1000: Finished IF,Cytosol,
+E07_55365987,1000: Finished IF,Nucleoplasm,
+F07_55365987,1000: Finished IF,Nucleoplasm,
+G07_55365987,1000: Finished IF,Nucleoli fibrillar center,Nucleus;Microtubules
+H07_55365987,1000: Finished IF,Nucleus;Nuclear membrane,
+A08_55365987,1000: Finished IF,Vesicles,
+B08_55365987,1000: Finished IF,Golgi apparatus,
+C08_55365987,1000: Finished IF,Cytosol,Plasma membrane
+D08_55365987,1000: Finished IF,Nucleus,Cytosol
+E08_55365987,1000: Finished IF,Nuclear bodies,
+F08_55365987,1000: Finished IF,Nucleoplasm,
+G08_55365987,1000: Finished IF,Nucleoplasm,Cytosol
+H08_55365987,1000: Finished IF,Nucleoplasm,
+A09_55365987,1000: Finished IF,Nucleoplasm,
+B09_55365987,1000: Finished IF,Nucleus,Mitochondria;Rods & Rings
+C09_55365987,1000: Finished IF,Nucleoplasm,
+D09_55365987,1000: Finished IF,Nucleoplasm,
+E09_55365987,1000: Finished IF,Mitochondria,Nucleoplasm
+F09_55365987,1000: Finished IF,Nuclear speckles,Vesicles
+G09_55365987,1000: Finished IF,Nucleus;Nucleoli;Nuclear bodies,
+H09_55365987,1000: Finished IF,Mitochondria,Nucleus
+A10_55365987,1000: Finished IF,Vesicles,
+B10_55365987,1000: Finished IF,Nucleus;Cytosol,Mitochondria
+C10_55365987,1000: Finished IF,Intermediate filaments,
+D10_55365987,1000: Finished IF,Nucleoli,Cytosol
+E10_55365987,1000: Finished IF,Nucleoplasm,Cytosol
+F10_55365987,1000: Finished IF,Plasma membrane;Cytosol,Cytoplasmic bodies
+G10_55365987,1000: Finished IF,Mitochondria,
+H10_55365987,1000: Finished IF,Nucleoplasm;Nuclear membrane,
+A11_55365987,1000: Finished IF,Mitochondria,Nucleoplasm
+B11_55365987,1000: Finished IF,Nucleoli,
+C11_55365987,1000: Finished IF,Nucleoli,
+D11_55365987,1000: Finished IF,Cytosol,
+E11_55365987,1000: Finished IF,Nucleoli;Golgi apparatus;Cytosol,Nucleoplasm;Nuclear bodies
+F11_55365987,1000: Finished IF,Midbody ring,Intermediate filaments;Centrosome
+G11_55365987,1000: Finished IF,Nucleoplasm,Nuclear bodies;Focal adhesion sites;Cytosol
+H11_55365987,1000: Finished IF,Endoplasmic reticulum,
+A12_55365987,1000: Finished IF,Nucleoli;Golgi apparatus,
+B12_55365987,1000: Finished IF,Nucleus,Cytosol
+C12_55365987,1000: Finished IF,Nucleoplasm,
+D12_55365987,1000: Finished IF,Nucleoplasm;Vesicles,Plasma membrane
+E12_55365987,1000: Finished IF,Nucleus,Vesicles
+F12_55365987,1000: Finished IF,Nucleus;Microtubules,
+G12_55365987,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+A01_55375988,1000: Finished IF,Vesicles;Cytosol,
+B01_55375988,1000: Finished IF,Nucleoplasm,Endoplasmic reticulum;Vesicles
+C01_55375988,1000: Finished IF,Nucleus,Cytosol
+D01_55375988,1000: Finished IF,Golgi apparatus,Vesicles
+E01_55375988,1000: Finished IF,Nucleoplasm,Cytosol
+F01_55375988,1000: Finished IF,Cytosol,
+G01_55375988,1000: Finished IF,Nucleus;Vesicles,
+H01_55375988,1000: Finished IF,Nucleus;Golgi apparatus,Cytosol
+A02_55375988,1000: Finished IF,Nucleus,
+B02_55375988,1000: Finished IF,Nucleus;Nucleoli,Plasma membrane;Cytosol
+C02_55375988,1000: Finished IF,Endoplasmic reticulum;Cytosol,Nucleoli
+D02_55375988,1000: Finished IF,Nucleoplasm,Nuclear bodies;Intermediate filaments
+E02_55375988,1000: Finished IF,Nucleus;Nucleoli,
+F02_55375988,1000: Finished IF,Golgi apparatus,
+G02_55375988,1000: Finished IF,Mitochondria,
+H02_55375988,1000: Finished IF,Nucleoplasm,
+A03_55375988,1000: Finished IF,Nucleus,
+B03_55375988,1000: Finished IF,Nucleoplasm;Centrosome,
+C03_55375988,1000: Finished IF,Cytosol,
+D03_55375988,1000: Finished IF,Nucleus,
+E03_55375988,1000: Finished IF,Nucleoplasm,Intermediate filaments
+F03_55375988,1000: Finished IF,Cytosol,
+G03_55375988,1000: Finished IF,Nucleoplasm,
+H03_55375988,1000: Finished IF,Nucleus,Golgi apparatus;Cytosol
+A04_55375988,1000: Finished IF,Nuclear bodies,Nucleoli;Cytosol
+B04_55375988,1000: Finished IF,Nucleus;Nucleoli,
+C04_55375988,1000: Finished IF,Nucleus;Nucleoli,Golgi apparatus
+D04_55375988,1000: Finished IF,Mitochondria,Cytosol
+E04_55375988,1000: Finished IF,Nucleus,Plasma membrane;Cytosol
+F04_55375988,1000: Finished IF,Nucleus,
+G04_55375988,1000: Finished IF,Nucleus;Cytosol,
+H04_55375988,1000: Finished IF,Nucleoplasm;Cytosol,
+A05_55375988,1000: Finished IF,Nucleus,Golgi apparatus;Centrosome;Cytosol
+B05_55375988,1000: Finished IF,Nucleus,Nucleoli
+C05_55375988,1000: Finished IF,Nucleoplasm,
+D05_55375988,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+E05_55375988,1000: Finished IF,Nucleoplasm,
+F05_55375988,1000: Finished IF,Microtubules,Nucleus;Cytosol
+G05_55375988,1000: Finished IF,Vesicles,
+H05_55375988,1000: Finished IF,Nucleus;Mitochondria,
+A06_55375988,1000: Finished IF,Nucleoli,Nucleus
+B06_55375988,1000: Finished IF,Cytosol,Plasma membrane
+C06_55375988,1000: Finished IF,Nucleoplasm,
+D06_55375988,1000: Finished IF,Nucleus;Nucleoli,
+E06_55375988,1000: Finished IF,Mitochondria,
+F06_55375988,1000: Finished IF,Nucleus,
+G06_55375988,1000: Finished IF,Golgi apparatus,
+H06_55375988,1000: Finished IF,Nucleus,
+A07_55375988,1000: Finished IF,Nucleoplasm,
+B07_55375988,1000: Finished IF,Plasma membrane,Aggresome
+C07_55375988,1000: Finished IF,Mitochondria,
+D07_55375988,1000: Finished IF,Vesicles,
+E07_55375988,1000: Finished IF,Nucleus,Cytosol
+F07_55375988,1000: Finished IF,Mitochondria,
+G07_55375988,1000: Finished IF,Nucleoplasm,
+H07_55375988,1000: Finished IF,Nucleus,
+A08_55375988,1000: Finished IF,Golgi apparatus,
+B08_55375988,1000: Finished IF,Nucleoplasm;Cytosol,
+C08_55375988,1000: Finished IF,Cytosol,
+D08_55375988,1000: Finished IF,Nucleus;Nucleoli,
+E08_55375988,1000: Finished IF,Nucleoplasm,
+F08_55375988,1000: Finished IF,Nucleus;Cytosol,
+G08_55375988,1000: Finished IF,Plasma membrane;Cytosol,Nuclear membrane;Vesicles
+H08_55375988,1000: Finished IF,Nuclear speckles,Cytosol
+A09_55375988,1000: Finished IF,Cytosol,Nucleus
+B09_55375988,1000: Finished IF,Focal adhesion sites,Nuclear speckles;Cytosol
+C09_55375988,1000: Finished IF,Vesicles;Cytosol,
+D09_55375988,1000: Finished IF,Vesicles,Nucleus
+E09_55375988,1000: Finished IF,Nucleoplasm,
+F09_55375988,1000: Finished IF,Nucleus,
+G09_55375988,1000: Finished IF,Nucleoplasm;Nuclear bodies,Vesicles
+H09_55375988,1000: Finished IF,Golgi apparatus,Nucleoli
+A10_55375988,1000: Finished IF,Nucleus;Nuclear bodies,
+B10_55375988,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+C10_55375988,1000: Finished IF,Nucleoplasm,Golgi apparatus
+D10_55375988,1000: Finished IF,Nucleus;Nucleoli;Nuclear bodies,Cytosol
+E10_55375988,1000: Finished IF,Nucleoplasm,
+F10_55375988,1000: Finished IF,Nucleus,Cytokinetic bridge
+G10_55375988,1000: Finished IF,Nucleus,Cytosol
+H10_55375988,1000: Finished IF,Nucleoplasm;Mitochondria,
+A11_55375988,1000: Finished IF,Nucleus;Midbody,
+B11_55375988,1000: Finished IF,Vesicles,Nuclear bodies
+C11_55375988,1000: Finished IF,Nucleus,
+D11_55375988,1000: Finished IF,Nucleoplasm;Centrosome,Cytosol
+E11_55375988,1000: Finished IF,Actin filaments,
+F11_55375988,1000: Finished IF,Mitochondria,
+G11_55375988,1000: Finished IF,Nucleus,Nucleoli
+H11_55375988,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+A12_55375988,1000: Finished IF,Vesicles,Nucleus
+B12_55375988,1000: Finished IF,Nucleus;Cytosol,Nucleoli
+C12_55375988,1000: Finished IF,Nucleus,
+D12_55375988,1000: Finished IF,Nucleoplasm,
+E12_55375988,1000: Finished IF,Midbody;Mitotic spindle,Nucleus
+F12_55375988,1000: Finished IF,Nucleoli,Vesicles;Mitochondria
+G12_55375988,1000: Finished IF,Lipid droplets,Nucleoplasm
+A01_55385989,1000: Finished IF,Vesicles,
+B01_55385989,1000: Finished IF,Cytosol,
+C01_55385989,1000: Finished IF,Golgi apparatus,Nucleus;Nuclear speckles
+D01_55385989,1000: Finished IF,Nucleus,Nucleoli
+E01_55385989,1000: Finished IF,Mitochondria,
+F01_55385989,1000: Finished IF,Mitochondria,
+G01_55385989,1000: Finished IF,Nucleus,
+H01_55385989,1000: Finished IF,Nucleus,
+A02_55385989,1000: Finished IF,Nucleoplasm,
+B02_55385989,1000: Finished IF,Nucleus,Golgi apparatus;Vesicles
+C02_55385989,1000: Finished IF,Nucleoplasm,
+D02_55385989,1000: Finished IF,Cytosol,Nuclear bodies
+E02_55385989,1000: Finished IF,Nucleus,
+F02_55385989,1000: Finished IF,Centrosome,Nucleoplasm
+G02_55385989,1000: Finished IF,Mitochondria,Nucleoplasm
+H02_55385989,1000: Finished IF,Nucleoplasm,Cell Junctions
+A03_55385989,1000: Finished IF,Centrosome,
+B03_55385989,1000: Finished IF,Nucleoplasm,
+C03_55385989,1000: Finished IF,Endoplasmic reticulum,
+D03_55385989,1000: Finished IF,Mitochondria,
+E03_55385989,1000: Finished IF,Nucleus,
+F03_55385989,1000: Finished IF,Nuclear bodies,Nucleoplasm;Aggresome
+G03_55385989,1000: Finished IF,Nucleoplasm,Cytosol
+H03_55385989,1000: Finished IF,Nucleus,Nucleoli
+A04_55385989,1000: Finished IF,Centrosome,
+B04_55385989,1000: Finished IF,Nucleus,Nuclear membrane
+C04_55385989,1000: Finished IF,Nucleus,Nucleoli;Nuclear bodies;Cytosol
+D04_55385989,1000: Finished IF,Plasma membrane;Cytosol,
+E04_55385989,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+F04_55385989,1000: Finished IF,Nucleus;Nuclear membrane,
+G04_55385989,1000: Finished IF,Nucleoplasm,
+H04_55385989,1000: Finished IF,Golgi apparatus,Vesicles
+A05_55385989,1000: Finished IF,Nucleoplasm,Cytosol
+B05_55385989,1000: Finished IF,Vesicles;Cytosol,
+C05_55385989,1000: Finished IF,Mitochondria,
+D05_55385989,1000: Finished IF,Nucleoplasm,Nucleoli;Midbody
+E05_55385989,1000: Finished IF,Endoplasmic reticulum;Cytosol,
+F05_55385989,1000: Finished IF,Nucleoplasm,
+G05_55385989,1000: Finished IF,Golgi apparatus;Vesicles,Nucleoplasm
+H05_55385989,1000: Finished IF,Intermediate filaments,
+A06_55385989,1000: Finished IF,Nucleoplasm,
+B06_55385989,1000: Finished IF,Microtubules,Nucleoplasm;Cytokinetic bridge
+C06_55385989,1000: Finished IF,Nucleoplasm,Nuclear bodies
+D06_55385989,1000: Finished IF,Cytosol,Vesicles
+E06_55385989,1000: Finished IF,Plasma membrane;Actin filaments;Focal adhesion sites,
+F06_55385989,1000: Finished IF,Nucleoli;Cytosol,Nucleus
+G06_55385989,1000: Finished IF,Vesicles,Cytosol
+H06_55385989,1000: Finished IF,Cytosol,
+A07_55385989,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+B07_55385989,1000: Finished IF,Vesicles;Mitochondria,
+C07_55385989,1000: Finished IF,Vesicles,Mitochondria
+D07_55385989,1000: Finished IF,Nucleoli,Cytosol
+E07_55385989,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+F07_55385989,1000: Finished IF,Nucleus,Nucleoli
+G07_55385989,1000: Finished IF,Nucleoplasm,
+H07_55385989,1000: Finished IF,Nucleus,
+A08_55385989,1000: Finished IF,Nucleoplasm,
+B08_55385989,1000: Finished IF,Nucleus,Nucleoli;Nucleoli fibrillar center
+C08_55385989,1000: Finished IF,Vesicles,
+D08_55385989,1000: Finished IF,Nucleus,
+E08_55385989,1000: Finished IF,Nuclear speckles,Cytosol
+F08_55385989,1000: Finished IF,Nucleoplasm,Nuclear speckles;Cytosol
+G08_55385989,1000: Finished IF,Nucleus;Nuclear membrane;Vesicles,
+H08_55385989,1000: Finished IF,Nucleus,Nucleoli
+A09_55385989,1000: Finished IF,Nucleus,
+B09_55385989,1000: Finished IF,Nucleoplasm,Vesicles
+C09_55385989,1000: Finished IF,Mitochondria,
+D09_55385989,1000: Finished IF,Nucleoplasm,Cytosol;Cytoplasmic bodies
+E09_55385989,1000: Finished IF,Actin filaments;Cytosol,
+F09_55385989,1000: Finished IF,Mitochondria,
+G09_55385989,1000: Finished IF,Mitochondria,
+H09_55385989,1000: Finished IF,Nucleoplasm,Mitochondria
+A10_55385989,1000: Finished IF,Cytosol,
+B10_55385989,1000: Finished IF,Nucleoplasm,
+C10_55385989,1000: Finished IF,Lipid droplets;Mitochondria,Nucleoplasm
+D10_55385989,1000: Finished IF,Nuclear membrane,Nucleus
+E10_55385989,1000: Finished IF,Cytosol,
+F10_55385989,1000: Finished IF,Nucleus,Nuclear membrane
+G10_55385989,1000: Finished IF,Intermediate filaments,
+H10_55385989,1000: Finished IF,Golgi apparatus,
+A11_55385989,1000: Finished IF,Nucleoplasm,Centrosome
+B11_55385989,1000: Finished IF,Cytosol,
+C11_55385989,1000: Finished IF,Nuclear speckles,
+D11_55385989,1000: Finished IF,Mitochondria,
+E11_55385989,1000: Finished IF,Nucleoplasm,Midbody
+F11_55385989,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+G11_55385989,1000: Finished IF,Nucleoplasm,Plasma membrane
+H11_55385989,1000: Finished IF,Nuclear bodies,
+A12_55385989,1000: Finished IF,Mitochondria,Nucleus;Cytokinetic bridge
+B12_55385989,1000: Finished IF,Nucleoplasm;Golgi apparatus,Vesicles
+C12_55385989,1000: Finished IF,Intermediate filaments,
+D12_55385989,1000: Finished IF,Golgi apparatus,Nucleus;Cell Junctions
+E12_55385989,1000: Finished IF,Endoplasmic reticulum,
+F12_55385989,1000: Finished IF,Nucleoplasm,Nuclear membrane;Nucleoli
+G12_55385989,1000: Finished IF,Nucleoplasm,
+A01_55395990,1000: Finished IF,Nucleus;Mitochondria,
+B01_55395990,1000: Finished IF,Nucleus,Nucleoli
+C01_55395990,1000: Finished IF,Nucleoplasm,
+D01_55395990,1000: Finished IF,Vesicles,
+E01_55395990,1000: Finished IF,Nuclear bodies,
+F01_55395990,1000: Finished IF,Nuclear speckles,Cytosol
+G01_55395990,1000: Finished IF,Nucleoplasm,
+H01_55395990,1000: Finished IF,Cytosol,Nucleus
+A02_55395990,1000: Finished IF,Vesicles,
+B02_55395990,1000: Finished IF,Nucleus;Nucleoli,Plasma membrane
+C02_55395990,1000: Finished IF,Nucleoplasm,
+D02_55395990,1000: Finished IF,Nucleus,
+E02_55395990,1000: Finished IF,Nucleoli,
+F02_55395990,1000: Finished IF,Nucleoplasm,Nucleoli
+G02_55395990,1000: Finished IF,Nucleoplasm,
+H02_55395990,1000: Finished IF,Nucleoplasm;Cytosol,
+A03_55395990,1000: Finished IF,Vesicles,Nucleoplasm;Cytosol
+B03_55395990,1000: Finished IF,Nucleoli,
+C03_55395990,1000: Finished IF,Nucleoplasm,
+D03_55395990,1000: Finished IF,Nucleoplasm;Golgi apparatus;Cytosol,
+E03_55395990,1000: Finished IF,Cell Junctions,Microtubule organizing center;Centrosome;Cytosol
+F03_55395990,1000: Finished IF,Nucleus;Vesicles,Cytosol
+G03_55395990,1000: Finished IF,Vesicles,Nucleus;Cytosol
+H03_55395990,1000: Finished IF,Golgi apparatus,Nucleoplasm
+A04_55395990,1000: Finished IF,Nucleus,Nucleoli
+B04_55395990,1000: Finished IF,Nucleoplasm,Nuclear membrane;Vesicles
+C04_55395990,1000: Finished IF,Nucleus,Mitochondria
+D04_55395990,1000: Finished IF,Plasma membrane,Nucleus
+E04_55395990,1000: Finished IF,Nucleus,Nucleoli;Nucleoli fibrillar center;Vesicles;Cytosol
+F04_55395990,1000: Finished IF,Nucleus;Nucleoli,
+G04_55395990,1000: Finished IF,Nucleus,Microtubule organizing center
+H04_55395990,1000: Finished IF,Vesicles,
+A05_55395990,1000: Finished IF,Nucleus,
+B05_55395990,1000: Finished IF,Nucleus,
+C05_55395990,1000: Finished IF,Nucleoli;Microtubules,
+D05_55395990,1000: Finished IF,Nucleoplasm;Mitochondria,
+E05_55395990,1000: Finished IF,Nucleus,Nucleoli
+F05_55395990,1000: Finished IF,Plasma membrane;Actin filaments,
+G05_55395990,1000: Finished IF,Golgi apparatus;Cytosol,
+H05_55395990,1000: Finished IF,Nucleoplasm,Endoplasmic reticulum;Plasma membrane;Cytosol
+A06_55395990,1000: Finished IF,Vesicles,Nucleus
+B06_55395990,1000: Finished IF,Nucleoli,Nucleus;Nuclear bodies
+C06_55395990,1000: Finished IF,Nuclear bodies,Nucleus;Midbody;Cytosol
+D06_55395990,1000: Finished IF,Nucleoplasm,Cytosol
+E06_55395990,1000: Finished IF,Cytosol,Plasma membrane
+F06_55395990,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+G06_55395990,1000: Finished IF,Nucleus,Nucleoli;Aggresome
+H06_55395990,1000: Finished IF,Vesicles,
+A07_55395990,1000: Finished IF,Nucleoplasm,
+B07_55395990,1000: Finished IF,Plasma membrane;Actin filaments,Nuclear bodies
+C07_55395990,1000: Finished IF,Vesicles;Cytosol,
+D07_55395990,1000: Finished IF,Plasma membrane,
+E07_55395990,1000: Finished IF,Plasma membrane,Nucleus
+F07_55395990,1000: Finished IF,Nucleus,
+G07_55395990,1000: Finished IF,Mitochondria,Nucleoplasm
+H07_55395990,1000: Finished IF,Nucleus,
+A08_55395990,1000: Finished IF,Mitochondria,Nucleus
+B08_55395990,1000: Finished IF,Nucleus,Nucleoli
+C08_55395990,1000: Finished IF,Nucleus,Nucleoli fibrillar center;Vesicles
+D08_55395990,1000: Finished IF,Nucleus;Vesicles,Plasma membrane
+E08_55395990,1000: Finished IF,Nucleus;Nucleoli,
+F08_55395990,1000: Finished IF,Nucleoplasm;Mitochondria,
+G08_55395990,1000: Finished IF,Nucleus;Nucleoli,
+H08_55395990,1000: Finished IF,Nucleoplasm,Cytosol
+A09_55395990,1000: Finished IF,Nucleoplasm,Cytosol
+B09_55395990,1000: Finished IF,Nucleus,
+C09_55395990,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+D09_55395990,1000: Finished IF,Cytosol,
+E09_55395990,1000: Finished IF,Nucleus,Nucleoli;Cytosol
+F09_55395990,1000: Finished IF,Nucleoplasm,Vesicles;Cytosol
+G09_55395990,1000: Finished IF,Nucleus;Nucleoli,
+H09_55395990,1000: Finished IF,Nucleus,Nucleoli
+A10_55395990,1000: Finished IF,Nucleoplasm,Mitochondria
+B10_55395990,1000: Finished IF,Nucleoplasm,Nucleoli
+C10_55395990,1000: Finished IF,Nucleus;Vesicles,Nucleoli
+D10_55395990,1000: Finished IF,Nucleoli,Mitochondria
+E10_55395990,1000: Finished IF,Nucleus,Nucleoli
+F10_55395990,1000: Finished IF,Nucleoplasm,Cytosol
+G10_55395990,1000: Finished IF,Nucleus,Nucleoli fibrillar center
+H10_55395990,1000: Finished IF,Cytoplasmic bodies,
+A11_55395990,1000: Finished IF,Nucleus,
+B11_55395990,1000: Finished IF,Nucleus,
+C11_55395990,1000: Finished IF,Nucleus,Nuclear bodies
+D11_55395990,1000: Finished IF,Nuclear bodies,Nucleus;Cytosol
+E11_55395990,1000: Finished IF,Nucleoli,
+F11_55395990,1000: Finished IF,Nucleoplasm,Nuclear membrane;Cytosol
+G11_55395990,1000: Finished IF,Golgi apparatus,Nucleus;Nucleoplasm;Vesicles
+H11_55395990,1000: Finished IF,Nucleus,Nucleoli
+A12_55395990,1000: Finished IF,Nucleoli,Nucleus
+B12_55395990,1000: Finished IF,Nucleus,
+C12_55395990,1000: Finished IF,Nuclear bodies,
+D12_55395990,1000: Finished IF,Nucleoplasm,
+E12_55395990,1000: Finished IF,Nucleoplasm;Nuclear membrane;Vesicles,
+F12_55395990,1000: Finished IF,Intermediate filaments,Actin filaments;Cytosol
+G12_55395990,1000: Finished IF,Nucleoplasm;Nuclear bodies,Aggresome
+A01_55405991,1000: Finished IF,Intermediate filaments,
+B01_55405991,1000: Finished IF,Cytosol,Microtubule organizing center
+C01_55405991,1000: Finished IF,Cytosol,
+D01_55405991,1000: Finished IF,Nucleus;Nucleoli;Nuclear bodies,
+E01_55405991,1000: Finished IF,Nucleoplasm;Cytosol,Microtubule organizing center
+F01_55405991,1000: Finished IF,Cytosol,Plasma membrane
+G01_55405991,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+H01_55405991,1000: Finished IF,Nucleoplasm;Cytosol,
+A02_55405991,1000: Finished IF,Nucleoplasm,
+B02_55405991,1000: Finished IF,Nuclear bodies,Nucleoplasm;Intermediate filaments;Focal adhesion sites
+C02_55405991,1000: Finished IF,Mitochondria,
+D02_55405991,1000: Finished IF,Cytosol,
+E02_55405991,1000: Finished IF,Nucleus,Golgi apparatus;Cell Junctions
+F02_55405991,1000: Finished IF,Mitochondria,
+G02_55405991,1000: Finished IF,Nucleoplasm,
+H02_55405991,1000: Finished IF,Cytosol,
+A03_55405991,1000: Finished IF,Cytosol,Nucleoplasm
+B03_55405991,1000: Finished IF,Nucleus;Nucleoli;Cytosol,
+C03_55405991,1000: Finished IF,Mitochondria,
+D03_55405991,1000: Finished IF,Cytosol,Nucleoli
+E03_55405991,1000: Finished IF,Plasma membrane,Nucleus;Cytosol
+F03_55405991,1000: Finished IF,Nucleoplasm,Cytosol
+G03_55405991,1000: Finished IF,Nucleoplasm,Cytosol
+H03_55405991,1000: Finished IF,Nucleoplasm,Cytosol
+A04_55405991,1000: Finished IF,Mitochondria,
+B04_55405991,1000: Finished IF,Mitochondria,
+C04_55405991,1000: Finished IF,Microtubules;Centrosome,
+D04_55405991,1000: Finished IF,Mitochondria,
+E04_55405991,1000: Finished IF,Nucleoplasm,
+F04_55405991,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+G04_55405991,1000: Finished IF,Nucleus,Nucleoli
+H04_55405991,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+A05_55405991,1000: Finished IF,Plasma membrane;Cytosol,
+B05_55405991,1000: Finished IF,Nucleoplasm;Nucleoli,
+C05_55405991,1000: Finished IF,Nucleoplasm,Actin filaments
+D05_55405991,1000: Finished IF,Nucleoli;Endoplasmic reticulum;Cytosol,
+E05_55405991,1000: Finished IF,Nucleoplasm,
+F05_55405991,1000: Finished IF,Nucleoli,Nucleus
+G05_55405991,1000: Finished IF,Mitochondria,
+H05_55405991,1000: Finished IF,Nucleus,
+A06_55405991,1000: Finished IF,Golgi apparatus,Mitochondria
+B06_55405991,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+C06_55405991,1000: Finished IF,Plasma membrane;Cytosol,
+D06_55405991,1000: Finished IF,Nucleus,Nucleoli
+E06_55405991,1000: Finished IF,Nucleoplasm;Cytosol,
+F06_55405991,1000: Finished IF,Nucleoplasm,
+G06_55405991,1000: Finished IF,Nucleus,Vesicles
+H06_55405991,1000: Finished IF,Nuclear membrane,Vesicles;Aggresome;Cytosol
+A07_55405991,1000: Finished IF,Nucleus,Nucleoli
+B07_55405991,1000: Finished IF,Nucleoplasm,
+C07_55405991,1000: Finished IF,Nucleoplasm,Plasma membrane
+D07_55405991,1000: Finished IF,Nucleus;Nucleoli,Cytosol
+E07_55405991,1000: Finished IF,Mitochondria,Nucleus
+F07_55405991,1000: Finished IF,Nucleoplasm,Golgi apparatus
+G07_55405991,1000: Finished IF,Cytosol,
+H07_55405991,1000: Finished IF,Nucleoli,Vesicles
+A08_55405991,1000: Finished IF,Nucleoli,Nucleus
+B08_55405991,1000: Finished IF,Nucleoli,Nucleus
+C08_55405991,1000: Finished IF,Cytosol,
+D08_55405991,1000: Finished IF,Nucleus,Nucleoli
+E08_55405991,1000: Finished IF,Nucleoli,Nucleus;Vesicles
+F08_55405991,1000: Finished IF,Nucleoplasm;Vesicles,Nuclear bodies
+G08_55405991,1000: Finished IF,Endoplasmic reticulum,
+H08_55405991,1000: Finished IF,Mitochondria,
+A09_55405991,1000: Finished IF,Nucleoplasm,Intermediate filaments
+B09_55405991,1000: Finished IF,Vesicles;Intermediate filaments,
+C09_55405991,1000: Finished IF,Nucleoplasm,Golgi apparatus;Vesicles;Plasma membrane
+D09_55405991,1000: Finished IF,Plasma membrane,Vesicles
+E09_55405991,1000: Finished IF,Mitochondria,Nucleus
+F09_55405991,1000: Finished IF,Focal adhesion sites,Intermediate filaments
+G09_55405991,1000: Finished IF,Nucleoplasm,Golgi apparatus;Plasma membrane
+H09_55405991,1000: Finished IF,Vesicles,Nucleoplasm
+A10_55405991,1000: Finished IF,Plasma membrane;Centrosome,Vesicles;Cell Junctions;Cytosol
+B10_55405991,1000: Finished IF,Mitochondria,
+C10_55405991,1000: Finished IF,Nucleoplasm,
+D10_55405991,1000: Finished IF,Plasma membrane;Cytosol,
+E10_55405991,1000: Finished IF,Nucleoli,
+F10_55405991,1000: Finished IF,Plasma membrane;Cytosol,
+G10_55405991,1000: Finished IF,Nuclear bodies,
+H10_55405991,1000: Finished IF,Nucleoplasm;Cytosol,
+A11_55405991,1000: Finished IF,Endoplasmic reticulum,
+B11_55405991,1000: Finished IF,Vesicles,
+C11_55405991,1000: Finished IF,Nucleus;Nucleoli,Microtubule organizing center
+D11_55405991,1000: Finished IF,Nuclear speckles;Cytosol,
+E11_55405991,1000: Finished IF,Nuclear membrane,
+F11_55405991,1000: Finished IF,Nucleoplasm,
+G11_55405991,1000: Finished IF,Intermediate filaments,
+H11_55405991,1000: Finished IF,Plasma membrane,
+A12_55405991,1000: Finished IF,Nucleoplasm;Vesicles,Cytosol
+B12_55405991,1000: Finished IF,Mitochondria,
+C12_55405991,1000: Finished IF,Intermediate filaments,
+D12_55405991,1000: Finished IF,Mitochondria,
+E12_55405991,1000: Finished IF,Lipid droplets,
+F12_55405991,1000: Finished IF,Intermediate filaments,
+G12_55405991,1000: Finished IF,Nucleus;Vesicles,
+A01_75836284,1000: Finished IF,Plasma membrane;Cytosol,
+B01_75836284,1000: Finished IF,Nucleoplasm,
+C01_75836284,1000: Finished IF,Nucleoplasm;Nucleoli;Mitochondria,
+D01_75836284,1000: Finished IF,Nucleus,
+E01_75836284,1000: Finished IF,Mitochondria,Nucleoplasm
+F01_75836284,1000: Finished IF,Endoplasmic reticulum,Nucleoplasm
+G01_75836284,1000: Finished IF,Nucleoplasm,Mitochondria
+H01_75836284,1000: Finished IF,Vesicles,Nucleoplasm
+A02_75836284,1000: Finished IF,Cytosol,Nucleoplasm
+B02_75836284,1000: Finished IF,Nucleoplasm,Cytosol
+C02_75836284,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+D02_75836284,1000: Finished IF,Cytosol,Nucleoplasm
+E02_75836284,1000: Finished IF,Cytosol,Nucleus;Nuclear membrane;Nucleoli
+F02_75836284,1000: Finished IF,Nucleoplasm,Cytosol
+G02_75836284,1000: Finished IF,Nucleus,
+H02_75836284,1000: Finished IF,Nucleoplasm;Vesicles;Cytosol,
+A03_75836284,1000: Finished IF,Vesicles,
+B03_75836284,1000: Finished IF,Mitochondria,Vesicles
+C03_75836284,1000: Finished IF,Nucleoli,
+D03_75836284,1000: Finished IF,Endoplasmic reticulum,
+E03_75836284,1000: Finished IF,Vesicles,
+F03_75836284,1000: Finished IF,Centrosome;Cytosol,
+G03_75836284,1000: Finished IF,Nuclear speckles,Intermediate filaments
+H03_75836284,1000: Finished IF,Nucleoli,Nucleus
+A04_75836284,950: Pending destiny IF,Intermediate filaments,
+B04_75836284,1000: Finished IF,Mitochondria,
+C04_75836284,1000: Finished IF,Cytosol,
+D04_75836284,1000: Finished IF,Actin filaments,
+E04_75836284,1000: Finished IF,Nuclear speckles;Vesicles,
+F04_75836284,1000: Finished IF,Nucleus,
+G04_75836284,1000: Finished IF,Nucleoplasm;Cytosol,
+H04_75836284,1000: Finished IF,Cytosol,
+A05_75836284,1000: Finished IF,Nuclear speckles,
+B05_75836284,1000: Finished IF,Cytosol,Nucleoplasm
+C05_75836284,1000: Finished IF,Nuclear speckles;Vesicles,Midbody
+D05_75836284,1000: Finished IF,Nucleus;Nuclear bodies,Cytosol
+E05_75836284,1000: Finished IF,Nucleoli;Mitochondria,Nucleus
+F05_75836284,1000: Finished IF,Cell Junctions,
+G05_75836284,1000: Finished IF,Nucleoplasm,Midbody
+H05_75836284,1000: Finished IF,Mitochondria,
+A06_75836284,1000: Finished IF,Vesicles,
+B06_75836284,950: Pending destiny IF,Microtubules;Cytokinetic bridge;Mitotic spindle,
+C06_75836284,1000: Finished IF,Plasma membrane,
+D06_75836284,1000: Finished IF,Vesicles;Plasma membrane,
+E06_75836284,1000: Finished IF,Nuclear bodies,Cytosol
+F06_75836284,1000: Finished IF,Nucleus;Nucleoli,
+G06_75836284,1000: Finished IF,Cytosol,
+H06_75836284,1000: Finished IF,Nucleoli,Nucleus
+A07_75836284,1000: Finished IF,Vesicles,
+B07_75836284,1000: Finished IF,Cytosol,
+C07_75836284,1000: Finished IF,Cytosol,
+D07_75836284,1000: Finished IF,Plasma membrane,
+E07_75836284,1000: Finished IF,Cytosol,Golgi apparatus
+F07_75836284,1000: Finished IF,Golgi apparatus,
+G07_75836284,1000: Finished IF,Vesicles,
+H07_75836284,1000: Finished IF,Plasma membrane;Cytosol,
+A08_75836284,1000: Finished IF,Intermediate filaments,
+B08_75836284,1000: Finished IF,Vesicles,Microtubules
+C08_75836284,1000: Finished IF,Midbody ring,
+D08_75836284,1000: Finished IF,Nuclear bodies,Nucleoplasm
+E08_75836284,1000: Finished IF,Nucleus,
+F08_75836284,1000: Finished IF,Golgi apparatus,Cytosol
+G08_75836284,1000: Finished IF,Midbody,
+H08_75836284,1000: Finished IF,Nucleoplasm,Cytosol
+A09_75836284,1000: Finished IF,Cytosol,
+B09_75836284,1000: Finished IF,Cytosol,Nucleoplasm
+C09_75836284,1000: Finished IF,Plasma membrane;Actin filaments,
+D09_75836284,1000: Finished IF,Vesicles,
+E09_75836284,1000: Finished IF,Nucleoplasm,Intermediate filaments;Cytosol
+F09_75836284,1000: Finished IF,Cytosol,
+G09_75836284,1000: Finished IF,Nucleoplasm;Cytosol,Plasma membrane
+H09_75836284,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli fibrillar center
+A10_75836284,1000: Finished IF,Mitochondria,
+B10_75836284,1000: Finished IF,Nuclear speckles,Cytosol
+C10_75836284,1000: Finished IF,Nucleoli,Nucleus
+D10_75836284,1000: Finished IF,Vesicles,
+E10_75836284,1000: Finished IF,Intermediate filaments;Actin filaments;Cytosol,
+F10_75836284,1000: Finished IF,Nucleoplasm,
+G10_75836284,1000: Finished IF,Mitochondria,Nucleus;Nucleoli
+H10_75836284,1000: Finished IF,Nucleus,Nucleoli
+A11_75836284,1000: Finished IF,Nucleus;Nuclear bodies,
+B11_75836284,1000: Finished IF,Nucleoli,Cytosol
+C11_75836284,1000: Finished IF,Nucleoplasm,Vesicles;Cytosol
+D11_75836284,1000: Finished IF,Vesicles,Cytosol
+E11_75836284,1000: Finished IF,Cytosol,
+F11_75836284,1000: Finished IF,Cell Junctions,Midbody ring;Microtubule organizing center;Cytosol
+G11_75836284,1000: Finished IF,Midbody ring;Cytosol,
+H11_75836284,11: In IF,,
+A12_75836284,1000: Finished IF,Vesicles;Plasma membrane;Cytosol,
+B12_75836284,1000: Finished IF,Nucleoplasm;Vesicles,Plasma membrane;Midbody;Cytosol
+C12_75836284,1000: Finished IF,Endoplasmic reticulum,
+D12_75836284,1000: Finished IF,Microtubule organizing center;Cytosol,
+E12_75836284,1000: Finished IF,Intermediate filaments,
+F12_75836284,1000: Finished IF,Nucleus,Midbody;Cytosol
+G12_75836284,1000: Finished IF,Nucleoli fibrillar center;Golgi apparatus,
+A01_75846286,1000: Finished IF,Nucleus,
+B01_75846286,1000: Finished IF,Nucleoplasm,
+C01_75846286,1000: Finished IF,Cytosol,
+D01_75846286,1000: Finished IF,Nucleoli fibrillar center,
+E01_75846286,1000: Finished IF,Cell Junctions,
+F01_75846286,1000: Finished IF,Nucleoplasm,Midbody ring
+G01_75846286,1000: Finished IF,Cytosol,
+H01_75846286,1000: Finished IF,Vesicles,
+A02_75846286,1000: Finished IF,Mitochondria,
+B02_75846286,1000: Finished IF,Nucleoli,Nucleus;Cytosol
+C02_75846286,1000: Finished IF,Golgi apparatus,
+D02_75846286,1000: Finished IF,Nucleoplasm;Golgi apparatus,Vesicles
+E02_75846286,1000: Finished IF,Plasma membrane;Cell Junctions;Actin filaments,
+F02_75846286,1000: Finished IF,Nucleus,
+G02_75846286,1000: Finished IF,Nucleus,
+H02_75846286,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+A03_75846286,1000: Finished IF,Nucleoplasm,
+B03_75846286,1000: Finished IF,Midbody ring,Intermediate filaments;Centrosome
+C03_75846286,1000: Finished IF,Endoplasmic reticulum,
+D03_75846286,1000: Finished IF,Plasma membrane;Cytosol,
+E03_75846286,1000: Finished IF,Nucleus,
+F03_75846286,1000: Finished IF,Nucleus,
+G03_75846286,1000: Finished IF,Nucleoli,Nucleus
+H03_75846286,1000: Finished IF,Nucleoplasm,Nucleoli
+A04_75846286,1000: Finished IF,Vesicles;Cytosol,
+B04_75846286,1000: Finished IF,Nucleoplasm,Midbody ring
+C04_75846286,1000: Finished IF,Nucleus,Cytosol
+D04_75846286,1000: Finished IF,Nucleus,Nucleoli;Vesicles
+E04_75846286,1000: Finished IF,Golgi apparatus;Vesicles,
+F04_75846286,1000: Finished IF,Mitochondria,
+G04_75846286,1000: Finished IF,Nucleoplasm,Nucleoli
+H04_75846286,1000: Finished IF,Nucleoplasm,
+A05_75846286,1000: Finished IF,Plasma membrane,
+B05_75846286,1000: Finished IF,Nucleus;Nucleoli,
+C05_75846286,1000: Finished IF,Nucleoli;Plasma membrane,Midbody;Centrosome
+D05_75846286,1000: Finished IF,Nucleus,Nucleoli;Mitochondria
+E05_75846286,1000: Finished IF,Nuclear bodies;Plasma membrane;Cytosol,
+F05_75846286,1000: Finished IF,Nucleoli fibrillar center;Cytosol,Mitochondria
+G05_75846286,1000: Finished IF,Nucleoplasm,Nucleoli
+H05_75846286,1000: Finished IF,Cell Junctions,
+A06_75846286,1000: Finished IF,Golgi apparatus;Cytosol,Nucleus
+B06_75846286,1000: Finished IF,Cytosol,
+C06_75846286,1000: Finished IF,Cytosol,
+D06_75846286,1000: Finished IF,Nuclear speckles,Cytosol
+E06_75846286,1000: Finished IF,Vesicles,Mitotic spindle
+F06_75846286,950: Pending destiny IF,Nucleoplasm;Nucleoli fibrillar center,Intermediate filaments
+G06_75846286,1000: Finished IF,Cytosol,
+H06_75846286,1000: Finished IF,Cytosol,
+A07_75846286,1000: Finished IF,Nucleoplasm;Cytosol,
+B07_75846286,1000: Finished IF,Nucleus;Cytosol,Nucleoli
+A01_6717,1000: Finished IF,Nucleoplasm,
+B01_6717,1000: Finished IF,Nucleoplasm,
+C01_6717,1000: Finished IF,Nucleoli fibrillar center;Cytosol,Cell Junctions
+D01_6717,1000: Finished IF,Cytosol,Nucleoplasm
+E01_6717,11: In IF,,
+F01_6717,1000: Finished IF,Intermediate filaments;Rods & Rings,
+G01_6717,1000: Finished IF,Nucleoplasm;Nuclear bodies,Cytosol
+H01_6717,1000: Finished IF,Nucleoplasm,
+A02_6717,11: In IF,,
+B02_6717,1000: Finished IF,Endoplasmic reticulum;Cytosol,Nucleoplasm
+C02_6717,1000: Finished IF,Cytosol,Nucleoplasm
+D02_6717,1000: Finished IF,Cytosol,Nucleoplasm
+E02_6717,1000: Finished IF,Nucleoplasm,Vesicles;Cytosol
+F02_6717,1000: Finished IF,Nucleoplasm;Nuclear bodies,Microtubule ends
+G02_6717,1000: Finished IF,Mitochondria,Nucleoplasm
+H02_6717,1000: Finished IF,Mitochondria,
+A03_6717,1000: Finished IF,Mitochondria,Cytosol
+B03_6717,1000: Finished IF,Golgi apparatus,Nucleoplasm
+C03_6717,1000: Finished IF,Cytosol,Nucleoplasm;Nucleoli
+D03_6717,1000: Finished IF,Cytosol,Vesicles
+E03_6717,1000: Finished IF,Vesicles,
+F03_6717,1000: Finished IF,Cytosol,
+G03_6717,1000: Finished IF,Vesicles,
+H03_6717,1000: Finished IF,Nucleoplasm,Cytosol
+A04_6717,1000: Finished IF,Mitochondria,
+B04_6717,1000: Finished IF,Cytosol,
+C04_6717,1000: Finished IF,Cytosol,Nucleoplasm
+D04_6717,1000: Finished IF,Vesicles,
+E04_6717,1000: Finished IF,Plasma membrane,Nucleoplasm;Vesicles;Cytosol
+F04_6717,1000: Finished IF,Cytosol,
+G04_6717,1000: Finished IF,Endoplasmic reticulum,Vesicles
+H04_6717,1000: Finished IF,Nucleoplasm,Cytosol
+A05_6717,1000: Finished IF,Nucleoplasm;Cytosol,Nuclear bodies
+B05_6717,1000: Finished IF,Nucleoplasm,Golgi apparatus
+C05_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+D05_6717,1000: Finished IF,Nucleoplasm,
+E05_6717,1000: Finished IF,Nucleoplasm,Cytosol
+F05_6717,1000: Finished IF,Nucleoli,
+G05_6717,1000: Finished IF,Cytosol,
+H05_6717,1000: Finished IF,Nucleoplasm,
+A06_6717,1000: Finished IF,Nucleoli,Cytokinetic bridge
+B06_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+C06_6717,1000: Finished IF,Nucleoli;Cytosol,
+D06_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+E06_6717,1000: Finished IF,Golgi apparatus,
+F06_6717,1000: Finished IF,Nucleoplasm,
+G06_6717,1000: Finished IF,Golgi apparatus,Cytosol
+H06_6717,1000: Finished IF,Intermediate filaments,
+A07_6717,1000: Finished IF,Plasma membrane,Nucleoplasm
+B07_6717,1000: Finished IF,Plasma membrane,
+C07_6717,1000: Finished IF,Cytosol,Nucleoli;Golgi apparatus
+D07_6717,1000: Finished IF,Vesicles,
+E07_6717,1000: Finished IF,Nucleoplasm;Plasma membrane,
+F07_6717,1000: Finished IF,Nucleoplasm,
+G07_6717,1000: Finished IF,Cytosol,Actin filaments
+H07_6717,1000: Finished IF,Nucleoplasm,Vesicles
+A08_6717,1000: Finished IF,Golgi apparatus,
+B08_6717,1000: Finished IF,Nucleoplasm,
+C08_6717,1000: Finished IF,Nucleoplasm,
+D08_6717,1000: Finished IF,Nucleoplasm,Cytosol
+E08_6717,1000: Finished IF,Nucleoplasm,
+F08_6717,1000: Finished IF,Plasma membrane,Aggresome
+G08_6717,1000: Finished IF,Mitochondria,
+H08_6717,1000: Finished IF,Plasma membrane;Cytosol,Nuclear membrane;Vesicles
+A09_6717,1000: Finished IF,Nucleoli,Nucleoplasm;Cytosol
+B09_6717,1000: Finished IF,Nucleoli,Vesicles;Mitochondria
+C09_6717,1000: Finished IF,Endoplasmic reticulum,
+D09_6717,1000: Finished IF,Nucleoplasm,
+E09_6717,1000: Finished IF,Nucleoli,Nucleoplasm
+F09_6717,1000: Finished IF,Plasma membrane,Nuclear bodies
+G09_6717,1000: Finished IF,Mitochondria;Cytosol,
+H09_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+A10_6717,1000: Finished IF,Nucleoplasm,Cell Junctions;Cytokinetic bridge
+B10_6717,1000: Finished IF,Endoplasmic reticulum;Cytosol,
+C10_6717,1000: Finished IF,Nucleoplasm;Nucleoli,
+D10_6717,1000: Finished IF,Nuclear speckles,Centrosome;Cytosol
+E10_6717,1000: Finished IF,Endoplasmic reticulum;Vesicles,
+F10_6717,1000: Finished IF,Nuclear bodies,Nucleoplasm
+G10_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+H10_6717,1000: Finished IF,Nucleoplasm;Plasma membrane,
+A11_6717,1000: Finished IF,Nucleoplasm,Cytosol
+B11_6717,1000: Finished IF,Nucleoplasm;Mitochondria,Nucleoli;Plasma membrane
+C11_6717,1000: Finished IF,Mitochondria,Nucleoli
+D11_6717,1000: Finished IF,Nucleoplasm,Cytosol
+E11_6717,1000: Finished IF,Nucleoli,
+F11_6717,1000: Finished IF,Vesicles,
+G11_6717,1000: Finished IF,Nucleoli,Vesicles;Plasma membrane;Cytosol
+H11_6717,1000: Finished IF,Nucleoplasm;Mitotic chromosome,
+A12_6717,1000: Finished IF,Nucleoplasm,Nucleoli;Nuclear speckles
+B12_6717,1000: Finished IF,Nucleoplasm,
+C12_6717,1000: Finished IF,Nucleoplasm,Nucleoli
+D12_6717,1000: Finished IF,Nucleoli fibrillar center;Vesicles,Nucleoplasm;Mitotic chromosome;Cytosol
+E12_6717,11: In IF,,
+F12_6717,1000: Finished IF,Plasma membrane;Cytosol,
+G12_6717,1000: Finished IF,Nucleoplasm;Cytokinetic bridge;Cytosol,
+A01_6718,1000: Finished IF,Nucleoplasm,
+B01_6718,1000: Finished IF,Plasma membrane,
+C01_6718,1000: Finished IF,Nucleoplasm,Nucleoli
+D01_6718,974: Further evaluation IF,Nucleoplasm,Cytosol
+E01_6718,11: In IF,,
+F01_6718,11: In IF,,
+G01_6718,11: In IF,,
+H01_6718,1000: Finished IF,Plasma membrane,Rods & Rings
+A02_6718,1000: Finished IF,Mitochondria,
+B02_6718,1000: Finished IF,Nuclear membrane,
+C02_6718,1000: Finished IF,Nucleoli,Nucleoplasm
+D02_6718,1000: Finished IF,Nucleoli,Nucleoplasm;Vesicles
+E02_6718,1000: Finished IF,Mitochondria,
+F02_6718,1000: Finished IF,Mitochondria,Nucleoplasm;Centrosome
+G02_6718,1000: Finished IF,Cytosol,Nucleoplasm;Nuclear bodies
+H02_6718,1000: Finished IF,Nuclear bodies,
+A03_6718,950: Pending destiny IF,Nucleoplasm,
+B03_6718,1000: Finished IF,Nuclear membrane;Vesicles,
+C03_6718,1000: Finished IF,Nucleoli,
+D03_6718,1000: Finished IF,Nucleoplasm;Cytosol,
+E03_6718,1000: Finished IF,Plasma membrane;Cytosol,
+F03_6718,1000: Finished IF,Vesicles,Nucleoplasm
+G03_6718,1000: Finished IF,Endoplasmic reticulum,
+H03_6718,1000: Finished IF,Golgi apparatus,Nucleoplasm
+A04_6718,1000: Finished IF,Cell Junctions,Cytoplasmic bodies
+B04_6718,1000: Finished IF,Nucleoplasm,
+C04_6718,1000: Finished IF,Nucleoplasm,Cytosol
+D04_6718,1000: Finished IF,Nucleoli,Intermediate filaments
+E04_6718,1000: Finished IF,Nucleoplasm,
+F04_6718,1000: Finished IF,Mitochondria,
+G04_6718,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm;Golgi apparatus
+H04_6718,1000: Finished IF,Cytosol,Plasma membrane
+A05_6718,1000: Finished IF,Cytosol,Nucleoplasm;Plasma membrane
+B05_6718,1000: Finished IF,Cytosol,Nuclear bodies
+C05_6718,1000: Finished IF,Nucleoplasm,
+D05_6718,1000: Finished IF,Nucleoplasm,Aggresome;Cytosol
+E05_6718,1000: Finished IF,Mitochondria,Nucleoplasm
+F05_6718,1000: Finished IF,Nucleoplasm,Cell Junctions
+G05_6718,1000: Finished IF,Golgi apparatus,Vesicles
+H05_6718,1000: Finished IF,Nucleoplasm,Cytosol
+A06_6718,1000: Finished IF,Microtubules;Cytosol,Nucleoplasm
+B06_6718,1000: Finished IF,Vesicles,Cytosol
+C06_6718,1000: Finished IF,Nucleoplasm,
+D06_6718,1000: Finished IF,Nucleoplasm,Vesicles;Cytokinetic bridge
+E06_6718,1000: Finished IF,Nucleoplasm,Vesicles;Cytosol
+F06_6718,1000: Finished IF,Centrosome,Nucleoplasm;Mitotic chromosome
+G06_6718,1000: Finished IF,Nucleoplasm,Nuclear bodies;Plasma membrane
+H06_6718,1000: Finished IF,Nuclear bodies;Mitochondria,Cytosol
+A07_6718,1000: Finished IF,Nucleoplasm,
+B07_6718,974: Further evaluation IF,Nucleoplasm,
+C07_6718,1000: Finished IF,Intermediate filaments,
+D07_6718,1000: Finished IF,Nuclear speckles,
+E07_6718,1000: Finished IF,Nucleoplasm,
+F07_6718,1000: Finished IF,Nucleoplasm,
+G07_6718,1000: Finished IF,Nucleoli,Nucleoplasm
+H07_6718,1000: Finished IF,Nucleoplasm,
+A08_6718,1000: Finished IF,Nucleoplasm;Nucleoli,Microtubules;Cytosol
+B08_6718,1000: Finished IF,Vesicles;Mitochondria,
+C08_6718,1000: Finished IF,Nucleoplasm;Plasma membrane,
+D08_6718,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center
+E08_6718,1000: Finished IF,Golgi apparatus;Vesicles,
+F08_6718,1000: Finished IF,Nucleoplasm,
+G08_6718,1000: Finished IF,Nucleoli,Mitotic chromosome;Actin filaments
+H08_6718,1000: Finished IF,Nucleoplasm,Cell Junctions
+A09_6718,1000: Finished IF,Plasma membrane;Cell Junctions,Cytosol
+B09_6718,1000: Finished IF,Microtubules,Vesicles
+C09_6718,1000: Finished IF,Nuclear bodies,Nucleoplasm;Midbody
+D09_6718,1000: Finished IF,Nucleoli,Nucleoplasm
+E09_6718,1000: Finished IF,Plasma membrane,Nucleoplasm;Nuclear bodies
+F09_6718,1000: Finished IF,Golgi apparatus,
+G09_6718,1000: Finished IF,Plasma membrane;Cytosol,Nucleoli
+H09_6718,1000: Finished IF,Nucleoplasm,Cytosol
+A10_6718,1000: Finished IF,Mitochondria,
+B10_6718,1000: Finished IF,Nucleoplasm,
+C10_6718,1000: Finished IF,Nucleoplasm,Centrosome;Cytosol
+D10_6718,1000: Finished IF,Cytosol,
+E10_6718,1000: Finished IF,Vesicles,
+F10_6718,1000: Finished IF,Nucleoplasm,Centrosome
+G10_6718,1000: Finished IF,Plasma membrane,
+H10_6718,1000: Finished IF,Nucleoplasm;Plasma membrane,Vesicles;Mitochondria;Cytosol
+A11_6718,1000: Finished IF,Cytosol,Vesicles;Centrosome
+B11_6718,1000: Finished IF,Nucleoplasm,Nuclear bodies
+C11_6718,1000: Finished IF,Golgi apparatus,
+D11_6718,992: Failed IF,,
+E11_6718,1000: Finished IF,Nucleoplasm,
+F11_6718,1000: Finished IF,Nuclear bodies,
+G11_6718,11: In IF,,
+H11_6718,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+A12_6718,1000: Finished IF,Plasma membrane;Cytosol,
+B12_6718,1000: Finished IF,Golgi apparatus,Cytosol
+C12_6718,1000: Finished IF,Cytosol,Nucleoli
+D12_6718,1000: Finished IF,Plasma membrane,
+E12_6718,1000: Finished IF,Plasma membrane,Centriolar satellite
+F12_6718,1000: Finished IF,Cytosol,
+G12_6718,1000: Finished IF,Cytosol,
+A01_6719,1000: Finished IF,Plasma membrane,Cytosol
+B01_6719,1000: Finished IF,Plasma membrane,Nucleoplasm
+C01_6719,1000: Finished IF,Nuclear bodies,Nucleoplasm
+D01_6719,1000: Finished IF,Cytosol,
+E01_6719,1000: Finished IF,Nucleoplasm,Nuclear bodies
+F01_6719,1000: Finished IF,Cytosol,
+G01_6719,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+H01_6719,1000: Finished IF,Cell Junctions,Nucleoplasm;Vesicles
+A02_6719,1000: Finished IF,Cytosol,
+B02_6719,1000: Finished IF,Nucleoplasm,
+C02_6719,1000: Finished IF,Cytosol,
+D02_6719,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli;Golgi apparatus
+E02_6719,1000: Finished IF,Cytosol,Nuclear speckles
+F02_6719,1000: Finished IF,Intermediate filaments,
+G02_6719,1000: Finished IF,Plasma membrane;Centrosome,Cytosol
+H02_6719,1000: Finished IF,Cytosol,
+A03_6719,1000: Finished IF,Golgi apparatus,
+B03_6719,1000: Finished IF,Endoplasmic reticulum,Golgi apparatus
+C03_6719,1000: Finished IF,Nuclear speckles,Centrosome
+D03_6719,974: Further evaluation IF,Nucleoplasm,Nucleoli;Vesicles
+E03_6719,1000: Finished IF,Vesicles,Microtubules
+F03_6719,1000: Finished IF,Actin filaments,
+G03_6719,1000: Finished IF,Mitochondria,Nucleoplasm
+H03_6719,1000: Finished IF,Nucleoplasm,Vesicles
+A04_6719,1000: Finished IF,Nucleoplasm;Nuclear bodies,Nucleoli;Cytosol
+B04_6719,1000: Finished IF,Cytosol,Centriolar satellite
+C04_6719,1000: Finished IF,Centrosome,Nucleoli;Plasma membrane
+D04_6719,1000: Finished IF,Cytosol,Nucleoplasm
+E04_6719,1000: Finished IF,Vesicles,Cytosol
+F04_6719,1000: Finished IF,Nucleoli,Nucleoplasm
+G04_6719,1000: Finished IF,Cytosol,Nucleoplasm
+H04_6719,1000: Finished IF,Nucleoplasm,Cytosol
+A05_6719,1000: Finished IF,Cytosol,
+B05_6719,1000: Finished IF,Nucleoli,Nucleoplasm
+C05_6719,1000: Finished IF,Nucleoli,Nucleoplasm
+D05_6719,1000: Finished IF,Vesicles,
+E05_6719,1000: Finished IF,Nuclear speckles,Nuclear membrane;Mitochondria;Cytosol
+F05_6719,1000: Finished IF,Nucleoplasm;Nucleoli,
+G05_6719,1000: Finished IF,Nucleoli,Mitotic chromosome
+H05_6719,1000: Finished IF,Plasma membrane,Nucleoplasm
+A06_6719,1000: Finished IF,Nucleoplasm;Nucleoli,Cytosol
+B06_6719,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+C06_6719,1000: Finished IF,Nucleoplasm,Vesicles
+D06_6719,1000: Finished IF,Nucleoplasm;Cytosol,Vesicles
+E06_6719,1000: Finished IF,Cytosol,
+F06_6719,1000: Finished IF,Nuclear bodies,
+G06_6719,1000: Finished IF,Endoplasmic reticulum,
+H06_6719,1000: Finished IF,Nucleoli,Mitotic chromosome;Actin filaments
+A07_6719,1000: Finished IF,Intermediate filaments,
+B07_6719,1000: Finished IF,Cytosol,Golgi apparatus;Plasma membrane
+C07_6719,1000: Finished IF,Vesicles,
+D07_6719,1000: Finished IF,Vesicles,
+E07_6719,1000: Finished IF,Vesicles,
+F07_6719,11: In IF,,
+G07_6719,1000: Finished IF,Plasma membrane,Nucleoplasm;Cytosol
+H07_6719,1000: Finished IF,Mitochondria,
+A08_6719,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+B08_6719,1000: Finished IF,Intermediate filaments,
+C08_6719,1000: Finished IF,Vesicles,
+D08_6719,1000: Finished IF,Nucleoplasm;Nucleoli,
+E08_6719,1000: Finished IF,Mitochondria,
+F08_6719,1000: Finished IF,Plasma membrane,Nucleoli
+G08_6719,1000: Finished IF,Nucleoplasm,Cytosol
+H08_6719,1000: Finished IF,Plasma membrane;Actin filaments;Focal adhesion sites,
+A09_6719,1000: Finished IF,Nucleoplasm,
+B09_6719,1000: Finished IF,Actin filaments,
+C09_6719,1000: Finished IF,Vesicles,
+D09_6719,1000: Finished IF,Vesicles,
+E09_6719,1000: Finished IF,Lipid droplets,Nucleoplasm
+F09_6719,1000: Finished IF,Nucleoplasm,Cytosol
+G09_6719,1000: Finished IF,Nucleoplasm,Nucleoli
+H09_6719,1000: Finished IF,Nucleoli,Nucleoplasm
+A10_6719,1000: Finished IF,Nucleoplasm;Nuclear membrane,
+B10_6719,1000: Finished IF,Vesicles,Cytosol
+C10_6719,1000: Finished IF,Plasma membrane;Cytosol,
+D10_6719,1000: Finished IF,Cytosol,
+E10_6719,1000: Finished IF,Nucleoli,Nucleoplasm;Cytosol
+F10_6719,1000: Finished IF,Actin filaments,Plasma membrane
+G10_6719,1000: Finished IF,Golgi apparatus,Cytosol
+H10_6719,1000: Finished IF,Nucleoplasm,Nucleoli
+A11_6719,1000: Finished IF,Lipid droplets,
+B11_6719,1000: Finished IF,Nucleoplasm;Plasma membrane,
+C11_6719,11: In IF,,
+D11_6719,1000: Finished IF,Cytosol,
+E11_6719,1000: Finished IF,Nucleoplasm,Golgi apparatus
+F11_6719,1000: Finished IF,Nucleoplasm;Vesicles,Nuclear bodies
+G11_6719,1000: Finished IF,Endoplasmic reticulum,
+H11_6719,1000: Finished IF,Golgi apparatus,Vesicles
+A12_6719,1000: Finished IF,Plasma membrane,Nucleoplasm;Nuclear membrane
+B12_6719,1000: Finished IF,Nucleoplasm,Mitochondria
+C12_6719,1000: Finished IF,Plasma membrane,Nuclear bodies
+D12_6719,1000: Finished IF,Nucleoplasm,Mitochondria
+E12_6719,1000: Finished IF,Cytosol,Nucleoplasm
+F12_6719,1000: Finished IF,Vesicles,Plasma membrane;Cytosol
+G12_6719,1000: Finished IF,Lipid droplets,
+A01_6720,1000: Finished IF,Mitochondria,
+B01_6720,1000: Finished IF,Nucleoplasm;Cytosol,Vesicles
+C01_6720,1000: Finished IF,Nucleoplasm,Cytosol
+D01_6720,1000: Finished IF,Mitochondria,Nucleoplasm;Nucleoli
+E01_6720,1000: Finished IF,Microtubules;Cytosol,
+F01_6720,1000: Finished IF,Cytosol,Nucleoplasm
+G01_6720,1000: Finished IF,Nucleoplasm;Mitochondria,Nucleoli;Cytosol
+H01_6720,1000: Finished IF,Mitochondria;Cytosol,
+A02_6720,1000: Finished IF,Nucleoplasm,
+B02_6720,1000: Finished IF,Plasma membrane;Cytosol,
+C02_6720,1000: Finished IF,Nuclear speckles;Centriolar satellite;Cytosol,
+D02_6720,1000: Finished IF,Nuclear bodies,Nucleoplasm
+E02_6720,1000: Finished IF,Cytosol,Nucleoplasm
+F02_6720,1000: Finished IF,Intermediate filaments,
+G02_6720,1000: Finished IF,Nucleoplasm;Cytosol,
+H02_6720,1000: Finished IF,Nucleoli;Cytosol,
+A03_6720,1000: Finished IF,Nucleoplasm;Nucleoli,Cytosol
+B03_6720,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+C03_6720,1000: Finished IF,Nucleoplasm,Nucleoli
+D03_6720,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+E03_6720,1000: Finished IF,Nucleoplasm,
+F03_6720,1000: Finished IF,Nucleoplasm,Nuclear bodies
+G03_6720,1000: Finished IF,Cytosol,Golgi apparatus
+H03_6720,1000: Finished IF,Cytosol,Nucleoplasm
+A04_6720,1000: Finished IF,Nucleoplasm,Nuclear bodies
+B04_6720,1000: Finished IF,Nuclear speckles,Cytoplasmic bodies
+C04_6720,1000: Finished IF,Peroxisomes,
+D04_6720,1000: Finished IF,Vesicles,Nucleoplasm;Cytosol
+E04_6720,1000: Finished IF,Nucleoplasm;Nuclear bodies,Vesicles;Actin filaments
+F04_6720,1000: Finished IF,Nucleoli,Nuclear bodies
+G04_6720,1000: Finished IF,Nucleoplasm;Plasma membrane,Nuclear membrane;Nuclear bodies
+H04_6720,1000: Finished IF,Nucleoli fibrillar center,
+A05_6720,1000: Finished IF,Plasma membrane,Vesicles
+B05_6720,1000: Finished IF,Nucleoplasm,Vesicles
+C05_6720,1000: Finished IF,Nucleoplasm,Cytosol
+D05_6720,1000: Finished IF,Nucleoli,Nucleoplasm;Nuclear membrane;Cytosol
+E05_6720,1000: Finished IF,Nucleoli,
+F05_6720,974: Further evaluation IF,Nuclear speckles,Actin filaments
+G05_6720,1000: Finished IF,Nucleoplasm,Cytosol
+H05_6720,1000: Finished IF,Centrosome;Cytosol,
+A06_6720,1000: Finished IF,Mitochondria,
+B06_6720,1000: Finished IF,Cytosol,
+C06_6720,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+D06_6720,1000: Finished IF,Plasma membrane;Cytosol,
+E06_6720,1000: Finished IF,Nucleoplasm;Vesicles,
+F06_6720,1000: Finished IF,Plasma membrane,
+G06_6720,1000: Finished IF,Nucleoli,Plasma membrane
+H06_6720,1000: Finished IF,Nucleoplasm,
+A07_6720,1000: Finished IF,Mitochondria,
+B07_6720,1000: Finished IF,Plasma membrane,Focal adhesion sites
+C07_6720,1000: Finished IF,Nucleoplasm,
+D07_6720,1000: Finished IF,Actin filaments,
+E07_6720,1000: Finished IF,Cytosol,Intermediate filaments
+F07_6720,1000: Finished IF,Cytosol,
+G07_6720,1000: Finished IF,Nucleoli,Golgi apparatus;Cytosol
+H07_6720,1000: Finished IF,Cytosol,Nucleoplasm
+A08_6720,1000: Finished IF,Nucleoplasm,Cytosol
+B08_6720,1000: Finished IF,Mitochondria,Nucleoplasm
+C08_6720,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+D08_6720,1000: Finished IF,Cytosol,Nucleoplasm
+E08_6720,1000: Finished IF,Nucleoplasm,Cytosol
+F08_6720,992: Failed IF,Focal adhesion sites;Cytosol,Plasma membrane
+G08_6720,1000: Finished IF,Nucleoplasm,Vesicles
+H08_6720,1000: Finished IF,Nucleoplasm;Cytosol,Vesicles
+A09_6720,1000: Finished IF,Nucleoplasm,
+B09_6720,1000: Finished IF,Nucleoplasm;Nucleoli,Cytosol
+C09_6720,1000: Finished IF,Cytosol,Plasma membrane
+D09_6720,1000: Finished IF,Nucleoplasm,Cytosol
+E09_6720,1000: Finished IF,Mitochondria,Nucleoplasm
+F09_6720,1000: Finished IF,Vesicles,
+G09_6720,1000: Finished IF,Nucleoplasm,
+H09_6720,1000: Finished IF,Vesicles,
+A10_6720,1000: Finished IF,Mitochondria,
+B10_6720,1000: Finished IF,Mitochondria,
+C10_6720,1000: Finished IF,Nuclear membrane,Vesicles;Aggresome;Cytosol
+D10_6720,1000: Finished IF,Nucleoplasm,
+E10_6720,1000: Finished IF,Mitochondria,
+F10_6720,1000: Finished IF,Mitochondria,
+G10_6720,1000: Finished IF,Nucleoplasm,Nucleoli
+H10_6720,1000: Finished IF,Nucleoplasm,Nuclear membrane
+A11_6720,1000: Finished IF,Nucleoplasm,Nucleoli;Nuclear bodies;Cytosol
+B11_6720,1000: Finished IF,Nucleoplasm,
+C11_6720,1000: Finished IF,Nucleoplasm,
+D11_6720,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center;Centrosome
+E11_6720,974: Further evaluation IF,Nucleoplasm,Nucleoli
+F11_6720,1000: Finished IF,Intermediate filaments,
+G11_6720,1000: Finished IF,Nuclear speckles,
+H11_6720,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cell Junctions
+A12_6720,1000: Finished IF,Plasma membrane,Nucleoplasm
+B12_6720,1000: Finished IF,Vesicles;Cytosol,
+C12_6720,1000: Finished IF,Nucleoplasm,Nucleoli fibrillar center;Vesicles
+D12_6720,1000: Finished IF,Vesicles,Nucleoplasm
+E12_6720,1000: Finished IF,Nucleoli,Nucleoplasm
+F12_6720,1000: Finished IF,Nucleoplasm,
+G12_6720,1000: Finished IF,Nucleoplasm;Nucleoli,Centriolar satellite
+A01_6721,1000: Finished IF,Vesicles,
+B01_6721,1000: Finished IF,Nucleoplasm,Cytosol
+C01_6721,1000: Finished IF,Plasma membrane;Cytosol,
+D01_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+E01_6721,1000: Finished IF,Mitochondria,
+F01_6721,1000: Finished IF,Cytosol,
+G01_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+H01_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+A02_6721,1000: Finished IF,Cytosol,
+B02_6721,1000: Finished IF,Golgi apparatus,Nucleoplasm;Cytosol
+C02_6721,1000: Finished IF,Nucleoplasm,
+D02_6721,1000: Finished IF,Nucleoplasm,
+E02_6721,1000: Finished IF,Nucleoli,
+F02_6721,1000: Finished IF,Cytosol,
+G02_6721,1000: Finished IF,Nucleoplasm;Nuclear bodies;Plasma membrane;Cytosol,
+H02_6721,1000: Finished IF,Vesicles,Intermediate filaments
+A03_6721,1000: Finished IF,Cytosol,Nucleoplasm
+B03_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+C03_6721,1000: Finished IF,Mitochondria,Nucleoplasm;Vesicles
+D03_6721,1000: Finished IF,Cytosol,
+E03_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+F03_6721,1000: Finished IF,Actin filaments,Cytosol
+G03_6721,1000: Finished IF,Nucleoplasm;Cytosol,Nuclear bodies
+H03_6721,1000: Finished IF,Nucleoli;Nucleoli fibrillar center,
+A04_6721,1000: Finished IF,Nucleoli,Nucleoplasm;Vesicles
+B04_6721,1000: Finished IF,Nucleoplasm;Centrosome,
+C04_6721,1000: Finished IF,Mitochondria,
+D04_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+E04_6721,1000: Finished IF,Nucleoplasm,
+F04_6721,1000: Finished IF,Nucleoli,Nucleoplasm
+G04_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+H04_6721,1000: Finished IF,Cytosol,
+A05_6721,1000: Finished IF,Nucleoplasm;Cytosol,Golgi apparatus
+B05_6721,1000: Finished IF,Nucleoplasm,
+C05_6721,1000: Finished IF,Mitochondria,
+D05_6721,1000: Finished IF,Microtubules,Nucleoplasm
+E05_6721,1000: Finished IF,Mitochondria,Vesicles;Cytosol
+F05_6721,1000: Finished IF,Nucleoplasm;Nuclear membrane,
+G05_6721,1000: Finished IF,Mitochondria,
+H05_6721,1000: Finished IF,Cytosol,Nucleoplasm;Nuclear bodies;Plasma membrane
+A06_6721,1000: Finished IF,Nucleoplasm;Mitochondria,
+B06_6721,1000: Finished IF,Endoplasmic reticulum,
+C06_6721,1000: Finished IF,Nucleoli;Mitochondria,Cytosol
+D06_6721,1000: Finished IF,Mitochondria,Cytosol
+E06_6721,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+F06_6721,1000: Finished IF,Nucleoplasm;Vesicles,Cytosol
+G06_6721,1000: Finished IF,Centrosome,Vesicles;Cytosol
+H06_6721,1000: Finished IF,Cytosol,Nucleoplasm
+A07_6721,1000: Finished IF,Cytosol,
+B07_6721,1000: Finished IF,Intermediate filaments;Cytosol,Nucleoli;Microtubules
+C07_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+D07_6721,1000: Finished IF,Nucleoli,
+E07_6721,1000: Finished IF,Mitochondria,
+F07_6721,1000: Finished IF,Nucleoli fibrillar center,Nucleoplasm
+G07_6721,1000: Finished IF,Nucleoli,Nucleoplasm
+H07_6721,1000: Finished IF,Cytosol,
+A08_6721,1000: Finished IF,Nucleoplasm;Nucleoli,Cytosol
+B08_6721,1000: Finished IF,Plasma membrane,Nucleoplasm
+C08_6721,1000: Finished IF,Nuclear membrane;Cytosol,
+D08_6721,1000: Finished IF,Nucleoplasm,
+E08_6721,1000: Finished IF,Golgi apparatus,
+F08_6721,1000: Finished IF,Nucleoplasm;Mitochondria,
+G08_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+H08_6721,1000: Finished IF,Nuclear speckles;Intermediate filaments,
+A09_6721,1000: Finished IF,Endoplasmic reticulum;Cytosol,
+B09_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+C09_6721,1000: Finished IF,Cytosol,
+D09_6721,1000: Finished IF,Endoplasmic reticulum,
+E09_6721,1000: Finished IF,Vesicles,Nucleoplasm
+F09_6721,1000: Finished IF,Endoplasmic reticulum,
+G09_6721,1000: Finished IF,Nucleoplasm,Nuclear bodies
+H09_6721,1000: Finished IF,Vesicles,
+A10_6721,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+B10_6721,1000: Finished IF,Cytosol,
+C10_6721,1000: Finished IF,Nucleoplasm;Nucleoli,Cell Junctions
+D10_6721,1000: Finished IF,Vesicles,
+E10_6721,1000: Finished IF,Golgi apparatus;Cytosol,
+F10_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+G10_6721,1000: Finished IF,Mitochondria,Nucleoli
+H10_6721,1000: Finished IF,Endoplasmic reticulum,
+A11_6721,1000: Finished IF,Nucleoplasm,
+B11_6721,1000: Finished IF,Nuclear bodies,Nucleoplasm;Centrosome
+C11_6721,1000: Finished IF,Nucleoplasm;Cytosol,
+D11_6721,1000: Finished IF,Vesicles;Lipid droplets,
+E11_6721,1000: Finished IF,Plasma membrane,Nucleoplasm
+F11_6721,1000: Finished IF,Nucleoplasm,
+G11_6721,1000: Finished IF,Mitochondria,Nucleoplasm
+H11_6721,1000: Finished IF,Vesicles,Centrosome
+A12_6721,1000: Finished IF,Nucleoplasm;Nucleoli,
+B12_6721,1000: Finished IF,Nucleoplasm,Vesicles
+C12_6721,1000: Finished IF,Vesicles,
+D12_6721,1000: Finished IF,Intermediate filaments,
+E12_6721,1000: Finished IF,Vesicles,Nucleoplasm
+F12_6721,1000: Finished IF,Cytosol,
+G12_6721,1000: Finished IF,Golgi apparatus,Nucleoli;Peroxisomes
+A01_6722,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+B01_6722,1000: Finished IF,Nucleoli;Mitochondria,
+C01_6722,1000: Finished IF,Cytosol,
+D01_6722,1000: Finished IF,Mitochondria,
+E01_6722,1000: Finished IF,Actin filaments;Focal adhesion sites,
+F01_6722,1000: Finished IF,Cytosol,
+G01_6722,1000: Finished IF,Cytosol,Golgi apparatus;Rods & Rings
+H01_6722,1000: Finished IF,Cytosol,
+A02_6722,1000: Finished IF,Vesicles,
+B02_6722,1000: Finished IF,Plasma membrane;Cytosol,
+C02_6722,1000: Finished IF,Mitochondria,
+D02_6722,1000: Finished IF,Endoplasmic reticulum,
+E02_6722,1000: Finished IF,Vesicles,
+F02_6722,1000: Finished IF,Vesicles,Nucleoplasm
+G02_6722,1000: Finished IF,Vesicles,
+H02_6722,1000: Finished IF,Nucleoplasm;Actin filaments,
+A03_6722,1000: Finished IF,Nucleoplasm;Cytosol,
+B03_6722,1000: Finished IF,Peroxisomes,
+C03_6722,1000: Finished IF,Cytosol,
+D03_6722,1000: Finished IF,Cytosol,
+E03_6722,1000: Finished IF,Cytosol,
+F03_6722,1000: Finished IF,Centrosome,Cytosol
+G03_6722,1000: Finished IF,Lipid droplets,
+H03_6722,1000: Finished IF,Cytosol,
+A04_6722,1000: Finished IF,Nucleoplasm,
+B04_6722,1000: Finished IF,Peroxisomes,
+C04_6722,1000: Finished IF,Cytosol,
+D04_6722,1000: Finished IF,Nucleoplasm;Golgi apparatus,Cytosol
+E04_6722,1000: Finished IF,Mitochondria,
+F04_6722,1000: Finished IF,Cytosol,Nucleoli
+G04_6722,1000: Finished IF,Nucleoli;Microtubules,
+H04_6722,1000: Finished IF,Mitochondria,
+A05_6722,1000: Finished IF,Nuclear speckles;Cytosol,
+B05_6722,1000: Finished IF,Mitochondria,
+C05_6722,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+D05_6722,1000: Finished IF,Nucleoplasm,Mitochondria
+E05_6722,1000: Finished IF,Cytosol,
+F05_6722,1000: Finished IF,Nucleoplasm,Cytosol
+G05_6722,1000: Finished IF,Endoplasmic reticulum,Cytosol
+H05_6722,1000: Finished IF,Cytosol,Nucleoli
+A06_6722,1000: Finished IF,Nucleoplasm,Vesicles
+B06_6722,1000: Finished IF,Nuclear speckles,
+C06_6722,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+D06_6722,1000: Finished IF,Nucleoplasm;Centriolar satellite,
+E06_6722,1000: Finished IF,Nucleoplasm,
+F06_6722,1000: Finished IF,Nucleoplasm,Cytosol
+G06_6722,1000: Finished IF,Cytosol,Actin filaments
+H06_6722,1000: Finished IF,Golgi apparatus;Cytosol,
+A07_6722,1000: Finished IF,Nucleoli,Nucleoplasm
+B07_6722,1000: Finished IF,Vesicles,Centrosome
+C07_6722,1000: Finished IF,Cytosol,
+D07_6722,1000: Finished IF,Nucleoplasm,Nuclear bodies
+E07_6722,1000: Finished IF,Nucleoplasm;Cytosol,
+F07_6722,1000: Finished IF,Vesicles,
+G07_6722,1000: Finished IF,Vesicles,
+H07_6722,1000: Finished IF,Nucleoplasm,Centrosome
+A08_6722,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+B08_6722,1000: Finished IF,Mitochondria,
+C08_6722,1000: Finished IF,Vesicles,
+D08_6722,1000: Finished IF,Nucleoplasm,
+E08_6722,1000: Finished IF,Nucleoplasm,Cytosol
+F08_6722,1000: Finished IF,Nucleoplasm,
+G08_6722,1000: Finished IF,Endoplasmic reticulum,Nuclear bodies
+H08_6722,1000: Finished IF,Endoplasmic reticulum,
+A09_6722,1000: Finished IF,Nucleoplasm;Cytosol,
+B09_6722,1000: Finished IF,Vesicles,
+C09_6722,1000: Finished IF,Cell Junctions;Focal adhesion sites,Nucleoplasm;Cytosol
+D09_6722,1000: Finished IF,Centriolar satellite;Cytosol,
+E09_6722,1000: Finished IF,Plasma membrane,
+F09_6722,1000: Finished IF,Lipid droplets,
+G09_6722,1000: Finished IF,Cytosol,
+H09_6722,1000: Finished IF,Nucleoplasm,
+A10_6722,1000: Finished IF,Nucleoplasm,
+B10_6722,1000: Finished IF,Nucleoplasm,
+C10_6722,1000: Finished IF,Vesicles,
+D10_6722,1000: Finished IF,Nucleoplasm;Nuclear bodies,
+E10_6722,1000: Finished IF,Mitochondria,
+F10_6722,1000: Finished IF,Vesicles,
+G10_6722,1000: Finished IF,Vesicles,Nucleoli fibrillar center
+H10_6722,1000: Finished IF,Nucleoplasm,
+A11_6722,1000: Finished IF,Mitochondria,
+B11_6722,1000: Finished IF,Cytosol,
+C11_6722,1000: Finished IF,Lipid droplets,
+D11_6722,1000: Finished IF,Mitochondria,
+E11_6722,1000: Finished IF,Centrosome,Cytosol
+F11_6722,1000: Finished IF,Cytosol,
+G11_6722,1000: Finished IF,Nucleoplasm,Cytosol
+H11_6722,1000: Finished IF,Nuclear speckles;Cytosol,Nucleoli
+A12_6722,1000: Finished IF,Mitochondria,
+B12_6722,1000: Finished IF,Endoplasmic reticulum,
+C12_6722,1000: Finished IF,Endoplasmic reticulum,
+D12_6722,1000: Finished IF,Plasma membrane;Cytosol,Endoplasmic reticulum
+E12_6722,1000: Finished IF,Nucleoli fibrillar center;Cytosol,
+F12_6722,1000: Finished IF,Nucleoplasm;Vesicles,
+G12_6722,1000: Finished IF,Nucleoplasm;Nucleoli,Vesicles
+A01_6724,1000: Finished IF,Vesicles,
+B01_6724,1000: Finished IF,Mitochondria,Cytosol
+C01_6724,1000: Finished IF,Golgi apparatus;Plasma membrane;Cytosol,
+D01_6724,1000: Finished IF,Nucleoli,Vesicles
+E01_6724,1000: Finished IF,Cytosol,
+F01_6724,1000: Finished IF,Cytosol,
+G01_6724,1000: Finished IF,Nucleoplasm,
+H01_6724,1000: Finished IF,Cytosol,
+A02_6724,1000: Finished IF,Nucleoplasm,
+B02_6724,1000: Finished IF,Nucleoplasm,
+C02_6724,1000: Finished IF,Nucleoplasm;Nuclear membrane,Plasma membrane
+D02_6724,1000: Finished IF,Endoplasmic reticulum,
+E02_6724,1000: Finished IF,Nucleoplasm,Cytosol
+F02_6724,1000: Finished IF,Vesicles,Nucleoplasm;Centrosome
+G02_6724,1000: Finished IF,Vesicles,
+H02_6724,1000: Finished IF,Mitochondria,
+A03_6724,1000: Finished IF,Vesicles,
+B03_6724,1000: Finished IF,Cytosol,Nuclear bodies
+C03_6724,950: Pending destiny IF,Nucleoplasm;Nuclear bodies,Cytokinetic bridge
+D03_6724,1000: Finished IF,Nucleoplasm;Cytosol,Mitochondria
+E03_6724,1000: Finished IF,Nucleoplasm;Cytosol,
+F03_6724,1000: Finished IF,Vesicles;Plasma membrane;Cell Junctions,Intermediate filaments;Aggresome
+G03_6724,1000: Finished IF,Mitochondria,
+H03_6724,1000: Finished IF,Plasma membrane;Cytosol,
+A04_6724,1000: Finished IF,Centrosome,Intermediate filaments
+B04_6724,1000: Finished IF,Endoplasmic reticulum,Vesicles
+C04_6724,1000: Finished IF,Nucleoplasm;Mitochondria,Cytosol
+D04_6724,1000: Finished IF,Vesicles,
+E04_6724,1000: Finished IF,Cytosol,
+F04_6724,1000: Finished IF,Cytosol,Nucleoli
+G04_6724,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+H04_6724,1000: Finished IF,Vesicles,
+A05_6724,1000: Finished IF,Nucleoplasm,
+B05_6724,1000: Finished IF,Intermediate filaments,
+C05_6724,1000: Finished IF,Cytosol,
+D05_6724,1000: Finished IF,Vesicles,
+E05_6724,1000: Finished IF,Nucleoplasm,
+F05_6724,1000: Finished IF,Cytosol,Nucleoplasm;Nuclear speckles
+G05_6724,1000: Finished IF,Nuclear bodies,
+H05_6724,1000: Finished IF,Nucleoplasm,
+A06_6724,1000: Finished IF,Nucleoli;Nucleoli fibrillar center,Cytosol
+B06_6724,1000: Finished IF,Vesicles,Golgi apparatus;Cytosol
+C06_6724,1000: Finished IF,Microtubules,Vesicles
+D06_6724,1000: Finished IF,Mitochondria,
+E06_6724,1000: Finished IF,Nucleoplasm,
+F06_6724,1000: Finished IF,Mitochondria,Cytosol
+G06_6724,1000: Finished IF,Mitochondria,
+H06_6724,1000: Finished IF,Cytosol,
+A07_6724,1000: Finished IF,Mitochondria,
+B07_6724,1000: Finished IF,Mitochondria,Cytosol
+C07_6724,1000: Finished IF,Mitochondria,
+D07_6724,1000: Finished IF,Cytosol,
+E07_6724,1000: Finished IF,Nucleoplasm;Cytosol,
+F07_6724,1000: Finished IF,Cytosol,
+G07_6724,1000: Finished IF,Mitochondria,
+H07_6724,1000: Finished IF,Mitochondria,Endoplasmic reticulum
+A08_6724,1000: Finished IF,Nucleoplasm,Vesicles
+B08_6724,1000: Finished IF,Mitochondria,
+C08_6724,1000: Finished IF,Plasma membrane,Cytosol
+D08_6724,1000: Finished IF,Nucleoplasm,Golgi apparatus
+E08_6724,1000: Finished IF,Vesicles,
+F08_6724,1000: Finished IF,Mitochondria,
+G08_6724,1000: Finished IF,Nucleoplasm;Cytosol,
+H08_6724,1000: Finished IF,Cytosol,
+A09_6724,1000: Finished IF,Nucleoplasm;Mitochondria,
+B09_6724,1000: Finished IF,Nuclear membrane;Mitochondria,
+C09_6724,1000: Finished IF,Mitochondria,
+D09_6724,1000: Finished IF,Cytosol,
+E09_6724,1000: Finished IF,Cytosol,
+F09_6724,1000: Finished IF,Mitochondria,Nucleoplasm
+G09_6724,1000: Finished IF,Mitochondria,
+H09_6724,1000: Finished IF,Cytosol,
+A10_6724,1000: Finished IF,Nucleoplasm;Centriolar satellite;Cytosol,Vesicles
+B10_6724,1000: Finished IF,Mitochondria,Vesicles
+C10_6724,1000: Finished IF,Microtubules,Nucleoli
+D10_6724,1000: Finished IF,Cytosol,
+E10_6724,1000: Finished IF,Nucleoli;Mitochondria,Nucleoplasm
+F10_6724,1000: Finished IF,Mitochondria,
+G10_6724,1000: Finished IF,Endoplasmic reticulum,
+H10_6724,1000: Finished IF,Mitochondria,Nucleoplasm
+A11_6724,1000: Finished IF,Cytosol,
+B11_6724,1000: Finished IF,Nucleoplasm,
+C11_6724,1000: Finished IF,Mitochondria,
+D11_6724,1000: Finished IF,Mitochondria,Nucleoplasm
+E11_6724,1000: Finished IF,Cytosol,
+F11_6724,1000: Finished IF,Lipid droplets,
+G11_6724,1000: Finished IF,Mitochondria,
+H11_6724,1000: Finished IF,Cytosol,
+A12_6724,1000: Finished IF,Mitochondria,
+B12_6724,1000: Finished IF,Mitochondria,
+C12_6724,1000: Finished IF,Mitochondria,Nucleoplasm
+D12_6724,1000: Finished IF,Mitochondria,Cytosol
+E12_6724,1000: Finished IF,Plasma membrane,Nucleoplasm
+F12_6724,1000: Finished IF,Vesicles;Cytosol,
+G12_6724,1000: Finished IF,Nuclear bodies;Mitochondria,Nuclear membrane;Cell Junctions
+A01_6725,1000: Finished IF,Plasma membrane,
+B01_6725,1000: Finished IF,Cytosol,Nucleoplasm
+C01_6725,1000: Finished IF,Nucleoplasm,
+D01_6725,1000: Finished IF,Cytosol,
+E01_6725,1000: Finished IF,Nucleoplasm,Cytosol
+F01_6725,1000: Finished IF,Cytosol,
+G01_6725,1000: Finished IF,Nucleoplasm,
+H01_6725,1000: Finished IF,Mitochondria,
+A02_6725,1000: Finished IF,Mitochondria,Nucleoplasm
+B02_6725,1000: Finished IF,Cytosol,
+C02_6725,1000: Finished IF,Cytosol,
+D02_6725,1000: Finished IF,Intermediate filaments,
+E02_6725,1000: Finished IF,Nucleoplasm;Vesicles,Cytosol
+F02_6725,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+G02_6725,1000: Finished IF,Nuclear bodies,
+H02_6725,1000: Finished IF,Nucleoli;Cytosol,Nucleoplasm
+A03_6725,1000: Finished IF,Nucleoplasm;Golgi apparatus;Vesicles,
+B03_6725,1000: Finished IF,Cytosol,Nucleoplasm
+C03_6725,1000: Finished IF,Nuclear speckles,
+D03_6725,1000: Finished IF,Nuclear speckles,
+E03_6725,1000: Finished IF,Nuclear speckles,Cytosol
+F03_6725,1000: Finished IF,Cytosol,Plasma membrane
+G03_6725,1000: Finished IF,Mitochondria,
+H03_6725,1000: Finished IF,Endoplasmic reticulum,
+A04_6725,1000: Finished IF,Nucleoplasm;Cytosol,
+B04_6725,1000: Finished IF,Vesicles,
+C04_6725,1000: Finished IF,Endoplasmic reticulum,Nuclear bodies
+D04_6725,1000: Finished IF,Nucleoplasm,
+E04_6725,1000: Finished IF,Endoplasmic reticulum,Cytosol
+F04_6725,1000: Finished IF,Mitochondria,
+G04_6725,1000: Finished IF,Nucleoplasm,
+H04_6725,1000: Finished IF,Cytosol,
+A05_6725,1000: Finished IF,Cytosol,Plasma membrane
+B05_6725,1000: Finished IF,Mitochondria;Cytosol,
+C05_6725,1000: Finished IF,Nucleoplasm,Cytosol
+D05_6725,1000: Finished IF,Vesicles,
+E05_6725,1000: Finished IF,Nucleoplasm,Plasma membrane
+F05_6725,1000: Finished IF,Nucleoplasm,
+G05_6725,1000: Finished IF,Mitochondria,
+H05_6725,1000: Finished IF,Nucleoplasm,Cytosol
+A06_6725,1000: Finished IF,Mitochondria,Nucleoplasm
+B06_6725,11: In IF,,
+C06_6725,1000: Finished IF,Plasma membrane,
+D06_6725,1000: Finished IF,Nucleoplasm,
+E06_6725,1000: Finished IF,Nucleoplasm,
+F06_6725,1000: Finished IF,Mitochondria,
+G06_6725,1000: Finished IF,Cytosol,Actin filaments
+H06_6725,1000: Finished IF,Nuclear speckles,
+A07_6725,1000: Finished IF,Nucleoplasm,Intermediate filaments
+B07_6725,1000: Finished IF,Vesicles,
+C07_6725,1000: Finished IF,Nucleoplasm,
+D07_6725,1000: Finished IF,Nucleoplasm;Nucleoli;Cytosol,Plasma membrane
+E07_6725,1000: Finished IF,Cytosol,Nucleoplasm
+F07_6725,1000: Finished IF,Nucleoplasm,
+G07_6725,1000: Finished IF,Nucleoplasm,Mitochondria
+H07_6725,1000: Finished IF,Cytosol,Mitochondria
+A08_6725,1000: Finished IF,Nucleoplasm,
+B08_6725,1000: Finished IF,Plasma membrane,Intermediate filaments
+C08_6725,1000: Finished IF,Vesicles,
+D08_6725,1000: Finished IF,Mitochondria,
+E08_6725,11: In IF,,
+F08_6725,1000: Finished IF,Nucleoplasm,
+G08_6725,1000: Finished IF,Nucleoplasm,
+H08_6725,1000: Finished IF,Nucleoplasm,Nucleoli
+A09_6725,1000: Finished IF,Cytosol,
+B09_6725,1000: Finished IF,Vesicles,
+C09_6725,1000: Finished IF,Nucleoplasm,Cell Junctions
+D09_6725,1000: Finished IF,Cytosol,
+E09_6725,1000: Finished IF,Vesicles,
+F09_6725,1000: Finished IF,Vesicles,
+G09_6725,1000: Finished IF,Nuclear speckles,Nucleoli;Cytosol
+H09_6725,1000: Finished IF,Nucleoplasm,Mitochondria
+A10_6725,1000: Finished IF,Nucleoplasm,
+B10_6725,1000: Finished IF,Cytosol,
+C10_6725,1000: Finished IF,Nucleoplasm,
+D10_6725,1000: Finished IF,Nucleoplasm,Cytosol
+E10_6725,1000: Finished IF,Vesicles,
+F10_6725,1000: Finished IF,Nucleoplasm,Cytosol
+G10_6725,1000: Finished IF,Nucleoplasm;Vesicles;Plasma membrane,
+H10_6725,1000: Finished IF,Nucleoplasm,
+A11_6725,1000: Finished IF,Mitochondria,
+B11_6725,1000: Finished IF,Nucleoplasm,Cytosol
+C11_6725,1000: Finished IF,Nucleoplasm,Nucleoli
+D11_6725,1000: Finished IF,Nucleoli,
+E11_6725,1000: Finished IF,Nucleoplasm,
+F11_6725,1000: Finished IF,Vesicles,
+G11_6725,1000: Finished IF,Nucleoplasm,Cytosol
+H11_6725,1000: Finished IF,Mitochondria,
+A12_6725,1000: Finished IF,Nucleoplasm;Vesicles,Cytosol
+B12_6725,1000: Finished IF,Endoplasmic reticulum,
+C12_6725,1000: Finished IF,Golgi apparatus,
+D12_6725,1000: Finished IF,Vesicles,
+E12_6725,1000: Finished IF,Golgi apparatus,
+F12_6725,1000: Finished IF,Mitochondria,
+G12_6725,1000: Finished IF,Nuclear speckles,Vesicles
+A01_6731,1000: Finished IF,Vesicles,
+B01_6731,1000: Finished IF,Mitochondria,Cytosol
+C01_6731,1000: Finished IF,Cytosol,Nucleoplasm
+D01_6731,1000: Finished IF,Plasma membrane,
+E01_6731,1000: Finished IF,Cytosol,Nucleoplasm
+F01_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+G01_6731,1000: Finished IF,Cytosol,
+H01_6731,1000: Finished IF,Vesicles,
+A02_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+B02_6731,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli
+C02_6731,1000: Finished IF,Plasma membrane,Nucleoplasm;Cell Junctions
+D02_6731,1000: Finished IF,Cytosol,
+E02_6731,1000: Finished IF,Vesicles,Golgi apparatus
+F02_6731,1000: Finished IF,Mitochondria,
+G02_6731,1000: Finished IF,Nucleoplasm,Mitochondria;Cytosol
+H02_6731,1000: Finished IF,Golgi apparatus,
+A03_6731,1000: Finished IF,Mitochondria,Vesicles
+B03_6731,1000: Finished IF,Plasma membrane;Cytosol,
+C03_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+D03_6731,1000: Finished IF,Plasma membrane;Cytosol,
+E03_6731,1000: Finished IF,Cytosol,Golgi apparatus;Plasma membrane
+F03_6731,1000: Finished IF,Nucleoplasm,Vesicles
+G03_6731,1000: Finished IF,Nucleoplasm,Nucleoli
+H03_6731,1000: Finished IF,Plasma membrane;Cytosol,Vesicles
+A04_6731,1000: Finished IF,Cytosol,
+B04_6731,1000: Finished IF,Nucleoplasm,
+C04_6731,1000: Finished IF,Nucleoplasm;Cytosol,Intermediate filaments
+D04_6731,1000: Finished IF,Cytosol,Intermediate filaments;Actin filaments
+E04_6731,1000: Finished IF,Mitochondria;Cytosol,Intermediate filaments
+F04_6731,1000: Finished IF,Cytosol,
+G04_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+H04_6731,1000: Finished IF,Cytosol,Plasma membrane
+A05_6731,1000: Finished IF,Nucleoplasm,Mitochondria;Cytosol
+B05_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+C05_6731,1000: Finished IF,Plasma membrane;Cell Junctions,Cytosol
+D05_6731,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+E05_6731,1000: Finished IF,Vesicles,
+F05_6731,1000: Finished IF,Nucleoplasm,Plasma membrane;Cytosol
+G05_6731,1000: Finished IF,Mitochondria,Nucleoplasm
+H05_6731,1000: Finished IF,Golgi apparatus,Nucleoplasm
+A06_6731,1000: Finished IF,Cytosol,
+B06_6731,1000: Finished IF,Endoplasmic reticulum,
+C06_6731,1000: Finished IF,Mitochondria,Nucleoplasm
+D06_6731,1000: Finished IF,Mitochondria,Plasma membrane;Cytosol
+E06_6731,1000: Finished IF,Cell Junctions,
+F06_6731,1000: Finished IF,Cytosol,Actin filaments
+G06_6731,1000: Finished IF,Nucleoplasm;Nucleoli,Nuclear bodies
+H06_6731,1000: Finished IF,Nuclear bodies,Mitochondria;Cytosol
+A07_6731,1000: Finished IF,Nucleoplasm;Vesicles,Nucleoli
+B07_6731,1000: Finished IF,Nucleoplasm;Cytosol,Actin filaments
+C07_6731,1000: Finished IF,Cytosol,Nucleoplasm
+D07_6731,1000: Finished IF,Nucleoplasm;Nucleoli,
+E07_6731,1000: Finished IF,Mitochondria,Nucleoplasm;Plasma membrane
+F07_6731,1000: Finished IF,Mitochondria,
+G07_6731,1000: Finished IF,Nucleoplasm;Cytosol,
+H07_6731,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+A08_6731,1000: Finished IF,Nucleoplasm,
+B08_6731,1000: Finished IF,Mitochondria,
+C08_6731,1000: Finished IF,Cytosol,
+D08_6731,1000: Finished IF,Cytosol,
+E08_6731,1000: Finished IF,Mitochondria,
+F08_6731,1000: Finished IF,Cytosol,
+G08_6731,1000: Finished IF,Plasma membrane;Mitochondria,
+H08_6731,1000: Finished IF,Cytosol,
+A09_6731,1000: Finished IF,Nucleoplasm,
+B09_6731,1000: Finished IF,Nucleoplasm,Cytosol
+C09_6731,1000: Finished IF,Nuclear membrane,Cytosol
+D09_6731,1000: Finished IF,Nucleoplasm,
+E09_6731,1000: Finished IF,Nucleoplasm,Golgi apparatus;Vesicles
+F09_6731,1000: Finished IF,Nuclear speckles,
+G09_6731,1000: Finished IF,Plasma membrane,Nucleoplasm
+H09_6731,1000: Finished IF,Golgi apparatus;Vesicles,
+A10_6731,1000: Finished IF,Nucleoli;Actin filaments,Nucleoplasm;Cytosol
+B10_6731,1000: Finished IF,Microtubules,Vesicles
+C10_6731,1000: Finished IF,Cytosol,
+D10_6731,1000: Finished IF,Golgi apparatus,Nucleoplasm
+E10_6731,1000: Finished IF,Nuclear membrane,Nucleoplasm;Vesicles
+F10_6731,1000: Finished IF,Nucleoplasm;Vesicles,
+G10_6731,1000: Finished IF,Mitochondria,
+H10_6731,1000: Finished IF,Vesicles,
+A11_6731,1000: Finished IF,Nucleoli,Mitochondria
+B11_6731,1000: Finished IF,Endoplasmic reticulum,
+C11_6731,1000: Finished IF,Golgi apparatus,
+D11_6731,1000: Finished IF,Nuclear bodies,
+E11_6731,1000: Finished IF,Mitochondria,
+F11_6731,1000: Finished IF,Vesicles,
+G11_6731,1000: Finished IF,Vesicles,Nucleoplasm
+H11_6731,1000: Finished IF,Mitochondria,Plasma membrane
+A12_6731,1000: Finished IF,Cell Junctions,Vesicles
+B12_6731,1000: Finished IF,Cytosol,
+C12_6731,1000: Finished IF,Plasma membrane,Centriolar satellite
+D12_6731,1000: Finished IF,Mitochondria,Nuclear bodies
+E12_6731,1000: Finished IF,Mitochondria,
+F12_6731,1000: Finished IF,Vesicles,
+G12_6731,1000: Finished IF,Cytosol,
+A01_6734,1000: Finished IF,Endoplasmic reticulum,Lipid droplets
+B01_6734,1000: Finished IF,Cytosol,
+C01_6734,1000: Finished IF,Cytosol,
+D01_6734,1000: Finished IF,Golgi apparatus,Nuclear bodies
+E01_6734,1000: Finished IF,Nucleoplasm;Cytosol,Nuclear membrane
+F01_6734,1000: Finished IF,Cytosol,
+G01_6734,1000: Finished IF,Nucleoplasm,
+H01_6734,1000: Finished IF,Mitochondria,Nucleoplasm
+A02_6734,1000: Finished IF,Cytosol,
+B02_6734,1000: Finished IF,Mitochondria,Nucleoplasm;Nuclear bodies;Cytosol
+C02_6734,1000: Finished IF,Cytosol,
+D02_6734,1000: Finished IF,Cytosol,
+E02_6734,1000: Finished IF,Cytosol,
+F02_6734,1000: Finished IF,Endoplasmic reticulum,
+G02_6734,1000: Finished IF,Nucleoplasm,Vesicles;Cytosol
+H02_6734,1000: Finished IF,Mitochondria,
+A03_6734,1000: Finished IF,Vesicles,Nucleoplasm
+B03_6734,1000: Finished IF,Nucleoplasm,
+C03_6734,1000: Finished IF,Mitochondria,
+D03_6734,1000: Finished IF,Nucleoli,
+E03_6734,1000: Finished IF,Nucleoplasm,
+F03_6734,1000: Finished IF,Cytosol,
+G03_6734,1000: Finished IF,Nucleoplasm,Nucleoli
+H03_6734,1000: Finished IF,Cytosol,
+A04_6734,1000: Finished IF,Nucleoplasm,Cytosol
+B04_6734,1000: Finished IF,Endoplasmic reticulum,
+C04_6734,1000: Finished IF,Cytosol,Mitochondria
+D04_6734,1000: Finished IF,Cytosol,
+E04_6734,1000: Finished IF,Nucleoplasm;Nucleoli,Cytosol
+F04_6734,1000: Finished IF,Cytosol,
+G04_6734,1000: Finished IF,Mitochondria,Nucleoplasm
+H04_6734,1000: Finished IF,Nucleoplasm;Centrosome;Cytosol,
+A05_6734,1000: Finished IF,Nucleoplasm,Cytosol
+B05_6734,1000: Finished IF,Mitochondria,Nucleoplasm;Plasma membrane
+C05_6734,1000: Finished IF,Nucleoplasm,Microtubules
+D05_6734,1000: Finished IF,Nucleoplasm,Cytosol
+E05_6734,1000: Finished IF,Endoplasmic reticulum,
+F05_6734,1000: Finished IF,Nucleoplasm,Nucleoli;Cytosol
+G05_6734,1000: Finished IF,Mitochondria,Cytosol
+H05_6734,1000: Finished IF,Cytosol,
+A06_6734,1000: Finished IF,Endoplasmic reticulum,Nucleoplasm
+B06_6734,1000: Finished IF,Nucleoplasm,Cytosol
+C06_6734,1000: Finished IF,Vesicles;Cytoplasmic bodies,Cytosol
+D06_6734,1000: Finished IF,Cytosol,Nucleoplasm
+E06_6734,1000: Finished IF,Mitochondria,
+F06_6734,1000: Finished IF,Mitochondria,
+G06_6734,1000: Finished IF,Plasma membrane;Cytosol,
+H06_6734,1000: Finished IF,Vesicles,Nucleoplasm
+A07_6734,1000: Finished IF,Focal adhesion sites;Cytosol,Mitochondria
+B07_6734,1000: Finished IF,Mitochondria,
+C07_6734,1000: Finished IF,Nucleoplasm;Centrosome,
+D07_6734,1000: Finished IF,Nucleoplasm,
+E07_6734,1000: Finished IF,Nucleoplasm;Cytosol,
+F07_6734,1000: Finished IF,Nucleoplasm,
+G07_6734,1000: Finished IF,Cytosol,
+H07_6734,1000: Finished IF,Nucleoli,Vesicles
+A08_6734,1000: Finished IF,Nucleoplasm;Cytosol,
+B08_6734,1000: Finished IF,Nucleoplasm,Cytosol
+C08_6734,1000: Finished IF,Mitochondria,Nucleoplasm
+D08_6734,1000: Finished IF,Cytosol,
+E08_6734,1000: Finished IF,Nucleoplasm,Nuclear bodies;Cytosol
+F08_6734,1000: Finished IF,Vesicles,Focal adhesion sites
+G08_6734,1000: Finished IF,Golgi apparatus,Nucleoplasm;Vesicles
+H08_6734,1000: Finished IF,Nucleoli;Vesicles,
+A09_6734,1000: Finished IF,Mitochondria,
+B09_6734,1000: Finished IF,Nucleoplasm,
+C09_6734,1000: Finished IF,Cytosol,Nucleoplasm
+D09_6734,1000: Finished IF,Mitochondria,
+E09_6734,1000: Finished IF,Nucleoplasm;Cytosol,
+F09_6734,1000: Finished IF,Peroxisomes,Nucleoplasm
+G09_6734,1000: Finished IF,Mitochondria,
+H09_6734,1000: Finished IF,Nucleoplasm,
+A10_6734,1000: Finished IF,Cytosol,Nucleoplasm
+B10_6734,1000: Finished IF,Nucleoplasm,
+C10_6734,1000: Finished IF,Nucleoplasm,
+D10_6734,1000: Finished IF,Nucleoplasm,Cytosol
+E10_6734,1000: Finished IF,Mitochondria,Cytosol
+F10_6734,1000: Finished IF,Nucleoplasm,
+G10_6734,1000: Finished IF,Nucleoplasm,
+H10_6734,1000: Finished IF,Cytosol,
+A11_6734,1000: Finished IF,Cytosol,Nucleoli
+B11_6734,1000: Finished IF,Mitochondria,
+C11_6734,1000: Finished IF,Nucleoplasm,Mitochondria;Cytosol
+D11_6734,1000: Finished IF,Endoplasmic reticulum,
+E11_6734,1000: Finished IF,Endoplasmic reticulum,
+F11_6734,1000: Finished IF,Mitochondria,
+G11_6734,1000: Finished IF,Mitochondria,
+H11_6734,1000: Finished IF,Nucleoplasm,
+A12_6734,1000: Finished IF,Endoplasmic reticulum,
+B12_6734,1000: Finished IF,Nucleoplasm;Cytosol,
+C12_6734,1000: Finished IF,Vesicles,
+D12_6734,1000: Finished IF,Nucleoplasm,Cell Junctions
+E12_6734,1000: Finished IF,Mitochondria,
+F12_6734,1000: Finished IF,Nucleoplasm;Cytosol,Centrosome
+G12_6734,1000: Finished IF,Cytosol,
+A01_6735,1000: Finished IF,Mitochondria,
+B01_6735,1000: Finished IF,Nucleoplasm,Nuclear bodies
+C01_6735,1000: Finished IF,Cytosol,Nucleoplasm;Nuclear membrane;Nucleoli
+D01_6735,1000: Finished IF,Cytosol,
+E01_6735,1000: Finished IF,Nucleoplasm,Cytosol
+F01_6735,1000: Finished IF,Vesicles,Nucleoplasm;Cytosol
+G01_6735,1000: Finished IF,Mitochondria,
+H01_6735,1000: Finished IF,Cytosol,
+A02_6735,1000: Finished IF,Cytosol,
+B02_6735,1000: Finished IF,Cytosol,Plasma membrane
+C02_6735,1000: Finished IF,Nucleoplasm,Nuclear bodies
+D02_6735,1000: Finished IF,Nucleoplasm;Vesicles,
+E02_6735,1000: Finished IF,Nucleoplasm;Cytosol,
+F02_6735,1000: Finished IF,Nuclear bodies,Nucleoplasm
+G02_6735,1000: Finished IF,Nucleoplasm,
+H02_6735,1000: Finished IF,Nucleoplasm,Cytoplasmic bodies
+A03_6735,1000: Finished IF,Vesicles,
+B03_6735,1000: Finished IF,Nucleoplasm,
+C03_6735,1000: Finished IF,Nuclear bodies,Nucleoplasm;Focal adhesion sites
+D03_6735,1000: Finished IF,Mitochondria,
+E03_6735,1000: Finished IF,Vesicles,
+F03_6735,1000: Finished IF,Nucleoplasm;Cytosol,
+G03_6735,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+H03_6735,1000: Finished IF,Nucleoplasm,Mitotic chromosome
+A04_6735,1000: Finished IF,Cytosol,
+B04_6735,1000: Finished IF,Plasma membrane;Cytosol,Golgi apparatus
+C04_6735,1000: Finished IF,Mitochondria;Cytosol,
+D04_6735,1000: Finished IF,Golgi apparatus,
+E04_6735,1000: Finished IF,Cytosol,
+F04_6735,1000: Finished IF,Cytosol,
+G04_6735,1000: Finished IF,Vesicles,
+H04_6735,1000: Finished IF,Vesicles,
+A05_6735,1000: Finished IF,Mitochondria,
+B05_6735,1000: Finished IF,Endoplasmic reticulum,
+C05_6735,1000: Finished IF,Nuclear bodies,
+D05_6735,1000: Finished IF,Golgi apparatus;Cytosol,
+E05_6735,1000: Finished IF,Cytosol,Nucleoplasm
+F05_6735,1000: Finished IF,Mitochondria,
+G05_6735,1000: Finished IF,Plasma membrane,
+H05_6735,1000: Finished IF,Mitochondria,
+A06_6735,1000: Finished IF,Cytosol,
+B06_6735,1000: Finished IF,Mitochondria,
+C06_6735,1000: Finished IF,Nucleoplasm;Mitochondria,Cytosol
+D06_6735,1000: Finished IF,Cytosol,
+E06_6735,1000: Finished IF,Cytosol,
+F06_6735,1000: Finished IF,Cytosol,
+G06_6735,1000: Finished IF,Mitochondria,
+H06_6735,1000: Finished IF,Nucleoplasm,
+A07_6735,1000: Finished IF,Endoplasmic reticulum,
+B07_6735,1000: Finished IF,Nucleoplasm;Cytosol,Nucleoli fibrillar center
+C07_6735,1000: Finished IF,Nuclear bodies,
+D07_6735,1000: Finished IF,Cytosol,Golgi apparatus
+E07_6735,1000: Finished IF,Golgi apparatus,Endoplasmic reticulum
+F07_6735,1000: Finished IF,Cytosol,Mitochondria
+G07_6735,1000: Finished IF,Nucleoplasm;Vesicles;Plasma membrane,
+H07_6735,1000: Finished IF,Golgi apparatus,
+A08_6735,1000: Finished IF,Mitochondria,Nucleoli
+B08_6735,1000: Finished IF,Cytosol,
+C08_6735,1000: Finished IF,Vesicles,
+D08_6735,1000: Finished IF,Plasma membrane;Cytosol,Nucleoplasm
+E08_6735,1000: Finished IF,Golgi apparatus,Vesicles
+F08_6735,1000: Finished IF,Vesicles;Plasma membrane,
+G08_6735,1000: Finished IF,Cytosol,
+H08_6735,1000: Finished IF,Plasma membrane,Actin filaments
+A09_6735,1000: Finished IF,Cytosol,
+B09_6735,1000: Finished IF,Nucleoplasm;Cytosol,
+C09_6735,1000: Finished IF,Nucleoplasm;Cytosol,Centrosome
+D09_6735,1000: Finished IF,Mitochondria,
+E09_6735,1000: Finished IF,Vesicles,Nuclear speckles
+F09_6735,1000: Finished IF,Nuclear bodies;Cytosol,
+G09_6735,1000: Finished IF,Nucleoplasm;Vesicles,
+H09_6735,1000: Finished IF,Mitochondria,
+A10_6735,1000: Finished IF,Nucleoplasm,
+B10_6735,1000: Finished IF,Plasma membrane,
+C10_6735,1000: Finished IF,Mitochondria,Cytosol
+D10_6735,1000: Finished IF,Plasma membrane,Nucleoplasm
+E10_6735,950: Pending destiny IF,Golgi apparatus;Centrosome,Nuclear bodies
+F10_6735,1000: Finished IF,Golgi apparatus,
+G10_6735,1000: Finished IF,Nucleoplasm,Cytosol
+H10_6735,1000: Finished IF,Centrosome;Cytosol,
+A11_6735,1000: Finished IF,Plasma membrane,Nucleoplasm
+B11_6735,1000: Finished IF,Nuclear bodies,Nucleoplasm;Cytosol
+C11_6735,1000: Finished IF,Nucleoplasm,
+D11_6735,1000: Finished IF,Nucleoplasm,
+E11_6735,1000: Finished IF,Cytosol,
+F11_6735,1000: Finished IF,Nucleoplasm,Cytosol
+G11_6735,1000: Finished IF,Plasma membrane;Cytosol,
+H11_6735,1000: Finished IF,Cytosol,Nucleoplasm;Vesicles
+A12_6735,1000: Finished IF,Vesicles,
+B12_6735,1000: Finished IF,Nucleoplasm,
+C12_6735,1000: Finished IF,Cytosol,
+D12_6735,1000: Finished IF,Plasma membrane,
+E12_6735,1000: Finished IF,Nuclear bodies,Vesicles
+F12_6735,1000: Finished IF,Plasma membrane,
+G12_6735,1000: Finished IF,Nucleoplasm;Cytosol,
+A01_6736,1000: Finished IF,Nucleoplasm,Vesicles
+B01_6736,1000: Finished IF,Nucleoplasm,
+C01_6736,1000: Finished IF,Nuclear bodies,Cytosol
+D01_6736,1000: Finished IF,Cytosol,
+E01_6736,1000: Finished IF,Vesicles;Cytosol,
+F01_6736,1000: Finished IF,Nucleoplasm;Centrosome;Cytosol,
+G01_6736,1000: Finished IF,Nucleoplasm,Nuclear speckles;Golgi apparatus;Cytosol
+H01_6736,1000: Finished IF,Nucleoplasm;Nuclear bodies,Midbody ring
+A02_6736,1000: Finished IF,Nuclear bodies,Nucleoplasm
+B02_6736,1000: Finished IF,Endoplasmic reticulum,Nucleoplasm
+C02_6736,1000: Finished IF,Plasma membrane;Centriolar satellite,
+D02_6736,1000: Finished IF,Vesicles,
+E02_6736,1000: Finished IF,Centrosome,Cytosol
+F02_6736,1000: Finished IF,Lipid droplets,
+G02_6736,1000: Finished IF,Nucleoplasm;Cytosol,
+H02_6736,1000: Finished IF,Intermediate filaments,
+A03_6736,1000: Finished IF,Endoplasmic reticulum,
+B03_6736,1000: Finished IF,Nucleoplasm,Nucleoli
+C03_6736,1000: Finished IF,Nucleoplasm;Plasma membrane;Cytosol,
+D03_6736,1000: Finished IF,Nuclear speckles;Plasma membrane,
+E03_6736,1000: Finished IF,Nucleoplasm;Cytosol,
+F03_6736,1000: Finished IF,Nucleoli,Nucleoplasm
+G03_6736,950: Pending destiny IF,Nucleoplasm;Mitochondria,
+H03_6736,1000: Finished IF,Cytoplasmic bodies,
+A04_6736,1000: Finished IF,Nucleoli fibrillar center;Plasma membrane,
+B04_6736,1000: Finished IF,Cytosol,
+C04_6736,1000: Finished IF,Nuclear bodies;Cytosol,
+D04_6736,1000: Finished IF,Mitochondria,
+E04_6736,1000: Finished IF,Cytosol,
+F04_6736,1000: Finished IF,Nucleoplasm;Nucleoli fibrillar center,
+G04_6736,1000: Finished IF,Plasma membrane,
+H04_6736,1000: Finished IF,Nuclear speckles,Cytosol
+A05_6736,1000: Finished IF,Endoplasmic reticulum,Cytosol
+B05_6736,1000: Finished IF,Cytosol,
+C05_6736,1000: Finished IF,Nucleoplasm;Cytosol,Golgi apparatus
+D05_6736,11: In IF,,
+E05_6736,1000: Finished IF,Golgi apparatus,Nuclear membrane;Focal adhesion sites
+F05_6736,1000: Finished IF,Peroxisomes,Nucleoli
+G05_6736,1000: Finished IF,Cytosol,
+H05_6736,1000: Finished IF,Endoplasmic reticulum,
+A06_6736,1000: Finished IF,Golgi apparatus;Vesicles,Nuclear speckles;Cytosol
+B06_6736,1000: Finished IF,Vesicles,
+C06_6736,1000: Finished IF,Nucleoplasm,Cytosol
+D06_6736,1000: Finished IF,Nucleoplasm,Nuclear bodies;Actin filaments;Cytosol
+E06_6736,1000: Finished IF,Plasma membrane,Cytosol
+F06_6736,1000: Finished IF,Cytosol,Plasma membrane
+G06_6736,11: In IF,,
+H06_6736,1000: Finished IF,Mitochondria,
+A07_6736,1000: Finished IF,Nucleoplasm;Golgi apparatus,
+B07_6736,1000: Finished IF,Cytosol,Nucleoplasm
+C07_6736,1000: Finished IF,Nucleoplasm;Golgi apparatus,
+D07_6736,1000: Finished IF,Plasma membrane;Cytosol,
+E07_6736,1000: Finished IF,Vesicles,Cytosol
+F07_6736,1000: Finished IF,Nucleoplasm;Golgi apparatus;Vesicles,
+G07_6736,1000: Finished IF,Vesicles,
+H07_6736,1000: Finished IF,Mitochondria,
+A08_6736,1000: Finished IF,Cytosol,
+B08_6736,1000: Finished IF,Mitochondria,
+C08_6736,1000: Finished IF,Golgi apparatus,
+D08_6736,1000: Finished IF,Nucleoplasm,
+E08_6736,1000: Finished IF,Cytosol,Nucleoli
+F08_6736,1000: Finished IF,Vesicles,
+G08_6736,1000: Finished IF,Nucleoplasm,
+H08_6736,1000: Finished IF,Cytosol,Nuclear bodies
+A09_6736,1000: Finished IF,Nucleoplasm;Cytosol,
+B09_6736,1000: Finished IF,Intermediate filaments,Golgi apparatus
+C09_6736,1000: Finished IF,Nucleoplasm,
+D09_6736,1000: Finished IF,Nucleoplasm,Cytosol
+E09_6736,1000: Finished IF,Nucleoplasm,Mitotic chromosome
+F09_6736,1000: Finished IF,Nucleoplasm,Centrosome
+G09_6736,1000: Finished IF,Nucleoplasm,
+H09_6736,1000: Finished IF,Cytosol,Nucleoplasm
+A10_6736,1000: Finished IF,Cytosol,
+B10_6736,1000: Finished IF,Peroxisomes,
+C10_6736,1000: Finished IF,Nucleoplasm;Vesicles,
+D10_6736,1000: Finished IF,Plasma membrane,Actin filaments;Cytosol
+E10_6736,1000: Finished IF,Golgi apparatus;Vesicles,
+F10_6736,1000: Finished IF,Intermediate filaments,Cytosol
+G10_6736,1000: Finished IF,Nucleoplasm,
+H10_6736,1000: Finished IF,Vesicles,Nuclear bodies
+A11_6736,1000: Finished IF,Cytosol,Nucleoplasm
+B11_6736,1000: Finished IF,Vesicles,Nucleoli fibrillar center
+C11_6736,1000: Finished IF,Mitochondria,Nucleoli
+D11_6736,1000: Finished IF,Nuclear bodies;Endoplasmic reticulum;Cytosol,Nucleoli
+E11_6736,1000: Finished IF,Nuclear speckles,
+F11_6736,1000: Finished IF,Nucleoplasm,Intermediate filaments;Centrosome
+G11_6736,1000: Finished IF,Mitochondria,
+H11_6736,1000: Finished IF,Nuclear speckles,Cytosol
+A12_6736,1000: Finished IF,Nucleoplasm,Nuclear bodies
+B12_6736,1000: Finished IF,Nucleoplasm,Cytosol
+C12_6736,1000: Finished IF,Vesicles,
+D12_6736,1000: Finished IF,Nucleoplasm,
+E12_6736,1000: Finished IF,Vesicles,Centrosome
+F12_6736,1000: Finished IF,Vesicles,Nucleoplasm
+G12_6736,1000: Finished IF,Vesicles,
+A01_6745,1000: Finished IF,Mitochondria,
+B01_6745,1000: Finished IF,Cytosol,
+C01_6745,1000: Finished IF,Intermediate filaments,
+D01_6745,1000: Finished IF,Vesicles,Aggresome
+E01_6745,1000: Finished IF,Mitochondria,Vesicles
+F01_6745,1000: Finished IF,Cytosol,Nuclear bodies
+G01_6745,1000: Finished IF,Vesicles,Cytosol
+H01_6745,1000: Finished IF,Vesicles,Plasma membrane
+A02_6745,1000: Finished IF,Cytosol,Cell Junctions
+B02_6745,1000: Finished IF,Cytosol,
+C02_6745,1000: Finished IF,Plasma membrane,Cytosol
+D02_6745,1000: Finished IF,Nucleoplasm,Cytosol
+E02_6745,1000: Finished IF,Vesicles,
+F02_6745,1000: Finished IF,Mitochondria,
+G02_6745,1000: Finished IF,Vesicles,
+H02_6745,1000: Finished IF,Mitochondria,
+A03_6745,1000: Finished IF,Mitochondria,
+B03_6745,1000: Finished IF,Nuclear speckles,Cell Junctions
+C03_6745,1000: Finished IF,Nucleoplasm;Nucleoli,
+D03_6745,1000: Finished IF,Nucleoplasm,Nucleoli
+E03_6745,1000: Finished IF,Mitochondria,Nucleoplasm
+F03_6745,1000: Finished IF,Plasma membrane,Nucleoplasm;Cytosol
+G03_6745,1000: Finished IF,Nucleoplasm,Plasma membrane;Focal adhesion sites
+H03_6745,1000: Finished IF,Cytosol,
+A04_6745,1000: Finished IF,Nucleoplasm;Cytosol,
+B04_6745,1000: Finished IF,Cytosol,
+C04_6745,1000: Finished IF,Golgi apparatus,
+D04_6745,1000: Finished IF,Nucleoplasm;Cytosol,
+E04_6745,1000: Finished IF,Vesicles,
+F04_6745,1000: Finished IF,Nucleoli,Cytosol
+G04_6745,1000: Finished IF,Golgi apparatus;Plasma membrane,
+H04_6745,1000: Finished IF,Nucleoli fibrillar center,Mitochondria
+A05_6745,1000: Finished IF,Nucleoli;Nucleoli fibrillar center,Nucleoplasm
+B05_6745,1000: Finished IF,Nucleoplasm,
+C05_6745,1000: Finished IF,Peroxisomes,Microtubules
+D05_6745,11: In IF,,
+E05_6745,1000: Finished IF,Mitochondria,Nucleoli
+F05_6745,1000: Finished IF,Vesicles,Golgi apparatus
+G05_6745,1000: Finished IF,Mitochondria,Nucleoplasm;Cytosol
+H05_6745,1000: Finished IF,Nuclear speckles,Nucleoplasm;Cytosol
+A06_6745,1000: Finished IF,Nucleoplasm,Cytosol
+B06_6745,1000: Finished IF,Nucleoplasm,Vesicles
+C06_6745,1000: Finished IF,Mitochondria,
+D06_6745,1000: Finished IF,Nucleoplasm,
+E06_6745,1000: Finished IF,Nucleoplasm,
+F06_6745,1000: Finished IF,Nuclear membrane,Nucleoplasm;Cytosol
+G06_6745,1000: Finished IF,Vesicles,Nucleoplasm
+H06_6745,1000: Finished IF,Nucleoli,Nucleoplasm;Cytosol
+A07_6745,1000: Finished IF,Nucleoplasm,Nuclear bodies;Vesicles
+B07_6745,1000: Finished IF,Nucleoplasm,Golgi apparatus
+C07_6745,1000: Finished IF,Nucleoplasm,Vesicles
+D07_6745,1000: Finished IF,Nucleoplasm;Nuclear membrane;Nucleoli;Mitochondria,
+E07_6745,1000: Finished IF,Vesicles,
+F07_6745,1000: Finished IF,Actin filaments,Plasma membrane;Cytosol
+G07_6745,1000: Finished IF,Nucleoplasm,Golgi apparatus;Actin filaments
+H07_6745,1000: Finished IF,Cytosol,
+A08_6745,1000: Finished IF,Nucleoplasm,Nuclear speckles
+B08_6745,1000: Finished IF,Nuclear speckles,Cytosol
+C08_6745,1000: Finished IF,Plasma membrane,
+D08_6745,1000: Finished IF,Nucleoplasm,Vesicles
+E08_6745,1000: Finished IF,Nucleoplasm,Cytosol
+F08_6745,1000: Finished IF,Nucleoplasm,Nucleoli
+G08_6745,1000: Finished IF,Nucleoli,
+H08_6745,1000: Finished IF,Cytosol,
+A09_6745,1000: Finished IF,Vesicles,
+B09_6745,1000: Finished IF,Nucleoplasm;Cytosol,
+C09_6745,1000: Finished IF,Vesicles,
+D09_6745,1000: Finished IF,Mitochondria,
+E09_6745,1000: Finished IF,Endoplasmic reticulum,
+F09_6745,1000: Finished IF,Nucleoplasm,
+G09_6745,1000: Finished IF,Nucleoplasm,Cytosol
+H09_6745,1000: Finished IF,Nucleoplasm;Cytosol,Nuclear bodies;Vesicles
+A10_6745,1000: Finished IF,Nucleoplasm,Vesicles
+B10_6745,1000: Finished IF,Nucleoplasm,
+C10_6745,1000: Finished IF,Nucleoli,
+D10_6745,1000: Finished IF,Vesicles;Lipid droplets,
+E10_6745,1000: Finished IF,Golgi apparatus,Nucleoplasm;Nucleoli
+F10_6745,1000: Finished IF,Nucleoplasm,
+G10_6745,1000: Finished IF,Plasma membrane;Actin filaments,
+H10_6745,1000: Finished IF,Golgi apparatus;Cytosol,
+A11_6745,1000: Finished IF,Nucleoplasm;Golgi apparatus,Nuclear bodies;Cytosol
+B11_6745,11: In IF,,
+C11_6745,11: In IF,,
+D11_6745,11: In IF,,
+E11_6745,11: In IF,,
+F11_6745,11: In IF,,
+G11_6745,11: In IF,,
+H11_6745,11: In IF,,
+A12_6745,11: In IF,,
+B12_6745,11: In IF,,
+C12_6745,11: In IF,,
+D12_6745,11: In IF,,
+E12_6745,11: In IF,,
+F12_6745,11: In IF,,
+G12_6745,11: In IF,,

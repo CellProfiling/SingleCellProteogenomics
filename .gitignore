@@ -8,4 +8,4 @@ input/Tpms*.csv
 ~$*
 */~$*
 output/ProteinMod*
-output_devin/*ccd
+output_devin/*
