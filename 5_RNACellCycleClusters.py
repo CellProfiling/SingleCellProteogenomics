@@ -11,9 +11,9 @@
 
 #%% Imports
 from imports import *
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 
 #%% Read in RNA-Seq data again and the CCD gene lists
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
 counts_or_rpkms = "Tpms"
 do_log_normalization = True
@@ -295,8 +295,7 @@ norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
 G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
 S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
-#M_LEN = 0.5
-#We are excluding Mphase from this analysis
+#M_LEN = 0.5 #We are excluding Mphase from this analysis
 TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
 G1_PROP = G1_LEN/TOT_LEN
 G1_S_PROP = G1_S_TRANS/TOT_LEN+G1_PROP

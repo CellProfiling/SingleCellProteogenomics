@@ -168,7 +168,7 @@
 166,H09_55195978,True,False,False,Cell
 167,A10_55195978,True,False,False,Nucleus
 168,B10_55195978,False,True,False,Nucleus
-169,C10_55195978,True,False,False,
+169,C10_55195978,False,False,True,
 170,D10_55195978,True,False,False,Cell
 171,E10_55195978,False,True,False,
 172,F10_55195978,False,True,False,nucleus
@@ -704,8 +704,8 @@
 702,F05_55335984,True,False,False,Nucleus
 703,G05_55335984,False,True,False,nucleus
 704,H05_55335984,False,True,False,Nucleus
-705,A06_55335984,True,False,False,Cytosol
-706,B06_55335984,True,False,False,
+705,A06_55335984,False,False,True,Cytosol
+706,B06_55335984,False,True,False,
 707,C06_55335984,True,False,False,
 708,D06_55335984,False,True,False,Nucleus
 709,E06_55335984,False,True,False,Nucleus
@@ -830,7 +830,7 @@
 828,E09_55345985,True,False,False,Cell
 829,F09_55345985,False,False,True,Cytosol
 830,G09_55345985,True,False,False,Cell
-831,H09_55345985,True,False,False,nucleus
+831,H09_55345985,False,True,False,nucleus
 832,A10_55345985,True,False,False,
 833,B10_55345985,False,False,True,Cytosol
 834,C10_55345985,True,False,False,Cell
@@ -1264,7 +1264,7 @@
 1262,D04_55395990,True,False,False,Cell
 1263,E04_55395990,True,False,False,Cell
 1264,F04_55395990,False,True,False,nucleus
-1265,G04_55395990,True,False,False,nucleus
+1265,G04_55395990,False,True,False,nucleus
 1266,H04_55395990,True,False,False,Cell
 1267,A05_55395990,False,True,False,nucleus
 1268,B05_55395990,False,True,False,nucleus
@@ -1330,7 +1330,7 @@
 1328,F12_55395990,True,False,False,Cell
 1329,G12_55395990,False,True,False,Nucleus
 1330,A01_55405991,True,False,False,Cell
-1331,B01_55405991,True,False,False,Cytosol
+1331,B01_55405991,False,False,True,Cytosol
 1332,C01_55405991,False,False,True,Cytosol
 1333,D01_55405991,False,True,False,nucleus
 1334,E01_55405991,True,False,False,nucleus
@@ -1411,7 +1411,7 @@
 1409,H10_55405991,True,False,False,nucleus
 1410,A11_55405991,True,False,False,Cell
 1411,B11_55405991,True,False,False,
-1412,C11_55405991,True,False,False,Nucleus
+1412,C11_55405991,False,True,False,Nucleus
 1413,D11_55405991,True,False,False,Cell
 1414,E11_55405991,False,True,False,
 1415,F11_55405991,False,True,False,Nucleus
@@ -1515,7 +1515,7 @@
 1513,A12_75836284,True,False,False,
 1514,B12_75836284,True,False,False,Cell
 1515,C12_75836284,True,False,False,
-1516,D12_75836284,True,False,False,Cytosol
+1516,D12_75836284,False,False,True,Cytosol
 1517,E12_75836284,True,False,False,
 1518,F12_75836284,True,False,False,
 1519,G12_75836284,True,False,False,Cell

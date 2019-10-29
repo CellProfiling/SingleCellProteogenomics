@@ -1,42 +1,17 @@
-#%%
+#%% imports
 from imports import *
-
-#%% least squares, continuous time setup
 from scipy.optimize import least_squares
-def calc_R(xc, yc, x, y):
-    """ calculate the distance of each 2D points from the center (xc, yc) """
-    return np.sqrt((x-xc)**2 + (y-yc)**2)
-def f_2(c,x,y):
-    """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
-    print(c)
-    Ri = calc_R(c[0],c[1],x,y)
-    return Ri - Ri.mean()
-
 import decimal
 from stretch_time import stretch_time
-
-# TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
-#hours (for the G1/S cutoff)
-G1_LEN = 10.833
-#hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
-G1_S_TRANS = 2.625
-#hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
-S_G2_LEN = 11.975
-#hours (this should be from the G2/M cutoff above to the end)
-#M_LEN = 0.5
-#We are excluding Mphase from this analysis
-TOT_LEN = G1_LEN + G1_S_TRANS + S_G2_LEN
-G1_PROP = G1_LEN / TOT_LEN
-G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
-S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
-
-
-#%% Read data into scanpy; Read phases and FACS intensities
 from methods_RNASeqData import read_counts_and_phases
-adata, phases_filt = read_counts_and_phases("All", "Counts", False, "protein_coding") # no qc, yet
-
 
 #%% Fucci plots based on FACS intensities
+# Idea: make log-log fucci intensity plots for the cells analyzed by RNA-Seq
+# Execution: matplotlib
+# Output: scatters
+
+adata, phases_filt = read_counts_and_phases("All", "Counts", False, "protein_coding") # no qc, yet
+
 colormap = { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
 legendboxes = []
 labels = []
@@ -56,6 +31,7 @@ plt.close()
 
 # scatters
 def fucci_scatter(phases_filtered, outfile):
+    '''Generate a FUCCI plot with log intensities of the GFP and RFP tags'''
     plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["Stage"].apply(lambda x: colormap[x]))
     plt.legend(legendboxes, labels)
     plt.tight_layout()
@@ -65,6 +41,31 @@ def fucci_scatter(phases_filtered, outfile):
 fucci_scatter(phasesFiltintSeqCenter, f"figures/FucciPlot{tt}ByPhase.png")
 
 #%% Convert FACS intensities to pseudotime
+# Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
+# Execution: Adapt Devin's code for the cells sorted for RNA-Seq
+# Output: Plot of all fucci pseudotimes; table of pseudotimes for each cell
+
+# TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
+#hours (for the G1/S cutoff)
+G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
+#M_LEN = 0.5 #We are excluding Mphase from this analysis
+TOT_LEN = G1_LEN + G1_S_TRANS + S_G2_LEN
+G1_PROP = G1_LEN / TOT_LEN
+G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
+S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
+
+def calc_R(xc, yc, x, y):
+    """ calculate the distance of each 2D points from the center (xc, yc) """
+    return np.sqrt((x-xc)**2 + (y-yc)**2)
+
+def f_2(c,x,y):
+    """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
+    print(c)
+    Ri = calc_R(c[0],c[1],x,y)
+    return Ri - Ri.mean()
+
 phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
 x = phasesFilt["Green530"]
 y = phasesFilt["Red585"]
@@ -124,7 +125,7 @@ plt.show()
 # Apply uniform radius (rho) and convert back
 cart_data_ur = pol2cart(np.repeat(R_2, len(centered_data)), pol_data[1])
 
-#%% Assign cells a pseudotime and visualize in fucci plot
+# Assign cells a pseudotime and visualize in fucci plot
 pol_unsort = np.argsort(pol_sort_inds_reorder)
 fucci_time = pol_sort_norm_rev[pol_unsort]
 adata.obs["fucci_time"] = fucci_time
@@ -142,10 +143,14 @@ plt.savefig(f"figures/FucciAllFucciPseudotime.pdf")
 plt.show()
 plt.close()
 
-#%% Save fucci times, so they can be used in other workbooks
+# Save fucci times, so they can be used in other workbooks
 pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
 
 #%% Visualize that pseudotime result
+# Idea: Generate a plot of the centered data
+# Execution: hist2d
+# Output: 2d hist
+
 start_pt = pol2cart(R_2,start_phi)
 g1_end_pt = pol2cart(R_2,start_phi + (1 - G1_PROP) * 2 * np.pi)
 g1s_end_pt = pol2cart(R_2,start_phi + (1 - G1_S_PROP) * 2 * np.pi)

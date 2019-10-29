@@ -42,9 +42,11 @@ print("loaded")
 
 #%% Figure out the compartment information
 # Idea: Read in location information for each well_plate and decide which compartment to test
-# Execution: Use a dictionary of the unique locations etc
+# Execution: Use a dictionary of the unique locations etc. Group compartments into metacompartments.
+#     For whole cell compartments, don't make any small compartment tip the scale to cell
 # Output: array of whether to use tests in cell/nuc/cyto
 location_dict = dict([
+    # compartment, metacompartment, is it big?
     ("Cytosol",("Cytosol", True)), ### cytosol
     ("Nucleoplasm",("Nucleus", True)), ### nucleus
     ("Nucleus",("Nucleus", True)),
@@ -60,11 +62,11 @@ location_dict = dict([
     ("Actin filaments",("Cell", True)),
     ("Golgi apparatus",("Cell", True)),
     ("Vesicles",("Cell", True)),
-    ("Microtubule organizing center",("Cell", True)),
     ("Endoplasmic reticulum",("Cell", True)),
     ("Microtubules",("Cell", True)),
     ("Cell Junctions",("Cell", True)),
-    ("Centrosome",("Cell", False)), ### cell, but small stuff
+    ("Microtubule organizing center",("Cell", False)), ### cell, but small stuff
+    ("Centrosome",("Cell", False)),
     ("Focal adhesion sites",("Cell", False)),
     ("Aggresome",("Cell", False)),
     ("Cytoplasmic bodies",("Cell", False)),
@@ -196,7 +198,6 @@ pol_sort_rho_reorder = pol_reord(pol_sort_rho)
 pol_sort_inds_reorder = pol_reord(pol_sort_inds)
 pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
 pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort), pol_reord(ab_cyto_sort), pol_reord(ab_cell_sort), pol_reord(mt_cell_sort)
-# pol_sort_ab_nuc_int, pol_sort_ab_cyto_int, pol_sort_ab_cell_int, pol_sort_mt_cell_int = pol_reord(ab_nuc_sort_int), pol_reord(ab_cyto_sort_int), pol_reord(ab_cell_sort_int), pol_reord(mt_cell_sort_int)
 pol_sort_centered_data0, pol_sort_centered_data1 = pol_reord(centered_data_sort0), pol_reord(centered_data_sort1)
 pol_sort_fred = pol_reord(fred_sort)
 pol_sort_fgreen = pol_reord(fgreen_sort)
@@ -363,18 +364,13 @@ def temporal_mov_avg(curr_pol,curr_ab_norm,outname,outsuff):
 x_fit = np.linspace(0,1,num=200)
 ccd_coeff_list = []
 not_ccd_coeff_list = []
-model_free_list = []
-model_free_list_all = []
 xvals = np.linspace(0,1,num=21)
 ccd_pvals = []
 not_ccd_pvals = []
 var_fred, var_fgreen = [],[] # variance of mean FUCCI intensities
 var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
-# var_cell_int, var_nuc_int, var_cyto_int, var_mt_int = [],[],[],[] # integrated intensity variances per antibody
 perc_var_fred, perc_var_fgreen = [],[] # percent variance attributed to cell cycle (FUCCI colors)
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
-# perc_var_cell_int, perc_var_nuc_int, perc_var_cyto_int, perc_var_mt_int = [],[],[],[] # percent variance attributed to cell cycle (integrated POI intensities)
-mvavg_xvals = [] # this is a 2D array of xvals (rows) for all the antibodies (columns) for the moving average calculation
 
 for i, well in enumerate(u_well_plates):
 #    print(well)
@@ -411,19 +407,18 @@ for i, well in enumerate(u_well_plates):
     perc_yval_cyto = mvavg_perc_var(curr_ab_cyto_norm, WINDOW)
     perc_yval_mt = mvavg_perc_var(curr_mt_cell_norm, WINDOW)
     perc_yval_xvals = mvavg_perc_var(curr_pol, WINDOW)
-
+    
     perc_var_fred.append(perc_yval_fred[0])
     perc_var_fgreen.append(perc_yval_fgreen[0])
     perc_var_cell.append(perc_yval_cell[0])
     perc_var_nuc.append(perc_yval_nuc[0])
     perc_var_cyto.append(perc_yval_cyto[0])
     perc_var_mt.append(perc_yval_mt[0])
-    mvavg_xvals.append(perc_yval_xvals[1])
+    
 
 var_cell, var_nuc, var_cyto = np.array(var_cell),np.array(var_nuc),np.array(var_cyto)
 perc_var_fred, perc_var_fgreen = np.array(perc_var_fred),np.array(perc_var_fgreen) # percent variance attributed to cell cycle (FUCCI colors)
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
-
 
 #%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 # Idea: create cutoffs for percent variance and 
@@ -508,9 +503,7 @@ print(f"{sum(wp_comp_ccd)}: # proteins showing CCD variation (mvavg & gauss), re
 #plt.show()
 #plt.close()
 
-#%%
-
-# Output a list of the genes that show variation
+#%% Output a list of the genes that show variation
 name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
 wppp, ensggg, abbb = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"])
 name_df2 = pd.read_csv("input\\FucciWellPlateGene.csv")
@@ -583,4 +576,16 @@ df.to_csv("output/CellCycleVariationSummary.csv")
 print(f"{sum(ccd_comp)}: CCD variable proteins")
 print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
 
-#%%
+#%% Pickle the results needed later
+np.save("output/pol_sort_well_plate.npy", pol_sort_well_plate, allow_pickle=True)
+np.save("output/pol_sort_norm_rev.npy", pol_sort_norm_rev, allow_pickle=True)
+np.save("output/pol_sort_ab_nuc.npy", pol_sort_ab_nuc, allow_pickle=True)
+np.save("output/pol_sort_ab_cyto.npy", pol_sort_ab_cyto, allow_pickle=True)
+np.save("output/pol_sort_ab_cell.npy", pol_sort_ab_cell, allow_pickle=True)
+np.save("output/pol_sort_mt_cell.npy", pol_sort_mt_cell, allow_pickle=True)
+np.save("output/pol_sort_fred.npy", pol_sort_fred, allow_pickle=True)
+np.save("output/pol_sort_fgreen.npy", pol_sort_fgreen, allow_pickle=True)
+np.save("output/wp_iscell.npy", wp_iscell, allow_pickle=True)
+np.save("output/wp_isnuc.npy", wp_isnuc, allow_pickle=True)
+np.save("output/wp_iscyto.npy", wp_iscyto, allow_pickle=True)
+

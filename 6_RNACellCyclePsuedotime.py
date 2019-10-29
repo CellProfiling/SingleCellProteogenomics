@@ -1,9 +1,9 @@
 #%% Imports
 from imports import *
 import numpy as np
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 
 #%% Read in RNA-Seq data again and the CCD gene lists
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
 count_or_rpkm = "Tpms" # so that the gene-specific results scales match for cross-gene comparisons
 print("reading scRNA-Seq data")
