@@ -16,10 +16,16 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 #       use the mean intensity and integrated intensity for different cutoffs (ab and microtubules)
 # Exec: pandas
 # Output: fucci plot from the immunofluorescence data
+
+# Some wells in the last plate didn't have anything.
+emptywells = set(["B11_6745","C11_6745","D11_6745","E11_6745","F11_6745","G11_6745","H11_6745",
+    "A12_6745","B12_6745","C12_6745","D12_6745","E12_6745","F12_6745","G12_6745"])
+
 print("reading protein IF data")
 my_df1 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
 my_df2 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
 my_df = pd.concat((my_df1, my_df2), sort=True)
+my_df = my_df[~my_df.well_plate.isin(emptywells)]
 print("loaded")
 
 # Sample information (FucciWellPlateGene is still missing some information)
@@ -131,7 +137,7 @@ print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / len(ab_cell_max_zeroc)}
 print(f"{len(ab_cell_max_negctrl_zeroc) / (len(ab_cell_max_negctrl_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
 print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_max_negctrl_zeroc))}: percent of all that are negative with this cutoff")
 
-image_passes_neg_staining_filter = (ab_cell_max_all_zeroc >= upper_neg_max_cutoff) & (~np.array([str(wp).startswith("H12") for wp in u_well_plates]))
+image_passes_neg_staining_filter = (ab_cell_max_all_zeroc >= upper_neg_max_cutoff) & (np.array([not str(wp).startswith("H12") for wp in u_well_plates]))
 passing_u_well_plate = set(u_well_plates[image_passes_neg_staining_filter])
 cell_passes_neg_staining_filter = [wp in passing_u_well_plate for wp in well_plate]
 my_df_filtered = my_df[cell_passes_neg_staining_filter]
@@ -143,6 +149,7 @@ print(f"{len(ab_cell_max_all) - sum(image_passes_neg_staining_filter)}: images f
 print(f"{(len(ab_cell_max_all) - sum(image_passes_neg_staining_filter)) / len(ab_cell_max_all)}: percent of images filtered")
 print(f"{len_temp - len(ab_cell)}: cells contained in those images filtered")
 print(f"{(len_temp - len(ab_cell)) / len_temp}: percent of cells contained in those images filtered")
+print(f"{not any([wp in u_well_plates for wp in emptywells])}: all empty wells were filtered")
 
 #%% Zero center and rescale FUCCI data in the log space
 log_green_fucci, log_red_fucci = np.log10(green_fucci), np.log10(red_fucci)
