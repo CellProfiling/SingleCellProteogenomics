@@ -212,13 +212,20 @@ plt.savefig(os.path.join("output_devin",'sorted_heatmap21_sw30_take4.pdf'), tran
 plt.savefig(os.path.join("output_devin",'sorted_heatmap21_sw30_take4.png'), transparent=True)
 plt.show()
 
-
-#%%
-# Idea: calculate the peak RNA expression and compare to the peak protein expression for each gene
-# Execution: compare distribution of differences between peaks; grainger test, too
-# Output: plot of dist of differences; grainger test results
+#%% RNA heatmap
+# Idea: create a heatmap of peak RNA expression
+# Execution: use the same sort of methods as the previous cell
+# Output: heatmap
 def mvavg(yvals, mv_window):
     return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
+
+def binned_median(yvals, nbins):
+    binned_medians = []
+    for xval in range(nbins):
+        startidx = len(yvals) // nbins * xval
+        endidx = len(yvals) // nbins * (xval + 1)
+        binned_medians.append(np.median(yvals[startidx:endidx]))
+    return binned_medians
 
 # Get the peak RNA expression polar locations
 expression_data = adata.X # log normalized
@@ -226,9 +233,63 @@ normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,Non
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
-moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
+moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100) # note this is changed to 20 for the plot
 max_moving_avg_loc = np.argmax(moving_averages, 0)
 max_moving_avg_pol = np.take(fucci_time_sort, max_moving_avg_loc)
+max_moving_avg_pol_sortinds = np.argsort(max_moving_avg_pol)
+sorted_rna_array = np.take(moving_averages, max_moving_avg_pol_sortinds, axis=1).T
+sorted_rna_binned = np.apply_along_axis(binned_median, 1, sorted_rna_array, len(xvals))
+sorted_rna_binned_norm = sorted_rna_binned / np.max(sorted_rna_binned, axis=1)[:,None]
+
+fig, ax = plt.subplots(figsize=(10, 10))
+sc = ax.imshow(sorted_rna_binned_norm, interpolation='nearest')
+
+# Do the x ticks
+xtick_labels = [str(np.around(x * TOT_LEN,decimals=2)) for x in np.linspace(0,1,11)] #+['G1/S','S/G2']
+my_xticks = np.arange(-.5, 20, 2)
+num_ticks = 20
+xphase_labels = ['G1/S','S/G2']
+phase_trans = np.asarray([G1_PROP*num_ticks-0.5, G1_S_PROP*num_ticks-0.5])
+ax.set_xticks(my_xticks,minor=True)
+ax.set_xticklabels(xtick_labels,minor=True)
+ax.set_xticks(phase_trans, minor=False)
+ax.set_xticklabels(xphase_labels, minor=False)
+ax.tick_params(length=12)
+
+#Do the y ticks
+#ytick_locs = [prot_list.index(p) for p in HIGHLIGHTS]
+## ytick_locs_minor = [prot_list.index(p) for p in HIGHLIGHTS_MINOR]
+#ax.set_yticks(ytick_locs,minor=False)
+#ax.set_yticklabels(HIGHLIGHTS,minor=False)
+## ax.set_yticks(ytick_locs_minor,minor=True)
+## ax.set_yticklabels(HIGHLIGHTS_MINOR,minor=True)
+
+ax.tick_params(direction='out', length=12, width=2, colors='k', axis='x',which='major')
+ax.tick_params(direction='out', length=56, width=1, colors='k', axis='y',which='major')
+ax.set_aspect('auto')
+plt.xlabel('Division Cycle, hrs',size=20,fontname='Arial')
+plt.ylabel('Gene',size=20,fontname='Arial')
+plt.xticks(size=12,fontname='Arial')
+plt.yticks(size=10,fontname='Arial')
+divider1 = make_axes_locatable(ax)
+cax1 = divider1.append_axes("right", size="5%", pad=0.05)
+cbar = plt.colorbar(sc, cax = cax1)
+cbar.set_label('Relative expression', fontname='Arial', size=20)
+cbar.ax.tick_params(labelsize=18)
+
+plt.tight_layout()
+plt.savefig(os.path.join("figures",'sorted_rna_heatmap.pdf'), transparent=True)
+plt.savefig(os.path.join("figures",'sorted_rna_heatmap.png'), transparent=True)
+plt.show()
+
+
+#%%
+# Idea: calculate the peak RNA expression and compare to the peak protein expression for each gene
+# Execution: compare distribution of differences between peaks; grainger test, too
+# Output: plot of dist of differences; grainger test results
+
+
+
 
 # Get the gene names
 gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
