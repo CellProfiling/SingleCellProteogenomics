@@ -13,11 +13,81 @@
 from imports import *
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 
+#%% Read RNA-Seq data and illustrate the data
+# Idea: Read in RNA-Seq data and do filtering
+# Execution: Read data into scanpy; Read phases and FACS intensities; Use TPMs for comparing genes
+# Output: QC, filtering, and UMAP plots (phased, expression, sanity check with known genes, fucci pseudotime)
+dd = "All"
+counts_or_rpkms = "Tpms"
+use_spike_ins = False
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
+
+# QC plots before filtering
+do_log_normalization = True
+sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
+shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
+
+# Post filtering QC
+qc_filtering(adata, do_log_normalization)
+sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
+sc.pl.highly_variable_genes(adata, show=True, save=True)
+shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersion{dd}Cells.pdf")
+
+# Read in the published CCD genes / Diana's CCD / Non-CCD genes
+# filter for genes that weren't filtered in QC
+ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+
+# UMAP plots
+# Idea: based on the expression of all genes, do the cell cycle phases cluster together?
+# Execution: scanpy methods: UMAP statistics first, then make UMAP
+# Output: UMAP plots
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata)
+plt.rcParams['figure.figsize'] = (10, 10)
+sc.pl.umap(adata, color=["phase"], show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqCenterPhase.pdf")
+
+# Displaying relative expression on the UMAP (using unlogged expression values)
+# Output: a folder of UMAPs for each gene in several sets
+def plot_expression_umap(genelist, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        adata.obs[gene] = normalized_exp_data
+        sc.pl.umap(adata, color=gene, show=False, save=True)
+        shutil.move("figures/umap.pdf", f"{outfolder}/{gene}.pdf")
+        plt.close()
+        adata.obs.drop(gene, 1)
+# plot_expression_umap(ccd_regev_filtered, "figures/RegevGeneExpressionUmap")
+# plot_expression_umap(ccd_filtered, "figures/DianaCcdGeneExpressionUmap")
+# plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneExpressionUmap")
+
+# UMAP with just the Regev cell-cycle dependent genes (CCD) 
+# Idea: Do the UMAPs from before look similar to UMAPs using only published CCD genes (https://science.sciencemag.org/content/352/6282/189)?
+# Execution: scanpy
+# Output: UMAPs
+adata_ccdregev = adata[:, ccd_regev_filtered]
+adata_ccdregev.var_names_make_unique()
+sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata_ccdregev)
+sc.pl.umap(adata_ccdregev, color="phase", show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseCcdRegev.pdf")
+
+# fucci pseudotime
+# Idea: display pseudotime on the UMAP created from the gene expression
+sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
+shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
+sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
+
+
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
 counts_or_rpkms = "Tpms"
 do_log_normalization = True
-adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False, "protein_coding")
+use_spike_ins = False
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
 phases_filt = qc_filtering(adata, do_log_normalization)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 

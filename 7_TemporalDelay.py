@@ -50,7 +50,7 @@ wp_pass_bh_cell = np.load("output/wp_pass_bh_cell.filterNegStain.npy", allow_pic
 wp_pass_bh_nuc = np.load("output/wp_pass_bh_nuc.filterNegStain.npy", allow_pickle=True)
 wp_pass_bh_cyto = np.load("output/wp_pass_bh_cyto.filterNegStain.npy", allow_pickle=True)
 fucci_data = np.load("output/fucci_data.filterNegStain.npy", allow_pickle=True)
-pol_sort_well_plate = np.load("output/pol_sort_well_plate.npy", allow_pickle=True)
+pol_sort_well_plate = np.load("output/pol_sort_well_plate.npy", allow_pickle=git True)
 pol_sort_norm_rev = np.load("output/pol_sort_norm_rev.npy", allow_pickle=True)
 pol_sort_ab_nuc = np.load("output/pol_sort_ab_nuc.npy", allow_pickle=True)
 pol_sort_ab_cyto = np.load("output/pol_sort_ab_cyto.npy", allow_pickle=True)

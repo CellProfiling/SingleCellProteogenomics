@@ -588,4 +588,8 @@ np.save("output/pol_sort_fgreen.npy", pol_sort_fgreen, allow_pickle=True)
 np.save("output/wp_iscell.npy", wp_iscell, allow_pickle=True)
 np.save("output/wp_isnuc.npy", wp_isnuc, allow_pickle=True)
 np.save("output/wp_iscyto.npy", wp_iscyto, allow_pickle=True)
+np.save("output/ccd_comp.npy", ccd_comp, allow_pickle=True)
+np.save("output/nonccd_comp.npy", ccd_comp, allow_pickle=True)
+np.savetxt("output/ccd_compartment_ensg.txt", wp_ensg[ccd_comp], fmt="%s", delimiter="\t")
+np.savetxt("output/nonccd_compartment_ensg.txt", wp_ensg[nonccd_comp], fmt="%s", delimiter="\t")
 
