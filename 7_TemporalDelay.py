@@ -61,6 +61,7 @@ pol_sort_fgreen = np.load("output/pol_sort_fgreen.npy", allow_pickle=True)
 wp_iscell = np.load("output/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/wp_iscyto.npy", allow_pickle=True)
+ccd_comp = np.load("output/ccd_comp.npy", allow_pickle=True)
 print("loaded")
 
 #%% Make temporal heatmap and use those peak values to compare to RNA data rank by percent variance explained.
@@ -165,12 +166,14 @@ for i, well in enumerate(u_well_plates):
     wp_max_pol.append(xvals[max_loc])
     wp_binned_values.append(binned_values)
 
+# Make an expression array with the CCD proteins
 wp_max_pol, wp_binned_values = np.array(wp_max_pol), np.array(wp_binned_values)
-wp_max_sort_inds = np.argsort(wp_max_pol)
-sorted_gene_array = np.take(wp_binned_values, wp_max_sort_inds, axis=0) # this is the expression values, binned_values, sorted by the binned value at max location (can do in the temporal part)
-sorted_maxpol_array = np.take(wp_max_pol, wp_max_sort_inds)
-    
+wp_max_pol_ccd, wp_binned_values_ccd = wp_max_pol[ccd_comp], wp_binned_values[ccd_comp]
+wp_max_sort_inds = np.argsort(wp_max_pol_ccd)
+sorted_gene_array = np.take(wp_binned_values_ccd, wp_max_sort_inds, axis=0) # this is the expression values, binned_values, sorted by the binned value at max location (can do in the temporal part)
+sorted_maxpol_array = np.take(wp_max_pol_ccd, wp_max_sort_inds)
 
+# Actually making the figure
 fig, ax = plt.subplots(figsize=(10, 10))
 sc = ax.imshow(sorted_gene_array, interpolation='nearest')
 
@@ -233,7 +236,7 @@ normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,Non
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
 fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
 norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
-moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100) # note this is changed to 20 for the plot
+moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
 max_moving_avg_loc = np.argmax(moving_averages, 0)
 max_moving_avg_pol = np.take(fucci_time_sort, max_moving_avg_loc)
 max_moving_avg_pol_sortinds = np.argsort(max_moving_avg_pol)

@@ -66,3 +66,59 @@ Created on Tue Oct 29 16:19:25 2019
 # shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPredictedPseudotime.pdf")
 # sc.pl.diffmap(adata, color='dpt_pseudotime', projection="3d", show=True, save=True)
 # shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsPredictedPseudotime3d.pdf")
+
+#%% Senescent G0 investigation start; archiving this because the louvain clustering helped a bunch to investigate this. 
+# There is a nodule in the UMAP; are there any highly expressing genes in there?
+# Execution: subset the cells in that corner of the UMAP
+# Output: Genes that are differentially expressed in this quadrant compared to the rest in G1
+
+#% Subset based on phase and separate out the weird nodule
+# Idea: There's a nodule in the data that is interesting; what makes it unique?
+# Exec: Use rank gene groups
+# Outp: Volcano plots and genes that are significant for the different groups (>2 FC and <1e-9 pval_adj )
+nodulecells = adata.obsm.X_umap[:,0] < -4 
+phasessss = np.array(phases_filt["Stage"])
+phasessss[nodulecells] = "G1-not"
+adata.obs["phase+"] = phasessss
+sc.tl.rank_genes_groups(adata, "phase+", groups=["G1", "G1-not", "G2M", "S-ph"], n_genes=len(adata.X[0,:]))
+plt.rcParams['figure.figsize'] = (10, 10)
+sc.pl.diffmap(adata, color='phase+', projection="3d", show=True, save=True)
+shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPhasePlus.pdf")
+sc.pl.umap(adata, color=["phase+"], show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPhasePlus.pdf")
+# adata.uns["rank_genes_groups"]
+
+
+groups = ["G1", "G1-not", "G2M", "S-ph"]
+sig_gene_lists = []
+for idx, ggg in enumerate(groups):
+    plt.scatter([x[idx] for x in adata.uns["rank_genes_groups"]["logfoldchanges"]], 
+        -np.log10([x[idx] for x in adata.uns["rank_genes_groups"]["pvals_adj"]]))
+    plt.title(ggg)
+    plt.xlabel("Log Fold Changes")
+    plt.ylabel("P-Value, BH Adj")
+    plt.savefig(f"figures/RankGenes{ggg}.png")
+    plt.close()
+
+    highly_expressed = np.array([x[idx] for x in adata.uns["rank_genes_groups"]["logfoldchanges"]]) > 1
+    sig = np.array([x[idx] for x in adata.uns["rank_genes_groups"]["pvals_adj"]]) < 1e-9
+    sig_genes = [g[idx] for g in adata.uns["rank_genes_groups"]["names"][(highly_expressed) & (sig)]]
+    sig_gene_foldchange = [g[idx] for g in adata.uns["rank_genes_groups"]["logfoldchanges"][(highly_expressed) & (sig)]]
+    sig_gene_pvaladj = [g[idx] for g in adata.uns["rank_genes_groups"]["pvals_adj"][(highly_expressed) & (sig)]]
+    np.savetxt(f"output/{ggg}SignificantGenes.tsv", np.column_stack((sig_genes, sig_gene_foldchange, sig_gene_pvaladj)), fmt="%s", delimiter="\t")
+    sig_gene_lists.append(sig_genes)
+
+
+def plot_expression_umap(genelist, outfolder):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    for gene in genelist:
+        expression_data = np.exp(adata.X[:,list(adata.var_names).index(gene)]) - 1
+        normalized_exp_data = expression_data / np.max(expression_data)
+        adata.obs[gene] = normalized_exp_data
+        sc.pl.umap(adata, color=gene, show=False, save=True)
+        shutil.move("figures/umap.pdf", f"{outfolder}/{gene}.pdf")
+        plt.close()
+        adata.obs.drop(gene, 1)
+
+for idx, ggg in enumerate(groups):
+    plot_expression_umap(sig_gene_lists[idx], f"figures/{ggg}GeneExpressionUmap")

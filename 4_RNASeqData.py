@@ -62,10 +62,6 @@ sc.tl.umap(adata_ccdregev)
 sc.pl.umap(adata_ccdregev, color="phase", show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseCcdRegev.pdf")
 
-#%% There is a nodule in the UMAP; are there any highly expressing genes in there?
-# Execution: subset the cells in that corner of the UMAP
-# Output: Genes that are differentially expressed in this quadrant compared to the rest in G1
-
 #%% Expression UMAP, uncomment to run again
 # Idea: For each gene in the lists, overlay expression on the UMAP
 # Execution: scanpy, using the non-log normalized counts because we're not comparing genes
@@ -96,4 +92,18 @@ def plot_expression_umap(genelist, outfolder):
 # plot_expression_umap(ccd_filtered, "figures/DianaCcdGeneExpressionUmap")
 # plot_expression_umap(nonccd_filtered, "figures/DianaNonCcdGeneExpressionUmap")
 
-#%%
+#%% fucci pseudotime
+# Idea: display pseudotime on the UMAP created from the gene expression
+# Exec: Scanpy
+# Outp: umap visualization
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+sc.tl.diffmap(adata)
+umap_coords = sc.tl.umap(adata)
+
+dd = "All"
+plt.rcParams['figure.figsize'] = (10, 10)
+sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
+shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
+sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
+
