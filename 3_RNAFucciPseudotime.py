@@ -9,17 +9,14 @@ from methods_RNASeqData import read_counts_and_phases
 # Idea: make log-log fucci intensity plots for the cells analyzed by RNA-Seq
 # Execution: matplotlib
 # Output: scatters
-
-adata, phases_filt = read_counts_and_phases("All", "Counts", False, "protein_coding") # no qc, yet
-
+tt = "All"
+adata, phases_filt = read_counts_and_phases(tt, "Counts", False, "protein_coding") # no qc, yet
 colormap = { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
 legendboxes = []
 labels = []
 for key in colormap:
     legendboxes.append(mpatches.Rectangle((0,0), 1, 1, fc=colormap[key]))
     labels.append(key)
-
-tt = "All"
 
 # heatmap
 phasesFiltintSeqCenter = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]

@@ -10,7 +10,7 @@ print("reading scRNA-Seq data")
 biotype_to_use="protein_coding"
 # biotype_to_use="lincRNA" # there are only 10 genes marked lincRNA, so need to analyze isoform data, I think
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use=biotype_to_use)
-qc_filtering(adata, do_log_normalize=False)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize=False, do_remove_blob=True)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 #%% Cell cycle regulated ANOVA
@@ -102,7 +102,6 @@ anova_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv")
 # Idea: Use boxplots to display the variance and overlay ANOVA results for significance
 # Execution: Separate G1/S/G2 and generate boxplots
 # Output: Boxplots
-
 def format_p(p):
     '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
@@ -144,7 +143,6 @@ def plot_expression_boxplots(genelist, outanova, outfolder):
 # Idea: Using the spread as a measure of variability, is there higher variability for CCD genes (likely due to cyclicity)?
 # Execution: mean and stdevs
 # Output: Scatter of stdev vs mean expression; histogram of stdevs
-
 means = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 variances = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 mean_regev = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
@@ -196,7 +194,7 @@ plt.close()
 # Log normalize and use RPKMS because we're comparing genes in the next cell
 count_or_rpkm = "Tpms"
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
-qc_filtering(adata, True)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
 adata_spikeins, phases_spikeins = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=True, biotype_to_use="")
 sc.pp.filter_genes(adata_spikeins, min_cells=100)
@@ -206,7 +204,6 @@ print(f"data shape after filtering: {adata_spikeins.X.shape}")
 # Idea: What percentage of variance in transcript expression is due to the cell cycle?
 # Execution: Calculate variance due to cell cycle as residuals from a moving average
 # Output: Scatters of the percent and total variances for each gene 
-
 def mvavg(yvals, mv_window):
     return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
 
@@ -271,7 +268,7 @@ def plot_variances_tf(total_var, percent_var, expression_color, title, file_tag,
 
 # What are these low percent variance ones that are significant?
 print("What are these low percent variance ones that are significant?")
-low_variance_signif = (percent_ccd_variance < 0.03) & (dianaccdgenes) & (rejectBonf_unsorted)
+low_variance_signif = (percent_ccd_variance < 0.03) & dianaccdgenes & rejectBonf_unsorted
 print(np.array(adata.var_names)[low_variance_signif])
 
 # Choose a cutoff for total percent variance based on the spike-in genes
@@ -291,12 +288,12 @@ print(f"mean +/- stdev of spike-in variance explained by cell cycle: {np.mean(pe
 print(f"mean of spike-in variance explained by cell cycle: {np.median(percent_ccd_variance_spike)}")
 
 # Okay, we're going to take the ones that passed ANOVA and have > 10% variance explained
-total_var_cutoff = np.mean(total_variance_spike) + 2 * np.std(total_variance_spike)
-percent_var_cutoff = np.mean(percent_ccd_variance_spike) + 2 * np.std(percent_ccd_variance_spike)
+total_var_cutoff = np.mean(total_variance_spike) + 1 * np.std(total_variance_spike)
+percent_var_cutoff = np.mean(percent_ccd_variance_spike) + 1 * np.std(percent_ccd_variance_spike)
 print(f"using total variance cutoff {total_var_cutoff} and percent CCD variance cutoff {percent_var_cutoff}")
 plt.figure(figsize=(15,15))
 plt.subplot(221)
-plot_variances_tf(total_variance, percent_ccd_variance, (rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff), "All Genes", "All", percent_var_cutoff, total_var_cutoff)
+plot_variances_tf(total_variance, percent_ccd_variance, rejectBonf_unsorted & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff), "All Genes", "All", percent_var_cutoff, total_var_cutoff)
 plt.subplot(222)
 plot_variances_tf(total_variance[regevccdgenes], percent_ccd_variance[regevccdgenes], (rejectBonf_unsorted[regevccdgenes]) & (percent_ccd_variance[regevccdgenes] > percent_var_cutoff) & (total_variance[regevccdgenes] > total_var_cutoff), "Regev CCD Genes", "RegevCcd", percent_var_cutoff, total_var_cutoff)
 plt.subplot(223)
@@ -328,15 +325,21 @@ percent_variance_tests = pd.DataFrame(
 percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv")
 
 # And output the CCD genes that aren't in diana's CCD gene set
-percent_variance_tests[(percent_variance_tests.significant) & (~percent_variance_tests.diana_ccd)].to_csv("output/transcript_regulation_significant_ccd_notindianasset.csv")
+percent_variance_tests[percent_variance_tests.significant & ~percent_variance_tests.diana_ccd].to_csv("output/transcript_regulation_significant_ccd_notindianasset.csv")
 
 # And keep track of the ccd genes with and without transcript regulation
-ccd_transcript_regulated = np.array(adata.var_names)[(rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)]
-dianaccd_transcript_regulated = np.array(adata.var_names)[(dianaccdgenes) & (rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)]
-dianaccd_nontranscript_regulated = np.array(adata.var_names)[(dianaccdgenes) & ~((rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff))]
-pd.DataFrame({"gene" : ccd_transcript_regulated}).to_csv("output/allccd_transcript_regulated.csv")
-pd.DataFrame({"gene" : dianaccd_transcript_regulated}).to_csv("output/ccd_transcript_regulated.csv")
-pd.DataFrame({"gene" : dianaccd_nontranscript_regulated}).to_csv("output/ccd_nontranscript_regulated.csv")
+ccd_transcript_regulated = rejectBonf_unsorted & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)
+dianaccd_transcript_regulated = dianaccdgenes & rejectBonf_unsorted & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)
+dianaccd_nontranscript_regulated = dianaccdgenes & ~dianaccd_transcript_regulated
+ccd_transcript_regulated_names = np.array(adata.var_names)[ccd_transcript_regulated]
+dianaccd_transcript_regulated_names = np.array(adata.var_names)[dianaccd_transcript_regulated]
+dianaccd_nontranscript_regulated_names = np.array(adata.var_names)[dianaccd_nontranscript_regulated]
+np.save("output/ccd_transcript_regulated.npy", ccd_transcript_regulated, allow_pickle=True)
+np.save("output/dianaccd_transcript_regulated.npy", dianaccd_transcript_regulated, allow_pickle=True)
+np.save("output/dianaccd_nontranscript_regulated.npy", dianaccd_nontranscript_regulated, allow_pickle=True)
+pd.DataFrame({"gene" : ccd_transcript_regulated_names}).to_csv("output/allccd_transcript_regulated.csv")
+pd.DataFrame({"gene" : dianaccd_transcript_regulated_names}).to_csv("output/ccd_transcript_regulated.csv")
+pd.DataFrame({"gene" : dianaccd_nontranscript_regulated_names}).to_csv("output/ccd_nontranscript_regulated.csv")
 pd.DataFrame({"gene" : adata.var_names}).to_csv("output/gene_names.csv")
 
 

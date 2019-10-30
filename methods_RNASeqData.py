@@ -21,7 +21,7 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     # adata.raw = adata
 
     phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
-
+    
     # Assign phases and log intensities; require log intensity
     adata.obs["phase"] = np.array(phases["Stage"])
     adata.obs["Green530"] = np.array(phases["Green530"])
@@ -41,17 +41,20 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     return adata, phases
 
 
-def qc_filtering(adata, do_log_normalize):
-    '''QC and filtering'''
+def qc_filtering(adata, do_log_normalize, do_remove_blob):
+    '''QC and filtering; remove cluster of cells in senescent G0'''
     sc.pp.filter_cells(adata, min_genes=500)
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
     if do_log_normalize: sc.pp.log1p(adata)
+    louvain = np.load("input/louvain.npy", allow_pickle=True)
+    adata.obs["louvain"] = louvain
+    if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
     phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
     phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
     phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
-    return phases_filt
+    return adata, phases_filt
 
 
 def ccd_gene_lists(adata):

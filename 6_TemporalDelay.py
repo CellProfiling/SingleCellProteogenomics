@@ -18,7 +18,7 @@ count_or_rpkm = "Tpms" # so that the gene-specific results scales match for cros
 print("reading scRNA-Seq data")
 biotype_to_use="protein_coding"
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use=biotype_to_use)
-qc_filtering(adata, do_log_normalize=False)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize=False, do_remove_blob=True)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 
@@ -50,7 +50,7 @@ wp_pass_bh_cell = np.load("output/wp_pass_bh_cell.filterNegStain.npy", allow_pic
 wp_pass_bh_nuc = np.load("output/wp_pass_bh_nuc.filterNegStain.npy", allow_pickle=True)
 wp_pass_bh_cyto = np.load("output/wp_pass_bh_cyto.filterNegStain.npy", allow_pickle=True)
 fucci_data = np.load("output/fucci_data.filterNegStain.npy", allow_pickle=True)
-pol_sort_well_plate = np.load("output/pol_sort_well_plate.npy", allow_pickle=git True)
+pol_sort_well_plate = np.load("output/pol_sort_well_plate.npy", allow_pickle= True)
 pol_sort_norm_rev = np.load("output/pol_sort_norm_rev.npy", allow_pickle=True)
 pol_sort_ab_nuc = np.load("output/pol_sort_ab_nuc.npy", allow_pickle=True)
 pol_sort_ab_cyto = np.load("output/pol_sort_ab_cyto.npy", allow_pickle=True)
@@ -58,6 +58,7 @@ pol_sort_ab_cell = np.load("output/pol_sort_ab_cell.npy", allow_pickle=True)
 pol_sort_mt_cell = np.load("output/pol_sort_mt_cell.npy", allow_pickle=True)
 pol_sort_fred = np.load("output/pol_sort_fred.npy", allow_pickle=True)
 pol_sort_fgreen = np.load("output/pol_sort_fgreen.npy", allow_pickle=True)
+wp_ensg = np.load("output/wp_ensg.npy", allow_pickle=True)
 wp_iscell = np.load("output/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/wp_iscyto.npy", allow_pickle=True)
@@ -65,7 +66,9 @@ ccd_comp = np.load("output/ccd_comp.npy", allow_pickle=True)
 print("loaded")
 
 print("reading RNA data")
- pd.read_csv("output/allccd_transcript_regulated.csv")["gene"]
+ccd_transcript_regulated = np.load("output/ccd_transcript_regulated.npy", allow_pickle=True)
+dianaccd_transcript_regulated = np.load("output/dianaccd_transcript_regulated.npy", allow_pickle=True)
+dianaccd_nontranscript_regulated = np.load("output/dianaccd_nontranscript_regulated.npy", allow_pickle=True)
 print("loaded")
 
 #%% Make temporal heatmap and use those peak values to compare to RNA data rank by percent variance explained.
@@ -243,8 +246,11 @@ norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
 max_moving_avg_loc = np.argmax(moving_averages, 0)
 max_moving_avg_pol = np.take(fucci_time_sort, max_moving_avg_loc)
-max_moving_avg_pol_sortinds = np.argsort(max_moving_avg_pol)
-sorted_rna_array = np.take(moving_averages, max_moving_avg_pol_sortinds, axis=1).T
+max_moving_avg_pol_ccd = max_moving_avg_pol[ccd_transcript_regulated]
+moving_averages_ccd = moving_averages[:,ccd_transcript_regulated]
+max_moving_avg_pol_sortinds = np.argsort(max_moving_avg_pol_ccd)
+sorted_max_moving_avg_pol_ccd = np.take(max_moving_avg_pol_ccd, max_moving_avg_pol_sortinds)
+sorted_rna_array = np.take(moving_averages_ccd, max_moving_avg_pol_sortinds, axis=1).T
 sorted_rna_binned = np.apply_along_axis(binned_median, 1, sorted_rna_array, len(xvals))
 sorted_rna_binned_norm = sorted_rna_binned / np.max(sorted_rna_binned, axis=1)[:,None]
 
@@ -294,41 +300,18 @@ plt.show()
 # Idea: calculate the peak RNA expression and compare to the peak protein expression for each gene
 # Execution: compare distribution of differences between peaks; grainger test, too
 # Output: plot of dist of differences; grainger test results
+prot_ccd_ensg = list(wp_ensg[ccd_comp])
+rna_ccd_ensg = list(adata.var_names[ccd_transcript_regulated])
+both_ccd_ensg = np.intersect1d(prot_ccd_ensg, rna_ccd_ensg)
+both_prot_ccd_idx = np.array([prot_ccd_ensg.index(ensg) for ensg in both_ccd_ensg])
+both_rna_ccd_idx = np.array([rna_ccd_ensg.index(ensg) for ensg in both_ccd_ensg])
+insct_prot_max_pol_ccd = wp_max_pol_ccd[both_prot_ccd_idx]
+insct_rna_max_pol_ccd = sorted_max_moving_avg_pol_ccd[both_rna_ccd_idx]
+diff_max_pol = insct_prot_max_pol_ccd - insct_rna_max_pol_ccd
 
-
-
-
-# Get the gene names
-gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-var_list = list(adata.var_names)
-var_set = set(adata.var_names)
-ensg_rna_loc = [var_list.index(gene_id) for gene_id in gene_info["gene_id"] if gene_id in var_set]
-name_rna_list = list(np.take(np.array(gene_info["name"]), ensg_rna_loc))
-
-# Are we getting the expected majority overlap in gene sets (protein & rna)
-allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
-allccd_transcript_regulated_names = set(ccd_gene_names(allccd_transcript_regulated))
-prot_genes = set(prot_list)
-rna_genes = set(name_rna_list)
-print(f"length of prot genes: {len(prot_genes)}")
-print(f"length of RNA-seq genes: {len(rna_genes)}")
-print(f"length of CCD RNA genes: {len(allccd_transcript_regulated_names)}")
-print(f"length of intersection betweeen CCD prot and RNA: {len(prot_genes.intersection(rna_genes))}")
-print(f"length of intersection betweeen CCD prot and CCD RNA: {len(prot_genes.intersection(allccd_transcript_regulated_names))}")
-
-# Sort them to the protein arrays 
-# (take only intersection of CCD proteins and CCD transcripts)
-#
-# prot_list # this one is the gene name (protein name) for the protein list
-# sorted_ensg_array # this one is the sorted ensg for the proteins
-# sorted_maxpol_array # this one is the protein max pol
-
-name_ccdprot_ccdtrans_loc = [name_rna_list.index(name) for name in prot_list if name in name_rna_list and name in allccd_transcript_regulated_names]
-name_prot_list = np.take(name_rna_list, name_ccdprot_ccdtrans_loc)
-max_rna_avg_prot_pol = np.take(max_moving_avg_pol, name_ccdprot_ccdtrans_loc)
-prot_list_filter_loc = np.isin(prot_list, name_prot_list)
-prot_maxpol_filter_array = np.array(sorted_maxpol_array)[prot_list_filter_loc]
-diff_max_pol = prot_maxpol_filter_array - max_rna_avg_prot_pol
+print(f"length of prot CCD genes: {len(prot_ccd_ensg)}")
+print(f"length of CCD RNA genes: {len(rna_ccd_ensg)}")
+print(f"length of intersection betweeen CCD prot and CCD RNA: {len(both_ccd_ensg)}")
 
 plt.hist(diff_max_pol * TOT_LEN)
 plt.xlabel("Delay in peak protein expression from peak RNA expression, hrs")
@@ -340,8 +323,8 @@ plt.close()
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
-ax1.hist(prot_maxpol_filter_array * TOT_LEN, alpha=0.5, label="Peak Protein Expression Time, hrs")
-ax1.hist(max_rna_avg_prot_pol * TOT_LEN, alpha=0.5, label="Peak RNA Expression Time, hrs")
+ax1.hist(insct_prot_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak Protein Expression Time, hrs")
+ax1.hist(insct_rna_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak RNA Expression Time, hrs")
 plt.legend(loc="upper left")
 plt.xlabel("Division Cycle, hrs")
 plt.ylabel("Count of Cell Cycle Genes")
@@ -350,9 +333,9 @@ plt.savefig(f"figures/DelayPeakProteinRNA_separate.png")
 plt.show()
 plt.close()
 
-mmmm = np.concatenate((prot_maxpol_filter_array * TOT_LEN, max_rna_avg_prot_pol * TOT_LEN))
-cccc = (["Protein"] * len(prot_maxpol_filter_array))
-cccc.extend(["RNA"] * len(max_rna_avg_prot_pol))
+mmmm = np.concatenate((insct_prot_max_pol_ccd * TOT_LEN, insct_rna_max_pol_ccd * TOT_LEN))
+cccc = (["Protein"] * len(insct_prot_max_pol_ccd))
+cccc.extend(["RNA"] * len(insct_rna_max_pol_ccd))
 moddf = pd.DataFrame({"time": mmmm, "category" : cccc})
 boxplot = moddf.boxplot("time", by="category", figsize=(12, 8), showfliers=True)
 boxplot.set_xlabel("", size=36,fontname='Arial')
@@ -364,88 +347,59 @@ plt.show()
 plt.close()
 
 print(f"Median delay of RNA and protein expression time for CCD proteins: {TOT_LEN * np.median(diff_max_pol)}")
-print(f"Median RNA expression time for CCD proteins: {TOT_LEN * np.median(max_rna_avg_prot_pol)}")
-print(f"Median protein expression time for CCD proteins: {TOT_LEN * np.median(prot_maxpol_filter_array)}")
-t, p = scipy.stats.kruskal(max_rna_avg_prot_pol, prot_maxpol_filter_array)
+print(f"Median RNA expression time for CCD proteins: {TOT_LEN * np.median(insct_rna_max_pol_ccd)}")
+print(f"Median protein expression time for CCD proteins: {TOT_LEN * np.median(insct_prot_max_pol_ccd)}")
+t, p = scipy.stats.kruskal(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd)
 print(f"One-sided kruskal for median protein expression time higher than median RNA expression time: {2*p}")
 t, p = scipy.stats.ttest_1samp(diff_max_pol, 0)
 print(f"One-sided, one-sample t-test for mean delay in protein expression larger than zero: {2*p}")
 
-# diff_max_pol_regev = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_regev_filtered]
-# mean_dianaccd = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_filtered]
-# diff_max_pol_dianaccd = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in ccd_filtered]
-# mean_diananonccd = [np.mean(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in nonccd_filtered]
-# variances_diananonccd = [np.std(expression_data[:,geneidx]) for geneidx in range(len(g1_exp[0,:])) if adata.var_names[geneidx] in nonccd_filtered]
-
-# def weights(vals):
-#     '''normalizes all histogram bins to sum to 1'''
-#     return np.ones_like(vals)/float(len(vals))
-
-# fig = plt.figure()
-# ax1 = fig.add_subplot(111)
-# bins=np.histogram(np.hstack((variances, variances_regev, variances_dianaccd, variances_diananonccd)), bins=40)[1] #get the bin edges
-# ax1.hist(variances_regev, bins=bins, weights=weights(variances_regev), 
-#     label="Regev CCD Genes")
-# ax1.hist(variances_dianaccd, bins=bins, weights=weights(variances_dianaccd),
-#     label="Fucci CCD Genes")
-# ax1.hist(variances_diananonccd, bins=bins, weights=weights(variances_diananonccd), 
-#     label="Fucci Non-CCD Genes")
-# ax1.hist(variances, bins=bins, weights=weights(variances), 
-#     label="All Genes")
-# plt.legend(loc="upper right")
-# plt.xlabel("Stdev Expression")
-# plt.ylabel("Count, Normalized to 1")
-# plt.tight_layout()
-# plt.savefig(f"figures/stdev_expression_hist_{biotype_to_use}.png")
-# plt.show()
-# plt.close()
-
 
 #%% Sanity checks 
 # double check that the names line up
-prot_names = np.array(prot_list)[prot_list_filter_loc]
-rna_names = name_prot_list
+prot_names = np.array(prot_ccd_ensg)[both_prot_ccd_idx]
+rna_names =  np.array(rna_ccd_ensg)[both_rna_ccd_idx]
 print(f"The name arrays are the same: {all(prot_names == rna_names)}")
 
 # What are the smallest, largest, and median genes and what do they look like?
-smallest = np.argmin(diff_max_pol)
-smallest_gene = name_prot_list[smallest]
-median = np.argsort(diff_max_pol)[len(diff_max_pol)//2]
-median_gene = name_prot_list[median]
-largest = np.argmax(diff_max_pol)
-largest_gene = name_prot_list[largest]
-print(f"smallest delay {diff_max_pol[smallest] * TOT_LEN} hr for {name_prot_list[smallest]}")
-print(f"median delay {diff_max_pol[median] * TOT_LEN} hr for {name_prot_list[median]}")
-print(f"largest delay {diff_max_pol[largest] * TOT_LEN} hr for {name_prot_list[largest]}")
+#smallest = np.argmin(diff_max_pol)
+#smallest_gene = name_prot_list[smallest]
+#median = np.argsort(diff_max_pol)[len(diff_max_pol)//2]
+#median_gene = name_prot_list[median]
+#largest = np.argmax(diff_max_pol)
+#largest_gene = name_prot_list[largest]
+#print(f"smallest delay {diff_max_pol[smallest] * TOT_LEN} hr for {name_prot_list[smallest]}")
+#print(f"median delay {diff_max_pol[median] * TOT_LEN} hr for {name_prot_list[median]}")
+#print(f"largest delay {diff_max_pol[largest] * TOT_LEN} hr for {name_prot_list[largest]}")
+#
+#plt.rcParams['figure.figsize'] = (10, 10)
+#sorted_gene_array_array = np.array(sorted_gene_array).transpose()
+#def plot_avg_rna_and_prot(namelist, outfolder):
+#    if not os.path.exists(outfolder): os.mkdir(outfolder)
+#    for name in namelist:
+#        bin_size = 100
+#        mvgavg = moving_averages[:,name_rna_list.index(name)]
+#        mvgmax = mvgavg.max()
+#        plt.plot(
+#            fucci_time_sort[:-(bin_size-1)] * TOT_LEN, 
+#            mvgavg / mvgmax,  
+#            color="blue", 
+#            label=f"RNA Moving Average by {bin_size} Cells")
+#        prot_exp = sorted_gene_array_array[:,prot_list.index(name)]
+#        plt.plot(
+#            xvals[:-1] * TOT_LEN, 
+#            prot_exp, 
+#            color="red", 
+#            label="Protein Expression")
+#        plt.xlabel("Cell Division Time, hrs",size=36,fontname='Arial')
+#        plt.ylabel("Expression, Normalized by Cell",size=36,fontname='Arial')
+#        plt.xticks(size=14)
+#        plt.yticks(size=14)
+#        plt.title(name,size=36,fontname='Arial')
+#        plt.legend(fontsize=14)
+#        plt.tight_layout()
+#        plt.savefig(f"{outfolder}/{name}.png")
+#        plt.close()
 
-plt.rcParams['figure.figsize'] = (10, 10)
-sorted_gene_array_array = np.array(sorted_gene_array).transpose()
-def plot_avg_rna_and_prot(namelist, outfolder):
-    if not os.path.exists(outfolder): os.mkdir(outfolder)
-    for name in namelist:
-        bin_size = 100
-        mvgavg = moving_averages[:,name_rna_list.index(name)]
-        mvgmax = mvgavg.max()
-        plt.plot(
-            fucci_time_sort[:-(bin_size-1)] * TOT_LEN, 
-            mvgavg / mvgmax,  
-            color="blue", 
-            label=f"RNA Moving Average by {bin_size} Cells")
-        prot_exp = sorted_gene_array_array[:,prot_list.index(name)]
-        plt.plot(
-            xvals[:-1] * TOT_LEN, 
-            prot_exp, 
-            color="red", 
-            label="Protein Expression")
-        plt.xlabel("Cell Division Time, hrs",size=36,fontname='Arial')
-        plt.ylabel("Expression, Normalized by Cell",size=36,fontname='Arial')
-        plt.xticks(size=14)
-        plt.yticks(size=14)
-        plt.title(name,size=36,fontname='Arial')
-        plt.legend(fontsize=14)
-        plt.tight_layout()
-        plt.savefig(f"{outfolder}/{name}.png")
-        plt.close()
-
-plot_avg_rna_and_prot(name_prot_list, "figures/RNAProteinCCDAvgs")
+#plot_avg_rna_and_prot(name_prot_list, "figures/RNAProteinCCDAvgs")
 

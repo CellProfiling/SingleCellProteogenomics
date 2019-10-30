@@ -23,15 +23,36 @@ use_spike_ins = False
 adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
 
 # QC plots before filtering
-do_log_normalization = True
 sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
 shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{dd}Cells.pdf")
 
 # Post filtering QC
-qc_filtering(adata, do_log_normalization)
+do_log_normalization = True
+do_remove_blob = False
+adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
 sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
 sc.pl.highly_variable_genes(adata, show=True, save=True)
 shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersion{dd}Cells.pdf")
+
+# Unsupervised clustering and gene list for the blob
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata)
+sc.pl.umap(adata, color="louvain", show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_before.pdf")
+sc.tl.rank_genes_groups(adata, groupby="louvain")
+p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
+p_blob_sig = np.array(p_blob) < 0.01
+ensg_blob_sig=np.array([a[5] for a in adata.uns["rank_genes_groups"]["names"]])[p_blob_sig]
+np.savetxt("output/blob_genes.csv", ensg_blob_sig, fmt="%s", delimiter=",")
+
+# Remove the blob
+do_remove_blob = True
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
+adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata)
+sc.pl.umap(adata, color="louvain", show=True, save=True)
+shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after.pdf")
 
 # Read in the published CCD genes / Diana's CCD / Non-CCD genes
 # filter for genes that weren't filtered in QC
@@ -76,10 +97,12 @@ shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseCcdRegev.pdf")
 
 # fucci pseudotime
 # Idea: display pseudotime on the UMAP created from the gene expression
+sc.tl.diffmap(adata)
 sc.pl.diffmap(adata, color='fucci_time', projection="3d", show=True, save=True)
 shutil.move("figures/diffmap.pdf", f"figures/diffmap{dd}CellsFucciPseudotime3d.pdf")
 sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsSeqFucciPseudotime.pdf")
+
 
 
 #%% Read in RNA-Seq data again and the CCD gene lists
@@ -87,8 +110,9 @@ dd = "All"
 counts_or_rpkms = "Tpms"
 do_log_normalization = True
 use_spike_ins = False
+do_remove_blob = True
 adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
-phases_filt = qc_filtering(adata, do_log_normalization)
+adata, phases_filt = qc_filtering(adata, do_log_normalization, do_remove_blob)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 
@@ -274,24 +298,4 @@ shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseNotListed.pdf")
 # Conclusion:
 # There is information about the cell cycle in the genes that aren't cell cycle dependent
 
-#%% Make the peak RNA heatmap
-# Idea: generate a heatmap similar to the one for protein data
-# Execution: use the list of significantly differentially expressed genes to pluck the normalized intensities for those genes
-#      and order them by the time of peak expression
-# output: heatmap
-
-def mvavg(yvals, mv_window):
-    return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
-
-# imports
-dd = "All"
-counts_or_rpkms = "Counts"
-do_log_normalization = True
-adata, phases = read_counts_and_phases(dd, counts_or_rpkms, False, "protein_coding")
-expression_data = adata.X # log normalized
-normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T # divide for cell
-# normalized_exp_data = (normalized_exp_data / np.max(normalized_exp_data, axis=1)[:,None]) # divide for gene
-fucci_time_inds = np.argsort(adata.obs["fucci_time"])
-fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
-norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 
