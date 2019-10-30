@@ -64,6 +64,10 @@ wp_iscyto = np.load("output/wp_iscyto.npy", allow_pickle=True)
 ccd_comp = np.load("output/ccd_comp.npy", allow_pickle=True)
 print("loaded")
 
+print("reading RNA data")
+ pd.read_csv("output/allccd_transcript_regulated.csv")["gene"]
+print("loaded")
+
 #%% Make temporal heatmap and use those peak values to compare to RNA data rank by percent variance explained.
 # Idea: make a heatmap showing the relative expression of each protein over the cell cycle, sorted by time of peak expression
 # Execution: plt.imshow makes a heatmap if given a 2D array
