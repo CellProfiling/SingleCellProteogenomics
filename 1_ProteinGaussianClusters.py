@@ -28,8 +28,8 @@ my_df = pd.concat((my_df1, my_df2), sort=True)
 my_df = my_df[~my_df.well_plate.isin(emptywells)]
 print("loaded")
 
-# Sample information (FucciWellPlateGene is still missing some information)
 def read_sample_info(df):
+    '''Get the metadata for all the samples'''
     plate = np.asarray(df.plate)
     u_plate = np.unique(plate)
     well_plate = np.asarray(df.well_plate)
@@ -37,16 +37,28 @@ def read_sample_info(df):
     u_well_plates = np.unique(well_plate)
     ab_objnum = np.asarray(df.ObjectNumber)
     name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
-    wppp, ensggg, abbb, rrrr = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"])
-    # name_df = pd.read_csv("input\\FucciWellPlateGene.csv")
-    # wppp, ensggg, abbb = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"])
+    wppp1, ensggg1, abbb1, rrrr = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"])
+    name_df2 = pd.read_csv("input\\Fucci_staining_review_variation_check.csv")
+    wppp2, ensggg2, abbb2 = list(name_df2["well_plate"]), list(name_df2["ENSG"]), list(name_df2["Antibody"])
+    wppp, ensggg, abbb = wppp1 + wppp2, ensggg1 + ensggg2, abbb1 +  abbb2
     ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
     ab_dict = dict([(wppp[i], abbb[i]) for i in range(len(wppp))])
-    result_dict = dict([(wppp[i], rrrr[i]) for i in range(len(wppp))])
+    result_dict = dict([(wppp[i], rrrr[i]) for i in range(len(wppp1))])
     ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
     antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
     result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
     return plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
+
+def previous_results(u_well_plates, result_dict, ensg_dict):
+    '''Process the results metadata into lists of previously annotated CCD proteins'''
+    wp_ensg = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
+    wp_prev_ccd = np.asarray([wp in result_dict and result_dict[wp] == "ccd" for wp in u_well_plates])
+    wp_prev_notccd = np.asarray([wp in result_dict and result_dict[wp] == "notccd" for wp in u_well_plates])
+    wp_prev_negative = np.asarray([wp in result_dict and result_dict[wp] == "negative" for wp in u_well_plates])
+    prev_ccd_ensg = wp_ensg[wp_prev_ccd]
+    prev_notccd_ensg = wp_ensg[wp_prev_notccd]
+    prev_negative_ensg = wp_ensg[wp_prev_negative]
+    return wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg
 
 def read_sample_data(df):
     # Antibody data (mean intensity)
@@ -61,6 +73,7 @@ def read_sample_data(df):
     return ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci
 
 plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
+wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
 ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df)
 
 #%% Negative staining (mean intensity max per image) zero center
@@ -96,8 +109,12 @@ plt.title("Staining (log10 max mean intensity per image, zero centered per plate
 plt.show()
 plt.close()
 
-print(f"{sum(ab_cell_neg_max_zeroc < upper_neg_max_cutoff) / len(ab_cell_neg_max_zeroc)}: percent of neg stains removed")
-print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / len(ab_cell_max_zeroc)}: percent of pos stains removed")
+num_neg_removed = sum(ab_cell_neg_max_zeroc < upper_neg_max_cutoff)
+num_pos_removed = sum(ab_cell_max_zeroc < upper_neg_max_cutoff)
+num_ccd_removed = sum((ab_cell_max_zeroc < upper_neg_max_cutoff) & np.isin(ab_cell_max_wp, wp_prev_ccd))
+print(f"{num_neg_removed / len(ab_cell_neg_max_zeroc)}: percent of neg stains removed")
+print(f"{num_pos_removed / len(ab_cell_max_zeroc)}: percent of pos stains removed")
+print(f"{num_ccd_removed / len(ab_cell_max_zeroc)}: percent of ccd stains removed")
 print(f"{len(ab_cell_neg_max_zeroc) / (len(ab_cell_neg_max_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
 print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_neg_max_zeroc))}: percent of all that are negative with this cutoff")
 
@@ -143,6 +160,7 @@ cell_passes_neg_staining_filter = [wp in passing_u_well_plate for wp in well_pla
 my_df_filtered = my_df[cell_passes_neg_staining_filter]
 len_temp = len(ab_cell)
 plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df_filtered)
+wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
 ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df_filtered)
 print(f"{len_temp > len(ab_cell)}: filter successful")
 print(f"{len(ab_cell_max_all) - sum(image_passes_neg_staining_filter)}: images filtered")
@@ -225,21 +243,28 @@ def benji_hoch(alpha, pvals):
     return pvals_corrected_BH, reject_BH
 
 alphaa = 0.05
-wp_cell_kruskal_adj, wp_pass_bh_cell = benji_hoch(alphaa, wp_cell_kruskal)
-wp_nuc_kruskal_adj, wp_pass_bh_nuc = benji_hoch(alphaa, wp_nuc_kruskal)
-wp_cyto_kruskal_adj, wp_pass_bh_cyto = benji_hoch(alphaa, wp_cyto_kruskal)
+wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alphaa, wp_cell_kruskal)
+wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alphaa, wp_nuc_kruskal)
+wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alphaa, wp_cyto_kruskal)
 
-print(f"{len(wp_pass_bh_cell)}: number of genes tested")
-print(f"{sum(wp_pass_bh_cell)}: number of passing genes at 5% FDR in cell")
-print(f"{sum(wp_pass_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
-print(f"{sum(wp_pass_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
+print(f"{len(wp_pass_gaussccd_bh_cell)}: number of genes tested")
+print(f"{sum(wp_pass_gaussccd_bh_cell)}: number of passing genes at 5% FDR in cell")
+print(f"{sum(wp_pass_gaussccd_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
+print(f"{sum(wp_pass_gaussccd_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
 
 #%% Pickle the results
 np.save("output/plate.filterNegStain.npy", plate, allow_pickle=True)
 np.save("output/u_plate.filterNegStain.npy", u_plate, allow_pickle=True)
+np.save("output/u_well_plates.filterNegStain.npy", u_well_plates, allow_pickle=True)
+np.save("output/wp_ensg.filterNegStain.npy", wp_ensg, allow_pickle=True) 
+np.save("output/wp_prev_ccd.filterNegStain.npy", wp_prev_ccd, allow_pickle=True) 
+np.save("output/wp_prev_notccd.filterNegStain.npy", wp_prev_notccd, allow_pickle=True) 
+np.save("output/wp_prev_negative.filterNegStain.npy", wp_prev_negative, allow_pickle=True) 
+np.save("output/prev_ccd_ensg.filterNegStain.npy", prev_ccd_ensg, allow_pickle=True) 
+np.save("output/prev_notccd_ensg.filterNegStain.npy", prev_notccd_ensg, allow_pickle=True) 
+np.save("output/prev_negative_ensg.filterNegStain.npy", prev_negative_ensg, allow_pickle=True)
 np.save("output/well_plate.filterNegStain.npy", well_plate, allow_pickle=True)
 np.save("output/imgnb.filterNegStain.npy", imgnb, allow_pickle=True)
-np.save("output/u_well_plates.filterNegStain.npy", u_well_plates, allow_pickle=True)
 np.save("output/ab_objnum.filterNegStain.npy", ab_objnum, allow_pickle=True)
 np.save("output/ab_nuc.filterNegStain.npy", ab_nuc, allow_pickle=True)
 np.save("output/ab_cyto.filterNegStain.npy", ab_cyto, allow_pickle=True)
@@ -251,12 +276,12 @@ np.save("output/log_green_fucci_zeroc.filterNegStain.npy", log_green_fucci_zeroc
 np.save("output/log_red_fucci_zeroc.filterNegStain.npy", log_red_fucci_zeroc, allow_pickle=True)
 np.save("output/log_green_fucci_zeroc_rescale.filterNegStain.npy", log_green_fucci_zeroc_rescale, allow_pickle=True)
 np.save("output/log_red_fucci_zeroc_rescale.filterNegStain.npy", log_red_fucci_zeroc_rescale, allow_pickle=True)
-np.save("output/wp_cell_kruskal_adj.filterNegStain.npy", wp_cell_kruskal_adj, allow_pickle=True)
-np.save("output/wp_nuc_kruskal_adj.filterNegStain.npy", wp_nuc_kruskal_adj, allow_pickle=True)
-np.save("output/wp_cyto_kruskal_adj.filterNegStain.npy", wp_cyto_kruskal_adj, allow_pickle=True)
-np.save("output/wp_pass_bh_cell.filterNegStain.npy", wp_pass_bh_cell, allow_pickle=True)
-np.save("output/wp_pass_bh_nuc.filterNegStain.npy", wp_pass_bh_nuc, allow_pickle=True)
-np.save("output/wp_pass_bh_cyto.filterNegStain.npy", wp_pass_bh_cyto, allow_pickle=True)
+np.save("output/wp_cell_kruskal_gaussccd_adj.filterNegStain.npy", wp_cell_kruskal_gaussccd_adj, allow_pickle=True)
+np.save("output/wp_nuc_kruskal_gaussccd_adj.filterNegStain.npy", wp_nuc_kruskal_gaussccd_adj, allow_pickle=True)
+np.save("output/wp_cyto_kruskal_gaussccd_adj.filterNegStain.npy", wp_cyto_kruskal_gaussccd_adj, allow_pickle=True)
+np.save("output/wp_pass_gaussccd_bh_cell.filterNegStain.npy", wp_pass_gaussccd_bh_cell, allow_pickle=True)
+np.save("output/wp_pass_gaussccd_bh_nuc.filterNegStain.npy", wp_pass_gaussccd_bh_nuc, allow_pickle=True)
+np.save("output/wp_pass_gaussccd_bh_cyto.filterNegStain.npy", wp_pass_gaussccd_bh_cyto, allow_pickle=True)
 np.save("output/fucci_data.filterNegStain.npy", fucci_data, allow_pickle=True)
 
 #%%

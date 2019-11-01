@@ -31,13 +31,21 @@ log_red_fucci_zeroc=log_green_fucci_zeroc=np.load("output/log_green_fucci_zeroc.
 log_red_fucci_zeroc=np.load("output/log_red_fucci_zeroc.filterNegStain.npy", allow_pickle=True)
 log_green_fucci_zeroc_rescale=np.load("output/log_green_fucci_zeroc_rescale.filterNegStain.npy", allow_pickle=True)
 log_red_fucci_zeroc_rescale=np.load("output/log_red_fucci_zeroc_rescale.filterNegStain.npy", allow_pickle=True)
-wp_cell_kruskal_adj = np.load("output/wp_cell_kruskal_adj.filterNegStain.npy", allow_pickle=True)
-wp_nuc_kruskal_adj = np.load("output/wp_nuc_kruskal_adj.filterNegStain.npy", allow_pickle=True)
-wp_cyto_kruskal_adj = np.load("output/wp_cyto_kruskal_adj.filterNegStain.npy", allow_pickle=True)
-wp_pass_bh_cell = np.load("output/wp_pass_bh_cell.filterNegStain.npy", allow_pickle=True)
-wp_pass_bh_nuc = np.load("output/wp_pass_bh_nuc.filterNegStain.npy", allow_pickle=True)
-wp_pass_bh_cyto = np.load("output/wp_pass_bh_cyto.filterNegStain.npy", allow_pickle=True)
+wp_cell_kruskal_gaussccd_adj = np.load("output/wp_cell_kruskal_gaussccd_adj.filterNegStain.npy", allow_pickle=True)
+wp_nuc_kruskal_gaussccd_adj = np.load("output/wp_nuc_kruskal_gaussccd_adj.filterNegStain.npy", allow_pickle=True)
+wp_cyto_kruskal_gaussccd_adj = np.load("output/wp_cyto_kruskal_gaussccd_adj.filterNegStain.npy", allow_pickle=True)
+wp_pass_gaussccd_bh_cell = np.load("output/wp_pass_gaussccd_bh_cell.filterNegStain.npy", allow_pickle=True)
+wp_pass_gaussccd_bh_nuc = np.load("output/wp_pass_gaussccd_bh_nuc.filterNegStain.npy", allow_pickle=True)
+wp_pass_gaussccd_bh_cyto = np.load("output/wp_pass_gaussccd_bh_cyto.filterNegStain.npy", allow_pickle=True)
 fucci_data = np.load("output/fucci_data.filterNegStain.npy", allow_pickle=True)
+
+wp_ensg = np.load("output/wp_ensg.filterNegStain.npy", allow_pickle=True) 
+wp_prev_ccd = np.load("output/wp_prev_ccd.filterNegStain.npy", allow_pickle=True) 
+wp_prev_notccd = np.load("output/wp_prev_notccd.filterNegStain.npy", allow_pickle=True) 
+wp_prev_negative = np.load("output/wp_prev_negative.filterNegStain.npy", allow_pickle=True) 
+prev_ccd_ensg = np.load("output/prev_ccd_ensg.filterNegStain.npy", allow_pickle=True) 
+prev_notccd_ensg = np.load("output/prev_notccd_ensg.filterNegStain.npy", allow_pickle=True) 
+prev_negative_ensg = np.load("output/prev_negative_ensg.filterNegStain.npy", allow_pickle=True)
 print("loaded")
 
 #%% Figure out the compartment information
@@ -241,72 +249,6 @@ def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
 start_pt = pol2cart(R_2,start_phi)
 fucci_hist2d(centered_data,cart_data_ur,start_pt)
 
-#%% Filter for variation
-# Idea: Filter for the proteins that show variation
-# Execution: Use the levene test for unequal variances for each protein to check whether there is more variation than microtubules @ 5% FDR
-#      Use the natural numbers, not log transformed, and use the median levene test, which works for skewed distributions like intensities
-# Output: list of proteins that show variation
-
-# benjimini-hochberg multiple testing correction
-# source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
-def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection'''
-    nobs = len(x)
-    return np.arange(1,nobs+1)/float(nobs)
-
-def benji_hoch(alpha, pvals):
-    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvals, pvals_sortind)
-    ecdffactor = _ecdf(pvals_sorted)
-    reject = pvals_sorted <= ecdffactor*alpha
-    reject = pvals_sorted <= ecdffactor*alpha
-    if reject.any():
-        rejectmax = max(np.nonzero(reject)[0])
-        reject[:rejectmax] = True
-    pvals_corrected_raw = pvals_sorted / ecdffactor
-    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
-    del pvals_corrected_raw
-    pvals_corrected[pvals_corrected>1] = 1
-    pvals_corrected_BH = np.empty_like(pvals_corrected)
-
-    # deal with sorting
-    pvals_corrected_BH[pvals_sortind] = pvals_corrected
-    del pvals_corrected
-    reject_BH = np.empty_like(reject)
-    reject_BH[pvals_sortind] = reject
-    return pvals_corrected_BH, reject_BH
-
-# Filter for variation based on microtubules
-var_cell_test_p, var_nuc_test_p, var_cyto_test_p = [],[],[]
-for well in u_well_plates:
-    curr_well_inds = pol_sort_well_plate==well
-    curr_ab_cell = pol_sort_ab_cell[curr_well_inds]
-    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
-    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
-    curr_mt_cell = pol_sort_mt_cell[curr_well_inds]
-    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_cell ** 10, center="median")
-    var_cell_test_p.append(p)
-    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_nuc ** 10, center="median")
-    var_nuc_test_p.append(p)
-    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_cyto ** 10, center="median")
-    var_cyto_test_p.append(p)
-
-alphaa = 0.05
-wp_cell_levene_adj, wp_pass_levene_bh_cell = benji_hoch(alphaa, var_cell_test_p)
-wp_nuc_levene_adj, wp_pass_levene_bh_nuc = benji_hoch(alphaa, var_nuc_test_p)
-wp_cyto_levene_adj, wp_pass_levene_bh_cyto = benji_hoch(alphaa, var_cyto_test_p)
-print(f"{sum(wp_pass_levene_bh_cell)}: # proteins showing variation, cell, natural vals tested")
-print(f"{sum(wp_pass_levene_bh_nuc)}: # proteins showing variation, nuc, natural vals tested")
-print(f"{sum(wp_pass_levene_bh_cyto)}: # proteins showing variation, cyto, natural vals tested")
-
-wp_cell_var_and_loc = wp_iscell & wp_pass_bh_cell
-wp_nuc_var_and_loc = wp_isnuc & wp_pass_bh_nuc
-wp_cyto_var_and_loc = wp_iscyto & wp_pass_bh_cyto
-print(f"{sum(wp_cell_var_and_loc)}: # proteins showing variation, cell, and localized there")
-print(f"{sum(wp_nuc_var_and_loc)}: # proteins showing variation, nuc, and localized there")
-print(f"{sum(wp_cyto_var_and_loc)}: # proteins showing variation, cyto, and localized there")
-    
 #%%
 # Idea: process the well data
 # Exec: use Devin's code
@@ -371,6 +313,7 @@ var_fred, var_fgreen = [],[] # variance of mean FUCCI intensities
 var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
 perc_var_fred, perc_var_fgreen = [],[] # percent variance attributed to cell cycle (FUCCI colors)
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
+cell_counts = []
 
 for i, well in enumerate(u_well_plates):
 #    print(well)
@@ -415,10 +358,135 @@ for i, well in enumerate(u_well_plates):
     perc_var_cyto.append(perc_yval_cyto[0])
     perc_var_mt.append(perc_yval_mt[0])
     
+    cell_counts.append(len(curr_pol))
+    
 
 var_cell, var_nuc, var_cyto = np.array(var_cell),np.array(var_nuc),np.array(var_cyto)
 perc_var_fred, perc_var_fgreen = np.array(perc_var_fred),np.array(perc_var_fgreen) # percent variance attributed to cell cycle (FUCCI colors)
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
+
+
+#%% Filter for variation
+# Idea: Filter for the proteins that show variation
+# Execution: Use the levene test for unequal variances for each protein to check whether there is more variation than microtubules @ 5% FDR
+#      Use the natural numbers or log transformed, and use the median levene test, which works for skewed distributions like intensities
+#      Use one-tailed test and check for greater variance
+# Output: list of proteins that show variation
+
+# benjimini-hochberg multiple testing correction
+# source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
+def _ecdf(x):
+    '''no frills empirical cdf used in fdrcorrection'''
+    nobs = len(x)
+    return np.arange(1,nobs+1)/float(nobs)
+
+def benji_hoch(alpha, pvals):
+    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
+    pvals_sortind = np.argsort(pvals)
+    pvals_sorted = np.take(pvals, pvals_sortind)
+    ecdffactor = _ecdf(pvals_sorted)
+    reject = pvals_sorted <= ecdffactor*alpha
+    reject = pvals_sorted <= ecdffactor*alpha
+    if reject.any():
+        rejectmax = max(np.nonzero(reject)[0])
+        reject[:rejectmax] = True
+    pvals_corrected_raw = pvals_sorted / ecdffactor
+    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
+    del pvals_corrected_raw
+    pvals_corrected[pvals_corrected>1] = 1
+    pvals_corrected_BH = np.empty_like(pvals_corrected)
+
+    # deal with sorting
+    pvals_corrected_BH[pvals_sortind] = pvals_corrected
+    del pvals_corrected
+    reject_BH = np.empty_like(reject)
+    reject_BH[pvals_sortind] = reject
+    return pvals_corrected_BH, reject_BH
+
+# Filter for variation based on microtubules
+var_cell_test_p, var_nuc_test_p, var_cyto_test_p = [],[],[]
+varlog_cell_test_p, varlog_nuc_test_p, varlog_cyto_test_p = [],[],[]
+for well in u_well_plates:
+    curr_well_inds = pol_sort_well_plate==well
+    curr_ab_cell = pol_sort_ab_cell[curr_well_inds]
+    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
+    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
+    curr_mt_cell = pol_sort_mt_cell[curr_well_inds]
+    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_cell ** 10, center="median")
+    var_cell_test_p.append(p*2)
+    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_nuc ** 10, center="median")
+    var_nuc_test_p.append(p*2)
+    w, p = scipy.stats.levene(curr_mt_cell ** 10, curr_ab_cyto ** 10, center="median")
+    var_cyto_test_p.append(p*2)
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cell, center="median")
+    varlog_cell_test_p.append(p*2)
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_nuc, center="median")
+    varlog_nuc_test_p.append(p*2)
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cyto, center="median")
+    varlog_cyto_test_p.append(p*2)
+
+alphaa = 0.05
+wp_cell_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cell = benji_hoch(alphaa, var_cell_test_p)
+wp_nuc_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_nuc = benji_hoch(alphaa, var_nuc_test_p)
+wp_cyto_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cyto = benji_hoch(alphaa, var_cyto_test_p)
+wp_isvariable_cell = (var_cell > var_mt) & wp_pass_gtvariability_levene_bh_cell
+wp_isvariable_nuc = (var_nuc > var_mt) & wp_pass_gtvariability_levene_bh_nuc
+wp_isvariable_cyto = (var_cyto > var_mt) & wp_pass_gtvariability_levene_bh_cyto
+wp_isvariable_comp = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+print(f"{sum(wp_isvariable_cell)}: # proteins showing variation, cell, natural vals tested")
+print(f"{sum(wp_isvariable_nuc)}: # proteins showing variation, nuc, natural vals tested")
+print(f"{sum(wp_isvariable_cyto)}: # proteins showing variation, cyto, natural vals tested")
+print(f"{sum(wp_isvariable_comp)}: # total proteins showing variation")
+wp_logcell_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_logcell = benji_hoch(alphaa, varlog_cell_test_p)
+wp_lognuc_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_lognuc = benji_hoch(alphaa, varlog_nuc_test_p)
+wp_logcyto_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_logcyto = benji_hoch(alphaa, varlog_cyto_test_p)
+wp_isvariable_logcell = (var_cell > var_mt) & wp_pass_gtvariability_levene_bh_logcell
+wp_isvariable_lognuc = (var_nuc > var_mt) & wp_pass_gtvariability_levene_bh_lognuc
+wp_isvariable_logcyto = (var_cyto > var_mt) & wp_pass_gtvariability_levene_bh_logcyto
+wp_isvariable_logcomp = wp_isvariable_logcell | wp_isvariable_lognuc | wp_isvariable_logcyto
+print(f"{sum(wp_isvariable_logcell)}: # proteins showing variation, cell, log vals tested")
+print(f"{sum(wp_isvariable_lognuc)}: # proteins showing variation, nuc, log vals tested")
+print(f"{sum(wp_isvariable_logcyto)}: # proteins showing variation, cyto, log vals tested")
+print(f"{sum(wp_isvariable_logcomp)}: # total proteins showing variation, comp, log vals tested")
+
+wp_cell_var_and_loc = wp_iscell & wp_isvariable_cell
+wp_nuc_var_and_loc = wp_isnuc & wp_isvariable_nuc
+wp_cyto_var_and_loc = wp_iscyto & wp_isvariable_cyto
+print(f"{sum(wp_cell_var_and_loc)}: # proteins showing variation, cell, and localized there")
+print(f"{sum(wp_nuc_var_and_loc)}: # proteins showing variation, nuc, and localized there")
+print(f"{sum(wp_cyto_var_and_loc)}: # proteins showing variation, cyto, and localized there")
+print(f"{sum(wp_cell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc)}: # total proteins showing variation and localized there")
+variable_dontmatch = (wp_cell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc) & ~(wp_pass_gtvariability_levene_bh_cell|wp_pass_gtvariability_levene_bh_nuc|wp_pass_gtvariability_levene_bh_cyto)
+print(f"{sum(variable_dontmatch)}: variable in compartment but not any compartment")
+wp_logcell_var_and_loc = wp_iscell & wp_isvariable_logcell
+wp_lognuc_var_and_loc = wp_isnuc & wp_isvariable_lognuc
+wp_logcyto_var_and_loc = wp_iscyto & wp_isvariable_logcyto
+print(f"{sum(wp_logcell_var_and_loc)}: # proteins showing variation, cell, and localized there")
+print(f"{sum(wp_lognuc_var_and_loc)}: # proteins showing variation, nuc, and localized there")
+print(f"{sum(wp_logcyto_var_and_loc)}: # proteins showing variation, cyto, and localized there")
+print(f"{sum(wp_logcell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc)}: # total proteins showing variation and localized there")
+variable_logdontmatch = (wp_logcell_var_and_loc|wp_lognuc_var_and_loc|wp_logcyto_var_and_loc) & ~(wp_pass_gtvariability_levene_bh_logcell|wp_pass_gtvariability_levene_bh_lognuc|wp_pass_gtvariability_levene_bh_logcyto)
+print(f"{sum(variable_logdontmatch)}: variable in compartment but not any compartment")
+
+pd.DataFrame({
+        "well_plate":u_well_plates,
+        "var_cell_test_p":var_cell_test_p,
+        "var_nuc_test_p":var_nuc_test_p,
+        "var_cyto_test_p":var_cyto_test_p,
+        "wp_cell_levene_gtvariability_adj":wp_cell_levene_gtvariability_adj,
+        "wp_nuc_levene_gtvariability_adj":wp_nuc_levene_gtvariability_adj,
+        "wp_cyto_levene_gtvariability_adj":wp_cyto_levene_gtvariability_adj,
+        }).to_csv("output/pvalsforvariability.csv")
+    
+pd.DataFrame({
+    "well_plate":u_well_plates,
+    "varlog_cell_test_p":varlog_cell_test_p,
+    "varlog_nuc_test_p":varlog_nuc_test_p,
+    "varlog_cyto_test_p":varlog_cyto_test_p,
+    "wp_logcell_levene_gtvariability_adj":wp_logcell_levene_gtvariability_adj,
+    "wp_lognuc_levene_gtvariability_adj":wp_lognuc_levene_gtvariability_adj,
+    "wp_logcyto_levene_gtvariability_adj":wp_logcyto_levene_gtvariability_adj,
+    }).to_csv("output/pvalsforvariabilityloggg.csv")
 
 #%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 # Idea: create cutoffs for percent variance and 
@@ -426,13 +494,13 @@ perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell
 # Output: Graphs that illustrate the cutoffs (integrated, mean)
 # Output: Overlap of the total variance cutoffs with the original filtering done manually
 
-perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt)]
+perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt) & ~np.isnan(perc_var_mt)]
 percent_var_cutoff = np.mean(perc_var_mt_valid) + 1 * np.std(perc_var_mt_valid)
 print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell cycle")
 
-wp_cell_ccd = wp_cell_var_and_loc & (perc_var_cell >= percent_var_cutoff)
-wp_nuc_ccd = wp_nuc_var_and_loc & (perc_var_nuc >= percent_var_cutoff)
-wp_cyto_ccd = wp_cyto_var_and_loc & (perc_var_cyto >= percent_var_cutoff)
+wp_cell_ccd = wp_logcell_var_and_loc & (perc_var_cell >= percent_var_cutoff)
+wp_nuc_ccd = wp_lognuc_var_and_loc & (perc_var_nuc >= percent_var_cutoff)
+wp_cyto_ccd = wp_logcyto_var_and_loc & (perc_var_cyto >= percent_var_cutoff)
 print(f"{sum(wp_cell_ccd)}: # proteins showing CCD variation, cell")
 print(f"{sum(wp_nuc_ccd)}: # proteins showing CCD variation, nuc")
 print(f"{sum(wp_cyto_ccd)}: # proteins showing CCD variation, cyto")
@@ -441,18 +509,18 @@ var_comp = np.empty_like(var_cell)
 var_comp[wp_iscell] = var_cell[wp_iscell]
 var_comp[wp_isnuc] = var_nuc[wp_isnuc]
 var_comp[wp_iscyto] = var_cyto[wp_iscyto]
-var_pass_comp = np.empty_like(wp_cell_var_and_loc)
-var_pass_comp[wp_iscell] = wp_cell_var_and_loc[wp_iscell]
-var_pass_comp[wp_isnuc] = wp_nuc_var_and_loc[wp_isnuc]
-var_pass_comp[wp_iscyto] = wp_cyto_var_and_loc[wp_iscyto]
+var_pass_comp = np.empty_like(wp_logcell_var_and_loc)
+var_pass_comp[wp_iscell] = wp_logcell_var_and_loc[wp_iscell]
+var_pass_comp[wp_isnuc] = wp_lognuc_var_and_loc[wp_isnuc]
+var_pass_comp[wp_iscyto] = wp_logcyto_var_and_loc[wp_iscyto]
 perc_var_comp = np.empty_like(perc_var_cell)
 perc_var_comp[wp_iscell] = perc_var_cell[wp_iscell]
 perc_var_comp[wp_isnuc] = perc_var_nuc[wp_isnuc]
 perc_var_comp[wp_iscyto] = perc_var_cyto[wp_iscyto]
-wp_comp_kruskal_adj = np.empty_like(wp_cell_kruskal_adj)
-wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_adj[wp_iscell]
-wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_adj[wp_isnuc]
-wp_comp_kruskal_adj[wp_iscyto] = wp_cyto_kruskal_adj[wp_iscyto]    
+wp_comp_kruskal_adj = np.empty_like(wp_cell_kruskal_gaussccd_adj)
+wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_gaussccd_adj[wp_iscell]
+wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_gaussccd_adj[wp_isnuc]
+wp_comp_kruskal_adj[wp_iscyto] = wp_cyto_kruskal_gaussccd_adj[wp_iscyto]    
 plt.scatter(var_comp[var_pass_comp], perc_var_comp[var_pass_comp], c=wp_comp_kruskal_adj[var_pass_comp])
 # plt.vlines(total_var_cutoff, 0, 0.9)
 plt.hlines(percent_var_cutoff, 0, 0.1)
@@ -503,44 +571,28 @@ print(f"{sum(wp_comp_ccd)}: # proteins showing CCD variation (mvavg & gauss), re
 #plt.show()
 #plt.close()
 
-#%% Output a list of the genes that show variation
+# Output a list of the genes that show variation
 name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
-wppp, ensggg, abbb = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"])
-name_df2 = pd.read_csv("input\\FucciWellPlateGene.csv")
-wppp.extend(name_df2["well_plate"])
-ensggg.extend(name_df2["ENSG"])
-abbb.extend(name_df2["Antibody"])
+wppp1, ensggg1, abbb1 = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"])
+name_df2 = pd.read_csv("input\\Fucci_staining_review_variation_check.csv")
+wppp2, ensggg2, abbb2 = list(name_df2["well_plate"]), list(name_df2["ENSG"]), list(name_df2["Antibody"])
+wppp, ensggg, abbb = wppp1 + wppp2, ensggg1 + ensggg2, abbb1 +  abbb2
+
 ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
 ab_dict = dict([(wppp[i], abbb[i]) for i in range(len(wppp))])
 ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
 antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
-wp_ensg = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
-
-def ccd_gene_lists():
-    '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    ccd_regev=pd.read_csv("input/ccd_regev.txt")    
-    ccd=pd.read_csv("input/ccd_genes.txt")
-    nonccd=pd.read_csv("input/nonccd_genes.txt")
-    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"]))]["gene_id"])
-    ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"]))]["gene_id"])
-    nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"]))]["gene_id"])
-    return ccd_regev_filtered, ccd_filtered, nonccd_filtered
-
-ccd_regev, ccd_diana, nonccd = ccd_gene_lists()
-print(f"{len([ensg for ensg in ccd_diana if ensg in wp_ensg[wp_comp_ccd]]) / len(ccd_diana)}: fraction of previously annotated genes called CCD")
-print(f"{len([ensg for ensg in wp_ensg[wp_comp_ccd] if ensg in ccd_diana]) / len(wp_ensg[wp_comp_ccd])}: fraction of CCD genes that are previously annotated CCD genes")
 
 alpha = 0.05
-does_tot_vary_cell = wp_cell_var_and_loc
-does_tot_vary_nuc = wp_nuc_var_and_loc
-does_tot_vary_cyto = wp_cyto_var_and_loc
+does_tot_vary_cell = wp_logcell_var_and_loc
+does_tot_vary_nuc = wp_lognuc_var_and_loc
+does_tot_vary_cyto = wp_logcyto_var_and_loc
 does_perc_vary_cell = np.array(perc_var_cell) >= percent_var_cutoff
 does_perc_vary_nuc = np.array(perc_var_nuc) >= percent_var_cutoff
 does_perc_vary_cyto = np.array(perc_var_cyto) >= percent_var_cutoff
-ccd_cell = does_tot_vary_cell & does_perc_vary_cell & (wp_cell_kruskal_adj < alpha)
-ccd_cyto = does_tot_vary_cyto & does_perc_vary_cyto & (wp_cyto_kruskal_adj < alpha)
-ccd_nuc = does_tot_vary_nuc & does_perc_vary_nuc & (wp_nuc_kruskal_adj < alpha)
+ccd_cell = does_tot_vary_cell & does_perc_vary_cell & (wp_cell_kruskal_gaussccd_adj < alpha)
+ccd_cyto = does_tot_vary_cyto & does_perc_vary_cyto & (wp_cyto_kruskal_gaussccd_adj < alpha)
+ccd_nuc = does_tot_vary_nuc & does_perc_vary_nuc & (wp_nuc_kruskal_gaussccd_adj < alpha)
 ccd_any = ccd_cell | ccd_cyto | ccd_nuc
 ccd_comp = wp_comp_ccd
 nonccd_cell = does_tot_vary_cell & ~ccd_cell
@@ -549,18 +601,41 @@ nonccd_nuc = does_tot_vary_nuc & ~ccd_nuc
 nonccd_any = nonccd_cell | nonccd_cyto | nonccd_nuc
 nonccd_comp = var_pass_comp & ~ccd_comp
 
-df = pd.DataFrame({
+n_tot_variable = sum(wp_pass_gtvariability_levene_bh_logcell|wp_pass_gtvariability_levene_bh_lognuc|wp_pass_gtvariability_levene_bh_logcyto)
+n_tot_variable_comp = sum(wp_logcell_var_and_loc|wp_lognuc_var_and_loc|wp_logcyto_var_and_loc)
+print(f"{n_tot_variable}: # total proteins showing variation")
+print(f"{n_tot_variable_comp}: # total proteins showing variation in compartment")
+print(f"{len([ensg for ensg in ensggg1 if ensg in wp_ensg[wp_pass_gtvariability_levene_bh_logcell|wp_pass_gtvariability_levene_bh_lognuc|wp_pass_gtvariability_levene_bh_logcyto]]) / len(ensggg1)}: # fraction of proteins annotated as variable still annotated as such")
+print(f"{len([ensg for ensg in ensggg1 if ensg in wp_ensg[wp_logcell_var_and_loc|wp_lognuc_var_and_loc|wp_logcyto_var_and_loc]]) / len(ensggg1)}: # fraction of proteins annotated as variable still annotated as such in selected metacompartment")
+print(f"{sum(np.isin(wp_ensg, prev_ccd_ensg) & ccd_comp) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg & gauss)")
+print(f"{sum(np.isin(wp_ensg, prev_ccd_ensg) & (wp_comp_kruskal_adj < alphaa)) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (gauss)")
+print(f"{sum(np.isin(wp_ensg, prev_ccd_ensg) & (var_pass_comp & (perc_var_comp >= percent_var_cutoff))) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg)")
+print(f"{len([ensg for ensg in wp_ensg[wp_comp_ccd] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[wp_comp_ccd])}: fraction of CCD genes that are previously annotated CCD genes (mvavg & gauss)")
+print(f"{len([ensg for ensg in wp_ensg[wp_comp_kruskal_adj < alphaa] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[wp_comp_kruskal_adj < alphaa])}: fraction of CCD genes that are previously annotated CCD genes (gauss)")
+print(f"{len([ensg for ensg in wp_ensg[var_pass_comp & (perc_var_comp >= percent_var_cutoff)] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[var_pass_comp & (perc_var_comp >= percent_var_cutoff)])}: fraction of CCD genes that are previously annotated CCD genes (mvavg)")
+print(f"{sum(ccd_comp)}: CCD variable proteins (mvavg & gauss)")
+print(f"{sum(wp_comp_kruskal_adj < alphaa)}: CCD variable proteins (gauss)")
+print(f"{sum(var_pass_comp & (perc_var_comp >= percent_var_cutoff))}: CCD variable proteins (mvavg)")
+print(f"{len(prev_ccd_ensg)}: CCD variable proteins (previous)")
+print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
+
+examples=np.loadtxt("input/ensgexamplesfrompaper.txt", dtype=str)
+print(f"{sum(~np.isin(examples,wp_ensg[ccd_comp]))}: number of examples missing of {len(examples)}, which includes 1 negative control")
+print(examples[~np.isin(examples,wp_ensg[ccd_comp])])
+
+pd.DataFrame({
     "well_plate" : u_well_plates, 
     "ENSG": wp_ensg,
     "var_cell":var_cell,
     "var_cyto":var_cyto,
     "var_nuc":var_nuc,
-    "perc_var_cell":[a for a in perc_var_cell],
-    "perc_var_cyto":[a for a in perc_var_cyto],
-    "perc_var_nuc":[a for a in perc_var_nuc],
-    "wp_cell_kruskal_adj":wp_cell_kruskal_adj,
-    "wp_cyto_kruskal_adj":wp_cyto_kruskal_adj,
-    "wp_nuc_kruskal_adj":wp_nuc_kruskal_adj,
+    "perc_var_cell":perc_var_cell,
+    "perc_var_cyto":perc_var_cyto,
+    "perc_var_nuc":perc_var_nuc,
+    "perc_var_comp":perc_var_comp,
+    "wp_cell_kruskal_gaussccd_adj":wp_cell_kruskal_gaussccd_adj,
+    "wp_cyto_kruskal_gaussccd_adj":wp_cyto_kruskal_gaussccd_adj,
+    "wp_nuc_kruskal_gaussccd_adj":wp_nuc_kruskal_gaussccd_adj,
     "ccd_cell":ccd_cell,
     "ccd_cyto":ccd_cyto,
     "ccd_nuc":ccd_nuc,
@@ -571,10 +646,17 @@ df = pd.DataFrame({
     "nonccd_nuc":nonccd_nuc,
     "nonccd_any":nonccd_any,
     "nonccd_comp":nonccd_comp,
-    })
-df.to_csv("output/CellCycleVariationSummary.csv")
-print(f"{sum(ccd_comp)}: CCD variable proteins")
-print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
+    "in_firstbatch":np.isin(wp_ensg, ensggg1),
+    "in_secondbatch":np.isin(wp_ensg, ensggg2),
+    "is_variable":wp_pass_gtvariability_levene_bh_logcell|wp_pass_gtvariability_levene_bh_lognuc|wp_pass_gtvariability_levene_bh_logcyto,
+    "is_variable_comp":wp_logcell_var_and_loc|wp_lognuc_var_and_loc|wp_logcyto_var_and_loc,
+    "wp_prev_ccd":wp_prev_ccd,
+    "is_newccd":ccd_comp,
+    }).to_csv("output/CellCycleVariationSummary.csv")
+    
+pd.DataFrame({"ENSG":wp_ensg[wp_prev_ccd & ~ccd_comp]}).to_csv("output/DianaCCDMissingProteins.csv")
+pd.DataFrame({"ENSG":wp_ensg[~wp_prev_ccd & ccd_comp]}).to_csv("output/NewToDianaCCDProteins.csv")
+
 
 #%% Pickle the results needed later
 np.save("output/pol_sort_well_plate.npy", pol_sort_well_plate, allow_pickle=True)
@@ -590,6 +672,7 @@ np.save("output/wp_isnuc.npy", wp_isnuc, allow_pickle=True)
 np.save("output/wp_iscyto.npy", wp_iscyto, allow_pickle=True)
 np.save("output/ccd_comp.npy", ccd_comp, allow_pickle=True)
 np.save("output/nonccd_comp.npy", ccd_comp, allow_pickle=True)
+np.save("output/wp_ensg.npy", wp_ensg, allow_pickle=True)
 np.savetxt("output/ccd_compartment_ensg.txt", wp_ensg[ccd_comp], fmt="%s", delimiter="\t")
 np.savetxt("output/nonccd_compartment_ensg.txt", wp_ensg[nonccd_comp], fmt="%s", delimiter="\t")
 
