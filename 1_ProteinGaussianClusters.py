@@ -79,24 +79,31 @@ ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_
 #%% Negative staining (mean intensity max per image) zero center
 # Negative staining (mean intensity sum per image)
 ab_cell_neg_max, ab_cell_neg_max_wp = [], []
+ab_cell_all_max, ab_cell_all_max_wp = [], []
 ab_cell_max, ab_cell_max_wp = [], []
 ab_cell_max_p = {} # keep track of the max values for each plate to median center
 for wp in u_well_plates:
     p = wp.split("_")[1]
     image_max_cell = np.log10(np.max(ab_cell[well_plate == wp]))
-    if wp in result_dict and result_dict[wp].startswith("neg"):
-        ab_cell_neg_max.append(image_max_cell)
-        ab_cell_neg_max_wp.append(wp)
-        if p in ab_cell_max_p: ab_cell_max_p[p].append(image_max_cell)
-        else: ab_cell_max_p[p] = [image_max_cell]
-    if wp in result_dict and not result_dict[wp].startswith("neg") and not wp.startswith("H12"):
-        ab_cell_max.append(image_max_cell)
-        ab_cell_max_wp.append(wp)
-        if p in ab_cell_max_p: ab_cell_max_p[p].append(image_max_cell)
-        else: ab_cell_max_p[p] = [image_max_cell]
+    if wp in result_dict and not wp.startswith("H12"):
+        ab_cell_all_max.append(image_max_cell)
+        ab_cell_all_max_wp.append(wp)
+        if p in ab_cell_max_p: 
+            ab_cell_max_p[p].append(image_max_cell)
+        else: 
+            ab_cell_max_p[p] = [image_max_cell]
+        if result_dict[wp].startswith("neg"):
+            ab_cell_neg_max.append(image_max_cell)
+            ab_cell_neg_max_wp.append(wp)
+        else:
+            ab_cell_max.append(image_max_cell)
+            ab_cell_max_wp.append(wp)
+
 ab_cell_max_zeroc = np.array(ab_cell_max)
+ab_cell_all_max_zeroc = np.array(ab_cell_all_max)
 ab_cell_neg_max_zeroc = np.array(ab_cell_neg_max)
 ab_cell_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_wp])
+ab_cell_all_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_all_max_wp])
 ab_cell_neg_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_neg_max_wp])
 
 upper_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) #+ 0.5 * np.std(ab_cell_neg_max_zeroc)
@@ -112,11 +119,15 @@ plt.close()
 num_neg_removed = sum(ab_cell_neg_max_zeroc < upper_neg_max_cutoff)
 num_pos_removed = sum(ab_cell_max_zeroc < upper_neg_max_cutoff)
 num_ccd_removed = sum((ab_cell_max_zeroc < upper_neg_max_cutoff) & np.isin(ab_cell_max_wp, wp_prev_ccd))
+neg_now_were_pos = (ab_cell_all_max_zeroc < upper_neg_max_cutoff) & ~np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
+were_neg_now_pos = (ab_cell_all_max_zeroc >= upper_neg_max_cutoff) & np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
 print(f"{num_neg_removed / len(ab_cell_neg_max_zeroc)}: percent of neg stains removed")
 print(f"{num_pos_removed / len(ab_cell_max_zeroc)}: percent of pos stains removed")
 print(f"{num_ccd_removed / len(ab_cell_max_zeroc)}: percent of ccd stains removed")
 print(f"{len(ab_cell_neg_max_zeroc) / (len(ab_cell_neg_max_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
 print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_neg_max_zeroc))}: percent of all that are negative with this cutoff")
+pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[neg_now_were_pos]}).to_csv("output/neg_now_were_pos.csv")
+pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[were_neg_now_pos]}).to_csv("output/were_neg_now_pos.csv")
 
 #%% Filter negative stains from larger dataset
 ab_cell_max_negctrl, ab_cell_max_negctrl_wp = [], []
@@ -185,6 +196,7 @@ plt.hist2d(log_green_fucci_zeroc_rescale,log_red_fucci_zeroc_rescale,bins=200)
 plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
 plt.show()
 plt.close()
+
 
 #%%
 # Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
