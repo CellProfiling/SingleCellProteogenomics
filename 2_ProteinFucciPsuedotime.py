@@ -46,6 +46,12 @@ wp_prev_negative = np.load("output/wp_prev_negative.filterNegStain.npy", allow_p
 prev_ccd_ensg = np.load("output/prev_ccd_ensg.filterNegStain.npy", allow_pickle=True) 
 prev_notccd_ensg = np.load("output/prev_notccd_ensg.filterNegStain.npy", allow_pickle=True) 
 prev_negative_ensg = np.load("output/prev_negative_ensg.filterNegStain.npy", allow_pickle=True)
+
+u_well_plates_old = np.load("output/u_well_plates.devin.npy", allow_pickle=True)
+perc_var_compartment_old = np.load("output/perc_var_compartment.devin.npy", allow_pickle=True)
+perc_var_cell_old = np.load("output/perc_var_cell.devin.npy", allow_pickle=True)
+perc_var_nuc_old = np.load("output/perc_var_nuc.devin.npy", allow_pickle=True)
+perc_var_cyto_old = np.load("output/perc_var_cyto.devin.npy", allow_pickle=True)
 print("loaded")
 
 #%% 
@@ -569,6 +575,32 @@ def bonf(alpha, pvals):
 
 wp_comp_levene_eq_ccdvariability_bonfadj, wp_bonfpass_eq_ccdvariability_levene_bh_comp = bonf(alpha_ccd, eqccdvariability_levene_comp_p)
 
+
+#%% Do the percent variance values match up with what we measured before for the genes?
+# Idea: take the perc var values from Devin's analysis and compare them to the ones now
+# Execution: run old code and save the data
+# Output: plot of percvar vs percvar
+perc_var_comp = np.empty_like(perc_var_cell)
+perc_var_comp[wp_iscell] = perc_var_cell[wp_iscell]
+perc_var_comp[wp_isnuc] = perc_var_nuc[wp_isnuc]
+perc_var_comp[wp_iscyto] = perc_var_cyto[wp_iscyto]
+
+wp_comp_kruskal_adj = np.empty_like(wp_cell_kruskal_gaussccd_adj)
+wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_gaussccd_adj[wp_iscell]
+wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_gaussccd_adj[wp_isnuc]
+wp_comp_kruskal_adj[wp_iscyto] = wp_cyto_kruskal_gaussccd_adj[wp_iscyto]
+
+u_plates_old_idx = np.array([u_well_plates_list.index(wp) for wp in u_well_plates_old if wp in u_well_plates])
+old_notfiltered = np.isin(u_well_plates_old, u_well_plates)
+plt.scatter(perc_var_compartment_old[old_notfiltered], perc_var_comp[u_plates_old_idx], c=wp_comp_kruskal_adj[u_plates_old_idx])
+plt.xlabel("percent variance old")
+plt.ylabel("percent variance new")
+cb = plt.colorbar()
+cb.set_label("FDR for Cell Cycle Dependence")
+plt.savefig("figures/PercVarAgreement.png")
+plt.show()
+plt.close()
+
 #%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 # Idea: create cutoffs for percent variance and 
 # Execution: create cutoffs for perc_var and total variance per compartment and for integrated intensity and mean intensity
@@ -596,11 +628,6 @@ var_pass_comp[wp_iscell] = wp_cell_var_and_loc[wp_iscell]
 var_pass_comp[wp_isnuc] = wp_nuc_var_and_loc[wp_isnuc]
 var_pass_comp[wp_iscyto] = wp_cyto_var_and_loc[wp_iscyto]
 
-perc_var_comp = np.empty_like(perc_var_cell)
-perc_var_comp[wp_iscell] = perc_var_cell[wp_iscell]
-perc_var_comp[wp_isnuc] = perc_var_nuc[wp_isnuc]
-perc_var_comp[wp_iscyto] = perc_var_cyto[wp_iscyto]
-
 eqccdvariability_levene_comp = np.empty_like(wp_cell_levene_eq_ccdvariability_adj)
 eqccdvariability_levene_comp[wp_iscell] = wp_cell_levene_eq_ccdvariability_adj[wp_iscell]
 eqccdvariability_levene_comp[wp_isnuc] = wp_nuc_levene_eq_ccdvariability_adj[wp_isnuc]
@@ -610,11 +637,6 @@ ccd_levene_comp = np.empty_like(wp_cell_ccd_levene)
 ccd_levene_comp[wp_iscell] = wp_cell_ccd_levene[wp_iscell]
 ccd_levene_comp[wp_isnuc] = wp_nuc_ccd_levene[wp_isnuc]
 ccd_levene_comp[wp_iscyto] = wp_cyto_ccd_levene[wp_iscyto]
-
-wp_comp_kruskal_adj = np.empty_like(wp_cell_kruskal_gaussccd_adj)
-wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_gaussccd_adj[wp_iscell]
-wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_gaussccd_adj[wp_isnuc]
-wp_comp_kruskal_adj[wp_iscyto] = wp_cyto_kruskal_gaussccd_adj[wp_iscyto] 
 
 wp_comp_ccd = var_pass_comp & (perc_var_comp >= percent_var_cutoff)
 print(f"{sum(wp_cell_ccd)}: # proteins showing CCD variation, cell, percvar")
