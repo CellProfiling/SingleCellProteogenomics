@@ -113,7 +113,6 @@ def pol_reord(arr):
     return np.concatenate((arr[more_than_start],arr[less_than_start]))
 
 pol_sort_well_plate = pol_reord(well_plate_sort)
-# gene, antibody, Uniprot, ENSG
 pol_sort_rho_reorder = pol_reord(pol_sort_rho)
 pol_sort_inds_reorder = pol_reord(pol_sort_inds)
 pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
@@ -444,6 +443,7 @@ ccd_pvals = []
 not_ccd_pvals = []
 
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
+mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = [],[],[],[] # mean mean-intensity
 mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt = [],[],[],[] # moving average y values
 ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two-tailed p values for equal variance of mvavg and raw values
 cell_counts = []
@@ -458,6 +458,12 @@ for i, well in enumerate(u_well_plates):
     curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
     curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
     curr_mt_cell = pol_sort_mt_cell[curr_well_inds]
+    
+    # Save the mean mean intensities
+    mean_mean_cell.append(np.mean(curr_ab_cell))
+    mean_mean_nuc.append(np.mean(curr_ab_nuc)) 
+    mean_mean_cyto.append(np.mean(curr_ab_cyto))
+    mean_mean_mt.append(np.mean(curr_mt_cell))
     
     # Normalize mean intensities, normalized for display
     curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
@@ -548,6 +554,7 @@ for i, well in enumerate(u_well_plates):
     
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
+mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = np.array(mean_mean_cell), np.array(mean_mean_nuc), np.array(mean_mean_cyto), np.array(mean_mean_mt)
 wp_cell_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cell = benji_hoch(alpha_ccd, ccd_var_cell_levenep)
 wp_nuc_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_nuc = benji_hoch(alpha_ccd, ccd_var_nuc_levenep)
 wp_cyto_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cyto = benji_hoch(alpha_ccd, ccd_var_cyto_levenep)
@@ -590,17 +597,34 @@ wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_gaussccd_adj[wp_iscell]
 wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_gaussccd_adj[wp_isnuc]
 wp_comp_kruskal_adj[wp_iscyto] = wp_cyto_kruskal_gaussccd_adj[wp_iscyto]
 
+wp_comp_mean_mean = np.empty_like(mean_mean_cell)
+wp_comp_mean_mean[wp_iscell] = mean_mean_cell[wp_iscell]
+wp_comp_mean_mean[wp_isnuc] = mean_mean_nuc[wp_isnuc]
+wp_comp_mean_mean[wp_iscyto] = mean_mean_cyto[wp_iscyto]
+
 u_plates_old_idx = np.array([u_well_plates_list.index(wp) for wp in u_well_plates_old if wp in u_well_plates])
 old_notfiltered = np.isin(u_well_plates_old, u_well_plates)
-plt.scatter(perc_var_compartment_old[old_notfiltered], perc_var_comp[u_plates_old_idx], c=wp_comp_kruskal_adj[u_plates_old_idx])
-plt.xlabel("percent variance old")
-plt.ylabel("percent variance new")
-cb = plt.colorbar()
-cb.set_label("FDR for Cell Cycle Dependence")
-plt.savefig("figures/PercVarAgreement.png")
-plt.show()
-plt.close()
-
+for iii,ccc in enumerate(["comp","cell","nuc","cyto"]):
+    old = [perc_var_compartment_old, perc_var_cell_old, perc_var_nuc_old,perc_var_cyto_old]
+    new = [perc_var_comp, perc_var_cell, perc_var_nuc,perc_var_cyto]
+    intense = [wp_comp_mean_mean, mean_mean_cell, mean_mean_nuc, mean_mean_cyto]
+    fdr = [wp_comp_kruskal_adj,wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj]
+    plt.scatter(old[iii][old_notfiltered], new[iii][u_plates_old_idx], c=fdr[iii][u_plates_old_idx])
+    plt.xlabel("percent variance old")
+    plt.ylabel("percent variance new")
+    cb = plt.colorbar()
+    cb.set_label("FDR for Cell Cycle Dependence")
+    plt.savefig(f"figures/PercVarAgreement_{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(new[iii], intense[iii])
+    plt.xlabel("percent variance new")
+    plt.ylabel("mean mean intensity")
+    plt.savefig(f"figures/PercVarVsMeanMeanIntensity_{ccc}.png")
+    plt.show()
+    plt.close()
+    
 #%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 # Idea: create cutoffs for percent variance and 
 # Execution: create cutoffs for perc_var and total variance per compartment and for integrated intensity and mean intensity
