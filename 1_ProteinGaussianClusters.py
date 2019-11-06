@@ -6,9 +6,6 @@ from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
 from sklearn.mixture import GaussianMixture
-import collections
-import fucci_plotting
-import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #%% Read in the protein data
@@ -128,6 +125,7 @@ print(f"{len(ab_cell_neg_max_zeroc) / (len(ab_cell_neg_max_zeroc) + len(ab_cell_
 print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_neg_max_zeroc))}: percent of all that are negative with this cutoff")
 pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[neg_now_were_pos]}).to_csv("output/neg_now_were_pos.csv")
 pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[were_neg_now_pos]}).to_csv("output/were_neg_now_pos.csv")
+
 
 #%% Filter negative stains from larger dataset
 ab_cell_max_negctrl, ab_cell_max_negctrl_wp = [], []
@@ -295,5 +293,8 @@ np.save("output/wp_pass_gaussccd_bh_cell.filterNegStain.npy", wp_pass_gaussccd_b
 np.save("output/wp_pass_gaussccd_bh_nuc.filterNegStain.npy", wp_pass_gaussccd_bh_nuc, allow_pickle=True)
 np.save("output/wp_pass_gaussccd_bh_cyto.filterNegStain.npy", wp_pass_gaussccd_bh_cyto, allow_pickle=True)
 np.save("output/fucci_data.filterNegStain.npy", fucci_data, allow_pickle=True)
+np.save("output/neg_now_were_pos.npy", neg_now_were_pos, allow_pickle=True)
+np.save("output/were_neg_now_pos.npy", were_neg_now_pos, allow_pickle=True)
+np.save("output/ab_cell_all_max_wp.npy", ab_cell_all_max_wp, allow_pickle=True)
 
 #%%

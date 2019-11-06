@@ -7,7 +7,7 @@
 5,A01_55245981,True,False,False,nucleus
 6,A01_55335984,False,True,False,
 7,A01_55345985,True,False,False,
-8,A01_55355986,False,True,False,
+8,A01_55355986,True,False,False,
 9,A01_55365987,False,False,True,Cytosol
 10,A01_55375988,True,False,False,Cell
 11,A01_55385989,True,False,False,
@@ -67,7 +67,7 @@
 65,A03_55365987,False,True,False,nucleus
 66,A03_55375988,False,True,False,Nucleus
 67,A03_55395990,True,False,False,Cell
-68,A03_55405991,False,False,True,
+68,A03_55405991,True,False,False,
 69,A03_6717,True,False,False,
 70,A03_6718,False,True,False,
 71,A03_6719,True,False,False,
@@ -91,7 +91,7 @@
 89,A04_55335984,True,False,False,Cell
 90,A04_55345985,True,False,False,Nucleus
 91,A04_55355986,True,False,False,nucleus
-92,A04_55365987,False,True,False,
+92,A04_55365987,True,False,False,
 93,A04_55375988,False,True,False,Nucleus
 94,A04_55395990,False,True,False,nucleus
 95,A04_55405991,True,False,False,Cell
@@ -166,10 +166,10 @@
 164,A06_6734,True,False,False,
 165,A06_6735,False,False,True,
 166,A06_6736,True,False,False,
-167,A06_6745,False,True,False,
+167,A06_6745,True,False,False,
 168,A06_75836284,True,False,False,
 169,A06_75846286,True,False,False,Cell
-170,A07_55195978,False,True,False,Nucleus
+170,A07_55195978,True,False,False,Nucleus
 171,A07_55215982,False,True,False,nucleus
 172,A07_55225983,True,False,False,Cell
 173,A07_55235979,True,False,False,Cytosol
@@ -197,8 +197,8 @@
 195,A07_6745,True,False,False,
 196,A07_75836284,True,False,False,Cell
 197,A07_75846286,True,False,False,Cytosol
-198,A08_55185977,False,True,False,Cell
-199,A08_55195978,True,False,False,Cell
+198,A08_55185977,True,False,False,Cell
+199,A08_55195978,False,True,False,Cell
 200,A08_55205980,True,False,False,nucleus
 201,A08_55215982,True,False,False,Cell
 202,A08_55225983,True,False,False,Cell
@@ -226,7 +226,7 @@
 224,A09_55185977,False,True,False,Nucleus
 225,A09_55195978,True,False,False,Cell
 226,A09_55205980,False,True,False,Cytosol
-227,A09_55215982,True,False,False,nucleus
+227,A09_55215982,False,True,False,nucleus
 228,A09_55225983,True,False,False,
 229,A09_55245981,True,False,False,
 230,A09_55335984,True,False,False,Nucleus
@@ -247,7 +247,7 @@
 245,A09_6731,False,True,False,
 246,A09_6734,True,False,False,
 247,A09_6735,False,False,True,
-248,A09_6736,False,True,False,
+248,A09_6736,True,False,False,
 249,A09_6745,True,False,False,
 250,A09_75836284,False,False,True,cytosol
 251,A10_55185977,False,True,False,
@@ -258,7 +258,7 @@
 256,A10_55235979,True,False,False,Cell
 257,A10_55245981,True,False,False,
 258,A10_55335984,False,True,False,nucleus
-259,A10_55355986,True,False,False,Nucleus
+259,A10_55355986,False,True,False,Nucleus
 260,A10_55375988,False,True,False,Nucleus
 261,A10_55385989,False,False,True,cytosol
 262,A10_55395990,True,False,False,nucleus
@@ -348,7 +348,7 @@
 346,B01_6718,True,False,False,
 347,B01_6719,True,False,False,
 348,B01_6720,True,False,False,
-349,B01_6721,True,False,False,
+349,B01_6721,False,True,False,
 350,B01_6722,True,False,False,
 351,B01_6724,True,False,False,
 352,B01_6725,True,False,False,
@@ -358,7 +358,7 @@
 356,B01_6736,False,True,False,
 357,B01_6745,False,False,True,
 358,B01_75836284,False,True,False,
-359,B02_55195978,False,True,False,Cell
+359,B02_55195978,True,False,False,Cell
 360,B02_55205980,True,False,False,
 361,B02_55215982,False,True,False,nucleus
 362,B02_55225983,True,False,False,nucleus
@@ -415,7 +415,7 @@
 413,B03_75846286,True,False,False,
 414,B04_55185977,True,False,False,Cell
 415,B04_55195978,True,False,False,
-416,B04_55205980,True,False,False,nucleus
+416,B04_55205980,False,True,False,nucleus
 417,B04_55215982,True,False,False,Cell
 418,B04_55225983,True,False,False,Cell
 419,B04_55235979,True,False,False,
@@ -495,7 +495,7 @@
 493,B06_6724,True,False,False,
 494,B06_6725,False,True,True,
 495,B06_6731,True,False,False,
-496,B06_6734,True,False,False,
+496,B06_6734,False,True,False,
 497,B06_6735,True,False,False,
 498,B06_6736,True,False,False,
 499,B06_6745,True,False,False,
@@ -526,7 +526,7 @@
 524,B07_6731,True,False,False,
 525,B07_6734,True,False,False,
 526,B07_6735,True,False,False,
-527,B07_6736,True,False,False,
+527,B07_6736,False,True,False,
 528,B07_6745,True,False,False,
 529,B07_75846286,True,False,False,Cell
 530,B08_55185977,True,False,False,Cell
@@ -540,7 +540,7 @@
 538,B08_55345985,True,False,False,Cell
 539,B08_55355986,True,False,False,Cell
 540,B08_55365987,True,False,False,
-541,B08_55375988,True,False,False,
+541,B08_55375988,False,True,False,
 542,B08_55385989,False,True,False,Nucleus
 543,B08_55395990,False,True,False,nucleus
 544,B08_55405991,False,True,False,Nucleus
@@ -555,10 +555,10 @@
 553,B08_6734,True,False,False,
 554,B08_6735,False,False,True,
 555,B08_6736,True,False,False,
-556,B08_6745,True,False,False,
+556,B08_6745,False,True,False,
 557,B08_75836284,True,False,False,
 558,B09_55185977,True,False,False,Cell
-559,B09_55195978,True,False,False,nucleus
+559,B09_55195978,False,True,False,nucleus
 560,B09_55205980,False,True,False,nucleus
 561,B09_55215982,True,False,False,nucleus
 562,B09_55235979,False,True,False,Nucleus
@@ -633,7 +633,7 @@
 631,B11_6720,False,True,False,
 632,B11_6722,False,False,True,
 633,B11_6724,False,True,False,
-634,B11_6725,True,False,False,
+634,B11_6725,False,True,False,
 635,B11_6731,True,False,False,
 636,B11_6734,True,False,False,
 637,B11_6735,True,False,False,
@@ -672,7 +672,7 @@
 670,C01_55345985,True,False,False,Cell
 671,C01_55355986,True,False,False,Cell
 672,C01_55365987,True,False,False,Cell
-673,C01_55375988,False,True,False,Nucleus
+673,C01_55375988,True,False,False,Nucleus
 674,C01_55385989,True,False,False,Cell
 675,C01_55395990,False,True,False,nucleus
 676,C01_55405991,False,False,True,Cytosol
@@ -687,12 +687,12 @@
 685,C01_6731,True,False,False,
 686,C01_6734,False,False,True,
 687,C01_6735,True,False,False,
-688,C01_6736,True,False,False,
+688,C01_6736,False,True,False,
 689,C01_6745,True,False,False,
 690,C01_75836284,True,False,False,Cell
 691,C01_75846286,False,False,True,
 692,C02_55185977,True,False,False,Cell
-693,C02_55195978,False,True,False,Cell
+693,C02_55195978,True,False,False,Cell
 694,C02_55205980,True,False,False,Cell
 695,C02_55215982,False,True,False,Nucleus
 696,C02_55225983,True,False,False,Cell
@@ -721,7 +721,7 @@
 719,C03_55205980,True,False,False,
 720,C03_55215982,False,True,False,nucleus
 721,C03_55225983,True,False,False,Cell
-722,C03_55235979,False,True,False,
+722,C03_55235979,True,False,False,
 723,C03_55245981,True,False,False,Cell
 724,C03_55335984,True,False,False,Cell
 725,C03_55345985,False,True,False,Nucleus
@@ -773,8 +773,8 @@
 771,C04_6736,True,False,False,
 772,C04_6745,True,False,False,
 773,C04_75836284,False,False,True,Cytosol
-774,C04_75846286,False,True,False,
-775,C05_55185977,False,True,False,Cell
+774,C04_75846286,True,False,False,
+775,C05_55185977,True,False,False,Cell
 776,C05_55195978,True,False,False,
 777,C05_55205980,False,True,False,Nucleus
 778,C05_55215982,True,False,False,Cell
@@ -804,7 +804,7 @@
 802,C05_6745,True,False,False,
 803,C05_75836284,True,False,False,
 804,C05_75846286,True,False,False,
-805,C06_55185977,True,False,False,Cytosol
+805,C06_55185977,False,False,True,Cytosol
 806,C06_55215982,False,True,False,
 807,C06_55225983,True,False,False,Cell
 808,C06_55245981,True,False,False,
@@ -816,7 +816,7 @@
 814,C06_55385989,False,True,False,nucleus
 815,C06_55395990,True,False,False,
 816,C06_55405991,True,False,False,Cell
-817,C06_6717,True,False,False,
+817,C06_6717,False,True,False,
 818,C06_6718,False,True,False,
 819,C06_6719,True,False,False,
 820,C06_6720,False,True,False,
@@ -827,7 +827,7 @@
 825,C06_6731,True,False,False,
 826,C06_6734,True,False,False,
 827,C06_6735,True,False,False,
-828,C06_6736,False,True,False,
+828,C06_6736,True,False,False,
 829,C06_6745,True,False,False,
 830,C06_75836284,True,False,False,Cell
 831,C06_75846286,False,False,True,Cytosol
@@ -839,7 +839,7 @@
 837,C07_55335984,True,False,False,Cell
 838,C07_55345985,True,False,False,Nucleus
 839,C07_55355986,False,True,False,nucleus
-840,C07_55365987,False,True,False,Cell
+840,C07_55365987,True,False,False,Cell
 841,C07_55375988,True,False,False,Cell
 842,C07_55385989,True,False,False,Cell
 843,C07_55395990,True,False,False,Cytosol
@@ -908,7 +908,7 @@
 906,C09_6722,True,False,False,
 907,C09_6724,True,False,False,
 908,C09_6725,True,False,False,
-909,C09_6731,True,False,False,
+909,C09_6731,False,True,False,
 910,C09_6734,True,False,False,
 911,C09_6735,True,False,False,
 912,C09_6736,False,True,False,
@@ -945,7 +945,7 @@
 943,C11_55195978,False,False,True,Cytosol
 944,C11_55205980,True,False,False,Cell
 945,C11_55215982,True,False,False,Nucleus
-946,C11_55225983,True,False,False,Cell
+946,C11_55225983,False,True,False,Cell
 947,C11_55235979,True,False,False,Cell
 948,C11_55245981,True,False,False,
 949,C11_55335984,False,True,False,
@@ -971,7 +971,7 @@
 969,C12_55185977,False,False,True,Cell
 970,C12_55195978,True,False,False,
 971,C12_55205980,False,True,False,nucleus
-972,C12_55215982,True,False,False,Cell
+972,C12_55215982,False,True,False,Cell
 973,C12_55225983,True,False,False,Nucleus
 974,C12_55235979,False,True,False,nucleus
 975,C12_55245981,True,False,False,
@@ -1005,7 +1005,7 @@
 1003,D01_55385989,False,True,False,
 1004,D01_55395990,True,False,False,Cell
 1005,D01_55405991,False,True,False,nucleus
-1006,D01_6717,False,True,False,
+1006,D01_6717,True,False,False,
 1007,D01_6718,False,True,False,
 1008,D01_6719,False,False,True,
 1009,D01_6720,True,False,False,
@@ -1111,7 +1111,7 @@
 1109,D05_55235979,False,True,False,
 1110,D05_55245981,False,True,False,Nucleus
 1111,D05_55335984,False,True,False,Nucleus
-1112,D05_55345985,True,False,False,nucleus
+1112,D05_55345985,False,True,False,nucleus
 1113,D05_55355986,False,True,False,Nucleus
 1114,D05_55365987,True,False,False,
 1115,D05_55375988,False,True,False,Nucleus
@@ -1127,7 +1127,7 @@
 1125,D05_6724,True,False,False,
 1126,D05_6725,True,False,False,
 1127,D05_6731,True,False,False,
-1128,D05_6734,True,False,False,
+1128,D05_6734,False,True,False,
 1129,D05_6735,True,False,False,
 1130,D05_6736,False,True,True,
 1131,D05_6745,True,False,False,
@@ -1139,7 +1139,7 @@
 1137,D06_55335984,False,True,False,Nucleus
 1138,D06_55345985,True,False,False,nucleus
 1139,D06_55355986,False,True,False,Nucleus
-1140,D06_55365987,True,False,False,Nucleus
+1140,D06_55365987,False,True,False,Nucleus
 1141,D06_55375988,False,True,False,
 1142,D06_55385989,True,False,False,Cytosol
 1143,D06_55395990,True,False,False,cytosol
@@ -1170,7 +1170,7 @@
 1168,D07_55355986,True,False,False,Cell
 1169,D07_55365987,False,False,True,Cytosol
 1170,D07_55375988,True,False,False,Cell
-1171,D07_55385989,True,False,False,Cell
+1171,D07_55385989,False,True,False,Cell
 1172,D07_55395990,True,False,False,Cell
 1173,D07_55405991,True,False,False,nucleus
 1174,D07_6717,True,False,False,
@@ -1195,7 +1195,7 @@
 1193,D08_55335984,True,False,False,Cell
 1194,D08_55345985,True,False,False,Cell
 1195,D08_55355986,True,False,False,Cell
-1196,D08_55365987,True,False,False,Cell
+1196,D08_55365987,False,True,False,Cell
 1197,D08_55375988,False,True,False,Nucleus
 1198,D08_55385989,False,True,False,
 1199,D08_55395990,True,False,False,Cell
@@ -1238,7 +1238,7 @@
 1236,D09_6731,False,True,False,
 1237,D09_6734,True,False,False,
 1238,D09_6735,True,False,False,
-1239,D09_6736,False,True,False,
+1239,D09_6736,True,False,False,
 1240,D09_6745,True,False,False,
 1241,D09_75836284,True,False,False,Cell
 1242,D10_55195978,True,False,False,Cell
@@ -1320,7 +1320,7 @@
 1318,D12_6735,True,False,False,
 1319,D12_6736,False,True,False,
 1320,D12_75836284,False,False,True,Cytosol
-1321,E01_55185977,True,False,False,Cell
+1321,E01_55185977,False,True,False,Cell
 1322,E01_55195978,False,True,False,Nucleus
 1323,E01_55205980,True,False,False,Cell
 1324,E01_55235979,True,False,False,Cell
@@ -1415,7 +1415,7 @@
 1413,E04_55355986,False,True,False,Nucleus
 1414,E04_55365987,False,True,False,
 1415,E04_55375988,True,False,False,Cell
-1416,E04_55385989,True,False,False,Nucleus
+1416,E04_55385989,False,True,False,Nucleus
 1417,E04_55395990,True,False,False,Cell
 1418,E04_55405991,False,True,False,nucleus
 1419,E04_6717,True,False,False,
@@ -1435,7 +1435,7 @@
 1433,E05_55185977,False,False,True,Cytosol
 1434,E05_55195978,True,False,False,Nucleus
 1435,E05_55205980,False,True,False,Nucleus
-1436,E05_55215982,True,False,False,Nucleus
+1436,E05_55215982,False,True,False,Nucleus
 1437,E05_55225983,False,True,False,
 1438,E05_55235979,False,False,True,
 1439,E05_55245981,True,False,False,Cell
@@ -1546,8 +1546,8 @@
 1544,E08_6731,True,False,False,
 1545,E08_6734,True,False,False,
 1546,E08_6735,True,False,False,
-1547,E08_6736,True,False,False,
-1548,E08_6745,True,False,False,
+1547,E08_6736,False,True,False,
+1548,E08_6745,False,True,False,
 1549,E08_75836284,False,True,False,nucleus
 1550,E09_55185977,True,False,False,
 1551,E09_55195978,True,False,False,Nucleus
@@ -1585,15 +1585,15 @@
 1583,E10_55245981,False,True,False,
 1584,E10_55335984,True,False,False,Cell
 1585,E10_55345985,True,False,False,Cell
-1586,E10_55355986,False,True,False,Cell
-1587,E10_55365987,False,True,False,
+1586,E10_55355986,True,False,False,Cell
+1587,E10_55365987,True,False,False,
 1588,E10_55375988,False,True,False,nucleus
 1589,E10_55385989,False,False,True,Cytosol
 1590,E10_55395990,False,True,False,Nucleus
 1591,E10_55405991,False,True,False,Nucleus
 1592,E10_6717,True,False,False,
 1593,E10_6718,True,False,False,
-1594,E10_6719,True,False,False,
+1594,E10_6719,False,False,True,
 1595,E10_6720,True,False,False,
 1596,E10_6721,True,False,False,
 1597,E10_6722,True,False,False,
@@ -1607,7 +1607,7 @@
 1605,E10_75836284,True,False,False,Cell
 1606,E11_55185977,False,True,False,Nucleus
 1607,E11_55195978,True,False,False,
-1608,E11_55205980,True,False,False,Cytosol
+1608,E11_55205980,False,True,False,Cytosol
 1609,E11_55215982,True,False,False,Cell
 1610,E11_55225983,False,True,False,Nucleus
 1611,E11_55335984,True,False,False,Cell
@@ -1636,13 +1636,13 @@
 1634,E12_55245981,False,False,True,Cytosol
 1635,E12_55335984,True,False,False,Cell
 1636,E12_55345985,True,False,False,Cell
-1637,E12_55355986,True,False,False,Cell
+1637,E12_55355986,False,True,False,Cell
 1638,E12_55365987,True,False,False,nucleus
 1639,E12_55375988,False,True,False,
 1640,E12_55385989,True,False,False,Cell
 1641,E12_55395990,True,False,False,Cell
 1642,E12_6718,True,False,False,
-1643,E12_6719,False,True,False,
+1643,E12_6719,True,False,False,
 1644,E12_6720,False,True,False,
 1645,E12_6721,True,False,False,
 1646,E12_6722,True,False,False,
@@ -1652,7 +1652,7 @@
 1650,E12_6734,True,False,False,
 1651,E12_6735,True,False,False,
 1652,E12_75836284,True,False,False,
-1653,F01_55185977,True,False,False,Cell
+1653,F01_55185977,False,True,False,Cell
 1654,F01_55195978,False,True,False,nucleus
 1655,F01_55205980,False,True,False,Nucleus
 1656,F01_55215982,True,False,False,Cell
@@ -1710,7 +1710,7 @@
 1708,F02_6745,True,False,False,
 1709,F02_75836284,True,False,False,Cell
 1710,F02_75846286,False,True,False,Nucleus
-1711,F03_55205980,False,True,False,Cytosol
+1711,F03_55205980,True,False,False,Cytosol
 1712,F03_55215982,False,False,True,cytosol
 1713,F03_55225983,True,False,False,Cell
 1714,F03_55235979,False,False,True,Cytosol
@@ -1783,7 +1783,7 @@
 1781,F05_6720,True,False,False,
 1782,F05_6721,False,True,False,
 1783,F05_6722,False,True,False,
-1784,F05_6724,True,False,False,
+1784,F05_6724,False,True,False,
 1785,F05_6725,False,True,False,
 1786,F05_6731,True,False,False,
 1787,F05_6734,True,False,False,
@@ -1950,7 +1950,7 @@
 1948,F11_6724,False,True,True,
 1949,F11_6725,True,False,False,
 1950,F11_6734,True,False,False,
-1951,F11_6735,True,False,False,
+1951,F11_6735,False,True,False,
 1952,F11_6736,True,False,False,
 1953,F11_75836284,True,False,False,
 1954,F12_55185977,True,False,False,Cell
@@ -2021,7 +2021,7 @@
 2019,G02_55395990,False,True,False,nucleus
 2020,G02_55405991,False,True,False,Nucleus
 2021,G02_6717,True,False,False,
-2022,G02_6718,True,False,False,
+2022,G02_6718,False,True,False,
 2023,G02_6719,True,False,False,
 2024,G02_6720,True,False,False,
 2025,G02_6721,True,False,False,
@@ -2079,7 +2079,7 @@
 2077,G04_55405991,False,True,False,nucleus
 2078,G04_6717,True,False,False,
 2079,G04_6718,True,False,False,
-2080,G04_6719,True,False,False,
+2080,G04_6719,False,True,False,
 2081,G04_6720,True,False,False,
 2082,G04_6721,True,False,False,
 2083,G04_6722,True,False,False,
@@ -2148,16 +2148,16 @@
 2146,G06_6745,True,False,False,
 2147,G06_75836284,False,False,True,
 2148,G06_75846286,False,False,True,
-2149,G07_55185977,True,False,False,Nucleus
+2149,G07_55185977,False,True,False,Nucleus
 2150,G07_55195978,True,False,False,Cell
-2151,G07_55205980,True,False,False,Cell
+2151,G07_55205980,False,True,False,Cell
 2152,G07_55215982,True,False,False,Cell
 2153,G07_55225983,True,False,False,Cell
 2154,G07_55235979,True,False,False,cytosol
 2155,G07_55245981,True,False,False,
 2156,G07_55335984,True,False,False,
 2157,G07_55345985,True,False,False,Cell
-2158,G07_55355986,True,False,False,nucleus
+2158,G07_55355986,False,True,False,nucleus
 2159,G07_55365987,True,False,False,nucleus
 2160,G07_55375988,False,True,False,Nucleus
 2161,G07_55385989,False,True,False,
@@ -2185,18 +2185,18 @@
 2183,G08_55335984,True,False,False,Cell
 2184,G08_55345985,True,False,False,nucleus
 2185,G08_55355986,True,False,False,Cell
-2186,G08_55365987,False,True,False,nucleus
+2186,G08_55365987,True,False,False,nucleus
 2187,G08_55375988,True,False,False,Cell
 2188,G08_55385989,True,False,False,Cell
 2189,G08_55395990,False,True,False,Nucleus
 2190,G08_55405991,True,False,False,Cell
 2191,G08_6717,True,False,False,
 2192,G08_6718,True,False,False,
-2193,G08_6719,False,True,False,
+2193,G08_6719,True,False,False,
 2194,G08_6720,True,False,False,
 2195,G08_6721,True,False,False,
 2196,G08_6722,True,False,False,
-2197,G08_6724,True,False,False,
+2197,G08_6724,False,True,False,
 2198,G08_6725,False,True,False,
 2199,G08_6731,True,False,False,
 2200,G08_6734,True,False,False,
@@ -2235,7 +2235,7 @@
 2233,G10_55185977,False,True,False,nucleus
 2234,G10_55205980,False,True,False,nucleus
 2235,G10_55215982,True,False,False,Cell
-2236,G10_55225983,True,False,False,Cell
+2236,G10_55225983,False,True,False,Cell
 2237,G10_55235979,False,True,False,nucleus
 2238,G10_55245981,False,True,False,nucleus
 2239,G10_55335984,True,False,False,Cell
@@ -2272,7 +2272,7 @@
 2270,G11_55395990,True,False,False,Cell
 2271,G11_55405991,True,False,False,
 2272,G11_6717,True,False,False,
-2273,G11_6718,True,False,False,
+2273,G11_6718,False,True,False,
 2274,G11_6719,True,False,False,
 2275,G11_6720,False,True,False,
 2276,G11_6721,True,False,False,
@@ -2307,10 +2307,10 @@
 2305,G12_6725,True,False,False,
 2306,G12_6731,False,False,True,
 2307,G12_6734,False,False,True,
-2308,G12_6735,True,False,False,
+2308,G12_6735,False,True,False,
 2309,G12_6736,True,False,False,
 2310,G12_75836284,True,False,False,Cell
-2311,H01_55185977,False,True,False,Cytosol
+2311,H01_55185977,True,False,False,Cytosol
 2312,H01_55195978,True,False,False,
 2313,H01_55205980,True,False,False,Nucleus
 2314,H01_55215982,False,True,False,Nucleus
@@ -2318,7 +2318,7 @@
 2316,H01_55235979,False,True,False,Nucleus
 2317,H01_55245981,True,False,False,Cell
 2318,H01_55335984,True,False,False,Cell
-2319,H01_55345985,True,False,False,Cytosol
+2319,H01_55345985,False,True,False,Cytosol
 2320,H01_55355986,True,False,False,
 2321,H01_55365987,True,False,False,Nucleus
 2322,H01_55375988,True,False,False,Cytosol
@@ -2369,7 +2369,7 @@
 2367,H03_55205980,False,True,False,nucleus
 2368,H03_55215982,True,False,False,Cell
 2369,H03_55225983,True,False,False,
-2370,H03_55235979,False,True,False,Cell
+2370,H03_55235979,True,False,False,Cell
 2371,H03_55245981,True,False,False,Cell
 2372,H03_55335984,False,True,False,Nucleus
 2373,H03_55345985,False,True,False,Nucleus
@@ -2379,7 +2379,7 @@
 2377,H03_55385989,False,True,False,Nucleus
 2378,H03_55395990,True,False,False,Cell
 2379,H03_55405991,True,False,False,Nucleus
-2380,H03_6717,True,False,False,
+2380,H03_6717,False,True,False,
 2381,H03_6718,True,False,False,
 2382,H03_6719,True,False,False,
 2383,H03_6720,True,False,False,
@@ -2504,7 +2504,7 @@
 2502,H07_6736,True,False,False,
 2503,H07_6745,False,False,True,
 2504,H07_75836284,True,False,False,
-2505,H08_55185977,False,True,False,Nucleus
+2505,H08_55185977,True,False,False,Nucleus
 2506,H08_55195978,False,True,False,Nucleus
 2507,H08_55215982,False,True,False,Nucleus
 2508,H08_55225983,True,False,False,Cell
@@ -2529,7 +2529,7 @@
 2527,H08_6731,False,False,True,
 2528,H08_6734,True,False,False,
 2529,H08_6735,True,False,False,
-2530,H08_6736,True,False,False,
+2530,H08_6736,False,True,False,
 2531,H08_6745,False,False,True,
 2532,H08_75836284,True,False,False,nucleus
 2533,H09_55185977,True,False,False,Cell
@@ -2594,7 +2594,7 @@
 2592,H11_55245981,True,False,False,Cell
 2593,H11_55335984,True,False,False,Cell
 2594,H11_55345985,True,False,False,Cell
-2595,H11_55375988,True,False,False,Cell
+2595,H11_55375988,False,True,False,Cell
 2596,H11_55385989,False,True,False,Nucleus
 2597,H11_55395990,False,True,False,
 2598,H11_6717,False,True,False,

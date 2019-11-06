@@ -5,9 +5,6 @@ from stretch_time import stretch_time
 from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
-import collections
-import fucci_plotting
-import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #%% Read in the protein data
@@ -52,6 +49,10 @@ perc_var_compartment_old = np.load("output/perc_var_compartment.devin.npy", allo
 perc_var_cell_old = np.load("output/perc_var_cell.devin.npy", allow_pickle=True)
 perc_var_nuc_old = np.load("output/perc_var_nuc.devin.npy", allow_pickle=True)
 perc_var_cyto_old = np.load("output/perc_var_cyto.devin.npy", allow_pickle=True)
+
+neg_now_were_pos = np.load("output/neg_now_were_pos.npy", allow_pickle=True)
+were_neg_now_pos = np.load("output/were_neg_now_pos.npy", allow_pickle=True)
+ab_cell_all_max_wp = np.load("output/ab_cell_all_max_wp.npy", allow_pickle=True)
 print("loaded")
 
 #%% 
@@ -195,10 +196,26 @@ def benji_hoch(alpha, pvals):
     reject_BH[pvals_sortind] = reject
     return pvals_corrected_BH, reject_BH
 
+# bonferroni MTC
+def bonf(alpha, pvals):
+    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
+    pvals_sortind = np.argsort(pvals)
+    pvals_sorted = np.take(pvals, pvals_sortind)
+    alphaBonf = alpha / float(len(pvals))
+    rejectBonf = pvals_sorted <= alphaBonf
+    pvals_correctedBonf = pvals_sorted * float(len(pvals))
+    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
+    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
+    rejectBonf_unsorted = np.empty_like(rejectBonf)
+    rejectBonf_unsorted[pvals_sortind] = rejectBonf
+    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
+
 # Filter for variation based on microtubules
 use_log = False
 var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
 var_cell_test_p, var_nuc_test_p, var_cyto_test_p = [],[],[]
+normal_cell_test_p, normal_nuc_test_p, normal_cyto_test_p,normal_mt_test_p = [],[],[],[]
+mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = [],[],[],[] # mean mean-intensity
 for well in u_well_plates:
     curr_well_inds = pol_sort_well_plate==well
     curr_ab_cell = pol_sort_ab_cell[curr_well_inds] if not use_log else np.log10(pol_sort_ab_cell[curr_well_inds])
@@ -210,33 +227,163 @@ for well in u_well_plates:
     var_nuc.append(np.var(curr_ab_nuc))
     var_cyto.append(np.var(curr_ab_cyto))
     var_mt.append(np.var(curr_mt_cell))
+    
+    # Save the mean mean intensities
+    mean_mean_cell.append(np.mean(curr_ab_cell))
+    mean_mean_nuc.append(np.mean(curr_ab_nuc)) 
+    mean_mean_cyto.append(np.mean(curr_ab_cyto))
+    mean_mean_mt.append(np.mean(curr_mt_cell))
+    
+    if len(curr_ab_cell) >= 8:
+        norstat, p = scipy.stats.normaltest(curr_ab_cell)
+        normal_cell_test_p.append(p)
+        norstat, p = scipy.stats.normaltest(curr_ab_nuc)
+        normal_nuc_test_p.append(p)
+        norstat, p = scipy.stats.normaltest(curr_ab_cyto)
+        normal_cyto_test_p.append(p)
+        norstat, p = scipy.stats.normaltest(curr_mt_cell)
+        normal_mt_test_p.append(p)
+    else:
+        normal_cell_test_p.append(1.0)
+        normal_nuc_test_p.append(1.0)
+        normal_cyto_test_p.append(1.0)
+        normal_mt_test_p.append(1.0)
 
-    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cell, center="median")
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cell, center="median") if not use_log else scipy.stats.bartlett(curr_mt_cell, curr_ab_cell)
     var_cell_test_p.append(p*2)
-    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_nuc, center="median")
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_nuc, center="median") if not use_log else scipy.stats.bartlett(curr_mt_cell, curr_ab_nuc)
     var_nuc_test_p.append(p*2)
-    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cyto, center="median")
+    w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cyto, center="median") if not use_log else scipy.stats.bartlett(curr_mt_cell, curr_ab_cyto)
     var_cyto_test_p.append(p*2)
 
-var_cell, var_nuc, var_cyto = np.array(var_cell), np.array(var_nuc), np.array(var_cyto)
-
 alphaa = 0.05
-wp_cell_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cell = benji_hoch(alphaa, var_cell_test_p)
-wp_nuc_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_nuc = benji_hoch(alphaa, var_nuc_test_p)
-wp_cyto_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cyto = benji_hoch(alphaa, var_cyto_test_p)
+wp_cell_normal_adj, wp_cell_normal_pass = benji_hoch(alphaa, normal_cell_test_p)
+wp_nuc_normal_adj, wp_nuc_normal_pass = benji_hoch(alphaa, normal_nuc_test_p)
+wp_cyto_normal_adj, wp_cyto_normal_pass = benji_hoch(alphaa, normal_cyto_test_p)
+wp_mt_normal_adj, wp_mt_normal_pass = benji_hoch(alphaa, normal_mt_test_p)
+print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa} to test for normality")
+print(f"{sum(wp_cell_normal_pass) / len(wp_ensg)}: fraction proteins showing non-normal intensity distribution, cell")
+print(f"{sum(wp_nuc_normal_pass) / len(wp_ensg)}: fraction proteins showing non-normal intensity distribution, nuc")
+print(f"{sum(wp_cyto_normal_pass) / len(wp_ensg)}: fraction proteins showing non-normal intensity distribution, cyto")
+print(f"{sum(wp_mt_normal_pass) / len(wp_ensg)}: fraction proteins showing non-normal intensity distribution, mt-cell")
+
+var_cell, var_nuc, var_cyto, var_mt = np.array(var_cell), np.array(var_nuc), np.array(var_cyto), np.array(var_mt)
+annotated_variation_df = pd.read_csv("input/new_plate_shows_variation_check.csv")
+annvar_wp = list(annotated_variation_df["well_plate"])
+annvar_isvar = np.array(annotated_variation_df["shows_variation"])
+u_well_plates_list = list(u_well_plates)
+wp_annvar_idx = np.isin(u_well_plates, annvar_wp)
+annvar_idx = [annvar_wp.index(wp) for wp in u_well_plates[wp_annvar_idx]]
+
+alphaa_var = 0.001
+wp_cell_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cell = bonf(alphaa_var, var_cell_test_p)
+wp_nuc_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_nuc = bonf(alphaa_var, var_nuc_test_p)
+wp_cyto_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cyto = bonf(alphaa_var, var_cyto_test_p)
+
+wp_all_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_all = bonf(alphaa_var, np.concatenate((var_cell_test_p, var_nuc_test_p, var_cyto_test_p)))
+wp_cell_levene_gtvariability_adj = wp_all_levene_gtvariability_adj[:len(var_cell_test_p)]
+wp_nuc_levene_gtvariability_adj = wp_all_levene_gtvariability_adj[len(var_cell_test_p):len(var_cell_test_p)+len(var_nuc_test_p)]
+wp_cyto_levene_gtvariability_adj = wp_all_levene_gtvariability_adj[len(var_cell_test_p)+len(var_nuc_test_p):]
+
 wp_isvariable_cell = (var_cell > var_mt) & wp_pass_gtvariability_levene_bh_cell
 wp_isvariable_nuc = (var_nuc > var_mt) & wp_pass_gtvariability_levene_bh_nuc
 wp_isvariable_cyto = (var_cyto > var_mt) & wp_pass_gtvariability_levene_bh_cyto
 wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
-print(f"{sum(wp_isvariable_cell)}: # proteins showing variation, cell, log vals tested")
-print(f"{sum(wp_isvariable_nuc)}: # proteins showing variation, nuc, log vals tested")
-print(f"{sum(wp_isvariable_cyto)}: # proteins showing variation, cyto, log vals tested")
-print(f"{sum(wp_isvariable_any)}: # total proteins showing variation, any, log vals tested")
+wp_isvariable_comp = np.empty_like(wp_cell_levene_gtvariability_adj)
+print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa_var}")
+print(f"{sum(wp_isvariable_cell)}: # proteins showing variation, cell")
+print(f"{sum(wp_isvariable_nuc)}: # proteins showing variation, nuc")
+print(f"{sum(wp_isvariable_cyto)}: # proteins showing variation, cyto")
+print(f"{sum(wp_isvariable_any)}: # total proteins showing variation, any")
 print()
-print(f"{sum(wp_isvariable_cell) / len(wp_ensg)}: # proteins showing variation, cell, log vals tested")
-print(f"{sum(wp_isvariable_nuc) / len(wp_ensg)}: # proteins showing variation, nuc, log vals tested")
-print(f"{sum(wp_isvariable_cyto) / len(wp_ensg)}: # proteins showing variation, cyto, log vals tested")
-print(f"{sum(wp_isvariable_any) / len(wp_ensg)}: # total proteins showing variation, any, log vals tested")
+print(f"{sum(wp_isvariable_cell) / len(wp_ensg)}: # proteins showing variation, cell")
+print(f"{sum(wp_isvariable_nuc) / len(wp_ensg)}: # proteins showing variation, nuc")
+print(f"{sum(wp_isvariable_cyto) / len(wp_ensg)}: # proteins showing variation, cyto")
+print(f"{sum(wp_isvariable_any) / len(wp_ensg)}: # total proteins showing variation, any")
+print()
+were_neg_now_pos_wps = np.array(ab_cell_all_max_wp)[were_neg_now_pos]
+print(f"{sum(wp_isvariable_any[np.isin(u_well_plates, were_neg_now_pos_wps)])}: # nonspecific proteins called variable out of {len(np.array(ab_cell_all_max_wp)[were_neg_now_pos])}")
+    
+wp_posneg_count_wp = u_well_plates[wp_annvar_idx]
+var_truepos = wp_isvariable_any[wp_annvar_idx] & annvar_isvar[annvar_idx]
+var_falsepos = wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
+var_trueneg = ~wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
+var_falseneg = ~wp_isvariable_any[wp_annvar_idx] & annvar_isvar[annvar_idx]
+print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa_var} for assessing true and false positive variation calls")
+print(f"{sum(var_truepos) / sum(var_truepos | var_falseneg)}: fraction var_truepos, variability in any compartment")
+print(f"{sum(var_trueneg) / sum(var_trueneg | var_falsepos)}: fraction var_trueneg, variability in any compartment")
+print(f"{sum(var_falsepos) / sum(var_falsepos | var_trueneg)}: fraction var_falsepos, variability in any compartment")
+print(f"{sum(var_falseneg) / sum(var_falseneg | var_truepos)}: fraction var_falseneg, variability in any compartment")
+
+# What do these false positives look like?
+plt.figure(figsize=(10,10))
+wp_fp_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_falsepos]
+wp_isannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][annvar_isvar[annvar_idx]]
+wp_isnotannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][~annvar_isvar[annvar_idx]]
+for iii,ccc in enumerate(["cell","nuc","cyto"]):
+    old = [perc_var_compartment_old, perc_var_cell_old, perc_var_nuc_old,perc_var_cyto_old]
+    intense = [np.array(l) for l in [mean_mean_cell, mean_mean_nuc, mean_mean_cyto]]
+    fdr = [wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj]
+    var_fdr = [wp_cell_levene_gtvariability_adj, wp_nuc_levene_gtvariability_adj, wp_cyto_levene_gtvariability_adj]
+    var = [np.array(l) for l in [var_cell, var_nuc, var_cyto]]
+    
+    plt.scatter(intense[iii], var[iii], c='b', label="all")
+    plt.scatter(intense[iii][wp_fp_idx], var[iii][wp_fp_idx], c='r', label="falsepositive")
+    plt.xlabel(f"{'log10' if use_log else 'natural'} intensity")
+    plt.ylabel(f"variance {ccc}")
+#    cb = plt.colorbar()
+#    cb.set_label("FDR for Cell Cycle Dependence")
+    plt.savefig(f"figures/VarianceVsIntensity{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(intense[iii], -np.log10(var_fdr[iii]), c='b', label="all")
+    plt.scatter(intense[iii][wp_fp_idx], -np.log10(var_fdr[iii][wp_fp_idx]), c='r', label="falsepositive")
+    plt.xlabel(f"{'log10' if use_log else 'natural'} intensity")
+    plt.ylabel(f"-log10 FDR for variance {ccc}")
+#    cb = plt.colorbar()
+#    cb.set_label("FDR for Cell Cycle Dependence")
+    plt.savefig(f"figures/Log10VarFDRVsIntensity{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(intense[iii][wp_isnotannvar_idx], var[iii][wp_isnotannvar_idx], c="r", label="notvariable")
+    plt.scatter(intense[iii][wp_isannvar_idx], var[iii][wp_isannvar_idx], c="b", label="variable")
+    plt.legend()
+    plt.xlabel(f"{'log10' if use_log else 'natural'} intensity")
+    plt.ylabel(f"variance {ccc}")
+#    cb = plt.colorbar()
+#    cb.set_label("FDR for Cell Cycle Dependence")
+    plt.savefig(f"figures/VariabilityVarVsInt{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(intense[iii][wp_isnotannvar_idx], var[iii][wp_isnotannvar_idx] / var_mt[wp_isnotannvar_idx], c="r", label="notvariable")
+    plt.scatter(intense[iii][wp_isannvar_idx], var[iii][wp_isannvar_idx] / var_mt[wp_isannvar_idx], c="b", label="variable")
+    plt.legend()
+    plt.xlabel(f"{'log10' if use_log else 'natural'} intensity")
+    plt.ylabel(f"variance {ccc} divided by microtubule variance")
+#    cb = plt.colorbar()
+#    cb.set_label("FDR for Cell Cycle Dependence")
+    plt.savefig(f"figures/VariabilityDivVarMtVarVsInt{ccc}.png")
+    plt.show()
+    plt.close()
+    
+highly_variable_wellplate = u_well_plates[((var_cell >= 0.06) | (var_nuc >= 0.06) | (var_cyto >= 0.06))]
+np.savetxt("output/highlyvariable.txt",highly_variable_wellplate,fmt="%s")
+np.savetxt("output/highlyvariable_callednonvariable.txt", u_well_plates[np.isin(u_well_plates, np.array(annvar_wp)[~annvar_isvar]) & np.isin(u_well_plates, highly_variable_wellplate)] ,fmt="%s")
+
+    
+#    plt.scatter(np.log10(intense[iii]), var[iii], c='b', label="all")
+#    plt.scatter(np.log10(intense[iii][wp_fp_idx]), var[iii][wp_fp_idx], c='r', label="falsepositive")
+#    plt.xlabel("log10 intensity")
+#    plt.ylabel(f"variance {ccc}")
+##    cb = plt.colorbar()
+##    cb.set_label("FDR for Cell Cycle Dependence")
+#    plt.savefig(f"figures/LogIntenseVsVariabilityFP_{ccc}.png")
+#    plt.show()
+#    plt.close()
+
 
 pd.DataFrame({
     "well_plate":u_well_plates,
@@ -249,7 +396,8 @@ pd.DataFrame({
     }).to_csv(f"output/pvalsforvariability{'loggg' if use_log else 'natural'}.csv")
 
     
-#%% Figure out the compartment information
+
+    #%% Figure out the compartment information
 # Idea: Read in location information for each well_plate and decide which compartment to test
 # Execution: Use a dictionary of the unique locations etc. Group compartments into metacompartments.
 #     For whole cell compartments, don't make any small compartment tip the scale to cell
@@ -442,8 +590,8 @@ xvals = np.linspace(0,1,num=21)
 ccd_pvals = []
 not_ccd_pvals = []
 
+use_log_ccd = True
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
-mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = [],[],[],[] # mean mean-intensity
 mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt = [],[],[],[] # moving average y values
 ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two-tailed p values for equal variance of mvavg and raw values
 cell_counts = []
@@ -454,16 +602,10 @@ for i, well in enumerate(u_well_plates):
 #    well = 'H05_55405991'#GMNN well, used for testing
     curr_well_inds = pol_sort_well_plate==well
     curr_pol = pol_sort_norm_rev[curr_well_inds]
-    curr_ab_cell = pol_sort_ab_cell[curr_well_inds]
-    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
-    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
-    curr_mt_cell = pol_sort_mt_cell[curr_well_inds]
-    
-    # Save the mean mean intensities
-    mean_mean_cell.append(np.mean(curr_ab_cell))
-    mean_mean_nuc.append(np.mean(curr_ab_nuc)) 
-    mean_mean_cyto.append(np.mean(curr_ab_cyto))
-    mean_mean_mt.append(np.mean(curr_mt_cell))
+    curr_ab_cell = pol_sort_ab_cell[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_cell[curr_well_inds])
+    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_nuc[curr_well_inds])
+    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_cyto[curr_well_inds])
+    curr_mt_cell = pol_sort_mt_cell[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_mt_cell[curr_well_inds])
     
     # Normalize mean intensities, normalized for display
     curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
@@ -489,11 +631,11 @@ for i, well in enumerate(u_well_plates):
     # Levene test for different variance over cell cycle compared to mt (one-tailed)
     # Tried it on the natural intensities, but the variation is probably in the log scale, since it's normal in the log scale
     # So comparing the microtubule to antibody intensities in the log scale may make more sense
-    w, p = scipy.stats.levene(np.asarray(mvavg_cell), np.asarray(mvavg_mt), center="median")
+    w, p = scipy.stats.levene(np.asarray(mvavg_cell), np.asarray(mvavg_mt), center="mean" if use_log_ccd else "median")
     ccd_var_cell_levenep.append(2*p)
-    w, p = scipy.stats.levene(np.asarray(mvavg_nuc), np.asarray(mvavg_mt), center="median")
+    w, p = scipy.stats.levene(np.asarray(mvavg_nuc), np.asarray(mvavg_mt), center="mean" if use_log_ccd else "median")
     ccd_var_nuc_levenep.append(2*p)
-    w, p = scipy.stats.levene(np.asarray(mvavg_cyto), np.asarray(mvavg_mt), center="median")
+    w, p = scipy.stats.levene(np.asarray(mvavg_cyto), np.asarray(mvavg_mt), center="mean" if use_log_ccd else "median")
     ccd_var_cyto_levenep.append(2*p)
     
     # What about testing for percent variance being higher for each well than the microtubules?
@@ -566,20 +708,6 @@ eqccdvariability_levene_comp_p[wp_iscyto] = np.array(ccd_var_cyto_levenep)[wp_is
 wp_comp_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_comp = benji_hoch(alpha_ccd, eqccdvariability_levene_comp_p)
 
 # BenjiHoch is actually pretty liberal for this dataset. What about bonferroni?
-# bonferroni MTC
-def bonf(alpha, pvals):
-    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvals, pvals_sortind)
-    alphaBonf = alpha / float(len(pvals))
-    rejectBonf = pvals_sorted <= alphaBonf
-    pvals_correctedBonf = pvals_sorted * float(len(pvals))
-    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
-    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
-    rejectBonf_unsorted = np.empty_like(rejectBonf)
-    rejectBonf_unsorted[pvals_sortind] = rejectBonf
-    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
-
 wp_comp_levene_eq_ccdvariability_bonfadj, wp_bonfpass_eq_ccdvariability_levene_bh_comp = bonf(alpha_ccd, eqccdvariability_levene_comp_p)
 
 
@@ -592,6 +720,11 @@ perc_var_comp[wp_iscell] = perc_var_cell[wp_iscell]
 perc_var_comp[wp_isnuc] = perc_var_nuc[wp_isnuc]
 perc_var_comp[wp_iscyto] = perc_var_cyto[wp_iscyto]
 
+var_comp = np.empty_like(var_cell)
+var_comp[wp_iscell] = var_cell[wp_iscell]
+var_comp[wp_isnuc] = var_nuc[wp_isnuc]
+var_comp[wp_iscyto] = var_cyto[wp_iscyto]
+
 wp_comp_kruskal_adj = np.empty_like(wp_cell_kruskal_gaussccd_adj)
 wp_comp_kruskal_adj[wp_iscell] = wp_cell_kruskal_gaussccd_adj[wp_iscell]
 wp_comp_kruskal_adj[wp_isnuc] = wp_nuc_kruskal_gaussccd_adj[wp_isnuc]
@@ -602,6 +735,11 @@ wp_comp_mean_mean[wp_iscell] = mean_mean_cell[wp_iscell]
 wp_comp_mean_mean[wp_isnuc] = mean_mean_nuc[wp_isnuc]
 wp_comp_mean_mean[wp_iscyto] = mean_mean_cyto[wp_iscyto]
 
+wp_comp_levene_gtvariability_adj = np.empty_like(wp_cell_levene_gtvariability_adj)
+wp_comp_levene_gtvariability_adj[wp_iscell] = wp_cell_levene_gtvariability_adj[wp_iscell]
+wp_comp_levene_gtvariability_adj[wp_isnuc] = wp_nuc_levene_gtvariability_adj[wp_isnuc]
+wp_comp_levene_gtvariability_adj[wp_iscyto] = wp_cyto_levene_gtvariability_adj[wp_iscyto]
+
 u_plates_old_idx = np.array([u_well_plates_list.index(wp) for wp in u_well_plates_old if wp in u_well_plates])
 old_notfiltered = np.isin(u_well_plates_old, u_well_plates)
 for iii,ccc in enumerate(["comp","cell","nuc","cyto"]):
@@ -609,6 +747,9 @@ for iii,ccc in enumerate(["comp","cell","nuc","cyto"]):
     new = [perc_var_comp, perc_var_cell, perc_var_nuc,perc_var_cyto]
     intense = [wp_comp_mean_mean, mean_mean_cell, mean_mean_nuc, mean_mean_cyto]
     fdr = [wp_comp_kruskal_adj,wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj]
+    var_fdr = [wp_comp_levene_gtvariability_adj, wp_cell_levene_gtvariability_adj, wp_nuc_levene_gtvariability_adj, wp_cyto_levene_gtvariability_adj]
+    var = [var_comp, var_cell, var_nuc, var_cyto]
+    eqccdvar = [wp_comp_levene_eq_ccdvariability_adj, wp_cell_levene_eq_ccdvariability_adj,wp_nuc_levene_eq_ccdvariability_adj,wp_cyto_levene_eq_ccdvariability_adj]
     plt.scatter(old[iii][old_notfiltered], new[iii][u_plates_old_idx], c=fdr[iii][u_plates_old_idx])
     plt.xlabel("percent variance old")
     plt.ylabel("percent variance new")
@@ -622,6 +763,38 @@ for iii,ccc in enumerate(["comp","cell","nuc","cyto"]):
     plt.xlabel("percent variance new")
     plt.ylabel("mean mean intensity")
     plt.savefig(f"figures/PercVarVsMeanMeanIntensity_{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(new[iii], -np.log10(eqccdvar[iii]))
+    plt.xlabel("percent variance new")
+    plt.ylabel("-log10 FDR for CCD")
+    plt.hlines(-np.log10(alphaa), np.min(new[iii]), np.max(new[iii]))
+    plt.savefig(f"figures/PercVarVsLog10FdrCCD_{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(intense[iii], -np.log10(eqccdvar[iii]))
+    plt.xlabel("mean mean intensity")
+    plt.ylabel("-log10 FDR for CCD")
+    plt.hlines(-np.log10(alphaa), np.min(intense[iii]), np.max(intense[iii]))
+    plt.savefig(f"figures/IntensityVsLog10FdrCCD_{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(intense[iii], -np.log10(var_fdr[iii]))
+    plt.xlabel("mean mean intensity")
+    plt.ylabel("-log10 FDR for Variability")
+    plt.hlines(-np.log10(alphaa_var), np.min(intense[iii]), np.max(intense[iii]))
+    plt.savefig(f"figures/IntensityVsLog10FdrVariance_{ccc}.png")
+    plt.show()
+    plt.close()
+    
+    plt.scatter(var[iii], -np.log10(var_fdr[iii]))
+    plt.xlabel("variance of antibody stain")
+    plt.ylabel("-log10 FDR for Variability")
+    plt.hlines(-np.log10(alphaa_var), np.min(var[iii]), np.max(var[iii]))
+    plt.savefig(f"figures/VariabilityVsLog10FdrVariance_{ccc}.png")
     plt.show()
     plt.close()
     
@@ -641,11 +814,6 @@ wp_cyto_ccd = wp_cyto_var_and_loc & (perc_var_cyto >= percent_var_cutoff)
 wp_cell_ccd_levene = wp_cell_var_and_loc & (var_cell > var_mt) & wp_pass_eq_ccdvariability_levene_bh_cell
 wp_nuc_ccd_levene = wp_nuc_var_and_loc & (var_nuc > var_mt) & wp_pass_eq_ccdvariability_levene_bh_nuc
 wp_cyto_ccd_levene = wp_cyto_var_and_loc & (var_cyto > var_mt) & wp_pass_eq_ccdvariability_levene_bh_cyto
-
-var_comp = np.empty_like(var_cell)
-var_comp[wp_iscell] = var_cell[wp_iscell]
-var_comp[wp_isnuc] = var_nuc[wp_isnuc]
-var_comp[wp_iscyto] = var_cyto[wp_iscyto]
 
 var_pass_comp = np.empty_like(wp_cell_var_and_loc)
 var_pass_comp[wp_iscell] = wp_cell_var_and_loc[wp_iscell]
