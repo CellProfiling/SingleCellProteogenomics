@@ -31,8 +31,10 @@ def read_sample_info(df):
     u_plate = np.unique(plate)
     well_plate = np.asarray(df.well_plate)
     imgnb = np.asarray(df.ImageNumber)
+    well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
     u_well_plates = np.unique(well_plate)
     ab_objnum = np.asarray(df.ObjectNumber)
+    area_cell = np.asarray(df.Area_cell)
     name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
     wppp1, ensggg1, abbb1, rrrr = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"])
     name_df2 = pd.read_csv("input\\Fucci_staining_review_variation_check.csv")
@@ -44,7 +46,7 @@ def read_sample_info(df):
     ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
     antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
     result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
-    return plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
+    return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
 
 def previous_results(u_well_plates, result_dict, ensg_dict):
     '''Process the results metadata into lists of previously annotated CCD proteins'''
@@ -73,7 +75,7 @@ def read_sample_data(df):
     red_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
     return ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci
 
-plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
 ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df)
 
@@ -172,7 +174,7 @@ passing_u_well_plate = set(u_well_plates[image_passes_neg_staining_filter])
 cell_passes_neg_staining_filter = [wp in passing_u_well_plate for wp in well_plate]
 my_df_filtered = my_df[cell_passes_neg_staining_filter]
 len_temp = len(ab_cell)
-plate, u_plate, well_plate, imgnb, u_well_plates, ab_objnum, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df_filtered)
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df_filtered)
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
 ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df_filtered)
 print(f"{len_temp > len(ab_cell)}: filter successful")
@@ -281,8 +283,6 @@ np_save_overwriting("output/prev_ccd_ensg.filterNegStain.npy", prev_ccd_ensg)
 np_save_overwriting("output/prev_notccd_ensg.filterNegStain.npy", prev_notccd_ensg)
 np_save_overwriting("output/prev_negative_ensg.filterNegStain.npy", prev_negative_ensg)
 np_save_overwriting("output/well_plate.filterNegStain.npy", well_plate)
-np_save_overwriting("output/imgnb.filterNegStain.npy", imgnb)
-np_save_overwriting("output/ab_objnum.filterNegStain.npy", ab_objnum)
 np_save_overwriting("output/ab_nuc.filterNegStain.npy", ab_nuc)
 np_save_overwriting("output/ab_cyto.filterNegStain.npy", ab_cyto)
 np_save_overwriting("output/ab_cell.filterNegStain.npy", ab_cell)

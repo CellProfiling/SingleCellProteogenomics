@@ -287,10 +287,19 @@ wp_cyto_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cyto = benji_h
 #wp_nuc_levene_gtvariability_adj = wp_all_levene_gtvariability_adj[len(var_cell_test_p):len(var_cell_test_p)+len(var_nuc_test_p)]
 #wp_cyto_levene_gtvariability_adj = wp_all_levene_gtvariability_adj[len(var_cell_test_p)+len(var_nuc_test_p):]
 
+# Using the statistical tests
 wp_isvariable_cell = (var_cell > var_mt) & wp_pass_gtvariability_levene_bh_cell
 wp_isvariable_nuc = (var_nuc > var_mt) & wp_pass_gtvariability_levene_bh_nuc
 wp_isvariable_cyto = (var_cyto > var_mt) & wp_pass_gtvariability_levene_bh_cyto
 wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
+# Using a hard variance cutoff
+variance_cutoff = np.mean(var_mt) + np.std(var_mt)
+wp_isvariable_cell = var_cell > variance_cutoff
+wp_isvariable_nuc = var_nuc > variance_cutoff
+wp_isvariable_cyto = var_cyto > variance_cutoff
+wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
 print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa_var}")
 print(f"{sum(wp_isvariable_cell)}: # proteins showing variation, cell")
 print(f"{sum(wp_isvariable_nuc)}: # proteins showing variation, nuc")
@@ -305,7 +314,6 @@ print()
 were_neg_now_pos_wps = np.array(ab_cell_all_max_wp)[were_neg_now_pos]
 print(f"{sum(wp_isvariable_any[np.isin(u_well_plates, were_neg_now_pos_wps)])}: # nonspecific proteins called variable out of {len(np.array(ab_cell_all_max_wp)[were_neg_now_pos])}")
     
-wp_posneg_count_wp = u_well_plates[wp_annvar_idx]
 var_truepos = wp_isvariable_any[wp_annvar_idx] & annvar_isvar[annvar_idx]
 var_falsepos = wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
 var_trueneg = ~wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
@@ -331,14 +339,36 @@ plt.savefig("figures/VarianceBoxplot.png")
 plt.show()
 plt.close()
 
+wp_isannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][annvar_isvar[annvar_idx]]
+wp_isnotannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][~annvar_isvar[annvar_idx]]
+for iii,ccc in enumerate(["cell","nuc","cyto"]):
+    var = [np.array(l) for l in [var_cell, var_nuc, var_cyto]]
+    known_true = var[iii][wp_isannvar_idx]
+    known_false = var[iii][wp_isnotannvar_idx]
+    known_true_mt = var_mt[wp_isannvar_idx]
+    known_false_mt = var_mt[wp_isnotannvar_idx]
+    mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
+    cccc = ([f"known_true {ccc}"] * len(known_true))
+    cccc.extend([f"known_false {ccc}"] * len(known_false))
+    cccc.extend([f"known_true_mt {ccc}"] * len(known_true_mt))
+    cccc.extend([f"known_false_mt {ccc}"] * len(known_false_mt))
+    moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
+    boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=False)
+    boxplot.set_xlabel("Annotated Variability + Metacompartment", size=36,fontname='Arial')
+    boxplot.set_ylabel(f"Variance using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=16)
+    plt.title("")
+    plt.savefig(f"figures/VarianceBoxplot{ccc}Ann.png")
+    plt.show()
+    plt.close()
+    
 # What do these false positives look like?
 plt.figure(figsize=(10,10))
 wp_fp_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_falsepos]
 wp_tp_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_truepos]
 wp_tn_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_trueneg]
 wp_fn_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_falseneg]
-wp_isannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][annvar_isvar[annvar_idx]]
-wp_isnotannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][~annvar_isvar[annvar_idx]]
+
 for iii,ccc in enumerate(["cell","nuc","cyto"]):
     old = [perc_var_compartment_old, perc_var_cell_old, perc_var_nuc_old,perc_var_cyto_old]
     intense = [np.array(l) for l in [mean_mean_cell, mean_mean_nuc, mean_mean_cyto]]
@@ -414,21 +444,22 @@ np.savetxt("output/highlyvariable_callednonvariable.txt", u_well_plates[np.isin(
 #    plt.show()
 #    plt.close()
 
+sort_idx = np.argsort(wp_cell_levene_gtvariability_adj)
 annotated = np.array(["NA"] * len(u_well_plates))
 annotated[wp_fp_idx] = "FP"
 annotated[wp_tp_idx] = "TP"
 annotated[wp_fn_idx] = "FN"
 annotated[wp_tn_idx] = "TN"
 pd.DataFrame({
-    "well_plate":u_well_plates,
-    "result":annotated,
-    "var_cell":var_cell,
-    "var_nuc":var_nuc,
-    "var_cyto":var_cyto,
-    "var_mt":var_mt,
-    "wp_cell_levene_gtvariability_adj":wp_cell_levene_gtvariability_adj,
-    "wp_nuc_levene_gtvariability_adj":wp_nuc_levene_gtvariability_adj,
-    "wp_cyto_levene_gtvariability_adj":wp_cyto_levene_gtvariability_adj,
+    "well_plate":np.array(u_well_plates)[sort_idx],
+    "result":np.array(annotated)[sort_idx],
+    "var_cell":np.array(var_cell)[sort_idx],
+    "var_nuc":np.array(var_nuc)[sort_idx],
+    "var_cyto":np.array(var_cyto)[sort_idx],
+    "var_mt":np.array(var_mt)[sort_idx],
+    "wp_cell_levene_gtvariability_adj":np.array(wp_cell_levene_gtvariability_adj)[sort_idx],
+    "wp_nuc_levene_gtvariability_adj":np.array(wp_nuc_levene_gtvariability_adj)[sort_idx],
+    "wp_cyto_levene_gtvariability_adj":np.array(wp_cyto_levene_gtvariability_adj)[sort_idx],
     }).to_csv(f"output/pvalsforvariability{'loggg' if use_log else 'natural'}.csv")
 
     
