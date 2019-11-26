@@ -22,8 +22,20 @@ print("reading protein IF data")
 my_df1 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
 my_df2 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
 my_df = pd.concat((my_df1, my_df2), sort=True)
+print(f"{len(my_df)}: number of cells before filtering empty wells")
 my_df = my_df[~my_df.well_plate.isin(emptywells)]
+print(f"{len(my_df)}: number of cells after filtering empty wells")
 print("loaded")
+
+print("filtering out of focus")
+oof = pd.read_csv("input\\outoffocusimages.txt", header=None)[0]
+well_plate = np.asarray(my_df.well_plate)
+imgnb = np.asarray(my_df.ImageNumber)
+well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
+print(f"{len(my_df)}: number of cells before filtering out of focus images")
+my_df = my_df[~np.isin(well_plate_imgnb, oof)]
+print(f"{len(my_df)}: number of cells after filtering out of focus images")
+print("finished filtering")
 
 def read_sample_info(df):
     '''Get the metadata for all the samples'''
@@ -62,7 +74,7 @@ def previous_results(u_well_plates, result_dict, ensg_dict):
 # 0: use mean, 
 # 1: use integrated,
 # 2: use the product of integrated * mean
-mean_integrated_ratio = 0
+mean_integrated_ratio = 1 # small cells are often brighter and this is just because they have rounded up and are thicker
 def read_sample_data(df):
     # Antibody data (mean intensity)
     ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, df.Intensity_IntegratedIntensity_ResizedAb, df.Intensity_MeanIntensity_ResizedAb / df.Intensity_IntegratedIntensity_ResizedAb][mean_integrated_ratio])

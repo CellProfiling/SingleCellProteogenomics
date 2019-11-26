@@ -6,6 +6,7 @@ from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy.stats import iqr, variation
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -210,9 +211,28 @@ def bonf(alpha, pvals):
     rejectBonf_unsorted[pvals_sortind] = rejectBonf
     return pvals_correctedBonf_unsorted, rejectBonf_unsorted
 
+def gini(array):
+    """Calculate the Gini coefficient of a numpy array."""
+    # based on bottom eq: http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
+    # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
+    # All values are treated equally, arrays must be 1d:
+    # Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
+    array = array.flatten()
+    if np.amin(array) < 0: 
+        array -= np.amin(array) # Values cannot be negative
+    array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
+    index = np.arange(1,array.shape[0]+1) # Index per array element
+    n = array.shape[0] # Number of array elements
+    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
+
 # Filter for variation based on microtubules
-use_log = True
+use_log = False
+use_zero_centering = False
+use_meanmax_norm = False
 var_cell, var_nuc, var_cyto, var_mt = [],[],[],[] # mean intensity variances per antibody
+iqr_cell, iqr_nuc, iqr_cyto, iqr_mt = [], [], [], []
+cv_cell, cv_nuc, cv_cyto, cv_mt = [], [], [], []
+gini_cell, gini_nuc, gini_cyto, gini_mt = [],[],[],[] # mean intensity ginis per antibody
 var_cell_test_p, var_nuc_test_p, var_cyto_test_p = [],[],[]
 normal_cell_test_p, normal_nuc_test_p, normal_cyto_test_p,normal_mt_test_p = [],[],[],[]
 mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = [],[],[],[] # mean mean-intensity
@@ -224,12 +244,39 @@ for well in u_well_plates:
     curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds] if not use_log else np.log10(pol_sort_ab_cyto[curr_well_inds])
     curr_mt_cell = pol_sort_mt_cell[curr_well_inds] if not use_log else np.log10(pol_sort_mt_cell[curr_well_inds])
     
+    if use_zero_centering:
+        curr_ab_cell -= np.median(curr_ab_cell)
+        curr_ab_nuc -= np.median(curr_ab_nuc)
+        curr_ab_cyto -= np.median(curr_ab_cyto)
+        curr_mt_cell -= np.median(curr_mt_cell)
+        
+    if use_meanmax_norm:
+        curr_ab_cell = curr_ab_cell / np.mean(curr_ab_cell)
+        curr_ab_nuc = curr_ab_nuc / np.mean(curr_ab_nuc)
+        curr_ab_cyto = curr_ab_cyto / np.mean(curr_ab_cyto)
+        curr_mt_cell = curr_mt_cell / np.mean(curr_mt_cell)
+    
     cell_counts.append(len(curr_ab_cell))
     
     var_cell.append(np.var(curr_ab_cell))
     var_nuc.append(np.var(curr_ab_nuc))
     var_cyto.append(np.var(curr_ab_cyto))
     var_mt.append(np.var(curr_mt_cell))
+    
+    iqr_cell.append(iqr(curr_ab_cell))
+    iqr_nuc.append(iqr(curr_ab_nuc))
+    iqr_cyto.append(iqr(curr_ab_cyto))
+    iqr_mt.append(iqr(curr_mt_cell))
+    
+    cv_cell.append(variation(curr_ab_cell))
+    cv_nuc.append(variation(curr_ab_nuc))
+    cv_cyto.append(variation(curr_ab_cyto))
+    cv_mt.append(variation(curr_mt_cell))
+    
+    gini_cell.append(gini(curr_ab_cell))
+    gini_nuc.append(gini(curr_ab_nuc))
+    gini_cyto.append(gini(curr_ab_cyto))
+    gini_mt.append(gini(curr_mt_cell))
     
     # Save the mean mean intensities
     mean_mean_cell.append(np.mean(curr_ab_cell))
@@ -259,6 +306,52 @@ for well in u_well_plates:
     w, p = scipy.stats.levene(curr_mt_cell, curr_ab_cyto, center="median") if not use_log else scipy.stats.bartlett(curr_mt_cell, curr_ab_cyto)
     var_cyto_test_p.append(p*2)
 
+# looking at the mean mean intensities
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_cell)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_cell)[~firstbatch], bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeancCell.png")
+plt.show()
+plt.close()
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_nuc)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_nuc)[~firstbatch], bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeancNuc.png")
+plt.show()
+plt.close()
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_nuc)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_nuc)[~firstbatch] * 2, bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeancNuc.png")
+plt.show()
+plt.close()
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_cyto)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_cyto)[~firstbatch], bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeancCyto.png")
+plt.show()
+plt.close()
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_mt)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_mt)[~firstbatch], bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeanMt.png")
+plt.show()
+plt.close()
+print(f"{np.min(np.array(mean_mean_mt)[firstbatch])}, {np.max(np.array(mean_mean_mt)[firstbatch])}: firstbatch")
+print(f"{np.min(np.array(mean_mean_mt)[~firstbatch])}, {np.max(np.array(mean_mean_mt)[~firstbatch])}: secondbatch")
+firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+plt.hist(np.array(mean_mean_mt)[firstbatch], bins=200, label="firstbatch")
+plt.hist(np.array(mean_mean_mt)[~firstbatch] * 2, bins=200, label="secondbatch")
+plt.legend()
+plt.savefig("figures/MeanMeanMt.png")
+plt.show()
+plt.close()
+
 alphaa = 0.01
 wp_cell_normal_adj, wp_cell_normal_pass = bonf(alphaa, normal_cell_test_p)
 wp_nuc_normal_adj, wp_nuc_normal_pass = bonf(alphaa, normal_nuc_test_p)
@@ -271,12 +364,17 @@ print(f"{sum(wp_cyto_normal_pass) / len(wp_ensg)}: fraction proteins showing non
 print(f"{sum(wp_mt_normal_pass) / len(wp_ensg)}: fraction proteins showing non-normal intensity distribution, mt-cell")
 
 var_cell, var_nuc, var_cyto, var_mt = np.array(var_cell), np.array(var_nuc), np.array(var_cyto), np.array(var_mt)
-annotated_variation_df = pd.read_csv("input/new_plate_shows_variation_check.csv")
+gini_cell, gini_nuc, gini_cyto, gini_mt = np.array(gini_cell), np.array(gini_nuc), np.array(gini_cyto), np.array(gini_mt)
+iqr_cell, iqr_nuc, iqr_cyto, iqr_mt = np.array(iqr_cell), np.array(iqr_nuc), np.array(iqr_cyto), np.array(iqr_mt)
+cv_cell, cv_nuc, cv_cyto, cv_mt = np.array(cv_cell), np.array(cv_nuc), np.array(cv_cyto), np.array(cv_mt)
+#annotated_variation_df = pd.read_csv("input/new_plate_shows_variation_check.csv")
+annotated_variation_df = pd.read_csv("input/shows_variation_el.csv")
 annvar_wp = list(annotated_variation_df["well_plate"])
 annvar_isvar = np.array(annotated_variation_df["shows_variation"])
 u_well_plates_list = list(u_well_plates)
 wp_annvar_idx = np.isin(u_well_plates, annvar_wp)
 annvar_idx = [annvar_wp.index(wp) for wp in u_well_plates[wp_annvar_idx]]
+annvar_isin = np.isin(annvar_wp, u_well_plates)
 
 alphaa_var = 0.05
 wp_cell_levene_gtvariability_adj, wp_pass_gtvariability_levene_bh_cell = benji_hoch(alphaa_var, var_cell_test_p)
@@ -294,11 +392,47 @@ wp_isvariable_cyto = (var_cyto > var_mt) & wp_pass_gtvariability_levene_bh_cyto
 wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
 
 # Using a hard variance cutoff
-variance_cutoff = np.mean(var_mt) + np.std(var_mt)
-wp_isvariable_cell = var_cell > variance_cutoff
-wp_isvariable_nuc = var_nuc > variance_cutoff
-wp_isvariable_cyto = var_cyto > variance_cutoff
+#variance_cutoff = np.mean(var_mt) + np.std(var_mt)
+#wp_isvariable_cell = var_cell > variance_cutoff
+#wp_isvariable_nuc = var_nuc > variance_cutoff
+#wp_isvariable_cyto = var_cyto > variance_cutoff
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
+wp_isvariable_cell = var_cell > var_mt
+wp_isvariable_nuc = var_nuc > var_mt
+wp_isvariable_cyto = var_cyto > var_mt
 wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
+# Using a hard gini cutoff
+#variance_cutoff = np.mean(gini_mt) + 2 * np.std(gini_mt)
+#wp_isvariable_cell = gini_cell > variance_cutoff
+#wp_isvariable_nuc = gini_nuc > variance_cutoff
+#wp_isvariable_cyto = gini_cyto > variance_cutoff
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
+# Using a hard iqr cutoff
+#variance_cutoff = np.mean(iqr_mt) + 1 * np.std(iqr_mt)
+#wp_isvariable_cell = iqr_cell > variance_cutoff
+#wp_isvariable_nuc = iqr_nuc > variance_cutoff
+#wp_isvariable_cyto = iqr_cyto > variance_cutoff
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+#
+#wp_isvariable_cell = iqr_cell > iqr_mt * 1.5
+#wp_isvariable_nuc = iqr_nuc > iqr_mt * 1.5
+#wp_isvariable_cyto = iqr_cyto > iqr_mt * 1.5
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+
+# Using a hard cv cutoff
+#variance_cutoff = np.mean(cv_mt) + 1 * np.std(cv_mt)
+#wp_isvariable_cell = cv_cell > variance_cutoff
+#wp_isvariable_nuc = cv_nuc > variance_cutoff
+#wp_isvariable_cyto = cv_cyto > variance_cutoff
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+#
+#wp_isvariable_cell = cv_cell > cv_mt * 1.5
+#wp_isvariable_nuc = cv_nuc > cv_mt * 1.5
+#wp_isvariable_cyto = cv_cyto > cv_mt * 1.5
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
 
 print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa_var}")
 print(f"{sum(wp_isvariable_cell)}: # proteins showing variation, cell")
@@ -318,6 +452,13 @@ var_truepos = wp_isvariable_any[wp_annvar_idx] & annvar_isvar[annvar_idx]
 var_falsepos = wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
 var_trueneg = ~wp_isvariable_any[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
 var_falseneg = ~wp_isvariable_any[wp_annvar_idx] & annvar_isvar[annvar_idx]
+#
+#cutoff = 0.0001
+#somecutoff = ((var_cyto > cutoff) | (var_cell > cutoff) | (var_nuc > cutoff))
+#var_truepos = somecutoff[wp_annvar_idx] & annvar_isvar[annvar_idx]
+#var_falsepos = somecutoff[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
+#var_trueneg = ~somecutoff[wp_annvar_idx] & ~annvar_isvar[annvar_idx]
+#var_falseneg = ~somecutoff[wp_annvar_idx] & annvar_isvar[annvar_idx]
 print(f"using {'log' if use_log else 'natural'} values with alpha={alphaa_var} for assessing true and false positive variation calls")
 print(f"{sum(var_truepos) / sum(var_truepos | var_falseneg)}: fraction var_truepos, variability in any compartment")
 print(f"{sum(var_trueneg) / sum(var_trueneg | var_falsepos)}: fraction var_trueneg, variability in any compartment")
@@ -336,6 +477,21 @@ boxplot.set_ylabel(f"Variance using {'log' if use_log else 'natural'} intensity 
 boxplot.tick_params(axis="both", which="major", labelsize=16)
 plt.title("")
 plt.savefig("figures/VarianceBoxplot.png")
+plt.show()
+plt.close()
+
+mmmm = np.concatenate((gini_cell, gini_cyto, gini_nuc, gini_mt))
+cccc = (["gini_cell"] * len(gini_cell))
+cccc.extend(["gini_cyto"] * len(gini_cyto))
+cccc.extend(["gini_nuc"] * len(gini_nuc))
+cccc.extend(["gini_mt"] * len(gini_mt))
+moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
+boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=True)
+boxplot.set_xlabel("Metacompartment", size=36,fontname='Arial')
+boxplot.set_ylabel(f"Gini using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=16)
+plt.title("")
+plt.savefig("figures/GiniBoxplot.png")
 plt.show()
 plt.close()
 
@@ -362,6 +518,26 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     plt.show()
     plt.close()
     
+    gini = [np.array(l) for l in [gini_cell, gini_nuc, gini_cyto]]
+    known_true = gini[iii][wp_isannvar_idx]
+    known_false = gini[iii][wp_isnotannvar_idx]
+    known_true_mt = gini_mt[wp_isannvar_idx]
+    known_false_mt = gini_mt[wp_isnotannvar_idx]
+    mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
+    cccc = ([f"known_true {ccc}"] * len(known_true))
+    cccc.extend([f"known_false {ccc}"] * len(known_false))
+    cccc.extend([f"known_true_mt {ccc}"] * len(known_true_mt))
+    cccc.extend([f"known_false_mt {ccc}"] * len(known_false_mt))
+    moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
+    boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=True)
+    boxplot.set_xlabel("Metacompartment", size=36,fontname='Arial')
+    boxplot.set_ylabel(f"Gini using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=16)
+    plt.title("")
+    plt.savefig(f"figures/GiniBoxplot{ccc}.png")
+    plt.show()
+    plt.close()
+    
 # What do these false positives look like?
 plt.figure(figsize=(10,10))
 wp_fp_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_falsepos]
@@ -375,10 +551,83 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     fdr = [wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj]
     var_fdr = [wp_cell_levene_gtvariability_adj, wp_nuc_levene_gtvariability_adj, wp_cyto_levene_gtvariability_adj]
     var = [np.array(l) for l in [var_cell, var_nuc, var_cyto]]
+    iqrr = [np.array(l) for l in [iqr_cell, iqr_nuc, iqr_cyto]]
+    cv = [np.array(l) for l in [cv_cell, cv_nuc, cv_cyto]]
     
+    # Variance vs mt variance
+#    plt.figure(figsize=(10,10))
+#    firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+#    goodvarmt = (var_mt < 0.001) & (var[iii] < 0.005)
+#    plt.scatter(var[iii], var_mt, label="all")
+#    plt.scatter(var[iii][firstbatch], var_mt[firstbatch], alpha=0.5,  c="lightsteelblue", label="variable_firstbatch")
+#    plt.scatter(var[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], var_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100,label="knowntrue")
+#    plt.scatter(var[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], var_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5, label="knownfalse")
+#    plt.xlabel(f"variance {ccc}")
+#    plt.ylabel(f"variance microtubules")
+#    plt.legend()
+#    plt.savefig(f"figures/Variance{ccc}VsVarianceMt.png")
+#    plt.show()
+#    plt.close()
+    
+    # IQR vs mt iqr
+    plt.figure(figsize=(10,10))
+    firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+#    plt.scatter(iqrr[iii], iqr_mt, label="all")
+#    plt.scatter(iqrr[iii][firstbatch], iqr_mt[firstbatch], alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
+    plt.scatter(iqrr[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], iqr_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100, label="knowntrue")
+    plt.scatter(iqrr[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], iqr_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5, label="knownfalse")
+    plt.xlabel(f"iqr {ccc}")
+    plt.ylabel(f"iqr microtubules")
+    plt.legend()
+    plt.savefig(f"figures/iqr{ccc}VsIqrMt.png")
+    plt.show()
+    plt.close()
+    
+    # CV vs mt cv
+    plt.figure(figsize=(10,10))
+    firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+#    plt.scatter(cv[iii], cv_mt, label="all")
+#    plt.scatter(cv[iii][firstbatch], cv_mt[firstbatch], alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
+    plt.scatter(cv[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], cv_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100,  label="knowntrue")
+    plt.scatter(cv[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], cv_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]],  c="red", alpha=0.5, label="knownfalse")
+    plt.xlabel(f"cv {ccc}")
+    plt.ylabel(f"cv microtubules")
+    plt.legend()
+    plt.savefig(f"figures/cv{ccc}VsCvMt.png")
+    plt.show()
+    plt.close()
+    
+    # Gini vs mt gini
+    firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+    plt.figure(figsize=(10,10))
+    plt.scatter(gini[iii], gini_mt, label="all")
+    plt.scatter(gini[iii][firstbatch], gini_mt[firstbatch],alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
+    plt.scatter(gini[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], gini_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100, label="knowntrue")
+    plt.scatter(gini[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], gini_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5,  label="knownfalse")
+    plt.xlabel(f"gini {ccc}")
+    plt.ylabel(f"gini microtubules")
+    plt.legend()
+    plt.savefig(f"figures/Gini{ccc}VsGiniMt.png")
+    plt.show()
+    plt.close()
+    
+    plt.figure(figsize=(10,10))
+    plt.scatter(np.arange(len(var[iii])) / 2, var[iii], label="all")
+    plt.scatter(np.arange(len(var[iii][wp_fn_idx])) + len(var[iii]) / 2, var[iii][wp_fn_idx], label="falsenegative")
+    plt.scatter(np.arange(len(var[iii][wp_tp_idx])) + len(var[iii]) / 2 + len(wp_tp_idx), var[iii][wp_tp_idx], label="truepos")
+    plt.scatter(np.arange(len(var[iii])) / 2 + len(var[iii]) / 2 + len(wp_tp_idx) + len(wp_fp_idx), var_mt, label="mt")
+    plt.xlabel(f"indexes")
+    plt.ylabel(f"variance microtubules")
+    plt.legend()
+    plt.savefig(f"figures/Variance{ccc}VsVarianceMt.png")
+    plt.show()
+    plt.close()
+    
+    plt.figure(figsize=(10,10))
     plt.scatter(intense[iii], var[iii], label="all")
-    plt.scatter(intense[iii][wp_tp_idx], var[iii][wp_tp_idx], label="truepos")
-    plt.scatter(intense[iii][wp_fp_idx], var[iii][wp_fp_idx], label="falsepositive")
+    plt.scatter(intense[iii][firstbatch], var[iii][firstbatch],alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
+    plt.scatter(intense[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], var[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100, label="knowntrue")
+    plt.scatter(intense[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], var[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5,  label="knownfalse")
 #    plt.scatter(intense[iii][wp_tn_idx], var[iii][wp_tn_idx], label="trueneg")
 #    plt.scatter(intense[iii][wp_fn_idx], var[iii][wp_fn_idx], label="falseneg")
     plt.xlabel(f"{'log10' if use_log else 'natural'} intensity")
@@ -390,6 +639,7 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     plt.show()
     plt.close()
     
+    plt.figure(figsize=(10,10))
     plt.scatter(intense[iii], -np.log10(var_fdr[iii]), label="all")
     plt.scatter(intense[iii][wp_fp_idx], -np.log10(var_fdr[iii][wp_fp_idx]), label="falsepositive")
     plt.scatter(intense[iii][wp_tp_idx], -np.log10(var_fdr[iii][wp_tp_idx]), label="truepos")
@@ -404,6 +654,7 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     plt.show()
     plt.close()
     
+    plt.figure(figsize=(10,10))
     plt.scatter(intense[iii], var[iii], label="all")
     plt.scatter(intense[iii][wp_tp_idx], var[iii][wp_tp_idx], label="truepos")
     plt.scatter(intense[iii][wp_fp_idx], var[iii][wp_fp_idx], label="falsepositive")
@@ -418,6 +669,7 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     plt.show()
     plt.close()
     
+    plt.figure(figsize=(10,10))
     plt.scatter(intense[iii][wp_isnotannvar_idx], var[iii][wp_isnotannvar_idx] / var_mt[wp_isnotannvar_idx], c="r", label="notvariable")
     plt.scatter(intense[iii][wp_isannvar_idx], var[iii][wp_isannvar_idx] / var_mt[wp_isannvar_idx], c="b", label="variable")
     plt.legend()

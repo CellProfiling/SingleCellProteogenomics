@@ -386,14 +386,18 @@ plt.show()
 plt.close()
 
 #%% Pickle the results
-np.save("output/temperatures.all_temps.npy",all_temps)
-np.save("output/temperatures.all_temp_prot.npy",atp)
-np.save("output/temperatures.transcript_reg.npy",transcript_reg)
-np.save("output/temperatures.transcript_reg_prot.npy",trp)
-np.save("output/temperatures.nontranscr_reg.npy",nontranscr_reg)
-np.save("output/temperatures.nontranscript_reg_prot.npy",ntp)
-np.save("output/temperatures.nonccd_temps.npy",nonccd_temps)
-np.save("output/temperatures.nonccd_temps_prot.npy",nnp)
+def np_save_overwriting(fn, arr):
+    with open(fn,"wb") as f:    
+        np.save(f, arr, allow_pickle=True)
+        
+np_save_overwriting("output/temperatures.all_temps.npy",all_temps)
+np_save_overwriting("output/temperatures.all_temp_prot.npy",atp)
+np_save_overwriting("output/temperatures.transcript_reg.npy",transcript_reg)
+np_save_overwriting("output/temperatures.transcript_reg_prot.npy",trp)
+np_save_overwriting("output/temperatures.nontranscr_reg.npy",nontranscr_reg)
+np_save_overwriting("output/temperatures.nontranscript_reg_prot.npy",ntp)
+np_save_overwriting("output/temperatures.nonccd_temps.npy",nonccd_temps)
+np_save_overwriting("output/temperatures.nonccd_temps_prot.npy",nnp)
 
 #%% [markdown]
 # The replicates do look better with the melting points, and the difference is

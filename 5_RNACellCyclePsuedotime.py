@@ -328,15 +328,19 @@ percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv
 percent_variance_tests[percent_variance_tests.significant & ~percent_variance_tests.diana_ccd].to_csv("output/transcript_regulation_significant_ccd_notindianasset.csv")
 
 # And keep track of the ccd genes with and without transcript regulation
+def np_save_overwriting(fn, arr):
+    with open(fn,"wb") as f:    
+        np.save(f, arr, allow_pickle=True)
+
 ccd_transcript_regulated = rejectBonf_unsorted & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)
 dianaccd_transcript_regulated = dianaccdgenes & rejectBonf_unsorted & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff)
 dianaccd_nontranscript_regulated = dianaccdgenes & ~dianaccd_transcript_regulated
 ccd_transcript_regulated_names = np.array(adata.var_names)[ccd_transcript_regulated]
 dianaccd_transcript_regulated_names = np.array(adata.var_names)[dianaccd_transcript_regulated]
 dianaccd_nontranscript_regulated_names = np.array(adata.var_names)[dianaccd_nontranscript_regulated]
-np.save("output/ccd_transcript_regulated.npy", ccd_transcript_regulated, allow_pickle=True)
-np.save("output/dianaccd_transcript_regulated.npy", dianaccd_transcript_regulated, allow_pickle=True)
-np.save("output/dianaccd_nontranscript_regulated.npy", dianaccd_nontranscript_regulated, allow_pickle=True)
+np_save_overwriting("output/ccd_transcript_regulated.npy", ccd_transcript_regulated)
+np_save_overwriting("output/dianaccd_transcript_regulated.npy", dianaccd_transcript_regulated)
+np_save_overwriting("output/dianaccd_nontranscript_regulated.npy", dianaccd_nontranscript_regulated)
 pd.DataFrame({"gene" : ccd_transcript_regulated_names}).to_csv("output/allccd_transcript_regulated.csv")
 pd.DataFrame({"gene" : dianaccd_transcript_regulated_names}).to_csv("output/ccd_transcript_regulated.csv")
 pd.DataFrame({"gene" : dianaccd_nontranscript_regulated_names}).to_csv("output/ccd_nontranscript_regulated.csv")
