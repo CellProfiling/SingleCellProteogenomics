@@ -37,6 +37,26 @@ my_df = my_df[~np.isin(well_plate_imgnb, oof)]
 print(f"{len(my_df)}: number of cells after filtering out of focus images")
 print("finished filtering")
 
+print("filtering bad fields of view")
+filterthese = pd.read_csv("input/FOV_ImgNum_Lookup.csv")
+badfov = filterthese["well_plate_imgnb"][filterthese["UseImage"] == 0]
+well_plate = np.asarray(my_df.well_plate)
+imgnb = np.asarray(my_df.ImageNumber)
+well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
+print(f"{len(my_df)}: number of cells before filtering out of focus images")
+my_df = my_df[~np.isin(well_plate_imgnb, badfov)]
+print(f"{len(my_df)}: number of cells after filtering out of focus images")
+print("finished filtering")
+
+#def get_fld_num(plate, imgnb):
+##    well_columns = ["A","B","C","D","E","F","G","H"]
+##    well_rows = [f"{rr:02d}" for rr in np.arange(1, 13)] 
+##    wells = [f"{ww}{rr}" for ww in well_columns for rr in well_rows]
+#    if plate != 6720:
+#        return (imgnb - 1) % 6 + 1
+#    else:
+#        return (imgnb - 1) % 4 + 1
+    
 def read_sample_info(df):
     '''Get the metadata for all the samples'''
     plate = np.asarray(df.plate)
@@ -58,7 +78,7 @@ def read_sample_info(df):
     ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
     antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
     result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
-    return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
+    return plate, u_plate, well_plate, well_plate_imgnb, fld, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
 
 def previous_results(u_well_plates, result_dict, ensg_dict):
     '''Process the results metadata into lists of previously annotated CCD proteins'''
@@ -87,7 +107,7 @@ def read_sample_data(df):
     red_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
     return ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci
 
-plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
+plate, u_plate, well_plate, well_plate_imgnb, fld, u_well_plates, ab_objnum, area_cell, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
 ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df)
 
