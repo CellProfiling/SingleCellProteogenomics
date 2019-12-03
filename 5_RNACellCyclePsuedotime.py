@@ -1,6 +1,7 @@
 #%% Imports
 from imports import *
 import numpy as np
+from scipy import stats
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 
 #%% Read in RNA-Seq data again and the CCD gene lists
@@ -62,17 +63,17 @@ reject_[pvals_sortind] = reject
 alphaBonf = alpha / float(len(pvals))
 rejectBonf = pvals_sorted <= alphaBonf
 pvals_correctedBonf = pvals_sorted * float(len(pvals))
-pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
+pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf)
 pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
 rejectBonf_unsorted = np.empty_like(rejectBonf)
 rejectBonf_unsorted[pvals_sortind] = rejectBonf
 
 anova_tests = pd.DataFrame(
-    {"gene" : adata.var_names, 
-    "pvalue" : pvals, 
-    "pvaladj_BH" : pvals_corrected_, 
-    "reject_BH" : reject_, 
-    "pvaladj_B" : pvals_correctedBonf_unsorted, 
+    {"gene" : adata.var_names,
+    "pvalue" : pvals,
+    "pvaladj_BH" : pvals_corrected_,
+    "reject_BH" : reject_,
+    "pvaladj_B" : pvals_correctedBonf_unsorted,
     "reject_B" : rejectBonf_unsorted})
 anova_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv")
 
@@ -215,6 +216,7 @@ norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
 cell_cycle_variance = np.apply_along_axis(np.var, 0, moving_averages)
 total_variance = np.apply_along_axis(np.var, 0, norm_exp_sort)
+total_cv = np.apply_along_axis(stats.variation, 0, norm_exp_sort)
 percent_ccd_variance = cell_cycle_variance / total_variance
 avg_expression = np.apply_along_axis(np.median, 0, norm_exp_sort)
 
@@ -280,6 +282,7 @@ norm_exp_sort_spike = np.take(normalized_exp_data_spike, fucci_time_inds_spike, 
 moving_averages_spike = np.apply_along_axis(mvavg, 0, norm_exp_sort_spike, 100)
 cell_cycle_variance_spike = np.apply_along_axis(np.var, 0, moving_averages_spike)
 total_variance_spike = np.apply_along_axis(np.var, 0, norm_exp_sort_spike)
+total_cv_spike = np.apply_along_axis(stats.variation, 0, norm_exp_sort_spike)
 percent_ccd_variance_spike = cell_cycle_variance_spike / total_variance_spike
 # avg_expression_spike = np.apply_along_axis(np.median, 0, norm_exp_sort_spike)
 print(f"mean +/- stdev of spike-in variance: {np.mean(total_variance_spike)} +/- {np.std(total_variance_spike)}")

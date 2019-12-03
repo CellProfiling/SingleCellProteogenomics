@@ -221,7 +221,7 @@ def gini(array):
     if np.amin(array) < 0: 
         array -= np.amin(array) # Values cannot be negative
     array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
-    index = np.arange(1,array.shape[0]+1) # Index per array element
+    index = np.arange(1, array.shape[0] + 1) # Index per array element
     n = array.shape[0] # Number of array elements
     return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
 
@@ -368,9 +368,13 @@ gini_cell, gini_nuc, gini_cyto, gini_mt = np.array(gini_cell), np.array(gini_nuc
 iqr_cell, iqr_nuc, iqr_cyto, iqr_mt = np.array(iqr_cell), np.array(iqr_nuc), np.array(iqr_cyto), np.array(iqr_mt)
 cv_cell, cv_nuc, cv_cyto, cv_mt = np.array(cv_cell), np.array(cv_nuc), np.array(cv_cyto), np.array(cv_mt)
 #annotated_variation_df = pd.read_csv("input/new_plate_shows_variation_check.csv")
-annotated_variation_df = pd.read_csv("input/shows_variation_el.csv")
-annvar_wp = list(annotated_variation_df["well_plate"])
-annvar_isvar = np.array(annotated_variation_df["shows_variation"])
+annotated_variation_df = pd.read_csv("input/AnnotatedVariabilityLookup.csv")
+annvar_wp = list(annotated_variation_df["WellPlate"])
+annvar_isvar = np.asarray(annotated_variation_df["Variable"])
+annvar_compartment = np.asarray(annotated_variation_df["Main"], dtype=str) # Check for Cyto, Nuc, Cell at beginning
+annvar_iscell = np.asarray([ccc.startswith("Cell") for ccc in annvar_compartment])
+annvar_iscyto = np.asarray([ccc.startswith("Cyto") for ccc in annvar_compartment])
+annvar_isnuc = np.asarray([ccc.startswith("Nuc") for ccc in annvar_compartment])
 u_well_plates_list = list(u_well_plates)
 wp_annvar_idx = np.isin(u_well_plates, annvar_wp)
 annvar_idx = [annvar_wp.index(wp) for wp in u_well_plates[wp_annvar_idx]]
@@ -398,10 +402,10 @@ wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
 #wp_isvariable_cyto = var_cyto > variance_cutoff
 #wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
 
-wp_isvariable_cell = var_cell > var_mt
-wp_isvariable_nuc = var_nuc > var_mt
-wp_isvariable_cyto = var_cyto > var_mt
-wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
+#wp_isvariable_cell = var_cell > var_mt
+#wp_isvariable_nuc = var_nuc > var_mt
+#wp_isvariable_cyto = var_cyto > var_mt
+#wp_isvariable_any = wp_isvariable_cell | wp_isvariable_nuc | wp_isvariable_cyto
 
 # Using a hard gini cutoff
 #variance_cutoff = np.mean(gini_mt) + 2 * np.std(gini_mt)
@@ -497,47 +501,51 @@ plt.close()
 
 wp_isannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][annvar_isvar[annvar_idx]]
 wp_isnotannvar_idx = np.arange(len(u_well_plates))[wp_annvar_idx][~annvar_isvar[annvar_idx]]
-for iii,ccc in enumerate(["cell","nuc","cyto"]):
-    var = [np.array(l) for l in [var_cell, var_nuc, var_cyto]]
-    known_true = var[iii][wp_isannvar_idx]
-    known_false = var[iii][wp_isnotannvar_idx]
-    known_true_mt = var_mt[wp_isannvar_idx]
-    known_false_mt = var_mt[wp_isnotannvar_idx]
-    mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
-    cccc = ([f"known_true {ccc}"] * len(known_true))
-    cccc.extend([f"known_false {ccc}"] * len(known_false))
-    cccc.extend([f"known_true_mt {ccc}"] * len(known_true_mt))
-    cccc.extend([f"known_false_mt {ccc}"] * len(known_false_mt))
-    moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
-    boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=False)
-    boxplot.set_xlabel("Annotated Variability + Metacompartment", size=36,fontname='Arial')
-    boxplot.set_ylabel(f"Variance using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
-    boxplot.tick_params(axis="both", which="major", labelsize=16)
-    plt.title("")
-    plt.savefig(f"figures/VarianceBoxplot{ccc}Ann.png")
-    plt.show()
-    plt.close()
-    
-    gini = [np.array(l) for l in [gini_cell, gini_nuc, gini_cyto]]
-    known_true = gini[iii][wp_isannvar_idx]
-    known_false = gini[iii][wp_isnotannvar_idx]
-    known_true_mt = gini_mt[wp_isannvar_idx]
-    known_false_mt = gini_mt[wp_isnotannvar_idx]
-    mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
-    cccc = ([f"known_true {ccc}"] * len(known_true))
-    cccc.extend([f"known_false {ccc}"] * len(known_false))
-    cccc.extend([f"known_true_mt {ccc}"] * len(known_true_mt))
-    cccc.extend([f"known_false_mt {ccc}"] * len(known_false_mt))
-    moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
-    boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=True)
-    boxplot.set_xlabel("Metacompartment", size=36,fontname='Arial')
-    boxplot.set_ylabel(f"Gini using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
-    boxplot.tick_params(axis="both", which="major", labelsize=16)
-    plt.title("")
-    plt.savefig(f"figures/GiniBoxplot{ccc}.png")
-    plt.show()
-    plt.close()
-    
+
+var_comp = var_cell
+var_comp[annvar_iscyto] = var_cyto[annvar_iscyto]
+var_comp[annvar_isnuc] = var_cyto[annvar_isnuc]
+known_true = var_comp[wp_isannvar_idx]
+known_false = var_comp[wp_isnotannvar_idx]
+known_true_mt = var_mt[wp_isannvar_idx]
+known_false_mt = var_mt[wp_isnotannvar_idx]
+mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
+cccc = ([f"known_true comp"] * len(known_true))
+cccc.extend([f"known_false comp"] * len(known_false))
+cccc.extend([f"known_true_mt comp"] * len(known_true_mt))
+cccc.extend([f"known_false_mt comp"] * len(known_false_mt))
+moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
+boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=False)
+boxplot.set_xlabel("Annotated Variability + Metacompartment", size=36,fontname='Arial')
+boxplot.set_ylabel(f"Variance using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=16)
+plt.title("")
+plt.savefig(f"figures/VarianceBoxplotcompAnn.png")
+plt.show()
+plt.close()
+
+gini_comp = gini_cell
+gini_comp[annvar_iscyto] = gini_cyto[annvar_iscyto]
+gini_comp[annvar_isnuc] = gini_cyto[annvar_isnuc]
+known_true = gini_comp[wp_isannvar_idx]
+known_false = gini_comp[wp_isnotannvar_idx]
+known_true_mt = gini_mt[wp_isannvar_idx]
+known_false_mt = gini_mt[wp_isnotannvar_idx]
+mmmm = np.concatenate((known_true, known_false, known_true_mt, known_false_mt))
+cccc = ([f"known_true comp"] * len(known_true))
+cccc.extend([f"known_false comp"] * len(known_false))
+cccc.extend([f"known_true_mt comp"] * len(known_true_mt))
+cccc.extend([f"known_false_mt comp"] * len(known_false_mt))
+moddf = pd.DataFrame({"variance": mmmm, "category" : cccc})
+boxplot = moddf.boxplot("variance", by="category", figsize=(12, 8), showfliers=True)
+boxplot.set_xlabel("Metacompartment", size=36,fontname='Arial')
+boxplot.set_ylabel(f"Gini using {'log' if use_log else 'natural'} intensity values", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=16)
+plt.title("")
+plt.savefig(f"figures/GiniBoxplotcomp.png")
+plt.show()
+plt.close()
+
 # What do these false positives look like?
 plt.figure(figsize=(10,10))
 wp_fp_idx = np.arange(len(u_well_plates))[wp_annvar_idx][var_falsepos]
@@ -569,15 +577,29 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
 #    plt.show()
 #    plt.close()
     
+    # var vs mt var
+    plt.figure(figsize=(10,10))
+    firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
+#    plt.scatter(iqrr[iii], iqr_mt, label="all")
+#    plt.scatter(iqrr[iii][firstbatch], iqr_mt[firstbatch], alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
+    plt.scatter(var_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], var[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100, label="knowntrue")
+    plt.scatter( var_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], var[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5, label="knownfalse")
+    plt.ylabel(f"var {ccc}")
+    plt.xlabel(f"var microtubules")
+    plt.legend()
+    plt.savefig(f"figures/var{ccc}VsvarMt_knowns.png")
+    plt.show()
+    plt.close()
+    
     # IQR vs mt iqr
     plt.figure(figsize=(10,10))
     firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
 #    plt.scatter(iqrr[iii], iqr_mt, label="all")
 #    plt.scatter(iqrr[iii][firstbatch], iqr_mt[firstbatch], alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
-    plt.scatter(iqrr[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], iqr_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100, label="knowntrue")
-    plt.scatter(iqrr[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], iqr_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], c="red", alpha=0.5, label="knownfalse")
-    plt.xlabel(f"iqr {ccc}")
-    plt.ylabel(f"iqr microtubules")
+    plt.scatter(iqr_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], iqrr[iii][wp_annvar_idx][annvar_isvar[annvar_isin]],  c="black", s=100, label="knowntrue")
+    plt.scatter(iqr_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]],iqrr[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]],  c="red", alpha=0.5, label="knownfalse")
+    plt.ylabel(f"iqr {ccc}")
+    plt.xlabel(f"iqr microtubules")
     plt.legend()
     plt.savefig(f"figures/iqr{ccc}VsIqrMt.png")
     plt.show()
@@ -588,10 +610,10 @@ for iii,ccc in enumerate(["cell","nuc","cyto"]):
     firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
 #    plt.scatter(cv[iii], cv_mt, label="all")
 #    plt.scatter(cv[iii][firstbatch], cv_mt[firstbatch], alpha=0.5, c="lightsteelblue", label="variable_firstbatch")
-    plt.scatter(cv[iii][wp_annvar_idx][annvar_isvar[annvar_isin]], cv_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], c="black", s=100,  label="knowntrue")
-    plt.scatter(cv[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]], cv_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]],  c="red", alpha=0.5, label="knownfalse")
-    plt.xlabel(f"cv {ccc}")
-    plt.ylabel(f"cv microtubules")
+    plt.scatter(cv_mt[wp_annvar_idx][annvar_isvar[annvar_isin]], cv[iii][wp_annvar_idx][annvar_isvar[annvar_isin]],  c="black", s=100,  label="knowntrue")
+    plt.scatter(cv_mt[wp_annvar_idx][~annvar_isvar[annvar_isin]], cv[iii][wp_annvar_idx][~annvar_isvar[annvar_isin]],   c="red", alpha=0.5, label="knownfalse")
+    plt.ylabel(f"cv {ccc}")
+    plt.xlabel(f"cv microtubules")
     plt.legend()
     plt.savefig(f"figures/cv{ccc}VsCvMt.png")
     plt.show()
