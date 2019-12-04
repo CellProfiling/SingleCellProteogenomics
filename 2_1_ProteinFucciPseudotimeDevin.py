@@ -17,7 +17,7 @@ from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_li
 # Exec: pandas
 # Output: fucci plot from the immunofluorescence data
 print("reading protein IF data")
-my_df = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases.csv")
+my_df = pd.read_csv("input/raw/nuc_predicted_prob_phases.csv")
 print("loaded")
 
 green_fucci = np.asarray(my_df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
@@ -151,7 +151,7 @@ start_pt = pol2cart(R_2,start_phi)
 fucci_hist2d(centered_data,cart_data_ur,start_pt)
 
 #%% Load the antibody information
-ab_df = pd.read_excel("..\\CellCycleSingleCellRNASeq\\fucci_screen\\file_kruskal_by_compartment2.xlsx")
+ab_df = pd.read_excel("input/processed/excel/file_kruskal_by_compartment2.xlsx")
 plate_well_to_ab = collections.defaultdict(dict)
 plate_dict = collections.defaultdict(dict)
 ab_list = ab_df.Antibody
@@ -408,7 +408,7 @@ not_ccd_pvals = []
 perc_green_list = []
 perc_red_list = []
 neigh = RadiusNeighborsRegressor(radius=0.1)
-fdr_df = pd.read_excel("..\\CellCycleSingleCellRNASeq\\fucci_screen\\file_kruskal_by_compartment2.xlsx")
+fdr_df = pd.read_excel("input/processed/excel/file_kruskal_by_compartment2.xlsx")
 for well in u_well_plates:
     plt.close('all')
 #    well = 'H05_55405991'#GMNN well, used for testing
@@ -639,8 +639,8 @@ for well in u_well_plates:
             os.error('Unreckognized TPLOT_MODE.')
 
 
-np.save("output/u_well_plates.devin.npy", [m[0] for m in model_free_list_all])
-np.save("output/perc_var_compartment.devin.npy", [m[5][0] for m in model_free_list_all])
-np.save("output/perc_var_cell.devin.npy", [m[5][1] for m in model_free_list_all])
-np.save("output/perc_var_nuc.devin.npy", [m[5][2] for m in model_free_list_all])
-np.save("output/perc_var_cyto.devin.npy", [m[5][3] for m in model_free_list_all])
+np.save("output/pickles/u_well_plates.devin.npy", [m[0] for m in model_free_list_all])
+np.save("output/pickles/perc_var_compartment.devin.npy", [m[5][0] for m in model_free_list_all])
+np.save("output/pickles/perc_var_cell.devin.npy", [m[5][1] for m in model_free_list_all])
+np.save("output/pickles/perc_var_nuc.devin.npy", [m[5][2] for m in model_free_list_all])
+np.save("output/pickles/perc_var_cyto.devin.npy", [m[5][3] for m in model_free_list_all])

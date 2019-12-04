@@ -12,31 +12,19 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 # Idea: read in the protein data to compare with the RNA seq data
 #       use the mean intensity and integrated intensity for different cutoffs (ab and microtubules)
 # Exec: pandas
-# Output: fucci plot from the immunofluorescence data
+# Output: nothing
 
-# Some wells in the last plate didn't have anything.
-emptywells = set(["B11_6745","C11_6745","D11_6745","E11_6745","F11_6745","G11_6745","H11_6745",
+EMPTYWELLS = set(["B11_6745","C11_6745","D11_6745","E11_6745","F11_6745","G11_6745","H11_6745",
     "A12_6745","B12_6745","C12_6745","D12_6745","E12_6745","F12_6745","G12_6745"])
 
-print("reading protein IF data")
-my_df1 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
-my_df2 = pd.read_csv("..\\CellCycleSingleCellRNASeq\\fucci_screen\\nuc_predicted_prob_phases_190909.csv")
-my_df = pd.concat((my_df1, my_df2), sort=True)
-print(f"{len(my_df)}: number of cells before filtering empty wells")
-my_df = my_df[~my_df.well_plate.isin(emptywells)]
-print(f"{len(my_df)}: number of cells after filtering empty wells")
-print("loaded")
+def read_raw_data():
+    print("reading raw protein IF data")
+    my_df1 = pd.read_csv("input/raw/nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
+    my_df2 = pd.read_csv("input/raw/nuc_predicted_prob_phases_190909.csv")
+    my_df = pd.concat((my_df1, my_df2), sort=True)
+    print("loaded raw data")
+    return my_df
 
-
-#def get_fld_num(plate, imgnb):
-##    well_columns = ["A","B","C","D","E","F","G","H"]
-##    well_rows = [f"{rr:02d}" for rr in np.arange(1, 13)] 
-##    wells = [f"{ww}{rr}" for ww in well_columns for rr in well_rows]
-#    if plate != 6720:
-#        return (imgnb - 1) % 6 + 1
-#    else:
-#        return (imgnb - 1) % 4 + 1
-    
 def read_sample_info(df):
     '''Get the metadata for all the samples'''
     plate = np.asarray(df.plate)
@@ -49,135 +37,81 @@ def read_sample_info(df):
     area_cell = np.asarray(df.Area_cell)
     area_nuc = np.asarray(df.AreaShape_Area)
     area_cyto = np.asarray(df.Area_cyto)
-    name_df = pd.read_csv("input\\Fucci_staining_summary_first_plates.csv")
-    wppp1, ensggg1, abbb1, rrrr = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"])
-    name_df2 = pd.read_csv("input\\Fucci_staining_review_variation_check.csv")
-    wppp2, ensggg2, abbb2 = list(name_df2["well_plate"]), list(name_df2["ENSG"]), list(name_df2["Antibody"])
-    wppp, ensggg, abbb = wppp1 + wppp2, ensggg1 + ensggg2, abbb1 +  abbb2
+    name_df = pd.read_csv("input/processed/excel/Fucci_staining_summary_first_plates.csv")
+    wppp1, ensggg1, abbb1, rrrr, cccc1 = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"]), list(name_df["Compartment"])
+    name_df2 = pd.read_csv("input/processed/excel/Fucci_staining_review_variation_check.csv")
+    wppp2, ensggg2, abbb2, cccc2 = list(name_df2["well_plate"]), list(name_df2["ENSG"]), list(name_df2["Antibody"]), list(name_df2["Compartment"])
+    wppp, ensggg, abbb, cccc = wppp1 + wppp2, ensggg1 + ensggg2, abbb1 +  abbb2, cccc1 + cccc2
     ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
     ab_dict = dict([(wppp[i], abbb[i]) for i in range(len(wppp))])
     result_dict = dict([(wppp[i], rrrr[i]) for i in range(len(wppp1))])
+    compartment_dict = dict([(wppp[i], cccc[i]) for i in range(len(wppp))])
     ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate])
     antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
     result = np.asarray([result_dict[wp] if wp in result_dict else "" for wp in well_plate])
-    return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, ENSG, antibody, result
+    compartment = np.asarray([compartment_dict[wp] if wp in compartment_dict else "" for wp in well_plate])
+    return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment
 
 def previous_results(u_well_plates, result_dict, ensg_dict):
     '''Process the results metadata into lists of previously annotated CCD proteins'''
     wp_ensg = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
-    wp_prev_ccd = np.asarray([wp in result_dict and result_dict[wp] == "ccd" for wp in u_well_plates])
-    wp_prev_notccd = np.asarray([wp in result_dict and result_dict[wp] == "notccd" for wp in u_well_plates])
-    wp_prev_negative = np.asarray([wp in result_dict and result_dict[wp] == "negative" for wp in u_well_plates])
+    wp_prev_ccd = np.asarray([wp in result_dict and result_dict[wp].startswith("ccd") for wp in u_well_plates])
+    wp_prev_notccd = np.asarray([wp in result_dict and result_dict[wp].startswith("notccd") for wp in u_well_plates])
+    wp_prev_negative = np.asarray([wp in result_dict and result_dict[wp].startswith("negative") for wp in u_well_plates])
     prev_ccd_ensg = wp_ensg[wp_prev_ccd]
     prev_notccd_ensg = wp_ensg[wp_prev_notccd]
     prev_negative_ensg = wp_ensg[wp_prev_negative]
     return wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg
 
-# 0: use mean, 
-# 1: use integrated,
-# 2: use the product of integrated * mean
-mean_integrated_ratio = 1 # small cells are often brighter and this is just because they have rounded up and are thicker
-def read_sample_data(df):
-    # Antibody data (mean intensity)
-    ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, df.Intensity_IntegratedIntensity_ResizedAb, df.Intensity_MeanIntensity_ResizedAb / df.Intensity_IntegratedIntensity_ResizedAb][mean_integrated_ratio])
-    ab_cyto = np.asarray([df.Mean_ab_Cyto, df.Integrated_ab_cyto, df.Mean_ab_Cyto / df.Integrated_ab_cyto][mean_integrated_ratio])
-    ab_cell = np.asarray([df.Mean_ab_cell, df.Integrated_ab_cell, df.Mean_ab_cell / df.Integrated_ab_cell][mean_integrated_ratio])
-    mt_cell = np.asarray([df.Mean_mt_cell, df.Integrated_mt_cell, df.Mean_mt_cell / df.Integrated_mt_cell][mean_integrated_ratio])
-
-    # Fucci data (mean intensity)
-    green_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
-    red_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
-    return ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci
-
-plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df)
+# read raw data
+my_df = read_raw_data()
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df)
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
-ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df)
 
-#%% Negative staining (mean intensity max per image) not zero center (testing to make sure this negative staining filter works well)
-# Negative staining (mean intensity sum per image)
-ab_cell_h12_max, ab_cell_h12_max_wp = [], []
-ab_cell_neg_max, ab_cell_neg_max_wp = [], []
-ab_cell_all_max, ab_cell_all_max_wp = [], []
-ab_cell_max, ab_cell_max_wp = [], []
-ab_cell_max_p = {} # keep track of the max values for each plate to median center
-for wp in u_well_plates:
-    p = wp.split("_")[1]
-    image_max_cell = np.log10(np.max(ab_cell[well_plate == wp]))
-    if wp.startswith("H12"):
-        ab_cell_h12_max.append(image_max_cell)
-        ab_cell_h12_max_wp.append(wp)
-    if wp in result_dict and not wp.startswith("H12"):
-        ab_cell_all_max.append(image_max_cell)
-        ab_cell_all_max_wp.append(wp)
-        if p in ab_cell_max_p: 
-            ab_cell_max_p[p].append(image_max_cell)
-        else: 
-            ab_cell_max_p[p] = [image_max_cell]
-        if result_dict[wp].startswith("neg"):
-            ab_cell_neg_max.append(image_max_cell)
-            ab_cell_neg_max_wp.append(wp)
-        else:
-            ab_cell_max.append(image_max_cell)
-            ab_cell_max_wp.append(wp)
+#%% Idea: Filter the raw data
+# Execution: Use manual annotations and nucleus size to filter samples and images
+# Output: Filtered dataframe
 
-# zero centering
-ab_cell_max_zeroc = np.array(ab_cell_max)
-ab_cell_all_max_zeroc = np.array(ab_cell_all_max)
-ab_cell_neg_max_zeroc = np.array(ab_cell_neg_max)
-ab_cell_h12_max_zeroc = np.array(ab_cell_h12_max)[np.nonzero([wp.split("_")[1] in ab_cell_max_p for wp in ab_cell_h12_max_wp])]
-ab_cell_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_wp])
-ab_cell_all_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_all_max_wp])
-ab_cell_neg_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_neg_max_wp])
-ab_cell_h12_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_h12_max_wp if wp.split("_")[1] in ab_cell_max_p])
+def apply_manual_filtering(my_df, result_dict):
+    '''Filter raw data based on manual annotations'''
+    # filter some wells in the last plate didn't have anything.
+    print(f"{len(my_df)}: number of cells before filtering empty wells")
+    my_df = my_df[~my_df.well_plate.isin(EMPTYWELLS)]
+    print(f"{len(my_df)}: number of cells after filtering empty wells")
+    
+    my_df_filtered = my_df
+    print("filtering out of focus")
+    oof = pd.read_csv("input/processed/excel/outoffocusimages.txt", header=None)[0]
+    well_plate = np.asarray(my_df_filtered.well_plate)
+    imgnb = np.asarray(my_df_filtered.ImageNumber)
+    well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
+    print(f"{len(my_df_filtered)}: number of cells before filtering out of focus images")
+    my_df_filtered = my_df_filtered[~np.isin(well_plate_imgnb, oof)]
+    print(f"{len(my_df_filtered)}: number of cells after filtering out of focus images")
+    print("finished filtering")
+    
+    print("filtering negative staining")
+    new_data_or_nonnegative_stain = [wp not in result_dict or (not result_dict[wp].lower().startswith("negative") and not wp.startswith("H12")) for wp in my_df_filtered.well_plate]
+    print(f"{len(my_df_filtered)}: number of cells before filtering negative staining from first batch")
+    my_df_filtered = my_df_filtered[new_data_or_nonnegative_stain]
+    print(f"{len(my_df_filtered)}: number of cells after filtering negative staining from first batch")
+    print("finished filtering")
+    
+    print("filtering bad fields of view (negative staining, unspecific, etc)")
+    filterthese = pd.read_csv("input/processed/excel/FOV_ImgNum_Lookup.csv")
+    badfov = filterthese["well_plate_imgnb"][(filterthese["UseImage"] == 0)]
+    well_plate = np.asarray(my_df_filtered.well_plate)
+    imgnb = np.asarray(my_df_filtered.ImageNumber)
+    well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
+    negative_controls = np.asarray([wp.startswith("H12") for wp in well_plate])
+    print(f"{len(my_df_filtered)}: number of cells before filtering out of focus images")
+    my_df_filtered = my_df_filtered[~np.isin(well_plate_imgnb, badfov) & ~negative_controls]
+    print(f"{len(my_df_filtered)}: number of cells after filtering out of focus images")
+    print("finished filtering")
+    return my_df_filtered
 
-upper_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) #+ 0.5 * np.std(ab_cell_neg_max_zeroc)
-lower_neg_max_cutoff = np.mean(ab_cell_neg_max_zeroc) #- 0.5 * np.std(ab_cell_neg_max_zeroc)
-
-# except that we just need H12 for each plate
-bins = plt.hist(ab_cell_h12_max_zeroc, bins=100, alpha=0.5, label="H12s")
-bins = plt.hist(ab_cell_neg_max_zeroc, bins=100, alpha=0.5, label="Negative Staining")
-bins = plt.hist(ab_cell_max_zeroc, bins=100, alpha=0.5, label="Positive Staining")
-plt.legend()
-plt.vlines(upper_neg_max_cutoff, 0, np.max(bins[0]))
-plt.title("Staining (log10 max mean intensity per image, zero centered per plate)")
-plt.savefig("figures/negativeStainingFilter_withH12.png")
-plt.show()
-plt.close()
-
-print("filtering with just the H12, not zero centered")
-h12dict_p = dict((wp.split("_")[1], ab_cell_h12_max[i]) for i, wp in enumerate(ab_cell_h12_max_wp))
-num_neg_removed = sum(np.array(ab_cell_neg_max) - np.array([h12dict_p[wp.split("_")[1]] for wp in ab_cell_neg_max_wp]) < 0)
-num_pos_removed = sum(np.array(ab_cell_max) - np.array([h12dict_p[wp.split("_")[1]] for wp in ab_cell_max_wp]) < 0)
-num_ccd_removed = sum((np.array(ab_cell_max) - np.array([h12dict_p[wp.split("_")[1]] for wp in ab_cell_max_wp]) < 0) & np.isin(ab_cell_max_wp, wp_prev_ccd))
-neg_now_were_pos = (np.array(ab_cell_all_max) - np.array([h12dict_p[wp.split("_")[1]] for wp in ab_cell_all_max_wp]) < 0) & ~np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
-were_neg_now_pos = (np.array(ab_cell_all_max) - np.array([h12dict_p[wp.split("_")[1]] for wp in ab_cell_all_max_wp]) >= 0) & np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
-print(f"{num_neg_removed / len(ab_cell_neg_max_zeroc)}: percent of neg stains removed")
-print(f"{num_pos_removed / len(ab_cell_max_zeroc)}: percent of pos stains removed")
-print(f"{num_ccd_removed / len(ab_cell_max_zeroc)}: percent of ccd stains removed")
-print(f"{len(ab_cell_neg_max_zeroc) / (len(ab_cell_neg_max_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
-print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_neg_max_zeroc))}: percent of all that are negative with this cutoff")
-pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[neg_now_were_pos]}).to_csv("output/neg_now_were_pos.csv")
-pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[were_neg_now_pos]}).to_csv("output/were_neg_now_pos.csv")
-print()
-
-print("filtering based on annotated negative filterings, zero centered (using this one, so keep it second)")
-num_neg_removed = sum(ab_cell_neg_max_zeroc < upper_neg_max_cutoff)
-num_pos_removed = sum(ab_cell_max_zeroc < upper_neg_max_cutoff)
-num_ccd_removed = sum((ab_cell_max_zeroc < upper_neg_max_cutoff) & np.isin(ab_cell_max_wp, wp_prev_ccd))
-neg_now_were_pos = (ab_cell_all_max_zeroc < upper_neg_max_cutoff) & ~np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
-were_neg_now_pos = (ab_cell_all_max_zeroc >= upper_neg_max_cutoff) & np.isin(ab_cell_all_max_wp, ab_cell_neg_max_wp)
-print(f"{num_neg_removed / len(ab_cell_neg_max_zeroc)}: percent of neg stains removed")
-print(f"{num_pos_removed / len(ab_cell_max_zeroc)}: percent of pos stains removed")
-print(f"{num_ccd_removed / len(ab_cell_max_zeroc)}: percent of ccd stains removed")
-print(f"{len(ab_cell_neg_max_zeroc) / (len(ab_cell_neg_max_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
-print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_neg_max_zeroc))}: percent of all that are negative with this cutoff")
-pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[neg_now_were_pos]}).to_csv("output/neg_now_were_pos.csv")
-pd.DataFrame({"well_plate":np.array(ab_cell_all_max_wp)[were_neg_now_pos]}).to_csv("output/were_neg_now_pos.csv")
-print()
-
-#%% Looking at nucleus area
-# plot the areas
 def plot_areas(areas, title):
+    '''histogram for areas of cell/nuc/cytoplasm'''
     bins = plt.hist(areas, bins=100, alpha=0.5)
     plt.vlines(np.mean(areas), 0, np.max(bins[0]))
     plt.vlines(np.mean(areas) - 2 * np.std(areas), 0, np.max(bins[0]))
@@ -186,100 +120,107 @@ def plot_areas(areas, title):
     plt.savefig(f"figures/areas{title}.png")
     plt.show()
     plt.close()
+    
+def apply_big_nucleus_filter(my_df):
+    '''filter the super big nuclei'''
+    area_cell, area_nuc, area_cyto = my_df.Area_cell, my_df.AreaShape_Area, my_df.Area_cyto
+    plot_areas(area_cell, "area_cell")
+    plot_areas(area_nuc, "area_nuc")
+    plot_areas(area_cyto, "area_cyto")
+    
+    upper_nucleus_cutoff = np.mean(area_nuc) + 2 * np.std(area_nuc)
 
-plot_areas(area_cell, "area_cell")
-plot_areas(area_nuc, "area_nuc")
-plot_areas(area_cyto, "area_cyto")
+    my_df_filtered = my_df
+    print("filtering super big nuclei")
+    cell_passes_nucleus_filter = my_df_filtered.AreaShape_Area < upper_nucleus_cutoff
+    print(f"{len(my_df_filtered)}: number of cells before filtering out super big nuclei")
+    my_df_filtered = my_df_filtered[cell_passes_nucleus_filter]
+    print(f"{len(my_df_filtered)}: number of cells after filtering out super big nuclei")
+    print("finished filtering on nuclei")
+    
+    area_cell_filtered, area_nuc_filtered, area_cyto_filtered = my_df_filtered.Area_cell, my_df_filtered.AreaShape_Area, my_df_filtered.Area_cyto
+    plot_areas(area_cell_filtered, "area_cell_filtered")
+    plot_areas(area_nuc_filtered, "area_nuc_filtered")
+    plot_areas(area_cyto_filtered, "area_cyto_filtered")
+    return my_df_filtered
 
-# filter the super big nuclei
-upper_nucleus_cutoff = np.mean(area_nuc) + 2 * np.std(area_nuc)
+my_df_filtered = apply_manual_filtering(my_df, result_dict)
+my_df_filtered = apply_big_nucleus_filter(my_df_filtered)
+my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
 
-#%% Filter based on annotations (needs to be done after filtering negative staining because H12s used above are filtered here)
-my_df_filtered = my_df
-print("filtering out of focus")
-oof = pd.read_csv("input\outoffocusimages.txt", header=None)[0]
-well_plate = np.asarray(my_df_filtered.well_plate)
-imgnb = np.asarray(my_df_filtered.ImageNumber)
-well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
-print(f"{len(my_df_filtered)}: number of cells before filtering out of focus images")
-my_df_filtered = my_df_filtered[~np.isin(well_plate_imgnb, oof)]
-print(f"{len(my_df_filtered)}: number of cells after filtering out of focus images")
-print("finished filtering")
-
-print("filtering bad fields of view")
-filterthese = pd.read_csv("input/FOV_ImgNum_Lookup.csv")
-badfov = filterthese["well_plate_imgnb"][filterthese["UseImage"] == 0]
-well_plate = np.asarray(my_df_filtered.well_plate)
-imgnb = np.asarray(my_df_filtered.ImageNumber)
-well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
-print(f"{len(my_df_filtered)}: number of cells before filtering out of focus images")
-my_df_filtered = my_df_filtered[~np.isin(well_plate_imgnb, badfov)]
-print(f"{len(my_df_filtered)}: number of cells after filtering out of focus images")
-print("finished filtering")
-
-print("filtering super big nuclei")
-cell_passes_nucleus_filter = my_df_filtered.AreaShape_Area < upper_nucleus_cutoff
-my_df_filtered = my_df_filtered[cell_passes_nucleus_filter]
-print(f"{len(my_df_filtered)}: number of cells after filtering out super big nuclei")
-plot_areas(my_df_filtered.AreaShape_Area, "area_nuc_filtered")
-print("finished filtering on nuclei")
-
-plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df_filtered)
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered)
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
-ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df_filtered)
 
-#%% Filter negative stains from larger dataset
-ab_cell_max_negctrl, ab_cell_max_negctrl_wp = [], []
-ab_cell_max, ab_cell_max_wp = [], []
-ab_cell_max_all, ab_cell_max_all_wp = [], []
-ab_cell_max_p = {} # keep track of the max values for each plate to median center
-for wp in u_well_plates:
-    p = wp.split("_")[1]
-    image_max_cell = np.log10(np.max(ab_cell[well_plate == wp]))
-    if wp.startswith("H12"):
-        ab_cell_max_negctrl.append(image_max_cell)
-        ab_cell_max_negctrl_wp.append(wp)
-    else:
-        ab_cell_max.append(image_max_cell)
-        ab_cell_max_wp.append(wp)
-    ab_cell_max_all.append(image_max_cell)
-    ab_cell_max_all_wp.append(wp)
-    if p in ab_cell_max_p: ab_cell_max_p[p].append(image_max_cell)
-    else: ab_cell_max_p[p] = [image_max_cell]
-ab_cell_max_zeroc = np.array(ab_cell_max)
-ab_cell_max_negctrl_zeroc = np.array(ab_cell_max_negctrl)
-ab_cell_max_all_zeroc = np.array(ab_cell_max_all)
-ab_cell_max_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_wp])
-ab_cell_max_negctrl_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_negctrl_wp])
-ab_cell_max_all_zeroc -= np.asarray([np.median(ab_cell_max_p[wp.split("_")[1]]) for wp in ab_cell_max_all_wp])
+#%% 
+# Idea: Filter for variation and get compartments
+# Execution: Use annotated variation and compartment information
+# Output: none
+def apply_variation_filter(my_df_filtered, result_dict):
+    '''Separate the varying and nonvarying samples'''
+    my_df_filtered_variation, my_df_filtered_novariation = my_df_filtered, my_df_filtered
+    variable_firstbatch = np.asarray([wp in result_dict and not result_dict[wp].replace(" ","").startswith("novariation") for wp in my_df_filtered.well_plate])
+    
+    varann_secondbatch = pd.read_csv("input/processed/excel/SecondBatchVariableLookup.csv")
+    variable_ann_secondbatch = np.asarray([str(vv).lower().startswith("yes") for vv in varann_secondbatch["IsVariable"]])
+    variable_wp_secondbatch = np.asarray(varann_secondbatch["well_plate"][variable_ann_secondbatch])
+    variable_secondbatch = np.isin(my_df_filtered.well_plate, variable_wp_secondbatch)
+    
+    my_df_filtered_variation = my_df_filtered[variable_firstbatch | variable_secondbatch]
+    my_df_filtered_novariation = my_df_filtered[~(variable_firstbatch | variable_secondbatch)]
+    print(f"{len(my_df)}: number of cells before filtering for variation")
+    print(f"{len(my_df_filtered_variation)}: number of cells in samples with variation")
+    print(f"{len(my_df_filtered_novariation)}: number of cells in samples without variation")
+    return my_df_filtered_variation, my_df_filtered_novariation
 
-bins = plt.hist(ab_cell_max_negctrl_zeroc, bins=100, alpha=0.5, label="Negative Staining")
-bins = plt.hist(ab_cell_max_zeroc, bins=100, alpha=0.5, label="Positive Staining")
-plt.vlines(upper_neg_max_cutoff, 0, np.max(bins[0]))
-plt.title("Staining (log10 max mean intensity per image, zero centered per plate)")
-plt.show()
-plt.close()
-print(f"{sum(ab_cell_max_negctrl_zeroc < upper_neg_max_cutoff) / len(ab_cell_max_negctrl_zeroc)}: percent of neg stains removed")
-print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / len(ab_cell_max_zeroc)}: percent of pos stains removed")
-print(f"{len(ab_cell_max_negctrl_zeroc) / (len(ab_cell_max_negctrl_zeroc) + len(ab_cell_max_zeroc))}: percent of all that were negative before")
-print(f"{sum(ab_cell_max_zeroc < upper_neg_max_cutoff) / (len(ab_cell_max_zeroc) + len(ab_cell_max_negctrl_zeroc))}: percent of all that are negative with this cutoff")
+def metacompartments(u_well_plates, compartment_dict, my_df_filtered_variation):
+    '''Get the compartments for the unique wellplates'''
+    wp_iscell = np.asarray([compartment_dict[wp].lower().startswith("cell") if wp in compartment_dict else False for wp in u_well_plates])
+    wp_isnuc = np.asarray([compartment_dict[wp].lower().startswith("nuc") if wp in compartment_dict else False for wp in u_well_plates])
+    wp_iscyto = np.asarray([compartment_dict[wp].lower().startswith("cyto") if wp in compartment_dict else False for wp in u_well_plates])
+    
+    wp_nocompartmentinfo = ~wp_iscell & ~wp_isnuc & ~wp_iscyto
+    print(f"{sum(wp_nocompartmentinfo)}: samples without compartment information; to be filtered since they're biologically defined as CCD and not included in the analysis")
+    print(f"{len(my_df_filtered_variation)}: number of cells before filtering for compartment information")
+    my_df_filtered_compartmentvariation = my_df_filtered_variation[~np.isin(my_df_filtered_variation.well_plate, u_well_plates[wp_nocompartmentinfo])]
+    print(f"{len(my_df_filtered_compartmentvariation)}: number of cells before filtering for compartment information")
+    return wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation
 
-image_passes_neg_staining_filter = (ab_cell_max_all_zeroc >= upper_neg_max_cutoff) & (np.array([not str(wp).startswith("H12") for wp in u_well_plates]))
-passing_u_well_plate = set(u_well_plates[image_passes_neg_staining_filter])
-cell_passes_neg_staining_filter = [wp in passing_u_well_plate for wp in well_plate]
-my_df_filtered = my_df_filtered[cell_passes_neg_staining_filter]
-len_temp = len(ab_cell)
-plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, ENSG, antibody, result = read_sample_info(my_df_filtered)
+my_df_filtered_variation, my_df_filtered_novariation = apply_variation_filter(my_df_filtered, result_dict)
+#my_df_filtered_variation.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered_variation.csv")
+#my_df_filtered_novariation.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered_novariation.csv")
+
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered_variation)
+
+wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation = metacompartments(u_well_plates, compartment_dict, my_df_filtered_variation)
+plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered_compartmentvariation)
+wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation = metacompartments(u_well_plates, compartment_dict, my_df_filtered_compartmentvariation)
+
 wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
-ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df_filtered)
-print(f"{len_temp > len(ab_cell)}: filter successful")
-print(f"{len(ab_cell_max_all) - sum(image_passes_neg_staining_filter)}: images filtered")
-print(f"{(len(ab_cell_max_all) - sum(image_passes_neg_staining_filter)) / len(ab_cell_max_all)}: percent of images filtered")
-print(f"{len_temp - len(ab_cell)}: cells contained in those images filtered")
-print(f"{(len_temp - len(ab_cell)) / len_temp}: percent of cells contained in those images filtered")
-print(f"{not any([wp in u_well_plates for wp in emptywells])}: all empty wells were filtered")
 
-#%% Zero center and rescale FUCCI data in the log space
+#%% 
+# Idea: Get and process intensities
+# Execution: get intensities; zero center fucci intensities
+# Output: Fucci plot
+
+# 0: use mean, 
+# 1: use integrated,
+# 2: use the product of integrated * mean
+INTENSITY_SWITCH = 1 # small cells are often brighter and this is just because they have rounded up and are thicker
+def read_sample_data(df):
+    # Antibody data (mean intensity)
+    ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, df.Intensity_IntegratedIntensity_ResizedAb, df.Intensity_MeanIntensity_ResizedAb / df.Intensity_IntegratedIntensity_ResizedAb][INTENSITY_SWITCH])
+    ab_cyto = np.asarray([df.Mean_ab_Cyto, df.Integrated_ab_cyto, df.Mean_ab_Cyto / df.Integrated_ab_cyto][INTENSITY_SWITCH])
+    ab_cell = np.asarray([df.Mean_ab_cell, df.Integrated_ab_cell, df.Mean_ab_cell / df.Integrated_ab_cell][INTENSITY_SWITCH])
+    mt_cell = np.asarray([df.Mean_mt_cell, df.Integrated_mt_cell, df.Mean_mt_cell / df.Integrated_mt_cell][INTENSITY_SWITCH])
+
+    # Fucci data (mean intensity)
+    green_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
+    red_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
+    return ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci
+
+ab_nuc, ab_cyto, ab_cell, mt_cell, green_fucci, red_fucci = read_sample_data(my_df_filtered_compartmentvariation)
+
+# Zero center and rescale FUCCI data in the log space
 log_green_fucci, log_red_fucci = np.log10(green_fucci), np.log10(red_fucci)
 wp_p_dict = dict([(str(p), plate == p) for p in u_plate])
 logmed_green_fucci_p = dict([(str(p), np.log10(np.median(green_fucci[wp_p_dict[str(p)]]))) for p in u_plate])
@@ -295,7 +236,6 @@ plt.hist2d(log_green_fucci_zeroc_rescale,log_red_fucci_zeroc_rescale,bins=200)
 plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
 plt.show()
 plt.close()
-
 
 #%%
 # Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
@@ -358,43 +298,69 @@ wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alphaa, wp_c
 wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alphaa, wp_nuc_kruskal)
 wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alphaa, wp_cyto_kruskal)
 
+def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):    
+    values_comp = np.empty_like(values_cell)
+    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
+    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
+    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
+    return values_comp
+
+wp_comp_kruskal_gaussccd_adj = values_comp(wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj, wp_iscell, wp_isnuc, wp_iscyto)
+wp_pass_gaussccd_bh_comp = values_comp(wp_pass_gaussccd_bh_cell, wp_pass_gaussccd_bh_nuc, wp_pass_gaussccd_bh_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+
 print(f"{len(wp_pass_gaussccd_bh_cell)}: number of genes tested")
 print(f"{sum(wp_pass_gaussccd_bh_cell)}: number of passing genes at 5% FDR in cell")
 print(f"{sum(wp_pass_gaussccd_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
 print(f"{sum(wp_pass_gaussccd_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
+print(f"{sum(wp_pass_gaussccd_bh_comp)}: number of passing genes at 5% FDR in compartment")
+
+# address gene redundancy
+wp_ensg = np.array([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
+wp_ensg_counts = np.array([sum([1 for eeee in wp_ensg if eeee == ensg]) for ensg in wp_ensg])
+ensg_is_duplicated = wp_ensg_counts > 1
+duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
+
+print(f"{sum(wp_pass_gaussccd_bh_comp[~ensg_is_duplicated])}: number of passing genes at 5% FDR in compartment (no replicate)")
+
+duplicated_ensg_ccd = np.array([sum(wp_pass_gaussccd_bh_comp[wp_ensg == ensg]) for ensg in duplicated_ensg])
+print(f"{sum(duplicated_ensg_ccd == 2)}: number of CCD genes shown to be CCD in both replicates")
+print(f"{sum(duplicated_ensg_ccd == 1)}: number of CCD genes shown to be CCD in just one replicate")
+print(f"{sum(duplicated_ensg_ccd == 0)}: number of CCD genes shown to be non-CCD in both replicate")
 
 #%% Pickle the results
 def np_save_overwriting(fn, arr):
     with open(fn,"wb") as f:    
         np.save(f, arr, allow_pickle=True)
 
-np_save_overwriting("output/u_plate.filterNegStain.npy", u_plate)
-np_save_overwriting("output/u_well_plates.filterNegStain.npy", u_well_plates)
-np_save_overwriting("output/wp_ensg.filterNegStain.npy", wp_ensg)
-np_save_overwriting("output/wp_prev_ccd.filterNegStain.npy", wp_prev_ccd)
-np_save_overwriting("output/wp_prev_notccd.filterNegStain.npy", wp_prev_notccd)
-np_save_overwriting("output/wp_prev_negative.filterNegStain.npy", wp_prev_negative)
-np_save_overwriting("output/prev_ccd_ensg.filterNegStain.npy", prev_ccd_ensg)
-np_save_overwriting("output/prev_notccd_ensg.filterNegStain.npy", prev_notccd_ensg)
-np_save_overwriting("output/prev_negative_ensg.filterNegStain.npy", prev_negative_ensg)
-np_save_overwriting("output/well_plate.filterNegStain.npy", well_plate)
-np_save_overwriting("output/ab_nuc.filterNegStain.npy", ab_nuc)
-np_save_overwriting("output/ab_cyto.filterNegStain.npy", ab_cyto)
-np_save_overwriting("output/ab_cell.filterNegStain.npy", ab_cell)
-np_save_overwriting("output/mt_cell.filterNegStain.npy", mt_cell)
-np_save_overwriting("output/green_fucci.filterNegStain.npy", green_fucci)
-np_save_overwriting("output/red_fucci.filterNegStain.npy", red_fucci)
-np_save_overwriting("output/log_green_fucci_zeroc.filterNegStain.npy", log_green_fucci_zeroc)
-np_save_overwriting("output/log_red_fucci_zeroc.filterNegStain.npy", log_red_fucci_zeroc)
-np_save_overwriting("output/log_green_fucci_zeroc_rescale.filterNegStain.npy", log_green_fucci_zeroc_rescale)
-np_save_overwriting("output/log_red_fucci_zeroc_rescale.filterNegStain.npy", log_red_fucci_zeroc_rescale)
-np_save_overwriting("output/wp_cell_kruskal_gaussccd_adj.filterNegStain.npy", wp_cell_kruskal_gaussccd_adj)
-np_save_overwriting("output/wp_nuc_kruskal_gaussccd_adj.filterNegStain.npy", wp_nuc_kruskal_gaussccd_adj)
-np_save_overwriting("output/wp_cyto_kruskal_gaussccd_adj.filterNegStain.npy", wp_cyto_kruskal_gaussccd_adj)
-np_save_overwriting("output/wp_pass_gaussccd_bh_cell.filterNegStain.npy", wp_pass_gaussccd_bh_cell)
-np_save_overwriting("output/wp_pass_gaussccd_bh_nuc.filterNegStain.npy", wp_pass_gaussccd_bh_nuc)
-np_save_overwriting("output/wp_pass_gaussccd_bh_cyto.filterNegStain.npy", wp_pass_gaussccd_bh_cyto)
-np_save_overwriting("output/fucci_data.filterNegStain.npy", fucci_data)
-np_save_overwriting("output/neg_now_were_pos.filterNegStain.npy", neg_now_were_pos)
-np_save_overwriting("output/were_neg_now_pos.filterNegStain.npy", were_neg_now_pos)
-np_save_overwriting("output/ab_cell_all_max_wp.filterNegStain.npy", ab_cell_all_max_wp)
+np_save_overwriting("output/pickles/u_plate.npy", u_plate)
+np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
+np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)
+np_save_overwriting("output/pickles/wp_prev_ccd.npy", wp_prev_ccd)
+np_save_overwriting("output/pickles/wp_prev_notccd.npy", wp_prev_notccd)
+np_save_overwriting("output/pickles/wp_prev_negative.npy", wp_prev_negative)
+np_save_overwriting("output/pickles/prev_ccd_ensg.npy", prev_ccd_ensg)
+np_save_overwriting("output/pickles/prev_notccd_ensg.npy", prev_notccd_ensg)
+np_save_overwriting("output/pickles/prev_negative_ensg.npy", prev_negative_ensg)
+np_save_overwriting("output/pickles/well_plate.npy", well_plate)
+np_save_overwriting("output/pickles/well_plate_imgnb.npy", well_plate_imgnb)
+np_save_overwriting("output/pickles/ab_nuc.npy", ab_nuc)
+np_save_overwriting("output/pickles/ab_cyto.npy", ab_cyto)
+np_save_overwriting("output/pickles/ab_cell.npy", ab_cell)
+np_save_overwriting("output/pickles/mt_cell.npy", mt_cell)
+np_save_overwriting("output/pickles/green_fucci.npy", green_fucci)
+np_save_overwriting("output/pickles/red_fucci.npy", red_fucci)
+np_save_overwriting("output/pickles/log_green_fucci_zeroc.npy", log_green_fucci_zeroc)
+np_save_overwriting("output/pickles/log_red_fucci_zeroc.npy", log_red_fucci_zeroc)
+np_save_overwriting("output/pickles/log_green_fucci_zeroc_rescale.npy", log_green_fucci_zeroc_rescale)
+np_save_overwriting("output/pickles/log_red_fucci_zeroc_rescale.npy", log_red_fucci_zeroc_rescale)
+np_save_overwriting("output/pickles/wp_cell_kruskal_gaussccd_adj.npy", wp_cell_kruskal_gaussccd_adj)
+np_save_overwriting("output/pickles/wp_nuc_kruskal_gaussccd_adj.npy", wp_nuc_kruskal_gaussccd_adj)
+np_save_overwriting("output/pickles/wp_cyto_kruskal_gaussccd_adj.npy", wp_cyto_kruskal_gaussccd_adj)
+np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_cell.npy", wp_pass_gaussccd_bh_cell)
+np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_nuc.npy", wp_pass_gaussccd_bh_nuc)
+np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_cyto.npy", wp_pass_gaussccd_bh_cyto)
+np_save_overwriting("output/pickles/fucci_data.npy", fucci_data)
+np_save_overwriting("output/pickles/wp_iscell.npy", wp_iscell)
+np_save_overwriting("output/pickles/wp_isnuc.npy", wp_isnuc)
+np_save_overwriting("output/pickles/wp_iscyto.npy", wp_iscyto)
+
