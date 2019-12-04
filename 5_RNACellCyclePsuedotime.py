@@ -307,7 +307,7 @@ plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.png")
 plt.show()
 
 # Let's output those
-gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
 gene_ids = list(gene_info["gene_id"])
 gene_names = list(gene_info["name"])
 gene_id_name = dict([(gene_ids[idxx], gene_names[idxx]) for idxx in range(len(gene_info))])

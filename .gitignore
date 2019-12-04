@@ -3,9 +3,12 @@ figures/
 .vscode/
 __pycache__/
 .pybiomart.sqlite
-input/Counts*.csv
-input/Tpms*.csv
+input/processed/scanpy/Counts*.csv
+input/processed/scanpy/Tpms*.csv
+input/processed/python/nuc_predicted*
 ~$*
 */~$*
 output/ProteinMod*
 output_devin/*
+input/raw/nuc*
+output/pickles*

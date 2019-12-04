@@ -6,12 +6,12 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     * dd: "All", "355", "356", "357"
     * count_or_rpkm: "Counts" or "Tpms"
     '''
-    read_file = f"input/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else "")
+    read_file = f"input/processed/scanpy/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else "")
     if biotype_to_use != None and len(biotype_to_use) > 0:
         print(f"filtering for biotype: {biotype_to_use}")
         biotype_file = f"{read_file}.{biotype_to_use}.csv"
         if not os.path.exists(biotype_file):
-            gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+            gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
             biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
             pd.read_csv(read_file)[biotyped ].to_csv(biotype_file)
         read_file = biotype_file
@@ -20,7 +20,7 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     print(f"data shape: {adata.X.shape}")
     # adata.raw = adata
 
-    phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
+    phases = pd.read_csv("input/processed/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
     
     # Assign phases and log intensities; require log intensity
     adata.obs["phase"] = np.array(phases["Stage"])
@@ -33,7 +33,7 @@ def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
         adata.obs["fucci_time"] = np.array(pd.read_csv("output/fucci_time.csv")["fucci_time"])
 
     # Get info about the genes
-    gene_info = pd.read_csv("input/IdsToNames.csv", header=None, names=["name", "biotype", "description"], index_col=0)
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", header=None, names=["name", "biotype", "description"], index_col=0)
     adata.var["name"] = gene_info["name"]
     adata.var["biotype"] = gene_info["biotype"]
     adata.var["description"] = gene_info["description"]
@@ -47,10 +47,10 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
     if do_log_normalize: sc.pp.log1p(adata)
-    louvain = np.load("input/louvain.npy", allow_pickle=True)
+    louvain = np.load("input/processed/python/louvain.npy", allow_pickle=True)
     adata.obs["louvain"] = louvain
     if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
-    phases = pd.read_csv("input/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
+    phases = pd.read_csv("input/processed/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
     phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
     phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
@@ -59,10 +59,10 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    ccd_regev=pd.read_csv("input/ccd_regev.txt")    
-    ccd=pd.read_csv("input/ccd_genes.txt")
-    nonccd=pd.read_csv("input/nonccd_genes.txt")
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
+    ccd=pd.read_csv("input/processed/manual/ccd_genes.txt")
+    nonccd=pd.read_csv("input/processed/manual/nonccd_genes.txt")
     ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
     ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
     nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
@@ -70,5 +70,5 @@ def ccd_gene_lists(adata):
 
 def ccd_gene_names(id_list_like):
     '''Convert gene ID list to gene name list'''
-    gene_info = pd.read_csv("input/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
