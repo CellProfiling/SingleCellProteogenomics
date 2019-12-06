@@ -92,7 +92,7 @@ def mvavg_perc_var(yvals,mv_window):
 
 def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, folder, fileprefix):
     plt.close()
-    outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
+    outfile = os.path.join(folder,fileprefix+'_mvavg.png')
     if os.path.exists(outfile): return
     #plot data
     bin_size = WINDOW
@@ -105,10 +105,10 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, folder, fileprefix):
             df["time"],
             df["intensity"].rolling(bin_size).mean(),
             color="blue")
-    plt.plot(
-            df["time"],
-            df["mt_intensity"].rolling(bin_size).mean(),
-            color="red")
+#    plt.plot(
+#            df["time"],
+#            df["mt_intensity"].rolling(bin_size).mean(),
+#            color="red")
     plt.fill_between(
             df["time"], 
             df["intensity"].rolling(bin_size).quantile(0.10),
@@ -122,7 +122,7 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, folder, fileprefix):
 #    plt.ylim([0,1])
 #    plt.xlim([0,1])
     plt.xlabel('Pseudotime')
-    plt.ylabel(outsuff.split('_')[0] + ' Protein Expression')
+    plt.ylabel(fileprefix + ' Protein Expression')
     plt.xticks(size=14)
     plt.yticks(size=14)
     # plt.legend(fontsize=14)
@@ -245,7 +245,9 @@ for i, well in enumerate(u_well_plates):
     
     cell_counts.append(len(curr_pol))
     percvar = perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val
-    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, curr_mt_norm, "figures/TemporalMovingAverages191205", wp_ensg[i])
+    
+    # Uncomment to make the plots (takes 10 mins)
+#    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, curr_mt_cell_norm, "figures/TemporalMovingAverages191205", wp_ensg[i])
     
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
@@ -259,13 +261,50 @@ wp_comp_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_comp =
 # BenjiHoch is actually pretty liberal for this dataset. What about bonferroni?
 wp_comp_levene_eq_ccdvariability_bonfadj, wp_bonfpass_eq_ccdvariability_levene_bh_comp = bonf(alpha_ccd, eqccdvariability_levene_comp_p)
 
+###### Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
+alphaa = 0.05
+perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt) & ~np.isnan(perc_var_mt)]
+percent_var_cutoff = np.mean(perc_var_mt_valid) + 0 * np.std(perc_var_mt_valid)
+print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell cycle")
+
+eqccdvariability_levene_comp = values_comp(wp_cell_levene_eq_ccdvariability_adj, wp_nuc_levene_eq_ccdvariability_adj, wp_cyto_levene_eq_ccdvariability_adj, wp_iscell, wp_isnuc, wp_iscyto)
+ccd_levene_comp = values_comp(wp_pass_eq_ccdvariability_levene_bh_cell, wp_pass_eq_ccdvariability_levene_bh_nuc, wp_pass_eq_ccdvariability_levene_bh_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+
+perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+wp_comp_ccd_percvar = perc_var_comp >= percent_var_cutoff
+print(f"{sum(wp_comp_ccd_percvar)}: # proteins showing CCD variation, comp, percvar")
+print(f"{sum(wp_comp_ccd_percvar) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, percvar")
+wp_comp_ccd_levene = eqccdvariability_levene_comp < alphaa
+print(f"{sum(wp_comp_ccd_levene)}: # proteins showing CCD variation, comp, levene")
+print(f"{sum(wp_comp_ccd_levene) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, levene")
+wp_comp_ccd_gauss = wp_comp_kruskal_gaussccd_bonfadj <= alphaa
+print(f"{sum(wp_comp_ccd_gauss)}: # proteins showing CCD variation, comp, gaussian analysis")
+print(f"{sum(wp_comp_ccd_gauss) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, gaussian analysis")
+wp_comp_ccd_gausspercvar = wp_comp_ccd_percvar & wp_comp_ccd_gauss
+print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, gaussian analysis")
+print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, percvar & gauss")
+wp_comp_ccd_all = wp_comp_ccd_percvar & wp_comp_ccd_levene & wp_comp_ccd_gauss
+print(f"{sum(wp_comp_ccd_all)}: # proteins showing CCD variation, comp, percvar & gaussian & levene")
+print(f"{sum(wp_comp_ccd_all) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, percvar & gaussian & levene")
+
+wp_comp_ccd_use = wp_comp_ccd_gausspercvar # gauss & percvar, like in original manuscript
+
+# Copy profiles to the right place:
+folder = "figures/TemporalMovingAverages191205"
+ccdfolder = "figures/CCDTemporalMovingAverages191205"
+nonccdfolder = "figures/NonCCDTemporalMovingAverages191205"
+if not os.path.exists(ccdfolder): os.mkdir(ccdfolder)
+if not os.path.exists(nonccdfolder): os.mkdir(nonccdfolder)
+for ensg in wp_ensg[wp_comp_ccd_use]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdfolder, ensg+'_mvavg.png'))
+for ensg in wp_ensg[wp_comp_ccd_use]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdfolder, ensg+'_mvavg.png'))
 
 #%% Do the percent variance values match up with what we measured before for the genes?
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
 # Execution: run old code and save the data
 # Output: plot of percvar vs percvar
 alphaa = 0.05
-perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 
 u_well_plates_list = list(u_well_plates)
 u_plates_old_idx = np.array([u_well_plates_list.index(wp) for wp in u_well_plates_old if wp in u_well_plates])
@@ -313,32 +352,6 @@ plt.close()
 # Execution: create cutoffs for perc_var and total variance per compartment and for integrated intensity and mean intensity
 # Output: Graphs that illustrate the cutoffs (integrated, mean)
 # Output: Overlap of the total variance cutoffs with the original filtering done manually
-
-alphaa = 0.05
-perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt) & ~np.isnan(perc_var_mt)]
-percent_var_cutoff = np.mean(perc_var_mt_valid) + 0 * np.std(perc_var_mt_valid)
-print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell cycle")
-
-eqccdvariability_levene_comp = values_comp(wp_cell_levene_eq_ccdvariability_adj, wp_nuc_levene_eq_ccdvariability_adj, wp_cyto_levene_eq_ccdvariability_adj, wp_iscell, wp_isnuc, wp_iscyto)
-ccd_levene_comp = values_comp(wp_pass_eq_ccdvariability_levene_bh_cell, wp_pass_eq_ccdvariability_levene_bh_nuc, wp_pass_eq_ccdvariability_levene_bh_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-
-wp_comp_ccd_percvar = perc_var_comp >= percent_var_cutoff
-print(f"{sum(wp_comp_ccd_percvar)}: # proteins showing CCD variation, comp, percvar")
-print(f"{sum(wp_comp_ccd_percvar) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, percvar")
-wp_comp_ccd_levene = eqccdvariability_levene_comp < alphaa
-print(f"{sum(wp_comp_ccd_levene)}: # proteins showing CCD variation, comp, levene")
-print(f"{sum(wp_comp_ccd_levene) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, levene")
-wp_comp_ccd_gauss = wp_comp_kruskal_gaussccd_bonfadj <= alphaa
-print(f"{sum(wp_comp_ccd_gauss)}: # proteins showing CCD variation, comp, gaussian analysis")
-print(f"{sum(wp_comp_ccd_gauss) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, gaussian analysis")
-wp_comp_ccd_gausspercvar = wp_comp_ccd_percvar & wp_comp_ccd_gauss
-print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, gaussian analysis")
-print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, percvar & gauss")
-wp_comp_ccd_all = wp_comp_ccd_percvar & wp_comp_ccd_levene & wp_comp_ccd_gauss
-print(f"{sum(wp_comp_ccd_all)}: # proteins showing CCD variation, comp, percvar & gaussian & levene")
-print(f"{sum(wp_comp_ccd_all) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, percvar & gaussian & levene")
-
-wp_comp_ccd_use = wp_comp_ccd_gausspercvar # gauss & percvar, like in original manuscript
 
 plt.figure(figsize=(10,10))
 plt.scatter(gini_comp, perc_var_comp, c=-np.log10(wp_comp_kruskal_gaussccd_bonfadj))
