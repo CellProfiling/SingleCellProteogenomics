@@ -297,8 +297,12 @@ if not os.path.exists(ccdfolder): os.mkdir(ccdfolder)
 if not os.path.exists(nonccdfolder): os.mkdir(nonccdfolder)
 for ensg in wp_ensg[wp_comp_ccd_use]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdfolder, ensg+'_mvavg.png'))
-for ensg in wp_ensg[wp_comp_ccd_use]:
+for ensg in wp_ensg[~wp_comp_ccd_use]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdfolder, ensg+'_mvavg.png'))
+    
+#%%
+# Does cell count bias percent variance? Not much really
+plt.scatter(cell_counts, perc_var_comp, alpha=0.5); plt.xlabel("cell counts"); plt.ylabel("percent variance compartment"); plt.savefig("figures/cellcountpercvar.png")
 
 #%% Do the percent variance values match up with what we measured before for the genes?
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
@@ -476,6 +480,6 @@ np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp)
 np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp)
 np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)
 
-np.savetxt("output/picklestxt/ccd_compartment_ensg.txt", wp_ensg[ccd_comp], fmt="%s", delimiter="\t")
-np.savetxt("output/picklestxt/nonccd_compartment_ensg.txt", wp_ensg[nonccd_comp], fmt="%s", delimiter="\t")
+pd.DataFrame({"gene": wp_ensg[ccd_comp]}).to_csv("output/picklestxt/ccd_compartment_ensg.txt", index=False)
+pd.DataFrame({"gene": wp_ensg[nonccd_comp]}).to_csv("output/picklestxt/nonccd_compartment_ensg.txt", index=False)
 
