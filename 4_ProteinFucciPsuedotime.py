@@ -17,9 +17,7 @@ print("reading protein IF data")
 u_plate = np.load("output/pickles/u_plate.npy", allow_pickle=True)
 well_plate=np.load("output/pickles/well_plate.npy", allow_pickle=True)
 well_plate_imgnb=np.load("output/pickles/well_plate_imgnb.npy", allow_pickle=True)
-#imgnb=np.load("output/pickles/imgnb.npy", allow_pickle=True)
 u_well_plates=np.load("output/pickles/u_well_plates.npy", allow_pickle=True)
-#ab_objnum=np.load("output/pickles/ab_objnum.npy", allow_pickle=True)
 ab_nuc=np.load("output/pickles/ab_nuc.npy", allow_pickle=True)
 ab_cyto=np.load("output/pickles/ab_cyto.npy", allow_pickle=True)
 ab_cell=np.load("output/pickles/ab_cell.npy", allow_pickle=True)
@@ -30,15 +28,12 @@ log_green_fucci_zeroc=np.load("output/pickles/log_green_fucci_zeroc.npy", allow_
 log_red_fucci_zeroc=np.load("output/pickles/log_red_fucci_zeroc.npy", allow_pickle=True)
 log_green_fucci_zeroc_rescale=np.load("output/pickles/log_green_fucci_zeroc_rescale.npy", allow_pickle=True)
 log_red_fucci_zeroc_rescale=np.load("output/pickles/log_red_fucci_zeroc_rescale.npy", allow_pickle=True)
-wp_cell_kruskal_gaussccd_adj = np.load("output/pickles/wp_cell_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_nuc_kruskal_gaussccd_adj = np.load("output/pickles/wp_nuc_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_cyto_kruskal_gaussccd_adj = np.load("output/pickles/wp_cyto_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_cell = np.load("output/pickles/wp_pass_gaussccd_bh_cell.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_nuc = np.load("output/pickles/wp_pass_gaussccd_bh_nuc.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_cyto = np.load("output/pickles/wp_pass_gaussccd_bh_cyto.npy", allow_pickle=True)
+wp_comp_kruskal_gaussccd_bonfadj = np.load("output/pickles/wp_comp_kruskal_gaussccd_bonfadj.npy", allow_pickle=True)
+wp_bonfpass_kruskal_gaussccd_comp = np.load("output/pickles/wp_bonfpass_kruskal_gaussccd_comp.npy", allow_pickle=True)
 fucci_data = np.load("output/pickles/fucci_data.npy", allow_pickle=True)
 
 wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True) 
+wp_ab = np.load("output/pickles/wp_ab.npy", allow_pickle=True) 
 wp_prev_ccd = np.load("output/pickles/wp_prev_ccd.npy", allow_pickle=True) 
 wp_prev_notccd = np.load("output/pickles/wp_prev_notccd.npy", allow_pickle=True) 
 wp_prev_negative = np.load("output/pickles/wp_prev_negative.npy", allow_pickle=True) 
@@ -64,15 +59,11 @@ pol_sort_ab_cyto = np.load("output/pickles/pol_sort_ab_cyto.npy", allow_pickle=T
 pol_sort_ab_cell = np.load("output/pickles/pol_sort_ab_cell.npy", allow_pickle=True)
 pol_sort_mt_cell = np.load("output/pickles/pol_sort_mt_cell.npy", allow_pickle=True)
 
-
 wp_iscell = np.load("output/pickles/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/pickles/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)
 print("loaded")
-
-
     
-
 #%%
 # Idea: process the well data
 # Exec: use Devin's code
@@ -90,7 +81,7 @@ OUTLIER_NAMES = ['KIAA2026_HPA002109',
                 'GMNN_HPA054597']
 PERCVAR_CUT = 0.1 #Min % of the variance explained by the cell cycle.
 FDR_CUT = 0.05 #False discovery rate we will tolerate
-WINDOW = 20 #Number of points for moving average window, arbitrary choice
+WINDOW = 10 #Number of points for moving average window, arbitrary choice
 DO_PLOTS = True #flag of whether to plot each well and save the plot
 TPLOT_MODE = 'avg' #can have values of: 'avg', 'psin'
 HIGHLIGHTS = ['ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
@@ -99,9 +90,9 @@ def mvavg_perc_var(yvals,mv_window):
     yval_avg = np.convolve(yvals,np.ones((mv_window,))/mv_window, mode='valid')
     return np.var(yval_avg)/np.var(yvals), yval_avg
 
-def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, outname, outsuff):
+def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, folder, fileprefix):
     plt.close()
-    outfile = os.path.join(outname,outsuff+'_mvavg.pdf')
+    outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return
     #plot data
     bin_size = WINDOW
@@ -254,53 +245,13 @@ for i, well in enumerate(u_well_plates):
     
     cell_counts.append(len(curr_pol))
     percvar = perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val
-    if wp_prev_ccd[i] and percvar < 0.16:
-        outname = "figures/191101CCDProteins"
-        outstuff = wp_ensg[i]
-        outfile = os.path.join(outname,outstuff+'_mvavg.pdf')
-#        if os.path.exists(outfile): return
-        df = pd.DataFrame({
-                "time" : curr_pol, 
-                "intensity" :  curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm,
-                "mt_intensity": curr_mt_cell_norm})
-        plt.figure(figsize=(5,5))
-        plt.plot(
-                df["time"],
-                df["intensity"].rolling(WINDOW).mean(),
-                color="blue")
-        plt.plot(
-                df["time"],
-                df["mt_intensity"].rolling(WINDOW).mean(),
-                color="red")
-        plt.fill_between(
-                df["time"], 
-                df["intensity"].rolling(WINDOW).quantile(0.10),
-                df["intensity"].rolling(WINDOW).quantile(0.90),
-                color="lightsteelblue",
-                label="10th & 90th Percentiles")
-        plt.scatter(
-                curr_pol,
-                curr_ab_cell_norm)
-    #    plt.ylim([0,1])
-    #    plt.xlim([0,1])
-        plt.xlabel('Pseudotime')
-        plt.ylabel(outstuff.split('_')[0] + ' Protein Expression')
-        plt.xticks(size=14)
-        plt.yticks(size=14)
-        # plt.legend(fontsize=14)
-        plt.tight_layout()
-        if not os.path.exists(os.path.dirname(outfile)):
-            os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
-        plt.savefig(outfile)
-        plt.close()
+    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, curr_mt_norm, "figures/TemporalMovingAverages191205", wp_ensg[i])
     
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
-mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt = np.array(mean_mean_cell), np.array(mean_mean_nuc), np.array(mean_mean_cyto), np.array(mean_mean_mt)
 wp_cell_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cell = benji_hoch(alpha_ccd, ccd_var_cell_levenep)
 wp_nuc_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_nuc = benji_hoch(alpha_ccd, ccd_var_nuc_levenep)
 wp_cyto_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cyto = benji_hoch(alpha_ccd, ccd_var_cyto_levenep)
-
 
 eqccdvariability_levene_comp_p = values_comp(ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep, wp_iscell, wp_isnuc, wp_iscyto)
 wp_comp_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_comp = benji_hoch(alpha_ccd, eqccdvariability_levene_comp_p)
@@ -313,16 +264,15 @@ wp_comp_levene_eq_ccdvariability_bonfadj, wp_bonfpass_eq_ccdvariability_levene_b
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
 # Execution: run old code and save the data
 # Output: plot of percvar vs percvar
+alphaa = 0.05
 perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-var_comp = values_comp(var_cell, var_nuc, var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-wp_comp_kruskal_adj = values_comp(wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj, wp_iscell, wp_isnuc, wp_iscyto)
-wp_comp_mean_mean = values_comp(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-wp_comp_levene_gtvariability_adj = values_comp(wp_cell_levene_gtvariability_adj, wp_nuc_levene_gtvariability_adj, wp_cyto_levene_gtvariability_adj, wp_iscell, wp_isnuc, wp_iscyto)
 
+u_well_plates_list = list(u_well_plates)
 u_plates_old_idx = np.array([u_well_plates_list.index(wp) for wp in u_well_plates_old if wp in u_well_plates])
 old_notfiltered = np.isin(u_well_plates_old, u_well_plates)
 
-plt.scatter(perc_var_compartment_old[old_notfiltered], perc_var_comp[u_plates_old_idx], c=-np.log10(wp_comp_kruskal_adj[u_plates_old_idx]))
+plt.figure(figsize=(10,10))
+plt.scatter(perc_var_compartment_old[old_notfiltered], perc_var_comp[u_plates_old_idx], c=-np.log10(wp_comp_kruskal_gaussccd_bonfadj[u_plates_old_idx]))
 plt.xlabel("percent variance old")
 plt.ylabel("percent variance new")
 cb = plt.colorbar()
@@ -331,13 +281,15 @@ plt.savefig(f"figures/PercVarAgreement_comp.png")
 plt.show()
 plt.close()
 
-plt.scatter(perc_var_comp, wp_comp_mean_mean)
+plt.figure(figsize=(10,10))
+plt.scatter(perc_var_comp, mean_mean_comp)
 plt.xlabel("percent variance new")
 plt.ylabel("mean mean intensity")
 plt.savefig(f"figures/PercVarVsMeanMeanIntensity_comp.png")
 plt.show()
 plt.close()
 
+plt.figure(figsize=(10,10))
 plt.scatter(perc_var_comp, -np.log10(wp_comp_levene_eq_ccdvariability_adj))
 plt.xlabel("percent variance new")
 plt.ylabel("-log10 FDR for CCD")
@@ -346,10 +298,11 @@ plt.savefig(f"figures/PercVarVsLog10FdrCCD_comp.png")
 plt.show()
 plt.close()
 
-plt.scatter(wp_comp_mean_mean, -np.log10(wp_comp_levene_eq_ccdvariability_adj))
+plt.figure(figsize=(10,10))
+plt.scatter(mean_mean_comp, -np.log10(wp_comp_levene_eq_ccdvariability_adj))
 plt.xlabel("mean mean intensity")
 plt.ylabel("-log10 FDR for CCD")
-plt.hlines(-np.log10(alphaa), np.min(wp_comp_mean_mean), np.max(wp_comp_mean_mean))
+plt.hlines(-np.log10(alphaa), np.min(mean_mean_comp), np.max(mean_mean_comp))
 plt.savefig(f"figures/IntensityVsLog10FdrCCD_comp.png")
 plt.show()
 plt.close()
@@ -363,54 +316,53 @@ plt.close()
 
 alphaa = 0.05
 perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt) & ~np.isnan(perc_var_mt)]
-percent_var_cutoff = 0.1#np.mean(perc_var_mt_valid) + 1 * np.std(perc_var_mt_valid)
+percent_var_cutoff = np.mean(perc_var_mt_valid) + 0 * np.std(perc_var_mt_valid)
 print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell cycle")
-
-wp_cell_ccd = perc_var_cell >= percent_var_cutoff
-wp_nuc_ccd = perc_var_nuc >= percent_var_cutoff
-wp_cyto_ccd = perc_var_cyto >= percent_var_cutoff
 
 eqccdvariability_levene_comp = values_comp(wp_cell_levene_eq_ccdvariability_adj, wp_nuc_levene_eq_ccdvariability_adj, wp_cyto_levene_eq_ccdvariability_adj, wp_iscell, wp_isnuc, wp_iscyto)
 ccd_levene_comp = values_comp(wp_pass_eq_ccdvariability_levene_bh_cell, wp_pass_eq_ccdvariability_levene_bh_nuc, wp_pass_eq_ccdvariability_levene_bh_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 
-wp_comp_ccd = perc_var_comp >= percent_var_cutoff
-print(f"{sum(wp_cell_ccd)}: # proteins showing CCD variation, cell, percvar")
-print(f"{sum(wp_nuc_ccd)}: # proteins showing CCD variation, nuc, percvar")
-print(f"{sum(wp_cyto_ccd)}: # proteins showing CCD variation, cyto, percvar")
-print(f"{sum(wp_comp_ccd)}: # proteins showing CCD variation, comp, percvar")
-    
+wp_comp_ccd_percvar = perc_var_comp >= percent_var_cutoff
+print(f"{sum(wp_comp_ccd_percvar)}: # proteins showing CCD variation, comp, percvar")
+print(f"{sum(wp_comp_ccd_percvar) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, percvar")
 wp_comp_ccd_levene = eqccdvariability_levene_comp < alphaa
 print(f"{sum(wp_comp_ccd_levene)}: # proteins showing CCD variation, comp, levene")
 print(f"{sum(wp_comp_ccd_levene) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, levene")
+wp_comp_ccd_gauss = wp_comp_kruskal_gaussccd_bonfadj <= alphaa
+print(f"{sum(wp_comp_ccd_gauss)}: # proteins showing CCD variation, comp, gaussian analysis")
+print(f"{sum(wp_comp_ccd_gauss) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, gaussian analysis")
+wp_comp_ccd_gausspercvar = wp_comp_ccd_percvar & wp_comp_ccd_gauss
+print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, gaussian analysis")
+print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, percvar & gauss")
+wp_comp_ccd_all = wp_comp_ccd_percvar & wp_comp_ccd_levene & wp_comp_ccd_gauss
+print(f"{sum(wp_comp_ccd_all)}: # proteins showing CCD variation, comp, percvar & gaussian & levene")
+print(f"{sum(wp_comp_ccd_all) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, percvar & gaussian & levene")
 
-#wp_any_ccd_kruskal_adj = (wp_cell_kruskal_gaussccd_adj < alphaa) | (wp_nuc_kruskal_gaussccd_adj < alphaa) | (wp_cyto_kruskal_gaussccd_adj < alphaa)
-#plt.scatter(var_comp[var_pass_comp], perc_var_comp[var_pass_comp], c=wp_comp_kruskal_adj[var_pass_comp])
-## plt.vlines(total_var_cutoff, 0, 0.9)
-#plt.hlines(percent_var_cutoff, 0, 0.1)
-#plt.xlabel("Total Variance of Protein Expression")
-#plt.ylabel("Fraction of Variance Due to Cell Cycle")
-#cb = plt.colorbar()
-#cb.set_label("FDR for Cell Cycle Dependence")
-#plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
-#plt.savefig("figures/CompartmentProteinFractionVariance.png")
-#plt.show()
-#plt.close()
-#wp_comp_ccd_percvaronly = var_pass_comp & (perc_var_comp >= percent_var_cutoff)
-#print(f"{sum(wp_comp_ccd_percvaronly)}: # proteins showing CCD variation (mvavg), respective compartment")
-#wp_comp_ccd = var_pass_comp & (perc_var_comp >= percent_var_cutoff) & (wp_comp_kruskal_adj < alphaa)
-#print(f"{sum(wp_comp_ccd)}: # proteins showing CCD variation (mvavg & gauss), respective compartment")
+wp_comp_ccd_use = wp_comp_ccd_gausspercvar # gauss & percvar, like in original manuscript
 
-#plt.scatter(var_comp[var_pass_comp], -np.log10(wp_comp_levene_eq_ccdvariability_bonfadj[var_pass_comp]), c=wp_comp_kruskal_adj[var_pass_comp])
-## plt.vlines(total_var_cutoff, 0, 0.9)
-#plt.hlines(-np.log10(0.01), 0, 0.1)
-#plt.xlabel("Total Variance of Protein Expression")
-#plt.ylabel("FDR")
-#cb = plt.colorbar()
-#cb.set_label("FDR for Cell Cycle Dependence")
-#plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
-#plt.savefig("figures/CompartmentProteinFractionVariance.png")
-#plt.show()
-#plt.close()
+plt.figure(figsize=(10,10))
+plt.scatter(gini_comp, perc_var_comp, c=-np.log10(wp_comp_kruskal_gaussccd_bonfadj))
+plt.hlines(percent_var_cutoff, np.min(gini_comp), np.max(gini_comp), color="gray")
+plt.xlabel("Gini of Protein Expression")
+plt.ylabel("Fraction of Variance Due to Cell Cycle")
+cb = plt.colorbar()
+cb.set_label("FDR for Cell Cycle Dependence")
+plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
+plt.savefig("figures/CompartmentProteinFractionVariance.png")
+plt.show()
+plt.close()
+   
+plt.figure(figsize=(10,10))
+plt.scatter(cv_comp, perc_var_comp, c=-np.log10(wp_comp_kruskal_gaussccd_bonfadj))
+plt.hlines(percent_var_cutoff, np.min(cv_comp), np.max(cv_comp), color="gray")
+plt.xlabel("CV of Protein Expression")
+plt.ylabel("Fraction of Variance Due to Cell Cycle")
+cb = plt.colorbar()
+cb.set_label("FDR for Cell Cycle Dependence")
+plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
+plt.savefig("figures/CompartmentCVProteinFractionVariance.png")
+plt.show()
+plt.close()
 
 # Output a list of the genes that show variation
 name_df = pd.read_csv("input/processed/excel/Fucci_staining_summary_first_plates.csv")
@@ -425,87 +377,75 @@ ENSG = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in well_plate
 antibody = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in well_plate])
 
 alpha = 0.05
-does_perc_vary_cell = np.array(perc_var_cell) >= percent_var_cutoff
-does_perc_vary_nuc = np.array(perc_var_nuc) >= percent_var_cutoff
-does_perc_vary_cyto = np.array(perc_var_cyto) >= percent_var_cutoff
-does_perc_vary_any = does_perc_vary_cell | does_perc_vary_nuc | does_perc_vary_cyto
-ccd_cell = does_perc_vary_cell & (wp_cell_kruskal_gaussccd_adj < alpha)
-ccd_cyto = does_perc_vary_cyto & (wp_cyto_kruskal_gaussccd_adj < alpha)
-ccd_nuc = does_perc_vary_nuc & (wp_nuc_kruskal_gaussccd_adj < alpha)
-ccd_any = ccd_cell | ccd_cyto | ccd_nuc
-ccd_comp = wp_comp_ccd
-nonccd_cell = ~ccd_cell
-nonccd_cyto = ~ccd_cyto
-nonccd_nuc = ~ccd_nuc
-nonccd_any = nonccd_cell | nonccd_cyto | nonccd_nuc
-nonccd_comp = var_pass_comp & ~ccd_comp
+ccd_comp = wp_comp_ccd_use
+nonccd_comp = ~ccd_comp
 
-n_tot_variable = sum(wp_pass_gtvariability_levene_bh_cell|wp_pass_gtvariability_levene_bh_nuc|wp_pass_gtvariability_levene_bh_cyto)
-n_tot_variable_comp = sum(wp_cell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc)
+n_tot_variable = len(u_well_plates)
+
 print(f"{n_tot_variable}: # total proteins showing variation")
-print(f"{n_tot_variable_comp}: # total proteins showing variation in compartment")
-print(f"{len([ensg for ensg in ensggg1 if ensg in wp_ensg[wp_pass_gtvariability_levene_bh_cell|wp_pass_gtvariability_levene_bh_nuc|wp_pass_gtvariability_levene_bh_cyto]]) / len(ensggg1)}: # fraction of proteins annotated as variable still annotated as such")
-print(f"{len([ensg for ensg in ensggg1 if ensg in wp_ensg[wp_cell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc]]) / len(ensggg1)}: # fraction of proteins annotated as variable still annotated as such in selected metacompartment")
-
-print(f"{sum(wp_prev_ccd & ccd_any) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg & gauss, any)")
-print(f"{sum(wp_prev_ccd & wp_any_ccd_kruskal_adj) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (gauss, any)")
-print(f"{sum(wp_prev_ccd & wp_logany_var_and_loc & does_perc_vary_any) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg, any)")
-print(f"{sum(wp_prev_ccd & ccd_comp) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg & gauss, comp)")
-print(f"{sum(wp_prev_ccd & (wp_comp_kruskal_adj < alphaa)) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (gauss, comp)")
-print(f"{sum(wp_prev_ccd & (perc_var_comp >= percent_var_cutoff)) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg, comp)")
-
-print(f"{sum(wp_prev_ccd & ccd_any) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg & gauss, any)")
-print(f"{sum(wp_prev_ccd & wp_any_ccd_kruskal_adj) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (gauss, any)")
-print(f"{sum(wp_prev_ccd & wp_logany_var_and_loc & does_perc_vary_any) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg, any)")
-print(f"{sum(wp_prev_ccd & ccd_comp) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg & gauss, comp)")
-print(f"{sum(wp_prev_ccd & (wp_comp_kruskal_adj < alphaa)) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (gauss, comp)")
-print(f"{sum(wp_prev_ccd & (var_pass_comp & (perc_var_comp >= percent_var_cutoff))) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg, comp)")
-
-print(f"{sum(wp_prev_ccd & (var_pass_comp & (perc_var_comp >= percent_var_cutoff))) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (mvavg)")
-print(f"{len([ensg for ensg in wp_ensg[wp_comp_ccd] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[wp_comp_ccd])}: fraction of CCD genes that are previously annotated CCD genes (mvavg & gauss)")
-print(f"{len([ensg for ensg in wp_ensg[wp_comp_kruskal_adj < alphaa] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[wp_comp_kruskal_adj < alphaa])}: fraction of CCD genes that are previously annotated CCD genes (gauss)")
-print(f"{len([ensg for ensg in wp_ensg[var_pass_comp & (perc_var_comp >= percent_var_cutoff)] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[var_pass_comp & (perc_var_comp >= percent_var_cutoff)])}: fraction of CCD genes that are previously annotated CCD genes (mvavg)")
+print(f"{sum(wp_prev_ccd & wp_comp_ccd_percvar) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (percvar)")
+print(f"{sum(wp_prev_ccd & wp_comp_ccd_gausspercvar) / len(prev_ccd_ensg)}: fraction of previously annotated CCD genes called CCD (percvar,gauss)")
+print(f"{sum(wp_prev_ccd & wp_comp_ccd_all) / len(prev_ccd_ensg)}: fraction of prev annotated CCD genes called CCD (percvar,gauss,levene)")
+print(f"{len([ensg for ensg in wp_ensg[wp_comp_ccd_percvar] if ensg in ensggg1 and ensg in prev_ccd_ensg]) / len(wp_ensg[wp_comp_ccd_percvar])}: fraction of CCD genes that are previously annotated CCD genes (mvavg & gauss)")
 print(f"{sum(ccd_comp)}: CCD variable proteins (mvavg & gauss)")
-print(f"{sum(wp_comp_kruskal_adj < alphaa)}: CCD variable proteins (gauss)")
-print(f"{sum(var_pass_comp & (perc_var_comp >= percent_var_cutoff))}: CCD variable proteins (mvavg)")
+print(f"{sum(wp_comp_ccd_percvar)}: CCD variable proteins (mvavg)")
 print(f"{len(prev_ccd_ensg)}: CCD variable proteins (previous)")
 print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
 
+### address gene redundancy
+wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
+ensg_is_duplicated = wp_ensg_counts > 1
+duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
+duplicated_ensg_pairs = [u_well_plates[wp_ensg == ensg] for ensg in duplicated_ensg]
+print(f"{sum(wp_comp_ccd_gausspercvar[~ensg_is_duplicated])}: number of CCD proteins (no replicate, percvar&gauss)")
+duplicated_ensg_ccd = np.array([sum(wp_comp_ccd_use[wp_ensg == ensg]) for ensg in duplicated_ensg])
+print(f"{sum(duplicated_ensg_ccd == 2)}: number of replicated stainings shown to be CCD in both replicates")
+print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate")
+print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate")
+pd.DataFrame({
+        "ENSG":duplicated_ensg,
+        "well_plate_pair":[",".join(pair) for pair in duplicated_ensg_pairs],
+        "sum(ccd)":duplicated_ensg_ccd,
+        "ccd_pair":[",".join([str(wp_comp_ccd_use[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
+    }).to_csv("output/ReplicatedCellCycleDependentProteins.csv")
+###
+
 examples=np.loadtxt("input/processed/manual/ensgexamplesfrompaper.txt", dtype=str)
-print(f"{sum(~np.isin(examples,wp_ensg[ccd_any]))}: number of examples missing of {len(examples)}, which includes 1 negative control (mvavg & gauss, any)")
-print(f"{sum(~np.isin(examples,wp_ensg[wp_any_ccd_kruskal_adj]))}: number of examples missing of {len(examples)}, which includes 1 negative control (gauss, any)")
-print(f"{sum(~np.isin(examples,wp_ensg[wp_logany_var_and_loc & does_perc_vary_any]))}: number of examples missing of {len(examples)}, which includes 1 negative control (mvavg, any)")
-print(f"{sum(~np.isin(examples,wp_ensg[ccd_any]))}: number of examples missing of {len(examples)}, which includes 1 negative control (mvavg & gauss, any)")
-print(f"{sum(~np.isin(examples,wp_ensg[ccd_comp]))}: number of examples missing of {len(examples)}, which includes 1 negative control, (mvavg & gauss, comp)")
-print(examples[~np.isin(examples,wp_ensg[ccd_comp])])
+print(f"{sum(~np.isin(examples,wp_ensg[wp_comp_ccd_use]))}: number of examples missing of {len(examples)}, which includes 1 negative control")
+print(examples[~np.isin(examples,wp_ensg[wp_comp_ccd_use])])
+
+plt.figure(figsize=(10,10))
+plt.scatter(gini_comp, perc_var_comp, c=-np.log10(wp_comp_kruskal_gaussccd_bonfadj))
+for iii in np.nonzero(np.isin(wp_ensg, examples))[0]:
+    print(iii)
+    plt.annotate(wp_ensg[iii], (gini_comp[iii], perc_var_comp[iii]))
+plt.hlines(percent_var_cutoff, np.min(gini_comp), np.max(gini_comp), color="gray")
+plt.xlabel("Gini of Protein Expression")
+plt.ylabel("Fraction of Variance Due to Cell Cycle")
+cb = plt.colorbar()
+cb.set_label("FDR for Cell Cycle Dependence")
+plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
+plt.savefig("figures/CompartmentProteinFractionVarianceAnn.png")
+plt.show()
+plt.close()
+
+pd.DataFrame({
+        "ENSG":wp_ensg[np.nonzero(np.isin(wp_ensg, examples))[0]],
+        "gini_comp":gini_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
+        "perc_var_comp":perc_var_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
+        "wp_comp_ccd":wp_comp_ccd_use[np.nonzero(np.isin(wp_ensg, examples))[0]],
+        }).to_csv("output/CellCycleExamples.csv")
 
 pd.DataFrame({
     "well_plate" : u_well_plates, 
     "ENSG": wp_ensg,
-    "var_cell":var_cell,
-    "var_cyto":var_cyto,
-    "var_nuc":var_nuc,
-    "perc_var_cell":perc_var_cell,
-    "perc_var_cyto":perc_var_cyto,
-    "perc_var_nuc":perc_var_nuc,
+    "var_comp":var_comp,
     "perc_var_comp":perc_var_comp,
-    "wp_cell_kruskal_gaussccd_adj":wp_cell_kruskal_gaussccd_adj,
-    "wp_cyto_kruskal_gaussccd_adj":wp_cyto_kruskal_gaussccd_adj,
-    "wp_nuc_kruskal_gaussccd_adj":wp_nuc_kruskal_gaussccd_adj,
-    "ccd_cell":ccd_cell,
-    "ccd_cyto":ccd_cyto,
-    "ccd_nuc":ccd_nuc,
-    "ccd_any":ccd_any,
+    "wp_comp_kruskal_gaussccd_bonfadj":wp_comp_kruskal_gaussccd_bonfadj,
     "ccd_comp":ccd_comp,
-    "nonccd_cell":nonccd_cell,
-    "nonccd_cyto":nonccd_cyto,
-    "nonccd_nuc":nonccd_nuc,
-    "nonccd_any":nonccd_any,
     "nonccd_comp":nonccd_comp,
     "in_firstbatch":np.isin(wp_ensg, ensggg1),
     "in_secondbatch":np.isin(wp_ensg, ensggg2),
-    "is_variable":wp_pass_gtvariability_levene_bh_cell|wp_pass_gtvariability_levene_bh_nuc|wp_pass_gtvariability_levene_bh_cyto,
-    "is_variable_comp":wp_cell_var_and_loc|wp_nuc_var_and_loc|wp_cyto_var_and_loc,
     "wp_prev_ccd":wp_prev_ccd,
     "is_newccd":ccd_comp,
     }).to_csv("output/CellCycleVariationSummary.csv")

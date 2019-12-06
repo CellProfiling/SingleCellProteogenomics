@@ -52,21 +52,22 @@ def read_sample_info(df):
     compartment = np.asarray([compartment_dict[wp] if wp in compartment_dict else "" for wp in well_plate])
     return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment
 
-def previous_results(u_well_plates, result_dict, ensg_dict):
+def previous_results(u_well_plates, result_dict, ensg_dict, ab_dict):
     '''Process the results metadata into lists of previously annotated CCD proteins'''
     wp_ensg = np.asarray([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
+    wp_ab = np.asarray([ab_dict[wp] if wp in ab_dict else "" for wp in u_well_plates])
     wp_prev_ccd = np.asarray([wp in result_dict and result_dict[wp].startswith("ccd") for wp in u_well_plates])
     wp_prev_notccd = np.asarray([wp in result_dict and result_dict[wp].startswith("notccd") for wp in u_well_plates])
     wp_prev_negative = np.asarray([wp in result_dict and result_dict[wp].startswith("negative") for wp in u_well_plates])
     prev_ccd_ensg = wp_ensg[wp_prev_ccd]
     prev_notccd_ensg = wp_ensg[wp_prev_notccd]
     prev_negative_ensg = wp_ensg[wp_prev_negative]
-    return wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg
+    return wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg
 
 # read raw data
 my_df = read_raw_data()
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df)
-wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
+wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict, ab_dict)
 
 #%% Idea: Filter the raw data
 # Execution: Use manual annotations and nucleus size to filter samples and images
@@ -149,7 +150,7 @@ my_df_filtered = apply_big_nucleus_filter(my_df_filtered)
 my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
 
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered)
-wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
+wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict, ab_dict)
 
 #%% 
 # Idea: Filter for variation and get compartments
@@ -195,7 +196,7 @@ wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation = metacompar
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered_compartmentvariation)
 wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation = metacompartments(u_well_plates, compartment_dict, my_df_filtered_compartmentvariation)
 
-wp_ensg, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict)
+wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = previous_results(u_well_plates, result_dict, ensg_dict, ab_dict)
 
 #%% 
 # Idea: Get and process intensities
@@ -293,10 +294,24 @@ def benji_hoch(alpha, pvals):
     reject_BH[pvals_sortind] = reject
     return pvals_corrected_BH, reject_BH
 
-alphaa = 0.05
-wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alphaa, wp_cell_kruskal)
-wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alphaa, wp_nuc_kruskal)
-wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alphaa, wp_cyto_kruskal)
+# bonferroni MTC
+def bonf(alpha, pvals):
+    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
+    pvals_sortind = np.argsort(pvals)
+    pvals_sorted = np.take(pvals, pvals_sortind)
+    alphaBonf = alpha / float(len(pvals))
+    rejectBonf = pvals_sorted <= alphaBonf
+    pvals_correctedBonf = pvals_sorted * float(len(pvals))
+    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
+    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
+    rejectBonf_unsorted = np.empty_like(rejectBonf)
+    rejectBonf_unsorted[pvals_sortind] = rejectBonf
+    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
+
+alpha_gauss = 0.05
+wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alpha_gauss, wp_cell_kruskal)
+wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alpha_gauss, wp_nuc_kruskal)
+wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alpha_gauss, wp_cyto_kruskal)
 
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):    
     values_comp = np.empty_like(values_cell)
@@ -305,27 +320,38 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
     values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
     return values_comp
 
-wp_comp_kruskal_gaussccd_adj = values_comp(wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj, wp_iscell, wp_isnuc, wp_iscyto)
-wp_pass_gaussccd_bh_comp = values_comp(wp_pass_gaussccd_bh_cell, wp_pass_gaussccd_bh_nuc, wp_pass_gaussccd_bh_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+wp_comp_kruskal_gaussccd_p = values_comp(wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_iscell, wp_isnuc, wp_iscyto)
+wp_comp_kruskal_gaussccd_adj, wp_pass_eq_ccdvariability_levene_bh_comp = benji_hoch(alpha_gauss, wp_comp_kruskal_gaussccd_p)
+
+# BenjiHoch is actually pretty liberal for this dataset. What about bonferroni?
+wp_comp_kruskal_gaussccd_bonfadj, wp_bonfpass_kruskal_gaussccd_comp = bonf(alpha_gauss, wp_comp_kruskal_gaussccd_p)
 
 print(f"{len(wp_pass_gaussccd_bh_cell)}: number of genes tested")
-print(f"{sum(wp_pass_gaussccd_bh_cell)}: number of passing genes at 5% FDR in cell")
-print(f"{sum(wp_pass_gaussccd_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
-print(f"{sum(wp_pass_gaussccd_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
-print(f"{sum(wp_pass_gaussccd_bh_comp)}: number of passing genes at 5% FDR in compartment")
+#print(f"{sum(wp_pass_gaussccd_bh_cell)}: number of passing genes at 5% FDR in cell")
+#print(f"{sum(wp_pass_gaussccd_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
+#print(f"{sum(wp_pass_gaussccd_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
+print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp)}: number of passing genes at {alpha_gauss*100}% FDR in compartment")
 
 # address gene redundancy
-wp_ensg = np.array([ensg_dict[wp] if wp in ensg_dict else "" for wp in u_well_plates])
 wp_ensg_counts = np.array([sum([1 for eeee in wp_ensg if eeee == ensg]) for ensg in wp_ensg])
 ensg_is_duplicated = wp_ensg_counts > 1
 duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
-
-print(f"{sum(wp_pass_gaussccd_bh_comp[~ensg_is_duplicated])}: number of passing genes at 5% FDR in compartment (no replicate)")
-
-duplicated_ensg_ccd = np.array([sum(wp_pass_gaussccd_bh_comp[wp_ensg == ensg]) for ensg in duplicated_ensg])
+duplicated_ensg_pairs = [u_well_plates[wp_ensg == ensg] for ensg in duplicated_ensg]
+print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp[~ensg_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
+duplicated_ensg_ccd = np.array([sum(wp_bonfpass_kruskal_gaussccd_comp[wp_ensg == ensg]) for ensg in duplicated_ensg])
 print(f"{sum(duplicated_ensg_ccd == 2)}: number of CCD genes shown to be CCD in both replicates")
 print(f"{sum(duplicated_ensg_ccd == 1)}: number of CCD genes shown to be CCD in just one replicate")
 print(f"{sum(duplicated_ensg_ccd == 0)}: number of CCD genes shown to be non-CCD in both replicate")
+
+# any antibody redundancy?
+wp_ab_counts = np.array([sum([1 for eeee in wp_ensg if eeee == ensg]) for ensg in wp_ab])
+ab_is_duplicated = wp_ab_counts > 1
+duplicated_ab = np.unique(wp_ab[ab_is_duplicated])
+print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp[~ab_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
+duplicated_ab_ccd = np.array([sum(wp_bonfpass_kruskal_gaussccd_comp[wp_ab == ensg]) for ab in duplicated_ab])
+print(f"{sum(duplicated_ab_ccd == 2)}: number of duplicated antibodies shown to be CCD in both replicates")
+print(f"{sum(duplicated_ab_ccd == 1)}: number of duplicated antibodies shown to be CCD in just one replicate")
+print(f"{sum(duplicated_ab_ccd == 0)}: number of duplicated antibodies shown to be non-CCD in both replicate")
 
 #%% Pickle the results
 def np_save_overwriting(fn, arr):
@@ -335,6 +361,7 @@ def np_save_overwriting(fn, arr):
 np_save_overwriting("output/pickles/u_plate.npy", u_plate)
 np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
 np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)
+np_save_overwriting("output/pickles/wp_ab.npy", wp_ab)
 np_save_overwriting("output/pickles/wp_prev_ccd.npy", wp_prev_ccd)
 np_save_overwriting("output/pickles/wp_prev_notccd.npy", wp_prev_notccd)
 np_save_overwriting("output/pickles/wp_prev_negative.npy", wp_prev_negative)
@@ -353,12 +380,8 @@ np_save_overwriting("output/pickles/log_green_fucci_zeroc.npy", log_green_fucci_
 np_save_overwriting("output/pickles/log_red_fucci_zeroc.npy", log_red_fucci_zeroc)
 np_save_overwriting("output/pickles/log_green_fucci_zeroc_rescale.npy", log_green_fucci_zeroc_rescale)
 np_save_overwriting("output/pickles/log_red_fucci_zeroc_rescale.npy", log_red_fucci_zeroc_rescale)
-np_save_overwriting("output/pickles/wp_cell_kruskal_gaussccd_adj.npy", wp_cell_kruskal_gaussccd_adj)
-np_save_overwriting("output/pickles/wp_nuc_kruskal_gaussccd_adj.npy", wp_nuc_kruskal_gaussccd_adj)
-np_save_overwriting("output/pickles/wp_cyto_kruskal_gaussccd_adj.npy", wp_cyto_kruskal_gaussccd_adj)
-np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_cell.npy", wp_pass_gaussccd_bh_cell)
-np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_nuc.npy", wp_pass_gaussccd_bh_nuc)
-np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_cyto.npy", wp_pass_gaussccd_bh_cyto)
+np_save_overwriting("output/pickles/wp_comp_kruskal_gaussccd_bonfadj.npy", wp_comp_kruskal_gaussccd_bonfadj)
+np_save_overwriting("output/pickles/wp_bonfpass_kruskal_gaussccd_comp.npy", wp_bonfpass_kruskal_gaussccd_comp)
 np_save_overwriting("output/pickles/fucci_data.npy", fucci_data)
 np_save_overwriting("output/pickles/wp_iscell.npy", wp_iscell)
 np_save_overwriting("output/pickles/wp_isnuc.npy", wp_isnuc)
