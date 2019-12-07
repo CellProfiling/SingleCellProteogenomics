@@ -28,16 +28,12 @@ log_green_fucci_zeroc=np.load("output/pickles/log_green_fucci_zeroc.npy", allow_
 log_red_fucci_zeroc=np.load("output/pickles/log_red_fucci_zeroc.npy", allow_pickle=True)
 log_green_fucci_zeroc_rescale=np.load("output/pickles/log_green_fucci_zeroc_rescale.npy", allow_pickle=True)
 log_red_fucci_zeroc_rescale=np.load("output/pickles/log_red_fucci_zeroc_rescale.npy", allow_pickle=True)
-wp_cell_kruskal_gaussccd_adj = np.load("output/pickles/wp_cell_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_nuc_kruskal_gaussccd_adj = np.load("output/pickles/wp_nuc_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_cyto_kruskal_gaussccd_adj = np.load("output/pickles/wp_cyto_kruskal_gaussccd_adj.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_cell = np.load("output/pickles/wp_pass_gaussccd_bh_cell.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_nuc = np.load("output/pickles/wp_pass_gaussccd_bh_nuc.npy", allow_pickle=True)
-wp_pass_gaussccd_bh_cyto = np.load("output/pickles/wp_pass_gaussccd_bh_cyto.npy", allow_pickle=True)
 fucci_data = np.load("output/pickles/fucci_data.npy", allow_pickle=True)
 wp_iscell = np.load("output/pickles/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/pickles/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)
+area_cell=np.load("output/pickles/area_cell.npy", allow_pickle=True)
+area_nuc=np.load("output/pickles/area_nuc.npy", allow_pickle=True)
 print("loaded")
 
 #%% 
@@ -106,6 +102,7 @@ pol_sort_inds_reorder = pol_reord(pol_sort_inds)
 pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
 pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort), pol_reord(ab_cyto_sort), pol_reord(ab_cell_sort), pol_reord(mt_cell_sort)
 pol_sort_centered_data0, pol_sort_centered_data1 = pol_reord(centered_data_sort0), pol_reord(centered_data_sort1)
+pol_sort_area_cell, pol_sort_area_nuc = pol_reord(area_cell), pol_reord(area_nuc)
 
 #shift and re-scale "time"; reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
 pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
@@ -310,7 +307,6 @@ plt.close()
 mean_mean_comp = values_comp(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 cv_comp = values_comp(cv_cell, cv_nuc, cv_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 gini_comp = values_comp(gini_cell, gini_nuc, gini_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-fdr_comp = values_comp(wp_cell_kruskal_gaussccd_adj, wp_nuc_kruskal_gaussccd_adj, wp_cyto_kruskal_gaussccd_adj, wp_iscell, wp_isnuc, wp_iscyto)
 var_comp = values_comp(var_cell, var_nuc, var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 
 # var vs mt var
@@ -398,6 +394,8 @@ np_save_overwriting("output/pickles/pol_sort_ab_nuc.npy", pol_sort_ab_nuc)
 np_save_overwriting("output/pickles/pol_sort_ab_cyto.npy", pol_sort_ab_cyto)
 np_save_overwriting("output/pickles/pol_sort_ab_cell.npy", pol_sort_ab_cell)
 np_save_overwriting("output/pickles/pol_sort_mt_cell.npy", pol_sort_mt_cell)
+np_save_overwriting("output/pickles/pol_sort_area_cell.npy", pol_sort_area_cell)
+np_save_overwriting("output/pickles/pol_sort_area_nuc.npy", pol_sort_area_nuc)
 
 np_save_overwriting("output/pickles/mean_mean_comp.npy", mean_mean_comp)
 np_save_overwriting("output/pickles/cv_comp.npy", cv_comp)

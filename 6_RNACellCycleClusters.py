@@ -111,8 +111,8 @@ counts_or_rpkms = "Tpms"
 do_log_normalization = True
 use_spike_ins = False
 do_remove_blob = True
-adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins=use_spike_ins, "protein_coding")
-adata, phases_filt = qc_filtering(adata, do_log_normalization=do_log_normalization, do_remove_blob=do_remove_blob)
+adata, phases = read_counts_and_phases(dd, counts_or_rpkms, use_spike_ins, "protein_coding")
+adata, phases_filt = qc_filtering(adata, do_log_normalization, do_remove_blob)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 
