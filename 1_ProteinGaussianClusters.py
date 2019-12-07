@@ -321,24 +321,25 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
     return values_comp
 
 wp_comp_kruskal_gaussccd_p = values_comp(wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_iscell, wp_isnuc, wp_iscyto)
-wp_comp_kruskal_gaussccd_adj, wp_pass_eq_ccdvariability_levene_bh_comp = benji_hoch(alpha_gauss, wp_comp_kruskal_gaussccd_p)
+wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp = benji_hoch(alpha_gauss, wp_comp_kruskal_gaussccd_p)
 
 # BenjiHoch is actually pretty liberal for this dataset. What about bonferroni?
-wp_comp_kruskal_gaussccd_bonfadj, wp_bonfpass_kruskal_gaussccd_comp = bonf(alpha_gauss, wp_comp_kruskal_gaussccd_p)
+# But it gets rid of things that seem CCD, so use BH
+#wp_comp_kruskal_gaussccd_bonfadj, wp_bonfpass_kruskal_gaussccd_comp = bonf(alpha_gauss, wp_comp_kruskal_gaussccd_p)
 
 print(f"{len(wp_pass_gaussccd_bh_cell)}: number of genes tested")
 #print(f"{sum(wp_pass_gaussccd_bh_cell)}: number of passing genes at 5% FDR in cell")
 #print(f"{sum(wp_pass_gaussccd_bh_cyto)}: number of passing genes at 5% FDR in cytoplasm")
 #print(f"{sum(wp_pass_gaussccd_bh_nuc)}: number of passing genes at 5% FDR in nucleus")
-print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp)}: number of passing genes at {alpha_gauss*100}% FDR in compartment")
+print(f"{sum(wp_pass_kruskal_gaussccd_bh_comp)}: number of passing genes at {alpha_gauss*100}% FDR in compartment")
 
 # address gene redundancy
 wp_ensg_counts = np.array([sum([1 for eeee in wp_ensg if eeee == ensg]) for ensg in wp_ensg])
 ensg_is_duplicated = wp_ensg_counts > 1
 duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
 duplicated_ensg_pairs = [u_well_plates[wp_ensg == ensg] for ensg in duplicated_ensg]
-print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp[~ensg_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
-duplicated_ensg_ccd = np.array([sum(wp_bonfpass_kruskal_gaussccd_comp[wp_ensg == ensg]) for ensg in duplicated_ensg])
+print(f"{sum(wp_pass_kruskal_gaussccd_bh_comp[~ensg_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
+duplicated_ensg_ccd = np.array([sum(wp_pass_kruskal_gaussccd_bh_comp[wp_ensg == ensg]) for ensg in duplicated_ensg])
 print(f"{sum(duplicated_ensg_ccd == 2)}: number of CCD genes shown to be CCD in both replicates")
 print(f"{sum(duplicated_ensg_ccd == 1)}: number of CCD genes shown to be CCD in just one replicate")
 print(f"{sum(duplicated_ensg_ccd == 0)}: number of CCD genes shown to be non-CCD in both replicate")
@@ -347,8 +348,8 @@ print(f"{sum(duplicated_ensg_ccd == 0)}: number of CCD genes shown to be non-CCD
 wp_ab_counts = np.array([sum([1 for eeee in wp_ensg if eeee == ensg]) for ensg in wp_ab])
 ab_is_duplicated = wp_ab_counts > 1
 duplicated_ab = np.unique(wp_ab[ab_is_duplicated])
-print(f"{sum(wp_bonfpass_kruskal_gaussccd_comp[~ab_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
-duplicated_ab_ccd = np.array([sum(wp_bonfpass_kruskal_gaussccd_comp[wp_ab == ensg]) for ab in duplicated_ab])
+print(f"{sum(wp_pass_kruskal_gaussccd_bh_comp[~ab_is_duplicated])}: number of passing genes at {alpha_gauss*100}% FDR in compartment (no replicate)")
+duplicated_ab_ccd = np.array([sum(wp_pass_kruskal_gaussccd_bh_comp[wp_ab == ensg]) for ab in duplicated_ab])
 print(f"{sum(duplicated_ab_ccd == 2)}: number of duplicated antibodies shown to be CCD in both replicates")
 print(f"{sum(duplicated_ab_ccd == 1)}: number of duplicated antibodies shown to be CCD in just one replicate")
 print(f"{sum(duplicated_ab_ccd == 0)}: number of duplicated antibodies shown to be non-CCD in both replicate")
@@ -362,6 +363,9 @@ np_save_overwriting("output/pickles/u_plate.npy", u_plate)
 np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
 np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)
 np_save_overwriting("output/pickles/wp_ab.npy", wp_ab)
+np_save_overwriting("output/pickles/area_cell.npy", area_cell)
+np_save_overwriting("output/pickles/area_nuc.npy", area_nuc)
+np_save_overwriting("output/pickles/area_cyto.npy", area_cyto)
 np_save_overwriting("output/pickles/wp_prev_ccd.npy", wp_prev_ccd)
 np_save_overwriting("output/pickles/wp_prev_notccd.npy", wp_prev_notccd)
 np_save_overwriting("output/pickles/wp_prev_negative.npy", wp_prev_negative)
@@ -380,8 +384,8 @@ np_save_overwriting("output/pickles/log_green_fucci_zeroc.npy", log_green_fucci_
 np_save_overwriting("output/pickles/log_red_fucci_zeroc.npy", log_red_fucci_zeroc)
 np_save_overwriting("output/pickles/log_green_fucci_zeroc_rescale.npy", log_green_fucci_zeroc_rescale)
 np_save_overwriting("output/pickles/log_red_fucci_zeroc_rescale.npy", log_red_fucci_zeroc_rescale)
-np_save_overwriting("output/pickles/wp_comp_kruskal_gaussccd_bonfadj.npy", wp_comp_kruskal_gaussccd_bonfadj)
-np_save_overwriting("output/pickles/wp_bonfpass_kruskal_gaussccd_comp.npy", wp_bonfpass_kruskal_gaussccd_comp)
+np_save_overwriting("output/pickles/wp_comp_kruskal_gaussccd_adj.npy", wp_comp_kruskal_gaussccd_adj)
+np_save_overwriting("output/pickles/wp_pass_kruskal_gaussccd_bh_comp.npy", wp_pass_kruskal_gaussccd_bh_comp)
 np_save_overwriting("output/pickles/fucci_data.npy", fucci_data)
 np_save_overwriting("output/pickles/wp_iscell.npy", wp_iscell)
 np_save_overwriting("output/pickles/wp_isnuc.npy", wp_isnuc)
