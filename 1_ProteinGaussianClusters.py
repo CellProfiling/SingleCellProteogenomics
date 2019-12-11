@@ -205,14 +205,22 @@ wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, pr
 
 # 0: use mean, 
 # 1: use integrated,
-# 2: use the product of integrated * mean
-INTENSITY_SWITCH = 1 # small cells are often brighter and this is just because they have rounded up and are thicker
+# 2: use integrated / nucleus area
+INTENSITY_SWITCH = 0 # small cells are often brighter and this is just because they have rounded up and are thicker, so use integrated
 def read_sample_data(df):
     # Antibody data (mean intensity)
-    ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, df.Intensity_IntegratedIntensity_ResizedAb, df.Intensity_MeanIntensity_ResizedAb / df.Intensity_IntegratedIntensity_ResizedAb][INTENSITY_SWITCH])
-    ab_cyto = np.asarray([df.Mean_ab_Cyto, df.Integrated_ab_cyto, df.Mean_ab_Cyto / df.Integrated_ab_cyto][INTENSITY_SWITCH])
-    ab_cell = np.asarray([df.Mean_ab_cell, df.Integrated_ab_cell, df.Mean_ab_cell / df.Integrated_ab_cell][INTENSITY_SWITCH])
-    mt_cell = np.asarray([df.Mean_mt_cell, df.Integrated_mt_cell, df.Mean_mt_cell / df.Integrated_mt_cell][INTENSITY_SWITCH])
+    ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, 
+                         df.Intensity_IntegratedIntensity_ResizedAb, 
+                         df.Intensity_IntegratedIntensity_ResizedAb / df.AreaShape_Area][INTENSITY_SWITCH])
+    ab_cyto = np.asarray([df.Mean_ab_Cyto, 
+                          df.Integrated_ab_cyto, 
+                          df.Integrated_ab_cyto / df.AreaShape_Area][INTENSITY_SWITCH])
+    ab_cell = np.asarray([df.Mean_ab_cell, 
+                          df.Integrated_ab_cell, 
+                          df.Integrated_ab_cell / df.AreaShape_Area][INTENSITY_SWITCH])
+    mt_cell = np.asarray([df.Mean_mt_cell, 
+                          df.Integrated_mt_cell, 
+                          df.Integrated_mt_cell / df.AreaShape_Area][INTENSITY_SWITCH])
 
     # Fucci data (mean intensity)
     green_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedGreenFUCCI)
