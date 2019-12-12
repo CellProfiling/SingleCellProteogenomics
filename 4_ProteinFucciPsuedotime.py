@@ -106,7 +106,7 @@ def mvmed_perc_var(yvals, mv_window):
     yval_avg = mvmed(yvals, mv_window)
     return np.var(yval_avg) / np.var(yvals), yval_avg
 
-def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, curr_area_cell, curr_area_nuc, folder, fileprefix):
+def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_ab, curr_mt_norm, curr_area_cell, curr_area_nuc, folder, fileprefix):
     plt.close()
     outfile = os.path.join(folder,fileprefix+'_mvavg.png')
     if os.path.exists(outfile): return
@@ -119,11 +119,12 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, curr_mt_norm, curr_area_cell, curr_
             "area_cell": curr_area_cell,
             "area_nuc": curr_area_nuc})
     plt.figure(figsize=(5,5))
-    plt.plot(
-            df["time"],
-            df["intensity"].rolling(bin_size).mean(),
-            color="blue",
-            label="intensity")
+    plt.plot(mvavg_xvals, mvavg_ab, label="intensity", color="blue")
+#    plt.plot(
+#            df["time"],
+#            df["intensity"].rolling(bin_size).median(),
+#            color="blue",
+#            label="intensity")
 #    plt.plot(
 #            df["time"],
 #            df["area_cell"].rolling(bin_size).mean(),
@@ -222,7 +223,9 @@ ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two
 cell_counts = []
 slope_comp, slope_area_cell, slope_area_nuc = [],[],[]
 
-analysis = "Mean"
+analysis = "Median"
+folder = f"figures/TemporalMovingAverages{analysis}191205"
+if not os.path.exists(folder): os.mkdir(folder)
 for i, well in enumerate(u_well_plates):
 #    print(well)
     plt.close('all')
@@ -249,23 +252,23 @@ for i, well in enumerate(u_well_plates):
     perc_var_mt_val, mvmed_mt = mvmed_perc_var(curr_mt_cell_norm, WINDOW)
     perc_var_xvals_val, mvmed_xvals = mvmed_perc_var(curr_pol, WINDOW)
     
-#    perms = [np.random.permutation(len(curr_pol)) for nnn in np.arange(1000)]
-#    curr_cell_perm = np.asarray([curr_ab_cell_norm[perm] for perm in perms])
-#    curr_nuc_perm = np.asarray([curr_ab_nuc_norm[perm] for perm in perms])
-#    curr_cyto_perm = np.asarray([curr_ab_cyto_norm[perm] for perm in perms])
-#    curr_mt_perm = np.asarray([curr_mt_cell_norm[perm] for perm in perms])
-#    curr_mvmed_rng_cell = np.apply_along_axis(mvmed, 1, curr_cell_perm, WINDOW)
-#    curr_mvmed_rng_nuc = np.apply_along_axis(mvmed, 1, curr_nuc_perm, WINDOW)
-#    curr_mvmed_rng_cyto = np.apply_along_axis(mvmed, 1, curr_cyto_perm, WINDOW)
-#    curr_mvmed_rng_mt = np.apply_along_axis(mvmed, 1, curr_mt_perm, WINDOW)
-#    curr_percvar_rng_cell = np.var(curr_mvmed_rng_cell, axis=1) / np.var(curr_cell_perm, axis=1)
-#    curr_percvar_rng_nuc = np.var(curr_mvmed_rng_nuc, axis=1) / np.var(curr_nuc_perm, axis=1)
-#    curr_percvar_rng_cyto = np.var(curr_mvmed_rng_cyto, axis=1) / np.var(curr_cyto_perm, axis=1)
-#    curr_percvar_rng_mt = np.var(curr_mvmed_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
-#    perc_var_cell_rng.append(curr_percvar_rng_cell)
-#    perc_var_nuc_rng.append(curr_percvar_rng_nuc)
-#    perc_var_cyto_rng.append(curr_percvar_rng_cyto)
-#    perc_var_mt_rng.append(curr_percvar_rng_mt)
+    perms = [np.random.permutation(len(curr_pol)) for nnn in np.arange(1000)]
+    curr_cell_perm = np.asarray([curr_ab_cell_norm[perm] for perm in perms])
+    curr_nuc_perm = np.asarray([curr_ab_nuc_norm[perm] for perm in perms])
+    curr_cyto_perm = np.asarray([curr_ab_cyto_norm[perm] for perm in perms])
+    curr_mt_perm = np.asarray([curr_mt_cell_norm[perm] for perm in perms])
+    curr_mvmed_rng_cell = np.apply_along_axis(mvmed, 1, curr_cell_perm, WINDOW)
+    curr_mvmed_rng_nuc = np.apply_along_axis(mvmed, 1, curr_nuc_perm, WINDOW)
+    curr_mvmed_rng_cyto = np.apply_along_axis(mvmed, 1, curr_cyto_perm, WINDOW)
+    curr_mvmed_rng_mt = np.apply_along_axis(mvmed, 1, curr_mt_perm, WINDOW)
+    curr_percvar_rng_cell = np.var(curr_mvmed_rng_cell, axis=1) / np.var(curr_cell_perm, axis=1)
+    curr_percvar_rng_nuc = np.var(curr_mvmed_rng_nuc, axis=1) / np.var(curr_nuc_perm, axis=1)
+    curr_percvar_rng_cyto = np.var(curr_mvmed_rng_cyto, axis=1) / np.var(curr_cyto_perm, axis=1)
+    curr_percvar_rng_mt = np.var(curr_mvmed_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
+    perc_var_cell_rng.append(curr_percvar_rng_cell)
+    perc_var_nuc_rng.append(curr_percvar_rng_nuc)
+    perc_var_cyto_rng.append(curr_percvar_rng_cyto)
+    perc_var_mt_rng.append(curr_percvar_rng_mt)
 
     # Okay, new idea: we're looking for some change, right? So how about we use the slope?
     # 1) Use np.gradient to get the slope of the moving average
@@ -273,30 +276,16 @@ for i, well in enumerate(u_well_plates):
     # 3) Use a wilcoxon test to check that it's not zero.
     # If we want to check for some curve, we could do this for the second derivative, too, to make sure it's not just a line, but that's no matter if we use
     # the mean intensities
-    forward_order_inds = np.argsort(mvmed_xvals)
-    unorder_inds = np.arange(len(mvmed_xvals))[forward_order_inds]
-    firstderiv_cell = mvmed(np.gradient(mvmed_cell[forward_order_inds])[unorder_inds], WINDOW)
-    firstderiv_nuc = mvmed(np.gradient(mvmed_nuc[forward_order_inds])[unorder_inds], WINDOW)
-    firstderiv_cyto = mvmed(np.gradient(mvmed_cyto[forward_order_inds])[unorder_inds], WINDOW)
-    firstderiv_mt = mvmed(np.gradient(mvmed_mt[forward_order_inds])[unorder_inds], WINDOW)
+#    forward_order_inds = np.argsort(mvmed_xvals)
+#    unorder_inds = np.arange(len(mvmed_xvals))[forward_order_inds]
+#    firstderiv_cell = mvavg(np.gradient(mvmed_cell[forward_order_inds])[unorder_inds], WINDOW)
+#    firstderiv_nuc = mvavg(np.gradient(mvmed_nuc[forward_order_inds])[unorder_inds], WINDOW)
+#    firstderiv_cyto = mvavg(np.gradient(mvmed_cyto[forward_order_inds])[unorder_inds], WINDOW)
+#    firstderiv_mt = mvavg(np.gradient(mvmed_mt[forward_order_inds])[unorder_inds], WINDOW)
 #    firstderiv_cell_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_cell, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
 #    firstderiv_nuc_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_nuc, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
 #    firstderiv_cyto_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_cyto, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
 #    firstderiv_mt_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_mt, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
-    
-    # Let's look at the residuals
-#    windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
-#    binned = curr_ab_cell_norm[windows]
-#    binned_residuals = np.abs(binned - np.mean(binned, axis=0))
-#    residuals = np.abs(binned - np.mean(np.concatenate(binned), axis=0))
-#    samemedians = scipy.stats.kruskal(curr_ab_cell_norm[windows], np.take(curr_cell_perm, windows, axis=1))
-    
-    # Get the fold change for the maximum bins
-#    binned = curr_ab_cell[windows]
-#    binned_means = np.mean(binned, axis=1)
-#    min_bin = np.concatenate(binned[binned_means == np.min(binned_means)])
-#    max_bin = np.concatenate(binned[binned_means == np.max(binned_means)])
-#    t, p = scipy.stats.ttest_ind(min_bin, max_bin)
     
     # Let's check out which percent variances are greater than the permuted values
     t, p = scipy.stats.wilcoxon(firstderiv_cell)
@@ -309,29 +298,18 @@ for i, well in enumerate(u_well_plates):
     ccd_slope_mt_wilcoxp.append(p)
     
     # Let's draw a line from start to finish and integrate above and below the line.
-    # Percent CV explained; moving median; plot the positives positives
-    
-    
-    
-    # Levene test for different variance over cell cycle compared to mt (one-tailed)
-    # Tried it on the natural intensities, but the variation is probably in the log scale, since it's normal in the log scale
-    # So comparing the microtubule to antibody intensities in the log scale may make more sense
-    w, p = scipy.stats.levene(np.asarray(mvmed_cell), np.asarray(mvmed_mt), center="mean" if use_log_ccd else "median")
-    ccd_var_cell_levenep.append(2*p)
-    w, p = scipy.stats.levene(np.asarray(mvmed_nuc), np.asarray(mvmed_mt), center="mean" if use_log_ccd else "median")
-    ccd_var_nuc_levenep.append(2*p)
-    w, p = scipy.stats.levene(np.asarray(mvmed_cyto), np.asarray(mvmed_mt), center="mean" if use_log_ccd else "median")
-    ccd_var_cyto_levenep.append(2*p)
+    # Moving median; plot the positives positives
+
     
     # Let's check out which percent variances are greater than the permuted values
-#    t, p = scipy.stats.wilcoxon(curr_percvar_rng_cell - perc_var_cell_val)
-#    ccd_var_cell_rng_wilcoxp.append(2*p)
-#    t, p = scipy.stats.wilcoxon(curr_percvar_rng_nuc - perc_var_nuc_val)
-#    ccd_var_nuc_rng_wilcoxp.append(2*p)
-#    t, p = scipy.stats.wilcoxon(curr_percvar_rng_cyto - perc_var_cyto_val)
-#    ccd_var_cyto_rng_wilcoxp.append(2*p)
-#    t, p = scipy.stats.wilcoxon(curr_percvar_rng_mt - perc_var_mt_val)
-#    ccd_var_mt_rng_wilcoxp.append(2*p)
+    t, p = scipy.stats.wilcoxon(curr_percvar_rng_cell - perc_var_cell_val)
+    ccd_var_cell_rng_wilcoxp.append(2*p)
+    t, p = scipy.stats.wilcoxon(curr_percvar_rng_nuc - perc_var_nuc_val)
+    ccd_var_nuc_rng_wilcoxp.append(2*p)
+    t, p = scipy.stats.wilcoxon(curr_percvar_rng_cyto - perc_var_cyto_val)
+    ccd_var_cyto_rng_wilcoxp.append(2*p)
+    t, p = scipy.stats.wilcoxon(curr_percvar_rng_mt - perc_var_mt_val)
+    ccd_var_mt_rng_wilcoxp.append(2*p)
 
     # Test for equal variances of the moving averages and raw values
     perc_var_cell.append(perc_var_cell_val)
@@ -353,60 +331,52 @@ for i, well in enumerate(u_well_plates):
     slope_area_nuc.append(linregress(curr_pol, curr_area_nuc_norm))
     
     # Uncomment to make the plots (takes 10 mins)
-#    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, curr_mt_cell_norm, curr_area_cell_norm, curr_area_nuc_norm, f"figures/TemporalMovingAverages{analysis}191205", wp_ensg[i])
+    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, curr_mt_cell_norm, curr_area_cell_norm, curr_area_nuc_norm, folder, wp_ensg[i])
     
-alpha_ccd = 0.05
+alpha_ccd = 0.05p
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
-#perc_var_comp_rng = values_comp(perc_var_cell_rng, perc_var_nuc_rng, perc_var_cyto_rng, wp_iscell, wp_isnuc, wp_iscyto)
+perc_var_comp_rng = values_comp(perc_var_cell_rng, perc_var_nuc_rng, perc_var_cyto_rng, wp_iscell, wp_isnuc, wp_iscyto)
 
 # Let's look at the randomization results
 def weights(vals):
     '''normalizes all histogram bins to sum to 1'''
     return np.ones_like(vals)/float(len(vals))
 
-#fig = plt.figure()
-#ax1 = fig.add_subplot(111)
-#bins=np.histogram(np.hstack((np.concatenate(perc_var_comp_rng), perc_var_comp)), bins=40)[1] #get the bin edges
-#ax1.hist(np.concatenate(perc_var_comp_rng), bins=bins, weights=weights(np.concatenate(perc_var_comp_rng)), 
-#    label="Percvar, randomized")
-#ax1.hist(perc_var_comp, bins=bins, weights=weights(perc_var_comp),
-#    label="Percvar")
-#plt.legend(loc="upper right")
-#plt.xlabel("Percent variance")
-#plt.ylabel("Count, Normalized to 1")
-#plt.tight_layout()
-#plt.savefig(f"figures/PercvarRandomization.png")
-#plt.show()
-#plt.close()
-#
-#fig = plt.figure()
-#ax1 = fig.add_subplot(111)
-#bins=np.histogram(np.hstack((np.concatenate(perc_var_mt_rng), perc_var_mt)), bins=40)[1] #get the bin edges
-#ax1.hist(np.concatenate(perc_var_mt_rng), bins=bins, weights=weights(np.concatenate(perc_var_mt_rng)), 
-#    label="Percvar mt, randomized")
-#ax1.hist(perc_var_mt, bins=bins, weights=weights(perc_var_mt),
-#    label="Percvar mt")
-#plt.legend(loc="upper right")
-#plt.xlabel("Percent variance")
-#plt.ylabel("Count, Normalized to 1")
-#plt.tight_layout()
-#plt.savefig(f"figures/PercvarRandomization.png")
-#plt.show()
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+bins=np.histogram(np.hstack((np.concatenate(perc_var_comp_rng), perc_var_comp)), bins=40)[1] #get the bin edges
+ax1.hist(np.concatenate(perc_var_comp_rng), bins=bins, weights=weights(np.concatenate(perc_var_comp_rng)), 
+    label="Percvar, randomized")
+ax1.hist(perc_var_comp, bins=bins, weights=weights(perc_var_comp),
+    label="Percvar")
+plt.legend(loc="upper right")
+plt.xlabel("Percent variance")
+plt.ylabel("Count, Normalized to 1")
+plt.tight_layout()
+plt.savefig(f"figures/PercvarRandomization.png")
+plt.show()
+plt.close()
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+bins=np.histogram(np.hstack((np.concatenate(perc_var_mt_rng), perc_var_mt)), bins=40)[1] #get the bin edges
+ax1.hist(np.concatenate(perc_var_mt_rng), bins=bins, weights=weights(np.concatenate(perc_var_mt_rng)), 
+    label="Percvar mt, randomized")
+ax1.hist(perc_var_mt, bins=bins, weights=weights(perc_var_mt),
+    label="Percvar mt")
+plt.legend(loc="upper right")
+plt.xlabel("Percent variance")
+plt.ylabel("Count, Normalized to 1")
+plt.tight_layout()
+plt.savefig(f"figures/PercvarRandomization.png")
+plt.show()
 plt.close()
 
 # randomization tests
 ccd_var_comp_rng_wilcoxp = values_comp(ccd_var_cell_rng_wilcoxp, ccd_var_nuc_rng_wilcoxp, ccd_var_cyto_rng_wilcoxp, wp_iscell, wp_isnuc, wp_iscyto)
 wp_comp_eq_percvar_adj, wp_comp_pass_eq_percvar_adj = benji_hoch(alpha_ccd, ccd_var_comp_rng_wilcoxp)
-#wp_comp_gtpass_eq_percvar_adj = wp_comp_pass_eq_percvar_adj & (perc_var_comp > np.mean(perc_var_comp_rng, axis=1))
-
-# levene tests for variance
-wp_cell_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cell = benji_hoch(alpha_ccd, ccd_var_cell_levenep)
-wp_nuc_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_nuc = benji_hoch(alpha_ccd, ccd_var_nuc_levenep)
-wp_cyto_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_cyto = benji_hoch(alpha_ccd, ccd_var_cyto_levenep)
-eqccdvariability_levene_comp_p = values_comp(ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep, wp_iscell, wp_isnuc, wp_iscyto)
-wp_comp_levene_eq_ccdvariability_adj, wp_pass_eq_ccdvariability_levene_bh_comp = benji_hoch(alpha_ccd, eqccdvariability_levene_comp_p)
-wp_comp_levene_eq_ccdvariability_bonfadj, wp_bonfpass_eq_ccdvariability_levene_bh_comp = bonf(alpha_ccd, eqccdvariability_levene_comp_p)
+wp_comp_gtpass_eq_percvar_adj = wp_comp_pass_eq_percvar_adj & (perc_var_comp > np.mean(perc_var_comp_rng, axis=1))
 
 # slope tests
 wp_ccd_slope_comp_wilcoxp = values_comp(ccd_slope_cell_wilcoxp, ccd_slope_nuc_wilcoxp, ccd_slope_cyto_wilcoxp, wp_iscell, wp_isnuc, wp_iscyto)
@@ -421,39 +391,38 @@ print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell c
 wp_comp_ccd_percvar = perc_var_comp >= percent_var_cutoff
 print(f"{sum(wp_comp_ccd_percvar)}: # proteins showing CCD variation, comp, percvar")
 print(f"{sum(wp_comp_ccd_percvar) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, percvar")
-#wp_comp_ccd_percvar_rng = wp_comp_gtpass_eq_percvar_adj
-#print(f"{sum(wp_ccd_slope_comp_wilcoxp_adj_pass)}: # proteins showing CCD variation, comp, nonzero slope")
-#print(f"{sum(wp_ccd_slope_comp_wilcoxp_adj_pass) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, nonzero slope")
-wp_comp_ccd_levene = wp_comp_levene_eq_ccdvariability_adj < alphaa
-print(f"{sum(wp_comp_ccd_levene)}: # proteins showing CCD variation, comp, levene")
-print(f"{sum(wp_comp_ccd_levene) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, levene")
+wp_comp_ccd_percvar_rng = wp_comp_gtpass_eq_percvar_adj
+print(f"{sum(wp_ccd_slope_comp_wilcoxp_adj_pass)}: # proteins showing CCD variation, comp, nonzero slope")
+print(f"{sum(wp_ccd_slope_comp_wilcoxp_adj_pass) / len(wp_comp_ccd_percvar)}: fraction of variable proteins showing CCD variation, comp, nonzero slope")
 wp_comp_ccd_gauss = wp_comp_kruskal_gaussccd_adj <= alphaa
 print(f"{sum(wp_comp_ccd_gauss)}: # proteins showing CCD variation, comp, gaussian analysis")
 print(f"{sum(wp_comp_ccd_gauss) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, gaussian analysis")
 wp_comp_ccd_gausspercvar = wp_comp_ccd_percvar & wp_comp_ccd_gauss
 print(f"{sum(wp_comp_ccd_gausspercvar)}: # proteins showing CCD variation, comp, percvar & gauss")
 print(f"{sum(wp_comp_ccd_gausspercvar) / len(wp_comp_ccd_gausspercvar)}: # fraction of proteins showing CCD variation, comp, percvar & gauss")
-#wp_comp_ccd_gausspercvar_rng = wp_comp_ccd_percvar_rng & wp_comp_ccd_gauss
-#print(f"{sum(wp_comp_ccd_gausspercvar_rng)}: # proteins showing CCD variation, comp, percvar rng & gauss")
-#print(f"{sum(wp_comp_ccd_gausspercvar_rng) / len(wp_comp_ccd_gausspercvar_rng)}: # fraction of proteins showing CCD variation, comp, percvar rng & gauss")
-wp_comp_ccd_all = wp_comp_ccd_percvar & wp_comp_ccd_levene & wp_comp_ccd_gauss
-print(f"{sum(wp_comp_ccd_all)}: # proteins showing CCD variation, comp, percvar & gaussian & levene")
-print(f"{sum(wp_comp_ccd_all) / len(wp_comp_ccd_levene)}: fraction of variable proteins showing CCD variation, comp, percvar & gaussian & levene")
+wp_comp_ccd_gausspercvar_rng = wp_comp_ccd_percvar_rng & wp_comp_ccd_gauss
+print(f"{sum(wp_comp_ccd_gausspercvar_rng)}: # proteins showing CCD variation, comp, percvar rng & gauss")
+print(f"{sum(wp_comp_ccd_gausspercvar_rng) / len(wp_comp_ccd_gausspercvar_rng)}: # fraction of proteins showing CCD variation, comp, percvar rng & gauss")
 
 wp_comp_ccd_use = wp_comp_ccd_gausspercvar # gauss & percvar randomization, like in original manuscript
 
 # Copy profiles to the right place:
-analysis=""
-folder = f"figures/TemporalMovingAverages{analysis}191205"
 ccdfolder = f"figures/CCDTemporalMovingAverages{analysis}191205"
 nonccdfolder = f"figures/NonCCDTemporalMovingAverages{analysis}191205"
-if not os.path.exists(folder): os.mkdir(folder)
+nonccdhighvariancepercvarfolder = f"figures/NonCCDTemporalMovingAverageshighvariancepercvar{analysis}191205"
+nonccdhighvariancegaussfolder = f"figures/NonCCDTemporalMovingAverageshighvariancegauss{analysis}191205"
 if not os.path.exists(ccdfolder): os.mkdir(ccdfolder)
 if not os.path.exists(nonccdfolder): os.mkdir(nonccdfolder)
+if not os.path.exists(nonccdhighvariancepercvarfolder): os.mkdir(nonccdhighvariancepercvarfolder)
+if not os.path.exists(nonccdhighvariancegaussfolder): os.mkdir(nonccdhighvariancegaussfolder)
 for ensg in wp_ensg[wp_comp_ccd_use]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdfolder, ensg+'_mvavg.png'))
 for ensg in wp_ensg[~wp_comp_ccd_use]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdfolder, ensg+'_mvavg.png'))
+for ensg in wp_ensg[wp_comp_ccd_percvar & ~wp_comp_ccd_gauss]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdhighvariancepercvarfolder, ensg+'_mvavg.png'))
+for ensg in wp_ensg[~wp_comp_ccd_percvar & wp_comp_ccd_gauss]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdhighvariancegaussfolder, ensg+'_mvavg.png'))
     
 #%%
 # Does cell count bias percent variance? Not much really
@@ -533,6 +502,18 @@ cb = plt.colorbar()
 cb.set_label("FDR for Cell Cycle Dependence")
 plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
 plt.savefig("figures/CompartmentCVProteinFractionVariance.png")
+plt.show()
+plt.close()
+
+plt.figure(figsize=(10,10))
+plt.scatter(gini_comp, perc_var_comp, c=wp_comp_ccd_use, cmap="bwr_r")
+plt.hlines(percent_var_cutoff, np.min(gini_comp), np.max(gini_comp), color="gray")
+plt.xlabel("Gini of Protein Expression")
+plt.ylabel("Fraction of Variance Due to Cell Cycle")
+#cb = plt.colorbar()
+cb.set_label("FDR for Cell Cycle Dependence")
+plt.title("Compartment - Fraction of Variance Due to Cell Cycle")
+plt.savefig("figures/CompartmentProteinFractionVarianceTF.png")
 plt.show()
 plt.close()
 
