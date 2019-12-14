@@ -150,7 +150,9 @@ def apply_cell_count_filter(my_df):
     '''filter low cell counts per sample'''
     my_df_filtered = my_df
     well_plate = np.asarray(my_df_filtered.well_plate)
-    cell_counts = [sum(my_df.well_plate == wp) for wp in well_plate]
+    u_well_plates = np.unique(my_df_filtered.well_plate)
+    cell_count_dict = dict((wp, sum(my_df.well_plate == wp)) for wp in u_well_plates)
+    cell_counts = np.array([cell_count_dict[wp] for wp in well_plate])
     print("filtering low cell counts")
     my_df_filtered = my_df_filtered[cell_counts >= MIN_CELL_COUNT]
     print(f"{len(my_df)}: number of cells before filtering out samples with < {MIN_CELL_COUNT} cells")
@@ -375,6 +377,7 @@ duplicated_ab_ccd = np.array([sum(wp_pass_kruskal_gaussccd_bh_comp[wp_ab == ensg
 print(f"{sum(duplicated_ab_ccd == 2)}: number of duplicated antibodies shown to be CCD in both replicates")
 print(f"{sum(duplicated_ab_ccd == 1)}: number of duplicated antibodies shown to be CCD in just one replicate")
 print(f"{sum(duplicated_ab_ccd == 0)}: number of duplicated antibodies shown to be non-CCD in both replicate")
+
 
 #%% Pickle the results
 def np_save_overwriting(fn, arr):
