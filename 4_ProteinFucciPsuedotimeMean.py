@@ -107,7 +107,7 @@ def mvmed_perc_var(yvals, windows):
     yval_avg = mvmed(yvals[windows])
     return np.var(yval_avg) / np.var(yvals), yval_avg
 
-def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, windows, folder, fileprefix):
+def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
     plt.close()
     outfile = os.path.join(folder,fileprefix+'_mvavg.png')
     if os.path.exists(outfile): return
@@ -115,7 +115,7 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, windows, folder, filep
     mvperc = mvpercentiles(curr_ab_norm[windows])
     plt.fill_between(mvavg_xvals, mvperc[0], mvperc[-1], color="lightsteelblue", label="10th & 90th Percentiles")
     plt.fill_between(mvavg_xvals, mvperc[1], mvperc[-2], color="steelblue", label="25th & 75th Percentiles")
-    plt.plot(mvavg_xvals, mvperc[2], color="blue", label="Median Intensity")
+    plt.plot(mvavg_xvals, mvavg_yvals, color="blue", label="Mean Intensity")
     plt.scatter(curr_pol, curr_ab_norm, c='c')
     plt.xlabel('Pseudotime')
     plt.ylabel(fileprefix + ' Protein Expression')
@@ -187,18 +187,15 @@ not_ccd_pvals = []
 
 use_log_ccd = False
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
-#perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
-#ccd_slope_cell_wilcoxp, ccd_slope_nuc_wilcoxp, ccd_slope_cyto_wilcoxp, ccd_slope_mt_wilcoxp = [],[],[],[]
-mvmeds_cell, mvmeds_nuc, mvmeds_cyto, mvmeds_mt, mvmeds_x = [],[],[],[],[] # moving average y values & x value
-mvmeds_cell_rng, mvmeds_nuc_rng, mvmeds_cyto_rng, mvmeds_mt_rng = [],[],[],[] # moving average y values from randomization
-ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two-tailed p values for equal variance of mvmed and raw values
+perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
+ccd_slope_cell_wilcoxp, ccd_slope_nuc_wilcoxp, ccd_slope_cyto_wilcoxp, ccd_slope_mt_wilcoxp = [],[],[],[]
+mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt, mvavgs_x = [],[],[],[],[] # moving average y values & x value
+mvavgs_cell_rng, mvavgs_nuc_rng, mvavgs_cyto_rng, mvavgs_mt_rng = [],[],[],[] # moving average y values from randomization
+ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two-tailed p values for equal variance of mvavg and raw values
 cell_counts = []
 slope_comp, slope_area_cell, slope_area_nuc = [],[],[]
 
-perc_var_comp_rng = np.load("output/picklesrng/perc_var_comp_rng.npy", allow_pickle=True)
-perc_var_mt_rng = np.load("output/picklesrng/perc_var_mt_rng.npy", allow_pickle=True)
-
-analysis = "MedianRng"
+analysis = "MeanRng"
 folder = f"figures/TemporalMovingAverages{analysis}191205"
 if not os.path.exists(folder): os.mkdir(folder)
 
@@ -223,55 +220,22 @@ for i, well in enumerate(u_well_plates):
     curr_area_nuc_norm = pol_sort_area_nuc[curr_well_inds] / np.max(pol_sort_area_nuc[curr_well_inds])
         
     # Original method from Devin's work
-    windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
-    perc_var_cell_val, mvmed_cell = mvmed_perc_var(curr_ab_cell_norm, windows)
-    perc_var_nuc_val, mvmed_nuc = mvmed_perc_var(curr_ab_nuc_norm, windows)
-    perc_var_cyto_val, mvmed_cyto = mvmed_perc_var(curr_ab_cyto_norm, windows)
-    perc_var_mt_val, mvmed_mt = mvmed_perc_var(curr_mt_cell_norm, windows)
-    mvmed_xvals = mvmed(curr_pol[windows])
+    perc_var_cell_val, mvavg_cell = mvavg_perc_var(curr_ab_cell_norm, WINDOW)
+    perc_var_nuc_val, mvavg_nuc = mvavg_perc_var(curr_ab_nuc_norm, WINDOW)
+    perc_var_cyto_val, mvavg_cyto = mvavg_perc_var(curr_ab_cyto_norm, WINDOW)
+    perc_var_mt_val, mvavg_mt = mvavg_perc_var(curr_mt_cell_norm, WINDOW)
+    mvavg_xvals = mvavg(curr_pol, WINDOW)
     
-    # Takes a day; going to load it
-#    perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(1000)])
-#    curr_comp_norm = curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm
-#    curr_comp_perm = np.asarray([curr_comp_norm[perm] for perm in perms])
-#    curr_mt_perm = np.asarray([curr_mt_cell_norm[perm] for perm in perms])
-#    curr_comp_perm_binned = np.take(curr_comp_perm, windows, axis=1)
-#    curr_mt_perm_binned = np.take(curr_mt_perm, windows, axis=1)
-#    curr_mvmed_rng_comp = np.apply_along_axis(np.median, 2, curr_comp_perm_binned)
-#    curr_mvmed_rng_mt = np.apply_along_axis(np.median, 2, curr_mt_perm_binned)
-#    curr_percvar_rng_comp = np.var(curr_mvmed_rng_comp, axis=1) / np.var(curr_comp_perm, axis=1)
-#    curr_percvar_rng_mt = np.var(curr_mvmed_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
-#    perc_var_comp_rng.append(curr_percvar_rng_comp)
-#    perc_var_mt_rng.append(curr_percvar_rng_mt)
-
-    # Okay, new idea: we're looking for some change, right? So how about we use the slope?
-    # 1) Use np.gradient to get the slope of the moving average
-    # 2) That's pretty noisy, so get the moving average of that
-    # 3) Use a wilcoxon test to check that it's not zero.
-    # If we want to check for some curve, we could do this for the second derivative, too, to make sure it's not just a line, but that's no matter if we use
-    # the mean intensities
-#    forward_order_inds = np.argsort(mvmed_xvals)
-#    unorder_inds = np.arange(len(mvmed_xvals))[forward_order_inds]
-#    firstderiv_cell = mvavg(np.gradient(mvmed_cell[forward_order_inds])[unorder_inds], WINDOW)
-#    firstderiv_nuc = mvavg(np.gradient(mvmed_nuc[forward_order_inds])[unorder_inds], WINDOW)
-#    firstderiv_cyto = mvavg(np.gradient(mvmed_cyto[forward_order_inds])[unorder_inds], WINDOW)
-#    firstderiv_mt = mvavg(np.gradient(mvmed_mt[forward_order_inds])[unorder_inds], WINDOW)
-#    firstderiv_cell_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_cell, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
-#    firstderiv_nuc_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_nuc, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
-#    firstderiv_cyto_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_cyto, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
-#    firstderiv_mt_rng = np.apply_along_axis(mvmed, 1, np.take(np.gradient(np.take(curr_mvmed_rng_mt, forward_order_inds, 1), axis=1), unorder_inds, 1), WINDOW)
-#    t, p = scipy.stats.wilcoxon(firstderiv_cell)
-#    ccd_slope_cell_wilcoxp.append(p)
-#    t, p = scipy.stats.wilcoxon(firstderiv_nuc)
-#    ccd_slope_nuc_wilcoxp.append(p)
-#    t, p = scipy.stats.wilcoxon(firstderiv_cyto)
-#    ccd_slope_cyto_wilcoxp.append(p)
-#    t, p = scipy.stats.wilcoxon(firstderiv_mt)
-#    ccd_slope_mt_wilcoxp.append(p)
-    
-    # Let's draw a line from start to finish and integrate above and below the line.
-    # Moving median; plot the positives positives
-
+    perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(1000)])
+    curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm)
+    curr_comp_perm = np.asarray([curr_comp_norm[perm] for perm in perms])
+    curr_mt_perm = np.asarray([curr_mt_cell_norm[perm] for perm in perms])
+    curr_mvavg_rng_comp = np.apply_along_axis(mvavg, 1, curr_comp_perm, WINDOW)
+    curr_mvavg_rng_mt = np.apply_along_axis(mvavg, 1, curr_mt_perm, WINDOW)
+    curr_percvar_rng_comp = np.var(curr_mvavg_rng_comp, axis=1) / np.var(curr_comp_perm, axis=1)
+    curr_percvar_rng_mt = np.var(curr_mvavg_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
+    perc_var_comp_rng.append(curr_percvar_rng_comp)
+    perc_var_mt_rng.append(curr_percvar_rng_mt)
 
     # Test for equal variances of the moving averages and raw values
     perc_var_cell.append(perc_var_cell_val)
@@ -279,23 +243,22 @@ for i, well in enumerate(u_well_plates):
     perc_var_cyto.append(perc_var_cyto_val)
     perc_var_mt.append(perc_var_mt_val)
     
-    mvmeds_cell.append(mvmed_cell)
-    mvmeds_nuc.append(mvmed_nuc)
-    mvmeds_cyto.append(mvmed_cyto)
-    mvmeds_mt.append(mvmed_mt)
-    mvmeds_x.append(mvmed_xvals)
+    mvavgs_cell.append(mvavg_cell)
+    mvavgs_nuc.append(mvavg_nuc)
+    mvavgs_cyto.append(mvavg_cyto)
+    mvavgs_mt.append(mvavg_mt)
+    mvavgs_x.append(mvavg_xvals)
     
     cell_counts.append(len(curr_pol))
     percvar = perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val
     
-#    slope_comp.append(linregress(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm))
-#    slope_area_cell.append(linregress(curr_pol, curr_area_cell_norm))
-#    slope_area_nuc.append(linregress(curr_pol, curr_area_nuc_norm))
-    
     # Uncomment to make the plots (takes 10 mins)
-#    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvmed_xvals, windows, folder, wp_ensg[i])
+    windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
+    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
+         mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
+         windows, folder, wp_ensg[i])
     
-alpha_ccd = 1e-25
+alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_mt_rng, perc_var_comp_rng = np.array(perc_var_mt_rng), np.array(perc_var_comp_rng) 
 perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
@@ -342,13 +305,13 @@ wp_comp_eq_percvar_adj, wp_comp_pass_eq_percvar_adj = bonf(alpha_ccd, ccd_var_co
 wp_comp_gtpass_eq_percvar_adj = wp_comp_pass_eq_percvar_adj & (perc_var_comp > np.median(perc_var_comp_rng, axis=1))
 
 # median differences from random
-MIN_MEDIAN_PERCVAR_DIFF_FROM_RANDOM = 0.05
-median_diff_from_rng = np.median((perc_var_comp - perc_var_comp_rng.T).T, 1)
-wp_comp_ccd_difffromrng = median_diff_from_rng >= MIN_MEDIAN_PERCVAR_DIFF_FROM_RANDOM
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05
+mean_diff_from_rng = np.mean((perc_var_comp - perc_var_comp_rng.T).T, 1)
+wp_comp_ccd_difffromrng = mean_diff_from_rng >= MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
 
-# slope tests
-#wp_ccd_slope_comp_wilcoxp = values_comp(ccd_slope_cell_wilcoxp, ccd_slope_nuc_wilcoxp, ccd_slope_cyto_wilcoxp, wp_iscell, wp_isnuc, wp_iscyto)
-#wp_ccd_slope_comp_wilcoxp_adj, wp_ccd_slope_comp_wilcoxp_adj_pass = benji_hoch(alpha_ccd, wp_ccd_slope_comp_wilcoxp)
+wp_normal_randompercvar_p = np.apply_along_axis(scipy.stats.normaltest, 1, (perc_var_comp - perc_var_comp_rng.T).T).T[1].T
+wp_randompercvarnorm_adj, wp_randompercvarnorm_pass = benji_hoch(0.05, wp_normal_randompercvar_p)
+print(f"{sum(wp_randompercvarnorm_pass)}: number of genes with randomized percvars that form normal distributions")
 
 ###### Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 alphaa = 0.05
@@ -384,19 +347,18 @@ print(f"{sum(wp_comp_ccd_gausspercvar_percvarrng_mediandiff) / len(wp_comp_ccd_g
 wp_comp_ccd_use = wp_comp_ccd_gausspercvar_percvarrng_mediandiff # gauss & percvar randomization, like in original manuscript
 
 plt.figure(figsize=(10,10))
-median_diff_from_rng = np.median((perc_var_comp - perc_var_comp_rng.T).T, 1)
-plt.scatter(perc_var_comp, median_diff_from_rng, c=wp_comp_ccd_use, cmap="bwr_r")
-plt.vlines(percent_var_cutoff, np.min(median_diff_from_rng), np.max(median_diff_from_rng), color="gray")
+plt.scatter(perc_var_comp, mean_diff_from_rng, c=wp_comp_ccd_use, cmap="bwr_r")
+plt.vlines(percent_var_cutoff, np.min(mean_diff_from_rng), np.max(mean_diff_from_rng), color="gray")
 plt.xlabel("Percent Variance Explained by Cell Cycle")
-plt.ylabel("Median Difference from Random")
+plt.ylabel("Mean Difference from Random")
 plt.savefig("figures/MedianDiffFromRandom.png")
 plt.show()
 plt.close()
 
 plt.figure(figsize=(10,10))
-plt.scatter(median_diff_from_rng, -np.log10(wp_comp_eq_percvar_adj), c=wp_comp_ccd_use, cmap="bwr_r")
-plt.vlines(percent_var_cutoff, np.min(median_diff_from_rng), np.max(median_diff_from_rng), color="gray")
-plt.xlabel("Median Difference from Random")
+plt.scatter(mean_diff_from_rng, -np.log10(wp_comp_eq_percvar_adj), c=wp_comp_ccd_use, cmap="bwr_r")
+plt.vlines(percent_var_cutoff, np.min(mean_diff_from_rng), np.max(mean_diff_from_rng), color="gray")
+plt.xlabel("Mean Difference from Random")
 plt.ylabel("-log10 adj p-value from randomization")
 plt.savefig("figures/MedianDiffFromRandomVolcano.png")
 plt.show()
@@ -423,20 +385,12 @@ for ensg in wp_ensg[~wp_comp_ccd_percvar & ~wp_comp_ccd_difffromrng & ~wp_comp_c
 for ensg in wp_ensg[wp_comp_ccd_percvar & (~wp_comp_ccd_percvar_rng | ~wp_comp_ccd_difffromrng)]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdpercvarfolder, ensg+'_mvavg.png'))
     
-for ensg in wp_ensg[~wp_comp_ccd_percvar & wp_comp_ccd_gauss]:
+for ensg in wp_ensg[~wp_comp_ccd_gausspercvar_percvarrng_mediandiff & wp_comp_ccd_gauss]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdgaussfolder, ensg+'_mvavg.png'))
     
 for ensg in wp_ensg[~wp_comp_ccd_percvar & wp_comp_ccd_percvar_rng & wp_comp_ccd_difffromrng]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdpercvarfolderrng, ensg+'_mvavg.png'))
-    
-# doesn't overwrite    
-if not os.path.exists("output/picklesrng/perc_var_comp_rng.npy"): np.save("output/picklesrng/perc_var_comp_rng.npy",perc_var_comp_rng, allow_pickle=True)
-if not os.path.exists("output/picklesrng/perc_var_mt_rng.npy"):np.save("output/picklesrng/perc_var_mt_rng.npy",perc_var_mt_rng, allow_pickle=True)
-if not os.path.exists("output/picklesrng/ccd_var_comp_rng_wilcoxp.npy"):np.save("output/picklesrng/ccd_var_comp_rng_wilcoxp.npy",ccd_var_comp_rng_wilcoxp, allow_pickle=True)
-if not os.path.exists("output/picklesrng/ccd_var_mt_rng_wilcoxp.npy"):np.save("output/picklesrng/ccd_var_mt_rng_wilcoxp.npy",ccd_var_mt_rng_wilcoxp, allow_pickle=True)
-#%%
-# Does cell count bias percent variance? Not much really
-plt.scatter(cell_counts, perc_var_comp, alpha=0.5); plt.xlabel("cell counts"); plt.ylabel("percent variance compartment"); plt.savefig("figures/cellcountpercvar.png")
+
 
 #%% Do the percent variance values match up with what we measured before for the genes?
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
@@ -483,7 +437,6 @@ plt.hlines(-np.log10(alphaa), np.min(mean_mean_comp), np.max(mean_mean_comp))
 plt.savefig(f"figures/IntensityVsLog10FdrCCD_comp.png")
 plt.show()
 plt.close()
-
     
 #%% Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 # Idea: create cutoffs for percent variance and 
@@ -609,7 +562,7 @@ pd.DataFrame({
     "pass_gauss":wp_comp_ccd_gauss,
     "perc_var_rng_wilcoxon_p_adj":wp_comp_eq_percvar_adj,
     "pass_percvar_rng":wp_comp_ccd_percvar_rng,
-    "median_percvar_diff_from_random":median_diff_from_rng,
+    "mean_percvar_diff_from_random":mean_diff_from_rng,
     "pass_median_diff":wp_comp_ccd_difffromrng,
     "ccd_comp":ccd_comp,
     "nonccd_comp":nonccd_comp,
