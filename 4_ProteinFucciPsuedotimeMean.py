@@ -151,6 +151,8 @@ if not os.path.exists(bimodal): os.mkdir(bimodal)
 for ensg in wp_ensg[wp_isbimodal_fcpadj_pass]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(bimodal, ensg+'_mvavg.png'))
     
+# TODO: assess CCD for each cluster separately if they don't meet CCD together
+    
 #%%
 # Idea: process the well data
 # Exec: use Devin's code
