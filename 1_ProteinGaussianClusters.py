@@ -145,8 +145,22 @@ def apply_big_nucleus_filter(my_df):
     plot_areas(area_cyto_filtered, "area_cyto_filtered")
     return my_df_filtered
 
+MIN_CELL_COUNT = 60
+def apply_cell_count_filter(my_df):
+    '''filter low cell counts per sample'''
+    my_df_filtered = my_df
+    well_plate = np.asarray(my_df_filtered.well_plate)
+    cell_counts = [sum(my_df.well_plate == wp) for wp in well_plate]
+    print("filtering low cell counts")
+    my_df_filtered = my_df_filtered[cell_counts >= MIN_CELL_COUNT]
+    print(f"{len(my_df)}: number of cells before filtering out samples with < {MIN_CELL_COUNT} cells")
+    print(f"{len(my_df_filtered)}: number of cells after filtering out samples with < {MIN_CELL_COUNT} cells")
+    print("finished filtering on cell count")
+    return my_df_filtered
+
 my_df_filtered = apply_manual_filtering(my_df, result_dict)
 my_df_filtered = apply_big_nucleus_filter(my_df_filtered)
+my_df_filtered = apply_cell_count_filter(my_df_filtered)
 my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
 
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered)

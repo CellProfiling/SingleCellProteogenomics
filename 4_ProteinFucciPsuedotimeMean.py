@@ -8,6 +8,7 @@ from sklearn.neighbors import RadiusNeighborsRegressor
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats import iqr, variation
 from scipy.stats import linregress
+from sklearn.mixture import GaussianMixture
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -67,6 +68,88 @@ wp_iscell = np.load("output/pickles/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/pickles/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)
 print("loaded")
+
+#%% Gaussian clustering to identify biomodal intensity distributions
+def _ecdf(x):
+    '''no frills empirical cdf used in fdrcorrection'''
+    nobs = len(x)
+    return np.arange(1,nobs+1)/float(nobs)
+
+def benji_hoch(alpha, pvals):
+    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
+    pvals_sortind = np.argsort(pvals)
+    pvals_sorted = np.take(pvals, pvals_sortind)
+    ecdffactor = _ecdf(pvals_sorted)
+    reject = pvals_sorted <= ecdffactor*alpha
+    reject = pvals_sorted <= ecdffactor*alpha
+    if reject.any():
+        rejectmax = max(np.nonzero(reject)[0])
+        reject[:rejectmax] = True
+    pvals_corrected_raw = pvals_sorted / ecdffactor
+    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
+    del pvals_corrected_raw
+    pvals_corrected[pvals_corrected>1] = 1
+    pvals_corrected_BH = np.empty_like(pvals_corrected)
+
+    # deal with sorting
+    pvals_corrected_BH[pvals_sortind] = pvals_corrected
+    del pvals_corrected
+    reject_BH = np.empty_like(reject)
+    reject_BH[pvals_sortind] = reject
+    return pvals_corrected_BH, reject_BH
+
+wp_bimodal_clusters = []
+wp_bimodal_diffmeans = []
+wp_bimodal_fcmeans = []
+wp_bimodal_clusterlabels = []
+wp_isbimodal_p = []
+wp_timebimodal_p = []
+
+gaussian = GaussianMixture(n_components=2, random_state=1, max_iter=500)
+for i, well in enumerate(u_well_plates):
+    curr_well_inds = pol_sort_well_plate==well # the reversal isn't really helpful here
+    curr_pol = pol_sort_norm_rev[curr_well_inds]
+    curr_ab_cell = pol_sort_ab_cell[curr_well_inds]
+    curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds]
+    curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds]
+    curr_mt_cell = pol_sort_mt_cell[curr_well_inds]
+
+    # Normalize mean intensities, normalized for display
+    curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
+    curr_ab_nuc_norm = curr_ab_nuc / np.max(curr_ab_nuc)
+    curr_ab_cyto_norm = curr_ab_cyto / np.max(curr_ab_cyto) 
+    curr_mt_cell_norm  = curr_mt_cell / np.max(curr_mt_cell)
+    curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm)
+
+    cluster_labels = gaussian.fit_predict(curr_comp_norm.reshape(1, -1).T)
+#    cluster_labels = gaussian.fit_predict(np.array([curr_pol, curr_comp_norm]).T)
+    wp_bimodal_clusterlabels.append(cluster_labels)
+    c1 = cluster_labels == 0
+    c2 = cluster_labels == 1
+    wp_bimodal_clusters.append([curr_comp_norm[c1], curr_comp_norm[c2]])
+    wp_bimodal_diffmeans.append(np.mean(curr_comp_norm[c2]) - np.mean(curr_comp_norm[c1]))
+    wp_bimodal_fcmeans.append(np.mean(curr_comp_norm[c2]) / np.mean(curr_comp_norm[c1]))
+    
+    k, p = scipy.stats.kruskal(curr_comp_norm[c1], curr_comp_norm[c2])
+    wp_isbimodal_p.append(p)
+    k, p = scipy.stats.kruskal(curr_pol[c1], curr_pol[c2])
+    wp_timebimodal_p.append(p)
+    
+wp_isbimodal_padj, wp_isbimodal_pass = benji_hoch(0.01, wp_isbimodal_p)
+wp_timebimodal_padj, wp_timebimodal_pass = benji_hoch(0.01, wp_timebimodal_p)
+
+wp_enoughcellsinbothclusters = np.array([len(c1[0]) > 50 and len(c1[1]) > 50 for c1 in wp_bimodal_clusters])
+wp_isbimodal_fcpadj_pass = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass & ~wp_timebimodal_pass & wp_enoughcellsinbothclusters
+
+plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_fcpadj_pass)
+plt.show();plt.close()
+plt.scatter([len(c1[0]) for c1 in wp_bimodal_clusters], [len(c1[1]) for c1 in wp_bimodal_clusters], c=wp_enoughcellsinbothclusters)
+plt.show();plt.close()
+
+bimodal = "figures/bimodal"
+if not os.path.exists(bimodal): os.mkdir(bimodal)
+for ensg in wp_ensg[wp_isbimodal_fcpadj_pass]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(bimodal, ensg+'_mvavg.png'))
     
 #%%
 # Idea: process the well data
@@ -198,6 +281,7 @@ slope_comp, slope_area_cell, slope_area_nuc = [],[],[]
 analysis = "MeanRng"
 folder = f"figures/TemporalMovingAverages{analysis}191205"
 if not os.path.exists(folder): os.mkdir(folder)
+fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 
 for i, well in enumerate(u_well_plates):
 #    print(well)
@@ -256,7 +340,7 @@ for i, well in enumerate(u_well_plates):
     windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
     temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
          mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
-         windows, folder, wp_ensg[i])
+         windows, folder, fileprefixes[i])
     
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
