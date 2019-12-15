@@ -98,12 +98,17 @@ def benji_hoch(alpha, pvals):
     reject_BH[pvals_sortind] = reject
     return pvals_corrected_BH, reject_BH
 
-wp_bimodal_clusters = []
+wp_bimodal_cluster_idxs = []
 wp_bimodal_diffmeans = []
 wp_bimodal_fcmeans = []
 wp_bimodal_clusterlabels = []
 wp_isbimodal_p = []
 wp_timebimodal_p = []
+
+analysis = "MeanRng"
+folder = f"figures/TemporalMovingAverages{analysis}191205"
+if not os.path.exists(folder): os.mkdir(folder)
+fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 
 gaussian = GaussianMixture(n_components=2, random_state=1, max_iter=500)
 for i, well in enumerate(u_well_plates):
@@ -126,7 +131,7 @@ for i, well in enumerate(u_well_plates):
     wp_bimodal_clusterlabels.append(cluster_labels)
     c1 = cluster_labels == 0
     c2 = cluster_labels == 1
-    wp_bimodal_clusters.append([curr_comp_norm[c1], curr_comp_norm[c2]])
+    wp_bimodal_cluster_idxs.append([c1, c2])
     wp_bimodal_diffmeans.append(np.mean(curr_comp_norm[c2]) - np.mean(curr_comp_norm[c1]))
     wp_bimodal_fcmeans.append(np.mean(curr_comp_norm[c2]) / np.mean(curr_comp_norm[c1]))
     
@@ -138,21 +143,19 @@ for i, well in enumerate(u_well_plates):
 wp_isbimodal_padj, wp_isbimodal_pass = benji_hoch(0.01, wp_isbimodal_p)
 wp_timebimodal_padj, wp_timebimodal_pass = benji_hoch(0.01, wp_timebimodal_p)
 
-wp_enoughcellsinbothclusters = np.array([len(c1[0]) > 50 and len(c1[1]) > 50 for c1 in wp_bimodal_clusters])
+wp_enoughcellsinbothclusters = np.array([sum(c1[0]) > 50 and sum(c1[1]) > 50 for c1 in wp_bimodal_cluster_idxs])
 wp_isbimodal_fcpadj_pass = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass & ~wp_timebimodal_pass & wp_enoughcellsinbothclusters
 
 plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_fcpadj_pass)
 plt.show();plt.close()
-plt.scatter([len(c1[0]) for c1 in wp_bimodal_clusters], [len(c1[1]) for c1 in wp_bimodal_clusters], c=wp_enoughcellsinbothclusters)
+plt.scatter([sum(c1[0]) for c1 in wp_bimodal_cluster_idxs], [sum(c1[1]) for c1 in wp_bimodal_cluster_idxs], c=wp_enoughcellsinbothclusters)
 plt.show();plt.close()
 
 bimodal = "figures/bimodal"
 if not os.path.exists(bimodal): os.mkdir(bimodal)
 for ensg in wp_ensg[wp_isbimodal_fcpadj_pass]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(bimodal, ensg+'_mvavg.png'))
-    
-# TODO: assess CCD for each cluster separately if they don't meet CCD together
-    
+        
 #%%
 # Idea: process the well data
 # Exec: use Devin's code
@@ -273,22 +276,16 @@ not_ccd_pvals = []
 use_log_ccd = False
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
-ccd_slope_cell_wilcoxp, ccd_slope_nuc_wilcoxp, ccd_slope_cyto_wilcoxp, ccd_slope_mt_wilcoxp = [],[],[],[]
+perc_var_comp_clust1, perc_var_comp_clust2, mvavgs_comp_clust1, mvavgs_comp_clust2, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng, mvavgs_x_clust1, mvavgs_x_clust2 = [],[],[],[],[],[],[],[] # percent variances for bimodal
 mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt, mvavgs_x = [],[],[],[],[] # moving average y values & x value
 mvavgs_cell_rng, mvavgs_nuc_rng, mvavgs_cyto_rng, mvavgs_mt_rng = [],[],[],[] # moving average y values from randomization
 ccd_var_cell_levenep, ccd_var_nuc_levenep, ccd_var_cyto_levenep = [],[],[] # two-tailed p values for equal variance of mvavg and raw values
 cell_counts = []
-slope_comp, slope_area_cell, slope_area_nuc = [],[],[]
-
-analysis = "MeanRng"
-folder = f"figures/TemporalMovingAverages{analysis}191205"
-if not os.path.exists(folder): os.mkdir(folder)
-fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 
 for i, well in enumerate(u_well_plates):
 #    print(well)
     plt.close('all')
-    if i%100 == 0: print(f"well {i} of {len(u_well_plates)}")
+    if i % 100 == 0: print(f"well {i} of {len(u_well_plates)}")
 #    well = 'H05_55405991'#GMNN well, used for testing
     curr_well_inds = pol_sort_well_plate==well # the reversal isn't really helpful here
     curr_pol = pol_sort_norm_rev[curr_well_inds]
@@ -322,6 +319,33 @@ for i, well in enumerate(u_well_plates):
     curr_percvar_rng_mt = np.var(curr_mvavg_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
     perc_var_comp_rng.append(curr_percvar_rng_comp)
     perc_var_mt_rng.append(curr_percvar_rng_mt)
+    
+    if wp_isbimodal_fcpadj_pass[i]:
+        clust1_idx, clust2_idx = wp_bimodal_cluster_idxs[i]
+        perc_var_comp_clust1_val, mvavg_clust1 = mvavg_perc_var(curr_comp_norm[clust1_idx], WINDOW)
+        perc_var_comp_clust2_val, mvavg_clust2 = mvavg_perc_var(curr_comp_norm[clust2_idx], WINDOW)
+        mvavgs_x_clust1.append(mvavg(curr_pol[clust1_idx], WINDOW))
+        mvavgs_x_clust2.append(mvavg(curr_pol[clust2_idx], WINDOW))
+        perc_var_comp_clust1.append(perc_var_comp_clust1_val)
+        perc_var_comp_clust2.append(perc_var_comp_clust2_val)
+        mvavgs_comp_clust1.append(mvavg_clust1)
+        mvavgs_comp_clust2.append(mvavg_clust2)
+
+        perms1 = np.asarray([np.random.permutation(sum(clust1_idx)) for nnn in np.arange(1000)])
+        perms2 = np.asarray([np.random.permutation(sum(clust2_idx)) for nnn in np.arange(1000)])
+        curr_comp_perm1 = np.asarray([curr_comp_norm[clust1_idx][perm] for perm in perms1])
+        curr_comp_perm2 = np.asarray([curr_comp_norm[clust2_idx][perm] for perm in perms2])
+        curr_clust1_mvavg_rng_comp = np.apply_along_axis(mvavg, 1, curr_comp_perm1, WINDOW)
+        curr_clust2_mvavg_rng_comp = np.apply_along_axis(mvavg, 1, curr_comp_perm2, WINDOW)
+        curr_clust1_percvar_rng_comp = np.var(curr_clust1_mvavg_rng_comp, axis=1) / np.var(curr_comp_perm1, axis=1)
+        curr_clust2_percvar_rng_comp = np.var(curr_clust2_mvavg_rng_comp, axis=1) / np.var(curr_comp_perm2, axis=1)
+        perc_var_comp_clust1_rng.append(curr_clust1_percvar_rng_comp)
+        perc_var_comp_clust2_rng.append(curr_clust2_percvar_rng_comp)
+        
+        windows1 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust1_idx) - WINDOW + 1)])
+        windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
+        temporal_mov_avg(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, folder, fileprefixes[i] + "_clust1")
+        temporal_mov_avg(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, folder, fileprefixes[i] + "_clust2")
 
     # Test for equal variances of the moving averages and raw values
     perc_var_cell.append(perc_var_cell_val)
@@ -347,63 +371,59 @@ for i, well in enumerate(u_well_plates):
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_mt_rng, perc_var_comp_rng = np.array(perc_var_mt_rng), np.array(perc_var_comp_rng) 
-perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
 
 # Let's check out which percent variances are greater than the permuted values
-ccd_var_comp_rng_wilcoxp = np.apply_along_axis(scipy.stats.wilcoxon, 1, (perc_var_comp - perc_var_comp_rng.T).T, None, "wilcox", False, "greater").T[1].T
+perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+perc_var_comp_withbimodal = np.concatenate((perc_var_comp, perc_var_comp_clust1, perc_var_comp_clust2))
+perc_var_comp_rng_withbimodal = np.concatenate((perc_var_comp_rng, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng))
+ccd_var_comp_rng_wilcoxp_withbimodal = np.apply_along_axis(scipy.stats.wilcoxon, 1, (perc_var_comp_withbimodal - perc_var_comp_rng_withbimodal.T).T, None, "wilcox", False, "greater").T[1].T
 ccd_var_mt_rng_wilcoxp = np.apply_along_axis(scipy.stats.wilcoxon, 1, (perc_var_mt - perc_var_mt_rng.T).T, None, "wilcox", False, "greater").T[1].T
 
-# Let's look at the randomization results
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-
-plt.figure(figsize=(10,10))
-bins=np.histogram(np.hstack((np.concatenate(perc_var_comp_rng), perc_var_comp)), bins=40)[1] #get the bin edges
-ax1.hist(np.concatenate(perc_var_comp_rng), bins=bins, weights=weights(np.concatenate(perc_var_comp_rng)), 
-    label="Percvar, randomized")
-ax1.hist(perc_var_comp, bins=bins, weights=weights(perc_var_comp),
-    label="Percvar")
-plt.legend(loc="upper right")
-plt.xlabel("Percent variance")
-plt.ylabel("Count, Normalized to 1")
-plt.tight_layout()
-plt.savefig(f"figures/PercvarRandomization.png")
-plt.show()
-plt.close()
-
-plt.figure(figsize=(10,10))
-bins=np.histogram(np.hstack((np.concatenate(perc_var_mt_rng), perc_var_mt)), bins=40)[1] #get the bin edges
-ax1.hist(np.concatenate(perc_var_mt_rng), bins=bins, weights=weights(np.concatenate(perc_var_mt_rng)), 
-    label="Percvar mt, randomized")
-ax1.hist(perc_var_mt, bins=bins, weights=weights(perc_var_mt),
-    label="Percvar mt")
-plt.legend(loc="upper right")
-plt.xlabel("Percent variance")
-plt.ylabel("Count, Normalized to 1")
-plt.tight_layout()
-plt.savefig(f"figures/PercvarRandomization.png")
-plt.show()
-plt.close()
-
 # randomization tests, try being a bit more stringent, try drawing the cutoff based on microtubules per sample
-wp_comp_eq_percvar_adj, wp_comp_pass_eq_percvar_adj = bonf(alpha_ccd, ccd_var_comp_rng_wilcoxp)
-wp_comp_gtpass_eq_percvar_adj = wp_comp_pass_eq_percvar_adj & (perc_var_comp > np.median(perc_var_comp_rng, axis=1))
+wp_comp_eq_percvar_adj_withbimodal, wp_comp_pass_eq_percvar_adj_withbimodal = bonf(alpha_ccd, ccd_var_comp_rng_wilcoxp_withbimodal)
+wp_comp_gtpass_eq_percvar_adj_withbimodal = wp_comp_pass_eq_percvar_adj_withbimodal & (perc_var_comp_withbimodal > np.median(perc_var_comp_rng_withbimodal, axis=1))
 
 # median differences from random
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05
-mean_diff_from_rng = np.mean((perc_var_comp - perc_var_comp_rng.T).T, 1)
-wp_comp_ccd_difffromrng = mean_diff_from_rng >= MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
-
-wp_normal_randompercvar_p = np.apply_along_axis(scipy.stats.normaltest, 1, (perc_var_comp - perc_var_comp_rng.T).T).T[1].T
-wp_randompercvarnorm_adj, wp_randompercvarnorm_pass = benji_hoch(0.05, wp_normal_randompercvar_p)
-print(f"{sum(wp_randompercvarnorm_pass)}: number of genes with randomized percvars that form normal distributions")
+mean_diff_from_rng_withbimodal = np.mean((perc_var_comp_withbimodal - perc_var_comp_rng_withbimodal.T).T, 1)
+wp_comp_ccd_difffromrng_withbimodal = mean_diff_from_rng_withbimodal >= MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
 
 ###### Calculate the cutoffs for total intensity and percent variance attributed to the cell cycle
 alphaa = 0.05
 perc_var_mt_valid = perc_var_mt[~np.isinf(perc_var_mt) & ~np.isnan(perc_var_mt)]
 percent_var_cutoff = np.median(perc_var_mt_valid)
 print(f"{percent_var_cutoff}: cutoff for percent of total variance due to cell cycle")
+
+# separate unimodal from bimodal again
+wp_comp_eq_percvar_adj = wp_comp_eq_percvar_adj_withbimodal[:len(perc_var_comp)]
+wp_comp_pass_eq_percvar_adj = wp_comp_pass_eq_percvar_adj_withbimodal[:len(perc_var_comp)]
+wp_comp_gtpass_eq_percvar_adj = wp_comp_gtpass_eq_percvar_adj_withbimodal[:len(perc_var_comp)]
+mean_diff_from_rng = mean_diff_from_rng_withbimodal[:len(perc_var_comp)]
+wp_comp_ccd_difffromrng = wp_comp_ccd_difffromrng_withbimodal[:len(perc_var_comp)]
+
+def clust_to_wp(clust, clust_idx):
+    wp_clust = np.array([False] * len(clust_idx))
+    wp_clust[clust_idx] = clust
+    return wp_clust
+
+def clust_to_wp_doub(clust, clust_idx):
+    wp_clust = np.array([0.0] * len(clust_idx))
+    wp_clust[clust_idx] = clust
+    return wp_clust
+
+wp_comp_ccd_percvar_clust1 = clust_to_wp(perc_var_comp_clust1 >= percent_var_cutoff, wp_isbimodal_fcpadj_pass)
+wp_comp_pass_eq_percvar_adj_clust1 = clust_to_wp(wp_comp_pass_eq_percvar_adj_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
+mean_diff_from_rng_clust1 = clust_to_wp_doub(mean_diff_from_rng_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
+wp_comp_ccd_difffromrng_clust1 = clust_to_wp(wp_comp_ccd_difffromrng_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
+wp_comp_ccd_percvar_clust2 = clust_to_wp(perc_var_comp_clust2 >= percent_var_cutoff, wp_isbimodal_fcpadj_pass)
+wp_comp_pass_eq_percvar_adj_clust2 = clust_to_wp(wp_comp_pass_eq_percvar_adj_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
+mean_diff_from_rng_clust2 = clust_to_wp_doub(mean_diff_from_rng_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
+wp_comp_ccd_difffromrng_clust2 = clust_to_wp(wp_comp_ccd_difffromrng_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
+
+wp_normal_randompercvar_p = np.apply_along_axis(scipy.stats.normaltest, 1, (perc_var_comp - perc_var_comp_rng.T).T).T[1].T
+wp_randompercvarnorm_adj, wp_randompercvarnorm_pass = benji_hoch(0.05, wp_normal_randompercvar_p)
+print(f"{sum(wp_randompercvarnorm_pass)}: number of genes with randomized percvars that form normal distributions")
+
 
 wp_comp_ccd_percvar = perc_var_comp >= percent_var_cutoff
 print(f"{sum(wp_comp_ccd_percvar)}: # proteins showing CCD variation, comp, percvar")
@@ -429,7 +449,16 @@ print(f"{sum(wp_comp_ccd_gausspercvar_percvarrng) / len(wp_comp_ccd_gausspercvar
 wp_comp_ccd_gausspercvar_percvarrng_mediandiff = wp_comp_ccd_percvar_rng & wp_comp_ccd_percvar & wp_comp_ccd_difffromrng
 print(f"{sum(wp_comp_ccd_gausspercvar_percvarrng_mediandiff)}: # proteins showing CCD variation, comp, percvar > {percent_var_cutoff}, percvar_rng, median_diff")
 print(f"{sum(wp_comp_ccd_gausspercvar_percvarrng_mediandiff) / len(wp_comp_ccd_gausspercvar_percvarrng_mediandiff)}: # fraction of proteins showing CCD variation, comp, percvar rng & gauss")
-    
+
+# Address bimodal ones
+# 1) The number that are bimodal in one cluster (number of those that are also CCD as unimodal)
+# 2) The number that are bimodal in both clusters (number of those that are also CCD as unimodal)
+wp_comp_ccd_clust1 = wp_comp_ccd_percvar_clust1 & wp_comp_pass_eq_percvar_adj_clust1 & wp_comp_ccd_difffromrng_clust1
+wp_comp_ccd_clust2 = wp_comp_ccd_percvar_clust2 & wp_comp_pass_eq_percvar_adj_clust2 & wp_comp_ccd_difffromrng_clust2
+print(f"{sum(wp_isbimodal_fcpadj_pass)}: samples with bimodal antibody intensities")
+print(f"{sum(wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2)}: bimodal samples with one CCD cluster ({sum((wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2) & wp_comp_ccd_gausspercvar_percvarrng_mediandiff)}: also CCD unimodally)")
+print(f"{sum(wp_comp_ccd_clust1 & wp_comp_ccd_clust2)}: bimodal samples with two CCD clusters ({sum((wp_comp_ccd_clust1 & wp_comp_ccd_clust2) & wp_comp_ccd_gausspercvar_percvarrng_mediandiff)}: also CCD unimodally)")
+
 wp_comp_ccd_use = wp_comp_ccd_gausspercvar_percvarrng_mediandiff # gauss & percvar randomization, like in original manuscript
 
 plt.figure(figsize=(10,10))
@@ -460,24 +489,35 @@ ccdpercvarfolder = f"figures/CCDPercvarTemporalMovingAverages{analysis}191211"
 ccdpercvarfolderrng = f"figures/CCDPercvarRandomizatinoTemporalMovingAverages{analysis}191211"
 ccdgaussfolder = f"figures/CCDGaussTemporalMovingAverages{analysis}191211"
 nonccdfolder = f"figures/NonCCDTemporalMovingAverages{analysis}191211"
-for f in [ccdbothfolder,ccdgaussfolder,ccdpercvarfolder,nonccdfolder,ccdpercvarfolderrng]:
+bimodalccd = f"figures/CCDBimodalTemporalMovingAverages{analysis}191211"
+bimodalnonccd = f"figures/NonCCDBimodalTemporalMovingAverages{analysis}191211"
+for f in [ccdbothfolder,ccdgaussfolder,ccdpercvarfolder,nonccdfolder,ccdpercvarfolderrng,bimodalccd,bimodalnonccd]:
     if not os.path.exists(f): os.mkdir(f)
-for ensg in wp_ensg[wp_comp_ccd_percvar & wp_comp_ccd_percvar_rng & wp_comp_ccd_difffromrng]:
-    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdbothfolder, ensg+'_mvavg.png'))
+for ensg in fileprefixes[wp_comp_ccd_percvar & wp_comp_ccd_percvar_rng & wp_comp_ccd_difffromrng]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdbothfolder, ensg +'_mvavg.png'))
     
-for ensg in wp_ensg[~wp_comp_ccd_percvar & ~wp_comp_ccd_difffromrng & ~wp_comp_ccd_percvar_rng]:
+for ensg in fileprefixes[~wp_comp_ccd_percvar & ~wp_comp_ccd_difffromrng & ~wp_comp_ccd_percvar_rng]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(nonccdfolder, ensg+'_mvavg.png'))
     
-for ensg in wp_ensg[wp_comp_ccd_percvar & (~wp_comp_ccd_percvar_rng | ~wp_comp_ccd_difffromrng)]:
+for ensg in fileprefixes[wp_comp_ccd_percvar & (~wp_comp_ccd_percvar_rng | ~wp_comp_ccd_difffromrng)]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdpercvarfolder, ensg+'_mvavg.png'))
     
-for ensg in wp_ensg[~wp_comp_ccd_gausspercvar_percvarrng_mediandiff & wp_comp_ccd_gauss]:
+for ensg in fileprefixes[~wp_comp_ccd_gausspercvar_percvarrng_mediandiff & wp_comp_ccd_gauss]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdgaussfolder, ensg+'_mvavg.png'))
     
-for ensg in wp_ensg[~wp_comp_ccd_percvar & wp_comp_ccd_percvar_rng & wp_comp_ccd_difffromrng]:
+for ensg in fileprefixes[~wp_comp_ccd_percvar & wp_comp_ccd_percvar_rng & wp_comp_ccd_difffromrng]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.png'), os.path.join(ccdpercvarfolderrng, ensg+'_mvavg.png'))
 
-
+for ensg in fileprefixes[~wp_comp_ccd_use & wp_comp_ccd_clust1]:
+    shutil.copy(os.path.join(folder, ensg+'_clust1_mvavg.png'), os.path.join(bimodalccd, ensg+'_clust1_mvavg.png'))
+for ensg in fileprefixes[~wp_comp_ccd_use & wp_comp_ccd_clust2]:
+    shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.png'), os.path.join(bimodalccd, ensg+'_clust2_mvavg.png'))
+    
+for ensg in fileprefixes[~wp_comp_ccd_use & ~wp_comp_ccd_clust1]:
+    shutil.copy(os.path.join(folder, ensg+'_clust1_mvavg.png'), os.path.join(bimodalnonccd, ensg+'_clust1_mvavg.png'))
+for ensg in fileprefixes[~wp_comp_ccd_use & ~wp_comp_ccd_clust2]:
+    shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.png'), os.path.join(bimodalnonccd, ensg+'_clust2_mvavg.png'))
+    
 #%% Do the percent variance values match up with what we measured before for the genes?
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
 # Execution: run old code and save the data
