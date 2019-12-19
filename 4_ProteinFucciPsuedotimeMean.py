@@ -1,6 +1,7 @@
 #%% Imports
 from imports import *
 import numpy as np
+import os
 from stretch_time import stretch_time
 from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
@@ -215,34 +216,6 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, 
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
     plt.savefig(outfile)
     plt.close()
-    
-def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection'''
-    nobs = len(x)
-    return np.arange(1,nobs+1)/float(nobs)
-
-def benji_hoch(alpha, pvals):
-    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvals, pvals_sortind)
-    ecdffactor = _ecdf(pvals_sorted)
-    reject = pvals_sorted <= ecdffactor*alpha
-    reject = pvals_sorted <= ecdffactor*alpha
-    if reject.any():
-        rejectmax = max(np.nonzero(reject)[0])
-        reject[:rejectmax] = True
-    pvals_corrected_raw = pvals_sorted / ecdffactor
-    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
-    del pvals_corrected_raw
-    pvals_corrected[pvals_corrected>1] = 1
-    pvals_corrected_BH = np.empty_like(pvals_corrected)
-
-    # deal with sorting
-    pvals_corrected_BH[pvals_sortind] = pvals_corrected
-    del pvals_corrected
-    reject_BH = np.empty_like(reject)
-    reject_BH[pvals_sortind] = reject
-    return pvals_corrected_BH, reject_BH
 
 # bonferroni MTC
 def bonf(alpha, pvals):
@@ -344,8 +317,8 @@ for i, well in enumerate(u_well_plates):
         
         windows1 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust1_idx) - WINDOW + 1)])
         windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
-        temporal_mov_avg(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, folder, fileprefixes[i] + "_clust1")
-        temporal_mov_avg(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, folder, fileprefixes[i] + "_clust2")
+#        temporal_mov_avg(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, folder, fileprefixes[i] + "_clust1")
+#        temporal_mov_avg(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, folder, fileprefixes[i] + "_clust2")
 
     # Test for equal variances of the moving averages and raw values
     perc_var_cell.append(perc_var_cell_val)
@@ -364,9 +337,9 @@ for i, well in enumerate(u_well_plates):
     
     # Uncomment to make the plots (takes 10 mins)
     windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
-    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
-         mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
-         windows, folder, fileprefixes[i])
+#    temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
+#         mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
+#         windows, folder, fileprefixes[i])
     
 alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
