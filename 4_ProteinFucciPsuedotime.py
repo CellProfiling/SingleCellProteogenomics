@@ -1,7 +1,7 @@
 #%% Imports
 from imports import *
 import numpy as np
-import os
+import os, glob
 from stretch_time import stretch_time
 from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
@@ -255,6 +255,12 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
     values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
     return np.array(values_comp)
 
+def remove_outliers(values, return_values):
+    '''Remove outliers on "values" and return "return_values" based on that filter'''
+    max_cutoff = np.mean(values) + 5 * np.std(values)
+    min_cutoff = np.mean(values) - 5 * np.std(values)
+    return return_values[(values < max_cutoff) & (values > min_cutoff)]
+
 x_fit = np.linspace(0, 1, num=200)
 ccd_coeff_list = []
 not_ccd_coeff_list = []
@@ -263,6 +269,7 @@ ccd_pvals = []
 not_ccd_pvals = []
 
 use_log_ccd = False
+do_remove_outliers = True
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
 perc_var_comp_clust1, perc_var_comp_clust2, mvavgs_comp_clust1, mvavgs_comp_clust2, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng, mvavgs_x_clust1, mvavgs_x_clust2 = [],[],[],[],[],[],[],[] # percent variances for bimodal
@@ -289,6 +296,13 @@ for i, well in enumerate(u_well_plates):
     curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_nuc[curr_well_inds])
     curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_cyto[curr_well_inds])
     curr_mt_cell = pol_sort_mt_cell[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_mt_cell[curr_well_inds])
+    if do_remove_outliers:
+        curr_comp = curr_ab_cell if wp_iscell[i] else curr_ab_nuc if wp_isnuc[i] else curr_ab_cyto
+        curr_pol = remove_outliers(curr_comp, curr_pol)
+        curr_ab_cell = remove_outliers(curr_comp,curr_ab_cell)
+        curr_ab_nuc = remove_outliers(curr_comp,curr_ab_nuc)
+        curr_ab_cyto = remove_outliers(curr_comp,curr_ab_cyto)
+        curr_mt_cell = remove_outliers(curr_comp,curr_mt_cell)
 
     # Normalize mean intensities, normalized for display
     curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
@@ -321,6 +335,8 @@ for i, well in enumerate(u_well_plates):
     clusters = None
     if wp_isbimodal_fcpadj_pass[i]:
         clust1_idx, clust2_idx = wp_bimodal_cluster_idxs[i]
+        if do_remove_outliers:
+            clust1_idx, clust2_idx = remove_outliers(curr_comp, clust1_idx), remove_outliers(curr_comp, clust2_idx)
         perc_var_comp_clust1_val, mvavg_clust1 = mvavg_perc_var(curr_comp_norm[clust1_idx], WINDOW)
         perc_var_comp_clust2_val, mvavg_clust2 = mvavg_perc_var(curr_comp_norm[clust2_idx], WINDOW)
         mvavgs_x_clust1.append(mvavg(curr_pol[clust1_idx], WINDOW))
@@ -349,11 +365,11 @@ for i, well in enumerate(u_well_plates):
         windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
         temporal_mov_avg(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, None, folder, fileprefixes[i] + "_clust1")
         temporal_mov_avg(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, None, folder, fileprefixes[i] + "_clust2")
-#    # Make example plots for the randomization trials
-#    elif np.mean(curr_comp_percvar - curr_percvar_rng_comp) > 0.05:
-#        median_rng_idx = np.argsort(curr_percvar_rng_comp)
-#        for iii, idx in enumerate([0,len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)//2,3*len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)-1]):
-#            temporal_mov_avg_randomization_example(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], mvavg_xvals, curr_comp_mvavg, curr_mvavg_rng_comp[median_rng_idx[idx]], folder_rng, f"{fileprefixes[i]}_withrandomization_{iii}")
+    # Make example plots for the randomization trials
+    elif np.mean(curr_comp_percvar - curr_percvar_rng_comp) > 0.05:
+        median_rng_idx = np.argsort(curr_percvar_rng_comp)
+        for iii, idx in enumerate([0,len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)//2,3*len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)-1]):
+            temporal_mov_avg_randomization_example(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], mvavg_xvals, curr_comp_mvavg, curr_mvavg_rng_comp[median_rng_idx[idx]], folder_rng, f"{fileprefixes[i]}_withrandomization_{iii}")
 
     # Test for equal variances of the moving averages and raw values
     perc_var_cell.append(perc_var_cell_val)
@@ -396,7 +412,8 @@ wp_comp_eq_percvar_adj_withbimodal, wp_comp_pass_eq_percvar_adj_withbimodal = bo
 wp_comp_gtpass_eq_percvar_adj_withbimodal = wp_comp_pass_eq_percvar_adj_withbimodal & (perc_var_comp_withbimodal > np.median(perc_var_comp_rng_withbimodal, axis=1))
 
 # median differences from random
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
+print(f"Requiring {MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM*100}% additional percent variance explained than random.")
 mean_diff_from_rng_withbimodal = np.mean((perc_var_comp_withbimodal - perc_var_comp_rng_withbimodal.T).T, 1)
 wp_comp_ccd_difffromrng_withbimodal = mean_diff_from_rng_withbimodal >= MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
 
@@ -482,7 +499,8 @@ ccdgaussnonccdfolder = f"figures/GaussAndNonCCD"
 nongaussccdfolder = f"figures/CCDAndNonGauss"
 nonccdfolder = f"figures/NonCCD"
 bimodalnonccdfolder = f"figures/NonCCDBimodal"
-for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder]:
+replicatefolder = f"figures/Replicates"
+for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,replicatefolder]:
     if not os.path.exists(f): os.mkdir(f)
 
 # CCD Unimodal
@@ -686,6 +704,10 @@ pd.DataFrame({
         "ccd_pair":[",".join([str(wp_comp_ccd_use[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
     }).to_csv("output/ReplicatedCellCycleDependentProteins.csv")
 
+# Replicates
+for ensg in fileprefixes[ensg_is_duplicated]:
+    for file in glob.glob(os.path.join(folder, f"{ensg}*_mvavg.png")):
+        shutil.copy(file, os.path.join(replicatefolder, os.path.basename(file)))
 ###
 
 examples=np.loadtxt("input/processed/manual/ensgexamplesfrompaper.txt", dtype=str)
