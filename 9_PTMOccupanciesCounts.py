@@ -4,29 +4,50 @@ from Bio import SeqIO
 import sys
 import re
 import math
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
+from methods_RNASeqData import read_counts_and_phases, qc_filtering
 
 #%% Import the genes names we're analyzing
-allccd_transcript_regulated = np.array(pd.read_csv("output/allccd_transcript_regulated.csv")["gene"])
-dianaccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
-dianaccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
+def ccd_gene_names(id_list_like):
+    '''Convert gene ID list to gene name list'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
+
+def ccd_gene_lists(adata):
+    '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
+    ccd=pd.read_csv("output/picklestxt/ccd_compartment_ensg.txt")#"input/processed/manual/ccd_genes.txt")
+    nonccd=pd.read_csv("output/picklestxt/nonccd_compartment_ensg.txt")#("input/processed/manual/nonccd_genes.txt")
+    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    return ccd_regev_filtered, ccd_filtered, nonccd_filtered
+
+ccdtranscript = np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)
+ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)
+ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
 genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
 
+wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
+ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
+nonccd_comp_ensg = wp_ensg[~ccd_comp]
+
 # Read in RNA-Seq data again and the CCD gene lists
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
-count_or_rpkm = "Tpms" # so that the results match for cross-gene comparisons
-adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm, False, "")
-qc_filtering(adata, False)
+count_or_rpkm = "Tpms"
+biotype_to_use="protein_coding"
+adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
-allccd_transcript_regulated = set(ccd_gene_names(allccd_transcript_regulated))
-dianaccd_transcript_regulated = set(ccd_gene_names(dianaccd_transcript_regulated))
-dianaccd_nontranscript_regulated = set(ccd_gene_names(dianaccd_nontranscript_regulated))
+ccdtranscript = set(ccd_gene_names(adata.var_names[ccdtranscript]))
+ccdprotein_transcript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_transcript_regulated]))
+ccdprotein_nontranscript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_nontranscript_regulated]))
 diananonccd = set(ccd_gene_names(nonccd_filtered))
 genes_analyzed = set(ccd_gene_names(genes_analyzed))
 ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
 ccd_filtered = set(ccd_gene_names(ccd_filtered))
+nonccdprotein = set(ccd_gene_names(nonccd_comp_ensg))
 
 #%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
 # one or the other
@@ -39,8 +60,8 @@ ccd_filtered = set(ccd_gene_names(ccd_filtered))
 # Read in the protein group results
 search = "2019-06-19-15-54-09_CommonPtmsWithOccupancy\\Task1-SearchTask"
 search = "2019-07-12_NoMetalOccupancyFix\\Task2-SearchTask"
-filenameCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\' + search + '\\AllProteinGroups.tsv'
-filenameCommonAndLessCommon = 'C:\\Users\\antho\\Box\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv'
+filenameCommon = 'C:\\Users\\antho\\Dropbox\\ProjectData\\Variability\\U2OS_gptmd_search\\' + search + '\\AllProteinGroups.tsv'
+filenameCommonAndLessCommon = 'C:\\Users\\antho\\Dropbox\\ProjectData\\Variability\\U2OS_gptmd_search\\U2OSGptmdSearchAllProteinGroups.tsv'
 file = pd.read_csv(filenameCommon, sep="\t", index_col=False)
 targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
 modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
@@ -105,9 +126,9 @@ for idx in range(len(genes)):
 
 print(f"{str(len(targets))} proteins")
 print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
-print(f"{str(len([g for g in genemods.keys() if g in allccd_transcript_regulated]))}: number of all transcript regulated CCD genes of {len(allccd_transcript_regulated)} detected.")
-print(f"{str(len([g for g in genemods.keys() if g in dianaccd_transcript_regulated]))}: number of transcript regulated CCD genes from Diana's study of {len(dianaccd_transcript_regulated)} detected.")
-print(f"{str(len([g for g in genemods.keys() if g in dianaccd_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(dianaccd_nontranscript_regulated)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in ccdtranscript]))}: number of all transcript regulated CCD genes of {len(ccdtranscript)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_transcript_regulated]))}: number of transcript regulated CCD genes from Diana's study of {len(ccdprotein_transcript_regulated)} detected.")
+print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(ccdprotein_nontranscript_regulated)} detected.")
 print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of proteins of {len(genes_analyzed)} detected.")
 
 unambigenes, modcts, modsss = [], [], []
@@ -177,14 +198,14 @@ plt.title("Regev CCD Transcript Reg, occupancies")
 plt.show()
 plt.close()
 
-ccd_at_modctsdf = df[df["gene"].isin(allccd_transcript_regulated)]
+ccd_at_modctsdf = df[df["gene"].isin(ccdtranscript)]
 ccd_at_modctsdf.to_csv("output/ProteinModCountsTransRegAllCcd.csv")
 ccd_at_modcts = ccd_at_modctsdf["modcts"]
 ccd_at_modcts.hist()
 plt.title("All CCD Transcript Reg, modcts")
 plt.show()
 plt.close()
-ccd_at_modctsoccdf = occdf[occdf["gene"].isin(allccd_transcript_regulated)]
+ccd_at_modctsoccdf = occdf[occdf["gene"].isin(ccdtranscript)]
 ccd_at_modctsoccdf.to_csv("output/ProteinModAllCcdOccupancies.csv")
 ccd_at_modocc = ccd_at_modctsoccdf["occupancy"]
 ccd_at_modocc.hist()
@@ -192,14 +213,14 @@ plt.title("All CCD Transcript Reg, occupancies")
 plt.show()
 plt.close()
 
-ccd_t_modctsdf = df[df["gene"].isin(dianaccd_transcript_regulated)]
+ccd_t_modctsdf = df[df["gene"].isin(ccdprotein_transcript_regulated)]
 ccd_t_modctsdf.to_csv("output/ProteinModCountsTransRegDianaCcd.csv")
 ccd_t_modcts = ccd_t_modctsdf["modcts"]
 ccd_t_modcts.hist()
 plt.title("Diana's CCD Transcript Reg, modcts")
 plt.show()
 plt.close()
-ccd_t_modctsoccdf = occdf[occdf["gene"].isin(dianaccd_transcript_regulated)]
+ccd_t_modctsoccdf = occdf[occdf["gene"].isin(ccdprotein_transcript_regulated)]
 ccd_t_modctsoccdf.to_csv("output/ProteinModDianaCcdOccupancies.csv")
 ccd_t_modocc = ccd_t_modctsoccdf["occupancy"]
 ccd_t_modocc.hist()
@@ -207,14 +228,14 @@ plt.title("Diana's CCD Transcript Reg, occupancies")
 plt.show()
 plt.close()
 
-ccd_n_modctsdf = df[df["gene"].isin(dianaccd_nontranscript_regulated)]
+ccd_n_modctsdf = df[df["gene"].isin(ccdprotein_nontranscript_regulated)]
 ccd_n_modctsdf.to_csv("output/ProteinModCountsNonTransRegDianaCcd.csv")
 ccd_n_modcts = ccd_n_modctsdf["modcts"]
 ccd_n_modcts.hist()
 plt.title("Diana's CCD Non-Transcript Reg, modcts")
 plt.show()
 plt.close()
-ccd_n_modctsoccdf = occdf[occdf["gene"].isin(dianaccd_nontranscript_regulated)]
+ccd_n_modctsoccdf = occdf[occdf["gene"].isin(ccdprotein_nontranscript_regulated)]
 ccd_n_modctsoccdf.to_csv("output/ProteinModDianaNonTransRegCcdOccupancies.csv")
 ccd_n_modocc = ccd_n_modctsoccdf["occupancy"]
 ccd_n_modocc.hist()
@@ -222,14 +243,14 @@ plt.title("Diana's CCD Non-Transcript Reg, occupancies")
 plt.show()
 plt.close()
 
-nonccd_modctsdf = df[df["gene"].isin(diananonccd)]
+nonccd_modctsdf = df[df["gene"].isin(nonccdprotein)]
 nonccd_modctsdf.to_csv("output/ProteinModCountsNonCcd.csv")
 nonccd_modcts = nonccd_modctsdf["modcts"]
 nonccd_modcts.hist()
 plt.title("Diana's Non-CCD, modcts")
 plt.show()
 plt.close()
-nonccd_modctsoccdf = occdf[occdf["gene"].isin(diananonccd)]
+nonccd_modctsoccdf = occdf[occdf["gene"].isin(nonccdprotein)]
 nonccd_modctsoccdf.to_csv("output/ProteinModDianaNonCcdOccupancies.csv")
 nonccd_modocc = nonccd_modctsoccdf["occupancy"]
 nonccd_modocc.hist()

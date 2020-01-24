@@ -1,32 +1,50 @@
 #%% Imports
 from imports import *
 from Bio import SeqIO
-from methods_RNASeqData import ccd_gene_names
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
+from methods_RNASeqData import read_counts_and_phases, qc_filtering
 
 #%% Import the genes names we're analyzing
-ccd_transcript_regulated = np.array(pd.read_csv("output/ccd_transcript_regulated.csv")["gene"])
-ccd_nontranscript_regulated = np.array(pd.read_csv("output/ccd_nontranscript_regulated.csv")["gene"])
+def ccd_gene_names(id_list_like):
+    '''Convert gene ID list to gene name list'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
+
+def ccd_gene_lists(adata):
+    '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
+    ccd=pd.read_csv("output/picklestxt/ccd_compartment_ensg.txt")#"input/processed/manual/ccd_genes.txt")
+    nonccd=pd.read_csv("output/picklestxt/nonccd_compartment_ensg.txt")#("input/processed/manual/nonccd_genes.txt")
+    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    return ccd_regev_filtered, ccd_filtered, nonccd_filtered
+
+ccdtranscript = np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)
+ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)
+ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
+wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
+ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
+nonccd_comp_ensg = wp_ensg[~ccd_comp]
+ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+
 genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
 genes_analyzed = set(ccd_gene_names(genes_analyzed))
-ccd_transcript_regulated = set(ccd_gene_names(ccd_transcript_regulated))
-ccd_nontranscript_regulated = set(ccd_gene_names(ccd_nontranscript_regulated))
 
 # Read in RNA-Seq data again and the CCD gene lists
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
-count_or_rpkm = "Tpms" # so that the results match for cross-gene comparisons
-adata, phases_filt = read_counts_and_phases(dd, count_or_rpkm, False, "")
-qc_filtering(adata, False)
-ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+count_or_rpkm = "Tpms"
+biotype_to_use="protein_coding"
+adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
-allccd_transcript_regulated = set(ccd_gene_names(allccd_transcript_regulated))
-dianaccd_transcript_regulated = set(ccd_gene_names(dianaccd_transcript_regulated))
-dianaccd_nontranscript_regulated = set(ccd_gene_names(dianaccd_nontranscript_regulated))
-diananonccd = set(ccd_gene_names(nonccd_filtered))
 genes_analyzed = set(ccd_gene_names(genes_analyzed))
+ccdtranscript = set(ccd_gene_names(adata.var_names[ccdtranscript]))
+ccdprotein_transcript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_transcript_regulated]))
+ccdprotein_nontranscript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_nontranscript_regulated]))
 ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
-ccd_filtered = set(ccd_gene_names(ccd_filtered))
+nonccdprotein = set(ccd_gene_names(nonccd_comp_ensg))
 
 #%% Let's take a look at protein stability
 # Idea: Is there a difference in protein stability or turnover for the proteins that are
@@ -38,8 +56,8 @@ ccd_filtered = set(ccd_gene_names(ccd_filtered))
 def plot_protein_stabilities(filename, title, splitname):
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
-    ccd_t_stab = df[df["ProteinName"].isin(ccd_transcript_regulated)]
-    ccd_n_stab = df[df["ProteinName"].isin(ccd_nontranscript_regulated)]
+    ccd_t_stab = df[df["ProteinName"].isin(ccdprotein_transcript_regulated)]
+    ccd_n_stab = df[df["ProteinName"].isin(ccdprotein_nontranscript_regulated)]
 
     df1 = df["Protein stability class"].value_counts().reindex(["non-stable", "medium", "stable", "non-melter"]).fillna(0)
     df2 = ccd_t_stab["Protein stability class"].value_counts().reindex(["non-stable", "medium", "stable", "non-melter"]).fillna(0)
@@ -54,19 +72,19 @@ def plot_protein_stabilities(filename, title, splitname):
 
 plt.figure(figsize=(15,15))
 plt.subplot(331)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
 plt.subplot(332)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
 plt.subplot(334)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
 plt.subplot(335)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
 plt.subplot(337)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
 plt.subplot(338)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
 plt.subplot(339)
-plot_protein_stabilities("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
+plot_protein_stabilities("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
 plt.savefig("figures/ProteinStabilities.png")
 plt.show()
 plt.close()
@@ -97,8 +115,8 @@ def add_temps(filename, title, splitname, merged):
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
     if len(merged) == 0: merged = df
     else: pd.merge(merged, df, on="ProteinName", suffixes=("", title))
-    ccd_t_stab = df[df["ProteinName"].isin(ccd_transcript_regulated)]
-    ccd_n_stab = df[df["ProteinName"].isin(ccd_nontranscript_regulated)]
+    ccd_t_stab = df[df["ProteinName"].isin(ccdprotein_transcript_regulated)]
+    ccd_n_stab = df[df["ProteinName"].isin(ccdprotein_nontranscript_regulated)]
 
     all_temps.extend(df[pd.notna(df["Melting point [°C]"])]["Melting point [°C]"])
     transcript_reg.extend(ccd_t_stab[pd.notna(ccd_t_stab["Melting point [°C]"])]["Melting point [°C]"])
@@ -162,37 +180,37 @@ plt.figure(figsize=(15,15))
 plt.subplot(331)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
 temp_hist("A549_R1")
 plt.subplot(332)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
 temp_hist("A549_R2")
 plt.subplot(334)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
 temp_hist("HEK293_R1")
 plt.subplot(335)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
 temp_hist("HEK293_R2")
 plt.subplot(337)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
 temp_hist("HepG2_R1")
 plt.subplot(338)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
 temp_hist("HepG2_R2")
 plt.subplot(339)
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
 temp_hist("HepG2_R3")
 plt.savefig("figures/ProteinMeltingPointsIndivid.png")
 plt.show()
@@ -201,13 +219,13 @@ plt.close()
 # Aggregate histogram
 all_temps, transcript_reg, nontranscr_reg, merged = [],[],[],[]
 all_temp_prot, transcript_reg_prot, nontranscript_reg_prot = [],[],[]
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
-add_temps("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False, merged)
+add_temps("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False, merged)
 temp_hist("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPoints.png")
 plt.show()
@@ -263,9 +281,9 @@ def add_temps_and_names(filename, title, splitname):
     '''Adds melting temperature measurements from supp info files to lists'''
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
-    ccd_t_stab = df[df["ProteinName"].isin(ccd_transcript_regulated)]
-    ccd_n_stab = df[df["ProteinName"].isin(ccd_nontranscript_regulated)]
-    nonccd_stab = df[df["ProteinName"].isin(diananonccd)]
+    ccd_t_stab = df[df["ProteinName"].isin(ccdprotein_transcript_regulated)]
+    ccd_n_stab = df[df["ProteinName"].isin(ccdprotein_nontranscript_regulated)]
+    nonccd_stab = df[df["ProteinName"].isin(nonccdprotein)]
 
     notna = pd.notna(df["Melting point [°C]"])
     all_temps.extend(df[notna]["Melting point [°C]"])
@@ -322,43 +340,43 @@ plt.figure(figsize=(15,15))
 plt.subplot(331)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("A549_R1")
 plt.subplot(332)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("A549_R2")
 plt.subplot(334)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("HEK293_R1")
 plt.subplot(335)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("HEK293_R2")
 plt.subplot(337)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("HepG2_R1")
 plt.subplot(338)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("HepG2_R2")
 plt.subplot(339)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("HepG2_R3")
 plt.savefig("figures/ProteinMeltingPointsMedianedIndivid.png")
@@ -368,19 +386,19 @@ plt.close()
 # Aggregate histogram
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[], []
 atp, trp, ntp, nnp = [], [], [], []
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
-add_temps_and_names("C:\\Users\\antho\\Box\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R1.tsv", "A549_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\A549_R2.tsv", "A549_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R1.tsv", "HEK293_R1", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HEK293_R2.tsv", "HEK293_R2", True)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R1.tsv", "HepG2_R1", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R2.tsv", "HepG2_R2", False)
+add_temps_and_names("C:\\Users\\antho\\Dropbox\\ProjectData\\ProteinStability\\HepG2_R3.tsv", "HepG2_R3", False)
 all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
 temp_hist("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPointsMedianed.png")
 plt.show()
 plt.close()
-temp_box("Aggregated Melting Poitns")
+temp_box("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPointBox.pdf")
 plt.show()
 plt.close()
