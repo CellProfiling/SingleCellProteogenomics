@@ -57,9 +57,9 @@ ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 print("loaded")
 
 print("reading RNA data")
-ccd_transcript_regulated = np.load("output/pickles/ccd_transcript_regulated.npy", allow_pickle=True)
-dianaccd_transcript_regulated = np.load("output/pickles/dianaccd_transcript_regulated.npy", allow_pickle=True)
-dianaccd_nontranscript_regulated = np.load("output/pickles/dianaccd_nontranscript_regulated.npy", allow_pickle=True)
+ccdtranscript = np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)
+ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)
+ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
 print("loaded")
 
 #%% Make temporal heatmap and use those peak values to compare to RNA data rank by percent variance explained.
@@ -237,8 +237,8 @@ norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
 moving_averages = np.apply_along_axis(mvavg, 0, norm_exp_sort, 100)
 max_moving_avg_loc = np.argmax(moving_averages, 0)
 max_moving_avg_pol = np.take(fucci_time_sort, max_moving_avg_loc)
-max_moving_avg_pol_ccd = max_moving_avg_pol[ccd_transcript_regulated]
-moving_averages_ccd = moving_averages[:,ccd_transcript_regulated]
+max_moving_avg_pol_ccd = max_moving_avg_pol[ccdtranscript]
+moving_averages_ccd = moving_averages[:,ccdtranscript]
 max_moving_avg_pol_sortinds = np.argsort(max_moving_avg_pol_ccd)
 sorted_max_moving_avg_pol_ccd = np.take(max_moving_avg_pol_ccd, max_moving_avg_pol_sortinds)
 sorted_rna_array = np.take(moving_averages_ccd, max_moving_avg_pol_sortinds, axis=1).T
@@ -292,7 +292,7 @@ plt.show()
 # Execution: compare distribution of differences between peaks; grainger test, too
 # Output: plot of dist of differences; grainger test results
 prot_ccd_ensg = list(wp_ensg[ccd_comp])
-rna_ccd_ensg = list(adata.var_names[ccd_transcript_regulated])
+rna_ccd_ensg = list(adata.var_names[ccdtranscript])
 both_ccd_ensg = np.intersect1d(prot_ccd_ensg, rna_ccd_ensg)
 both_prot_ccd_idx = np.array([prot_ccd_ensg.index(ensg) for ensg in both_ccd_ensg])
 both_rna_ccd_idx = np.array([rna_ccd_ensg.index(ensg) for ensg in both_ccd_ensg])

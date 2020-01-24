@@ -195,7 +195,7 @@ plt.close()
 # Log normalize and use RPKMS because we're comparing genes in the next cell
 count_or_rpkm = "Tpms"
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
-adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize= False, do_remove_blob=True)
 
 adata_spikeins, phases_spikeins = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=True, biotype_to_use="")
 sc.pp.filter_genes(adata_spikeins, min_cells=100)
