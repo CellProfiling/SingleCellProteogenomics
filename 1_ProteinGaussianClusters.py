@@ -270,6 +270,29 @@ plt.close()
 # Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
 # Exec: sklearn.mixture.GaussianMixture & scipy.stats.kruskal
 # Output: FDR for cell cycle variation per well per compartment
+def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
+    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    mmmm = np.concatenate((g1, s, g2))
+    cccc = (["G1"] * len(g1))
+    cccc.extend(["G1/S"] * len(s))
+    cccc.extend(["G2"] * len(g2))
+    moddf = pd.DataFrame({"Protein Expression": mmmm, "Phase" : cccc})
+    boxplot = moddf.boxplot("Protein Expression", by="Phase", figsize=(12, 8), showfliers=True)
+    boxplot.set_xlabel("", size=36,fontname='Arial')
+    boxplot.set_ylabel("Peak Expression, hrs", size=36,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=16)
+    plt.title("")
+    plt.savefig(f"{outfolder}/GaussianClusteringProtein_{ensg}.png")
+    plt.close()
+    
+def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
+    '''Get the values for the annotated compartment'''
+    values_comp = np.empty_like(values_cell)
+    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
+    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
+    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
+    return np.array(values_comp) 
+
 gaussian = GaussianMixture(n_components=3, random_state=1, max_iter=500)
 cluster_labels = gaussian.fit_predict(np.array([log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale]).T)
 clusternames = ["G1","S-ph","G2"]
@@ -287,13 +310,20 @@ wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal = [],[],[]
 g1 = cluster_labels == 0
 sph = cluster_labels == 1
 g2 = cluster_labels == 2
-for wp in u_well_plates:
-    curr_wp_g1 = (well_plate == wp) & g1
-    curr_wp_sph = (well_plate == wp) & sph
-    curr_wp_g2 = (well_plate == wp) & g2
+for iii, wp in enumerate(u_well_plates):
+    curr_well_inds = well_plate==well
+    curr_wp_g1 = curr_well_inds & g1
+    curr_wp_sph = curr_well_inds & sph
+    curr_wp_g2 = curr_well_inds & g2
     wp_cell_kruskal.append(scipy.stats.kruskal(ab_cell[curr_wp_g1], ab_cell[curr_wp_sph], ab_cell[curr_wp_g2])[1])
     wp_nuc_kruskal.append(scipy.stats.kruskal(ab_nuc[curr_wp_g1], ab_nuc[curr_wp_sph], ab_nuc[curr_wp_g2])[1])
     wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])
+    max_val_for_norm = np.max(ab_cell[curr_well_inds] if wp_iscell[iii] else ab_nuc[curr_well_inds] if wp_isnuc[iii] else ab_cyto[curr_well_inds])
+    gaussian_boxplot_result(
+            (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm,
+            (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm,
+            (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm,
+            "figures/GaussianBoxplots", wp_ensg[iii])
 
 # benjimini-hochberg multiple testing correction
 # source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
