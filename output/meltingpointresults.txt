@@ -1,0 +1,432 @@
+filtering for biotype: protein_coding
+Trying to set attribute `.obs` of view, making a copy.
+data shape: (1152, 19997)
+data shape after filtering: (1021, 13450)
+A549_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+54.07388888888889 +/- 5.452854643710218: Transcript Reg. CCD (mean, std)
+55.15202797202798 +/- 5.051449499022592: Non-Transcript Reg. CCD (mean, std)
+52.82: Transcript Reg. CCD (median)
+53.7: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-1.119728008388574, pvalue=0.26434681817024747)
+KruskalResult(statistic=2.512860554926662, pvalue=0.11292079199616753)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+55.82741293532338 +/- 5.501880100664505: All Proteins (mean, std)
+55.15202797202798 +/- 5.051449499022592: Non-Transcript Reg. CCD (mean, std)
+54.845: All Proteins (median)
+53.7: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.4496439737602973, pvalue=0.14722098671682918)
+KruskalResult(statistic=2.40587784469587, pvalue=0.12088029831802184)
+
+Testing whether transcript reg. CCD is different than all proteins
+55.82741293532338 +/- 5.501880100664505: All Proteins (mean, std)
+54.07388888888889 +/- 5.452854643710218: Transcript Reg. CCD (mean, std)
+54.845: All Proteins (median)
+52.82: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.904919070763422, pvalue=0.05684958722368405)
+KruskalResult(statistic=5.442174671216141, pvalue=0.01965618200161984)
+
+A549_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+52.059999999999995 +/- 4.124742834198984: Transcript Reg. CCD (mean, std)
+53.67061643835616 +/- 5.107167971439445: Non-Transcript Reg. CCD (mean, std)
+51.11: Transcript Reg. CCD (median)
+52.69: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-1.5887659344337381, pvalue=0.11393913260634027)
+KruskalResult(statistic=2.4619240048581195, pvalue=0.11663583587277494)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+53.64153701380176 +/- 5.014005833327616: All Proteins (mean, std)
+53.67061643835616 +/- 5.107167971439445: Non-Transcript Reg. CCD (mean, std)
+52.695: All Proteins (median)
+52.69: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-0.0689791020890325, pvalue=0.9450090537455919)
+KruskalResult(statistic=0.0009924972196998423, pvalue=0.9748676628977077)
+
+Testing whether transcript reg. CCD is different than all proteins
+53.64153701380176 +/- 5.014005833327616: All Proteins (mean, std)
+52.059999999999995 +/- 4.124742834198984: Transcript Reg. CCD (mean, std)
+52.695: All Proteins (median)
+51.11: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.6947821276565256, pvalue=0.090181502233295)
+KruskalResult(statistic=2.878731760933439, pvalue=0.08975668873282738)
+
+HEK293_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+52.05105263157895 +/- 2.73001907596351: Transcript Reg. CCD (mean, std)
+53.72208333333333 +/- 4.264352411920895: Non-Transcript Reg. CCD (mean, std)
+51.28: Transcript Reg. CCD (median)
+52.69: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-2.2581813613020483, pvalue=0.025321016349733858)
+KruskalResult(statistic=5.529453666508329, pvalue=0.018698943172425198)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+54.40508720930232 +/- 3.701563978489217: All Proteins (mean, std)
+53.72208333333333 +/- 4.264352411920895: Non-Transcript Reg. CCD (mean, std)
+53.68: All Proteins (median)
+52.69: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.9857980268690627, pvalue=0.04711515302562218)
+KruskalResult(statistic=4.5203897530428865, pvalue=0.03349320054194122)
+
+Testing whether transcript reg. CCD is different than all proteins
+54.40508720930232 +/- 3.701563978489217: All Proteins (mean, std)
+52.05105263157895 +/- 2.73001907596351: Transcript Reg. CCD (mean, std)
+53.68: All Proteins (median)
+51.28: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=3.9104045286232805, pvalue=9.349635025223496e-05)
+KruskalResult(statistic=18.57382391647262, pvalue=1.6344959004906636e-05)
+
+HEK293_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.446734693877545 +/- 3.175916636285195: Transcript Reg. CCD (mean, std)
+49.43462427745664 +/- 3.2660884141971422: Non-Transcript Reg. CCD (mean, std)
+46.58: Transcript Reg. CCD (median)
+49.18: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.7667738484257525, pvalue=0.00021232245230542237)
+KruskalResult(statistic=15.967809002998038, pvalue=6.44287782716247e-05)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.89139124755062 +/- 3.292795243225692: All Proteins (mean, std)
+49.43462427745664 +/- 3.2660884141971422: Non-Transcript Reg. CCD (mean, std)
+49.69: All Proteins (median)
+49.18: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.7994143694768856, pvalue=0.0720010292052703)
+KruskalResult(statistic=2.8232460783299738, pvalue=0.09290833665196704)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.89139124755062 +/- 3.292795243225692: All Proteins (mean, std)
+47.446734693877545 +/- 3.175916636285195: Transcript Reg. CCD (mean, std)
+49.69: All Proteins (median)
+46.58: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=5.176908412496047, pvalue=2.3273068557614757e-07)
+KruskalResult(statistic=27.874780645519632, pvalue=1.2942576473053815e-07)
+
+HepG2_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+48.00116279069767 +/- 2.25057843655372: Transcript Reg. CCD (mean, std)
+49.39246575342466 +/- 2.2701051697452: Non-Transcript Reg. CCD (mean, std)
+47.81: Transcript Reg. CCD (median)
+49.695: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.5204104231304654, pvalue=0.000541211580661563)
+KruskalResult(statistic=13.51393100300941, pvalue=0.0002367989839965725)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.42827592146056 +/- 2.1603938191932923: All Proteins (mean, std)
+49.39246575342466 +/- 2.2701051697452: Non-Transcript Reg. CCD (mean, std)
+49.75: All Proteins (median)
+49.695: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.19752856691809587, pvalue=0.8434206759902853)
+KruskalResult(statistic=0.13094323789061688, pvalue=0.7174560553519315)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.42827592146056 +/- 2.1603938191932923: All Proteins (mean, std)
+48.00116279069767 +/- 2.25057843655372: Transcript Reg. CCD (mean, std)
+49.75: All Proteins (median)
+47.81: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.313672045506774, pvalue=1.6320900280349882e-05)
+KruskalResult(statistic=19.282402228236784, pvalue=1.127406784120465e-05)
+
+HepG2_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.73581395348837 +/- 2.203571342857116: Transcript Reg. CCD (mean, std)
+49.32689189189189 +/- 2.3605172507345378: Non-Transcript Reg. CCD (mean, std)
+47.96: Transcript Reg. CCD (median)
+49.6: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.9275728982536, pvalue=0.00012019151651610411)
+KruskalResult(statistic=15.505389697876724, pvalue=8.227034274639771e-05)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.38661919294677 +/- 2.2177845994261727: All Proteins (mean, std)
+49.32689189189189 +/- 2.3605172507345378: Non-Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+49.6: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.3230173015480613, pvalue=0.7466933133379894)
+KruskalResult(statistic=0.09007379269844691, pvalue=0.7640833644537735)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.38661919294677 +/- 2.2177845994261727: All Proteins (mean, std)
+47.73581395348837 +/- 2.203571342857116: Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+47.96: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.862731371443202, pvalue=1.1875888838127299e-06)
+KruskalResult(statistic=21.88451162786333, pvalue=2.895616330680177e-06)
+
+HepG2_R3 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.875238095238096 +/- 1.97891412996796: Transcript Reg. CCD (mean, std)
+49.331111111111106 +/- 2.1509618454705777: Non-Transcript Reg. CCD (mean, std)
+47.495000000000005: Transcript Reg. CCD (median)
+49.36: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.850763359764876, pvalue=0.00016784426770672007)
+KruskalResult(statistic=13.796162780817815, pvalue=0.00020375195102044705)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.50123947272062 +/- 2.1796332783893906: All Proteins (mean, std)
+49.331111111111106 +/- 2.1509618454705777: Non-Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+49.36: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.866316294677157, pvalue=0.3863539404213483)
+KruskalResult(statistic=1.0789759953617648, pvalue=0.29892674578462286)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.50123947272062 +/- 2.1796332783893906: All Proteins (mean, std)
+47.875238095238096 +/- 1.97891412996796: Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+47.495000000000005: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.818492269807122, pvalue=1.4853113731982524e-06)
+KruskalResult(statistic=22.438268275352744, pvalue=2.170069069325233e-06)
+
+Aggregated Melting Points statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+49.595285714285716 +/- 4.083134202835776: Transcript Reg. CCD (mean, std)
+51.34619760479042 +/- 4.409972776910088: Non-Transcript Reg. CCD (mean, std)
+48.875: Transcript Reg. CCD (median)
+50.48: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-5.962596438984144, pvalue=3.206703544999602e-09)
+KruskalResult(statistic=47.61347373451875, pvalue=5.19104747622702e-12)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+51.469126525369305 +/- 4.3738774854104365: All Proteins (mean, std)
+51.34619760479042 +/- 4.409972776910088: Non-Transcript Reg. CCD (mean, std)
+50.73: All Proteins (median)
+50.48: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.8777484363884113, pvalue=0.38008574879939705)
+KruskalResult(statistic=0.8149719186534186, pvalue=0.3666543722481713)
+
+Testing whether transcript reg. CCD is different than all proteins
+51.469126525369305 +/- 4.3738774854104365: All Proteins (mean, std)
+49.595285714285716 +/- 4.083134202835776: Transcript Reg. CCD (mean, std)
+50.73: All Proteins (median)
+48.875: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=7.145295599237311, pvalue=9.143044035507416e-13)
+KruskalResult(statistic=68.75086475138411, pvalue=1.1172186873995583e-16)
+
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+49.595285714285716 +/- 4.083134202835776: Transcript Reg. CCD (mean, std)
+51.34619760479042 +/- 4.409972776910088: Non-Transcript Reg. CCD (mean, std)
+48.875: Transcript Reg. CCD (median)
+50.48: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-5.962596438984144, pvalue=3.206703544999602e-09)
+KruskalResult(statistic=47.61347373451875, pvalue=5.19104747622702e-12)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+51.469126525369305 +/- 4.3738774854104365: All Proteins (mean, std)
+51.34619760479042 +/- 4.409972776910088: Non-Transcript Reg. CCD (mean, std)
+50.73: All Proteins (median)
+50.48: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.8777484363884113, pvalue=0.38008574879939705)
+KruskalResult(statistic=0.8149719186534186, pvalue=0.3666543722481713)
+
+Testing whether transcript reg. CCD is different than all proteins
+51.469126525369305 +/- 4.3738774854104365: All Proteins (mean, std)
+49.595285714285716 +/- 4.083134202835776: Transcript Reg. CCD (mean, std)
+50.73: All Proteins (median)
+48.875: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=7.145295599237311, pvalue=9.143044035507416e-13)
+KruskalResult(statistic=68.75086475138411, pvalue=1.1172186873995583e-16)
+A549_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+54.104571428571425 +/- 5.5270515740348225: Transcript Reg. CCD (mean, std)
+55.18617021276596 +/- 5.070504949126144: Non-Transcript Reg. CCD (mean, std)
+52.77: Transcript Reg. CCD (median)
+53.62: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-1.1026621920700899, pvalue=0.2716966646619019)
+__main__:292: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+__main__:293: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+__main__:294: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+__main__:297: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+__main__:298: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+__main__:299: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+KruskalResult(statistic=2.5283785593243002, pvalue=0.11181506179571965)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+55.78213920817369 +/- 5.464291218719912: All Proteins (mean, std)
+55.18617021276596 +/- 5.070504949126144: Non-Transcript Reg. CCD (mean, std)
+54.8: All Proteins (median)
+53.62: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.2784071625404594, pvalue=0.20116723786937826)
+KruskalResult(statistic=1.9410852681125033, pvalue=0.16355074583147244)
+
+Testing whether transcript reg. CCD is different than all proteins
+55.78213920817369 +/- 5.464291218719912: All Proteins (mean, std)
+54.104571428571425 +/- 5.5270515740348225: Transcript Reg. CCD (mean, std)
+54.8: All Proteins (median)
+52.77: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.8090044785511774, pvalue=0.0705137594616003)
+KruskalResult(statistic=5.079503409937212, pvalue=0.024210303156161458)
+
+A549_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+52.115178571428565 +/- 4.184959780089815: Transcript Reg. CCD (mean, std)
+53.686909722222225 +/- 5.131197573711329: Non-Transcript Reg. CCD (mean, std)
+51.35: Transcript Reg. CCD (median)
+52.585: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-1.5163029337676903, pvalue=0.13130003821033184)
+KruskalResult(statistic=2.2794022444722075, pvalue=0.13110239374928576)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+53.63080183642963 +/- 5.004511785948352: All Proteins (mean, std)
+53.686909722222225 +/- 5.131197573711329: Non-Transcript Reg. CCD (mean, std)
+52.7: All Proteins (median)
+52.585: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-0.1323868974106417, pvalue=0.8946837980267066)
+KruskalResult(statistic=0.00019328526247313298, pvalue=0.9889076020496796)
+
+Testing whether transcript reg. CCD is different than all proteins
+53.63080183642963 +/- 5.004511785948352: All Proteins (mean, std)
+52.115178571428565 +/- 4.184959780089815: Transcript Reg. CCD (mean, std)
+52.7: All Proteins (median)
+51.35: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.5988595997538275, pvalue=0.10991889127783964)
+KruskalResult(statistic=2.6035223385824433, pvalue=0.10662649990113501)
+
+HEK293_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+52.11351351351351 +/- 2.7396786319884567: Transcript Reg. CCD (mean, std)
+53.73159663865547 +/- 4.280963918627877: Non-Transcript Reg. CCD (mean, std)
+51.46: Transcript Reg. CCD (median)
+52.71: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-2.151445681252387, pvalue=0.03300010588103801)
+KruskalResult(statistic=4.867123738228068, pvalue=0.02737308770295615)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+54.399850558977874 +/- 3.6912712331532305: All Proteins (mean, std)
+53.73159663865547 +/- 4.280963918627877: Non-Transcript Reg. CCD (mean, std)
+53.68: All Proteins (median)
+52.71: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.9393407808248473, pvalue=0.05252228095249874)
+KruskalResult(statistic=4.321999974578727, pvalue=0.03762267875541332)
+
+Testing whether transcript reg. CCD is different than all proteins
+54.399850558977874 +/- 3.6912712331532305: All Proteins (mean, std)
+52.11351351351351 +/- 2.7396786319884567: Transcript Reg. CCD (mean, std)
+53.68: All Proteins (median)
+51.46: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=3.7580229410715056, pvalue=0.0001734713238287346)
+KruskalResult(statistic=16.93139242756644, pvalue=3.875533608440245e-05)
+
+HEK293_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.468333333333334 +/- 3.2050769188204447: Transcript Reg. CCD (mean, std)
+49.41405882352941 +/- 3.2833075588423872: Non-Transcript Reg. CCD (mean, std)
+46.54: Transcript Reg. CCD (median)
+49.17: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.627843083015142, pvalue=0.0003566833624208638)
+KruskalResult(statistic=14.87819285780941, pvalue=0.00011468109308776378)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.87263007240276 +/- 3.2882837117605868: All Proteins (mean, std)
+49.41405882352941 +/- 3.2833075588423872: Non-Transcript Reg. CCD (mean, std)
+49.67: All Proteins (median)
+49.17: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=1.7925891976879842, pvalue=0.0730881107917202)
+KruskalResult(statistic=2.906704811446839, pvalue=0.08821193843817163)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.87263007240276 +/- 3.2882837117605868: All Proteins (mean, std)
+47.468333333333334 +/- 3.2050769188204447: Transcript Reg. CCD (mean, std)
+49.67: All Proteins (median)
+46.54: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=5.045519575666394, pvalue=4.6563851482688673e-07)
+KruskalResult(statistic=26.27738238169084, pvalue=2.957318436592959e-07)
+
+HepG2_R1 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+48.00116279069767 +/- 2.25057843655372: Transcript Reg. CCD (mean, std)
+49.39246575342466 +/- 2.2701051697452: Non-Transcript Reg. CCD (mean, std)
+47.81: Transcript Reg. CCD (median)
+49.695: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.5204104231304654, pvalue=0.000541211580661563)
+KruskalResult(statistic=13.51393100300941, pvalue=0.0002367989839965725)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.42827592146056 +/- 2.1603938191932923: All Proteins (mean, std)
+49.39246575342466 +/- 2.2701051697452: Non-Transcript Reg. CCD (mean, std)
+49.75: All Proteins (median)
+49.695: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.19752856691809587, pvalue=0.8434206759902853)
+KruskalResult(statistic=0.13094323789061688, pvalue=0.7174560553519315)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.42827592146056 +/- 2.1603938191932923: All Proteins (mean, std)
+48.00116279069767 +/- 2.25057843655372: Transcript Reg. CCD (mean, std)
+49.75: All Proteins (median)
+47.81: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.313672045506774, pvalue=1.6320900280349882e-05)
+KruskalResult(statistic=19.282402228236784, pvalue=1.127406784120465e-05)
+
+HepG2_R2 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.73581395348837 +/- 2.203571342857116: Transcript Reg. CCD (mean, std)
+49.32689189189189 +/- 2.3605172507345378: Non-Transcript Reg. CCD (mean, std)
+47.96: Transcript Reg. CCD (median)
+49.6: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.9275728982536, pvalue=0.00012019151651610411)
+KruskalResult(statistic=15.505389697876724, pvalue=8.227034274639771e-05)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.38661919294677 +/- 2.2177845994261727: All Proteins (mean, std)
+49.32689189189189 +/- 2.3605172507345378: Non-Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+49.6: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.3230173015480613, pvalue=0.7466933133379894)
+KruskalResult(statistic=0.09007379269844691, pvalue=0.7640833644537735)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.38661919294677 +/- 2.2177845994261727: All Proteins (mean, std)
+47.73581395348837 +/- 2.203571342857116: Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+47.96: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.862731371443202, pvalue=1.1875888838127299e-06)
+KruskalResult(statistic=21.88451162786333, pvalue=2.895616330680177e-06)
+
+HepG2_R3 statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+47.875238095238096 +/- 1.97891412996796: Transcript Reg. CCD (mean, std)
+49.331111111111106 +/- 2.1509618454705777: Non-Transcript Reg. CCD (mean, std)
+47.495000000000005: Transcript Reg. CCD (median)
+49.36: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-3.850763359764876, pvalue=0.00016784426770672007)
+KruskalResult(statistic=13.796162780817815, pvalue=0.00020375195102044705)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+49.50123947272062 +/- 2.1796332783893906: All Proteins (mean, std)
+49.331111111111106 +/- 2.1509618454705777: Non-Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+49.36: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.866316294677157, pvalue=0.3863539404213483)
+KruskalResult(statistic=1.0789759953617648, pvalue=0.29892674578462286)
+
+Testing whether transcript reg. CCD is different than all proteins
+49.50123947272062 +/- 2.1796332783893906: All Proteins (mean, std)
+47.875238095238096 +/- 1.97891412996796: Transcript Reg. CCD (mean, std)
+49.76: All Proteins (median)
+47.495000000000005: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=4.818492269807122, pvalue=1.4853113731982524e-06)
+KruskalResult(statistic=22.438268275352744, pvalue=2.170069069325233e-06)
+
+Aggregated Melting Points statistical tests
+Testing whether transcript reg. CCD melting points are different than non-transcript reg. CCD
+49.77741379310344 +/- 4.348234009478912: Transcript Reg. CCD (mean, std)
+51.00116033755274 +/- 3.8711133255634813: Non-Transcript Reg. CCD (mean, std)
+48.84: Transcript Reg. CCD (median)
+50.34: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=-2.097301618534003, pvalue=0.036823671226393434)
+KruskalResult(statistic=10.401764341477996, pvalue=0.001258949668986527)
+
+Testing whether non-transcript reg. CCD is different than all proteins
+51.16160828025478 +/- 3.9038870389561042: All Proteins (mean, std)
+51.00116033755274 +/- 3.8711133255634813: Non-Transcript Reg. CCD (mean, std)
+50.64: All Proteins (median)
+50.34: Non-Transcript Reg. CCD (median)
+Ttest_indResult(statistic=0.6247084213155317, pvalue=0.5321777033894367)
+KruskalResult(statistic=0.349307483084615, pvalue=0.5545054090918851)
+
+Testing whether transcript reg. CCD is different than all proteins
+51.16160828025478 +/- 3.9038870389561042: All Proteins (mean, std)
+49.77741379310344 +/- 4.348234009478912: Transcript Reg. CCD (mean, std)
+50.64: All Proteins (median)
+48.84: Transcript Reg. CCD (median)
+Ttest_indResult(statistic=2.6894120121993117, pvalue=0.007170763166491958)
+KruskalResult(statistic=14.37055641653953, pvalue=0.00015013159543636844)
