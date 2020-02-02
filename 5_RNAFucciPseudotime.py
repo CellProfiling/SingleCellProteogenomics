@@ -129,7 +129,7 @@ adata.obs["fucci_time"] = fucci_time
 phasesFilt["fucci_time"] = fucci_time
 
 plt.figure(figsize=(6,5))
-plt.scatter(phasesFilt["Green530"], phasesFilt["Red585"], c = phasesFilt["fucci_time"])
+plt.scatter(phasesFilt["Green530"], phasesFilt["Red585"], c = phasesFilt["fucci_time"], cmap="RdYlGn")
 cbar = plt.colorbar()
 cbar.set_label('Pseudotime',fontname='Arial',size=20)
 cbar.ax.tick_params(labelsize=18)

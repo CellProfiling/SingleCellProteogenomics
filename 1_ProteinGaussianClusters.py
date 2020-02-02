@@ -7,6 +7,7 @@ from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
 from sklearn.mixture import GaussianMixture
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import seaborn as sbn
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -73,7 +74,7 @@ wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, pr
 # Execution: Use manual annotations and nucleus size to filter samples and images
 # Output: Filtered dataframe
 
-def apply_manual_filtering(my_df, result_dict):
+def apply_manual_filtering(my_df, result_dict, ab_dict):
     '''Filter raw data based on manual annotations'''
     # filter some wells in the last plate didn't have anything.
     print(f"{len(my_df)}: number of cells before filtering empty wells")
@@ -97,7 +98,7 @@ def apply_manual_filtering(my_df, result_dict):
     my_df_filtered = my_df_filtered[new_data_or_nonnegative_stain]
     print(f"{len(my_df_filtered)}: number of cells after filtering negative staining from first batch")
     print("finished filtering")
-    
+     
     print("filtering bad fields of view (negative staining, unspecific, etc)")
     filterthese = pd.read_csv("input/processed/excel/FOV_ImgNum_Lookup.csv")
     badfov = filterthese["well_plate_imgnb"][(filterthese["UseImage"] == 0)]
@@ -109,6 +110,14 @@ def apply_manual_filtering(my_df, result_dict):
     my_df_filtered = my_df_filtered[~np.isin(well_plate_imgnb, badfov) & ~negative_controls]
     print(f"{len(my_df_filtered)}: number of cells after filtering out of focus images")
     print("finished filtering")
+    
+    print("filtering failed antibodies")
+    failedab = np.genfromtxt("input/processed/manual/failedab.txt", dtype='str')
+    print(f"{len(my_df_filtered)}: number of cells before filtering antibodies failed in HPAv19")
+    my_df_filtered = my_df_filtered[~np.isin([ab_dict[wp] for wp in my_df_filtered.well_plate], failedab)]
+    print(f"{len(my_df_filtered)}: number of cells after filtering antibodies failed in HPAv19")
+    print("finished filtering")
+    
     return my_df_filtered
 
 def plot_areas(areas, title):
@@ -162,7 +171,7 @@ def apply_cell_count_filter(my_df):
     print("finished filtering on cell count")
     return my_df_filtered
 
-my_df_filtered = apply_manual_filtering(my_df, result_dict)
+my_df_filtered = apply_manual_filtering(my_df, result_dict, ab_dict)
 my_df_filtered = apply_big_nucleus_filter(my_df_filtered)
 my_df_filtered = apply_cell_count_filter(my_df_filtered)
 my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
@@ -266,23 +275,35 @@ plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
 plt.show()
 plt.close()
 
+# General picture of antibody intensity density
+sbn.distplot(ab_cell, hist=False); plt.xlabel("Mean Intensity"); plt.ylabel("Density"); plt.savefig("figures/antibody_cell_intensity.pdf")
+
 #%%
 # Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
 # Exec: sklearn.mixture.GaussianMixture & scipy.stats.kruskal
 # Output: FDR for cell cycle variation per well per compartment
+#TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
+#hours (for the G1/S cutoff)
+G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
+#M_LEN = 0.5 #We are excluding Mphase from this analysis
+TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
+
 def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
-    if not os.path.exists(outfolder): os.mkdir(outfolder)
+    if not os.path.exists(f"{outfolder}_png"): os.mkdir(f"{outfolder}_png")
+    if not os.path.exists(f"{outfolder}_pdf"): os.mkdir(f"{outfolder}_pdf")
     mmmm = np.concatenate((g1, s, g2))
     cccc = (["G1"] * len(g1))
     cccc.extend(["G1/S"] * len(s))
     cccc.extend(["G2"] * len(g2))
-    moddf = pd.DataFrame({"Protein Expression": mmmm, "Phase" : cccc})
-    boxplot = moddf.boxplot("Protein Expression", by="Phase", figsize=(12, 8), showfliers=True)
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
     boxplot.set_xlabel("", size=36,fontname='Arial')
-    boxplot.set_ylabel("Peak Expression, hrs", size=36,fontname='Arial')
-    boxplot.tick_params(axis="both", which="major", labelsize=16)
+    boxplot.set_ylabel("Cell Cycle Time, hrs", size=18,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=14)
     plt.title("")
-    plt.savefig(f"{outfolder}/GaussianClusteringProtein_{ensg}.png")
+    plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
+    plt.savefig(f"{outfolder}_pdf/GaussianClusteringProtein_{ensg}.pdf")
     plt.close()
     
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
@@ -295,7 +316,7 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
 
 gaussian = GaussianMixture(n_components=3, random_state=1, max_iter=500)
 cluster_labels = gaussian.fit_predict(np.array([log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale]).T)
-clusternames = ["G1","S-ph","G2"]
+clusternames = ["G2","G1","S-ph"]
 for cluster in range(3):
     plt.hist2d(log_green_fucci_zeroc_rescale[cluster_labels == cluster],log_red_fucci_zeroc_rescale[cluster_labels == cluster],bins=200)
     plt.title(f"Gaussian clustered data, {clusternames[cluster]}")
@@ -307,11 +328,12 @@ for cluster in range(3):
 
 # G1 is cluster 0; S-ph is cluster 1; G2 is cluster 2
 wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal = [],[],[]
-g1 = cluster_labels == 0
-sph = cluster_labels == 1
-g2 = cluster_labels == 2
+g1 = cluster_labels == 1
+sph = cluster_labels == 2
+g2 = cluster_labels == 0
+fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 for iii, wp in enumerate(u_well_plates):
-    curr_well_inds = well_plate==well
+    curr_well_inds = well_plate==wp
     curr_wp_g1 = curr_well_inds & g1
     curr_wp_sph = curr_well_inds & sph
     curr_wp_g2 = curr_well_inds & g2
@@ -320,10 +342,15 @@ for iii, wp in enumerate(u_well_plates):
     wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])
     max_val_for_norm = np.max(ab_cell[curr_well_inds] if wp_iscell[iii] else ab_nuc[curr_well_inds] if wp_isnuc[iii] else ab_cyto[curr_well_inds])
     gaussian_boxplot_result(
-            (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm,
-            (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm,
-            (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm,
-            "figures/GaussianBoxplots", wp_ensg[iii])
+            (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm * TOT_LEN,
+            (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm * TOT_LEN,
+            (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm * TOT_LEN,
+            "figures/GaussianBoxplots", fileprefixes[iii])
+    gaussian_boxplot_result(
+        mt_cell[curr_wp_g1] / max_val_for_norm * TOT_LEN, 
+        mt_cell[curr_wp_sph] / max_val_for_norm * TOT_LEN, 
+        mt_cell[curr_wp_g2] / max_val_for_norm * TOT_LEN, 
+        "figures/GaussianBoxplots_mt", f"{fileprefixes[iii]}_mt")
 
 # benjimini-hochberg multiple testing correction
 # source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
@@ -333,9 +360,10 @@ def _ecdf(x):
     return np.arange(1,nobs+1)/float(nobs)
 
 def benji_hoch(alpha, pvals):
-    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvals, pvals_sortind)
+    pvalsarr = np.array(pvals)
+    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data    
+    pvals_sortind = np.argsort(pvalsarr)
+    pvals_sorted = np.take(pvalsarr, pvals_sortind)
     ecdffactor = _ecdf(pvals_sorted)
     reject = pvals_sorted <= ecdffactor*alpha
     reject = pvals_sorted <= ecdffactor*alpha
@@ -357,12 +385,13 @@ def benji_hoch(alpha, pvals):
 
 # bonferroni MTC
 def bonf(alpha, pvals):
-    pvals = np.nan_to_num(pvals, nan=1) # fail the ones with not enough data
+    pvalsarr = np.array(pvals)
+    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data    
     pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvals, pvals_sortind)
-    alphaBonf = alpha / float(len(pvals))
+    pvals_sorted = np.take(pvalsarr, pvals_sortind)
+    alphaBonf = alpha / float(len(pvalsarr))
     rejectBonf = pvals_sorted <= alphaBonf
-    pvals_correctedBonf = pvals_sorted * float(len(pvals))
+    pvals_correctedBonf = pvals_sorted * float(len(pvalsarr))
     pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
     pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
     rejectBonf_unsorted = np.empty_like(rejectBonf)

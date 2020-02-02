@@ -2,6 +2,7 @@
 from imports import *
 from Bio import SeqIO
 from methods_RNASeqData import read_counts_and_phases, qc_filtering
+import seaborn as sbn
 
 #%% Import the genes names we're analyzing
 def ccd_gene_names(id_list_like):
@@ -25,7 +26,9 @@ ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_
 ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
 wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
 ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
-nonccd_comp_ensg = wp_ensg[~ccd_comp]
+nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
+bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+nonccd_comp_ensg = wp_ensg[nonccd_comp]
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
@@ -165,8 +168,7 @@ def temp_box(title):
     cccc = (["All Proteins"] * len(all_temps))
     cccc.extend(["Transcript's\nReg\nCCD"] * len(transcript_reg))
     cccc.extend(["Non-Transcript\nReg\nCCD"] * len(nontranscr_reg))
-    moddf = pd.DataFrame({"temps": mmmm, "category" : cccc})
-    boxplot = moddf.boxplot("temps", by="category", figsize=(12, 8), showfliers=False)
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
     boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
     boxplot.set_ylabel("Melting Point (°C)", size=36,fontname='Arial')
     boxplot.tick_params(axis="both", which="major", labelsize=16) 
@@ -328,8 +330,7 @@ def temp_box(title):
     cccc.extend(["Transcript's\nReg\nCCD"] * len(transcript_reg))
     cccc.extend(["Non-Transcript\nReg\nCCD"] * len(nontranscr_reg))
     cccc.extend(["Non-CCD"] * len(nonccd_temps))
-    moddf = pd.DataFrame({"temps": mmmm, "category" : cccc})
-    boxplot = moddf.boxplot("temps", by="category", figsize=(12, 8), showfliers=False)
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
     boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
     boxplot.set_ylabel("Melting Point (°C)", size=36,fontname='Arial')
     boxplot.tick_params(axis="both", which="major", labelsize=16) 

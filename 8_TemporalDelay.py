@@ -12,6 +12,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 
+
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
 count_or_rpkm = "Tpms" # so that the gene-specific results scales match for cross-gene comparisons
@@ -209,8 +210,8 @@ cbar.set_label('Relative expression', fontname='Arial', size=20)
 cbar.ax.tick_params(labelsize=18)
 
 plt.tight_layout()
-plt.savefig(os.path.join("output_devin",'sorted_heatmap21_sw30_take4.pdf'), transparent=True)
-plt.savefig(os.path.join("output_devin",'sorted_heatmap21_sw30_take4.png'), transparent=True)
+plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.pdf'), transparent=True)
+plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.png'), transparent=True)
 plt.show()
 
 #%% RNA heatmap
@@ -304,6 +305,57 @@ print(f"length of prot CCD genes: {len(prot_ccd_ensg)}")
 print(f"length of CCD RNA genes: {len(rna_ccd_ensg)}")
 print(f"length of intersection betweeen CCD prot and CCD RNA: {len(both_ccd_ensg)}")
 
+# Make link files for Circos using labels g1 [0, 109], g1s [0, 27], g2 [0, 120]
+with open("output/differencelinks.txt", "w") as file:
+    for iii, diff in enumerate(list(diff_max_pol)):
+        name = both_ccd_ensg[iii]
+        rnatime = insct_rna_max_pol_ccd[iii]
+        prottime = insct_prot_max_pol_ccd[iii]
+        startloc = "g1" if rnatime * TOT_LEN < G1_LEN else "g1s" if rnatime * TOT_LEN >= G1_LEN and rnatime * TOT_LEN < G1_LEN + G1_S_TRANS else "g2"
+        starttime = rnatime * TOT_LEN * 10 if startloc == "g1" else (rnatime * TOT_LEN - G1_LEN) * 10 if startloc == "g1s" else (rnatime * TOT_LEN - G1_LEN - G1_S_TRANS) * 10
+        endloc = "g1" if prottime * TOT_LEN < G1_LEN else "g1s" if prottime * TOT_LEN >= G1_LEN and prottime * TOT_LEN < G1_LEN + G1_S_TRANS else "g2"
+        endtime =  prottime * TOT_LEN * 10 if endloc == "g1" else (prottime * TOT_LEN - G1_LEN) * 10 if endloc == "g1s" else (prottime * TOT_LEN - G1_LEN - G1_S_TRANS) * 10
+        line = [startloc, str(int(starttime)), str(int(starttime+1)), endloc, str(int(endtime)), str(int(endtime+1))]
+        file.write("\t".join(line) + "\n")
+        
+with open("output/differencelinkends.txt", "w") as file:
+      for iii, diff in enumerate(list(diff_max_pol)):
+        name = both_ccd_ensg[iii]
+        prottime = insct_prot_max_pol_ccd[iii]
+        endloc = "g1" if prottime * TOT_LEN < G1_LEN else "g1s" if prottime * TOT_LEN >= G1_LEN and prottime * TOT_LEN < G1_LEN + G1_S_TRANS else "g2"
+        endtime =  prottime * TOT_LEN * 10 if endloc == "g1" else (prottime * TOT_LEN - G1_LEN) * 10 if endloc == "g1s" else (prottime * TOT_LEN - G1_LEN - G1_S_TRANS) * 10
+        line = [endloc, str(int(endtime)), str(int(endtime+1)), str(0)]
+        file.write("\t".join(line) + "\n")  
+        
+# Make a sankey plot for the transitions
+# colordict = {"g1" : 'r', "g1s": 'y', "g2": 'g'}
+# transitions = pd.DataFrame({
+#         "source": ["g1" if rnatime * TOT_LEN < G1_LEN else "g1s" if rnatime * TOT_LEN >= G1_LEN and rnatime * TOT_LEN < G1_LEN + G1_S_TRANS else "g2" for rnatime in insct_rna_max_pol_ccd],
+#         "target": ["g1" if prottime * TOT_LEN < G1_LEN else "g1s" if prottime * TOT_LEN >= G1_LEN and prottime * TOT_LEN < G1_LEN + G1_S_TRANS else "g2" for prottime in insct_prot_max_pol_ccd]})
+import alluvial
+transitiondict = {}
+startphases = ["G1\nRNA\nPeak", "S\nRNA\nPeak", "G2\nRNA\nPeak"]
+endphases= ["G1\nProtein\nPeak", "S\nProtein\nPeak", "G2\nProtein\nPeak"]
+for iii, diff in enumerate(list(diff_max_pol)):
+    rnatime = insct_rna_max_pol_ccd[iii]
+    prottime = insct_prot_max_pol_ccd[iii]
+    startloc = startphases[0] if rnatime * TOT_LEN < G1_LEN else startphases[1] if rnatime * TOT_LEN >= G1_LEN and rnatime * TOT_LEN < G1_LEN + G1_S_TRANS else startphases[2]
+    endloc = endphases[0] if prottime * TOT_LEN < G1_LEN else endphases[1] if prottime * TOT_LEN >= G1_LEN and prottime * TOT_LEN < G1_LEN + G1_S_TRANS else endphases[2]
+    if startloc in transitiondict and endloc in transitiondict[startloc]:
+        transitiondict[startloc][endloc] += 1
+    elif startloc in transitiondict:
+        transitiondict[startloc][endloc] = 1
+    else:
+        transitiondict[startloc] = {endloc:1}
+cmap = plt.cm.get_cmap('viridis_r')
+ax = alluvial.plot(transitiondict, colors=['r', 'y', 'b'], a_sort=startphases, b_sort=endphases)
+fig = ax.get_figure()
+fig.set_size_inches(5 ,10)
+plt.savefig("figures/transitions.png")
+plt.savefig("figures/transitions.pdf")
+plt.show()
+
+    
 plt.hist(diff_max_pol * TOT_LEN)
 plt.xlabel("Delay in peak protein expression from peak RNA expression, hrs")
 plt.ylabel("Count of CCD Proteins")
@@ -394,3 +446,16 @@ print(f"The name arrays are the same: {all(prot_names == rna_names)}")
 
 #plot_avg_rna_and_prot(name_prot_list, "figures/RNAProteinCCDAvgs")
 
+#%% Figures of merit
+with open("output/figuresofmerit.txt", "a") as file:
+    fom = "--- temporal delay\n\n"
+    fom += f"significant delay in peak protein expression compared to transcript expression, {TOT_LEN * np.median(diff_max_pol)} hours on average" + "\n\n"
+    fom += f"G1 is the longest period of the cell cycle, in which the majority of RNAs ({100 * sum(sorted_max_moving_avg_pol_ccd * TOT_LEN <= G1_LEN) / len(sorted_max_moving_avg_pol_ccd)}%) peak in expression" + "\n\n"
+    fom += f"However, the majority ({100 * sum(sorted_maxpol_array * TOT_LEN > G1_LEN) / len(sorted_maxpol_array)}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
+    fom += f"The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was {TOT_LEN * np.median(diff_max_pol)} hrs on average " + "\n\n"
+    fom += f"this delay indicates that it may take a little less than the same amount of time ({12 - TOT_LEN * np.median(diff_max_pol)} hrs) to produce a target metabolite after peak expression of an enzyme." + "\n\n"
+    fom += f"" + "\n\n"
+    fom += f"" + "\n\n"
+    fom += f"" + "\n\n"
+    print(fom)
+    file.write(fom)

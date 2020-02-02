@@ -5,6 +5,7 @@ import sys
 import re
 import math
 from methods_RNASeqData import read_counts_and_phases, qc_filtering
+import seaborn as sbn
 
 #%% Import the genes names we're analyzing
 def ccd_gene_names(id_list_like):
@@ -423,11 +424,10 @@ cccc.extend(["Regev Transcript CCD"] * len(ccd_rt_modcts))
 cccc.extend(["All Transcript CCD"] * len(ccd_at_modcts))
 cccc.extend(["Non-Transc CCD"] * len(ccd_n_modcts))
 cccc.extend(["Non-CCD"] * len(nonccd_modcts))
-moddf = pd.DataFrame({"modcts": mmmm, "category" : cccc})
-boxplot = moddf.boxplot("modcts", by="category", figsize=(12, 8), showfliers=False)
+boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
 boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
 boxplot.set_ylabel("Modifications per Covered Base", size=36,fontname='Arial')
-boxplot.tick_params(axis="both", which="major", labelsize=16)
+boxplot.tick_params(axis="both", which="major")#, labelsize=16)
 plt.title("")
 plt.savefig("figures/ModsPerCoveredBaseBoxplot.png")
 plt.show()
@@ -441,8 +441,7 @@ cccc.extend(["Regev\nTranscript\nCCD"] * len(ccd_rt_modocc))
 cccc.extend(["All\nTranscript\nCCD"] * len(ccd_at_modocc))
 cccc.extend(["Diana's\nNon-Transc\nCCD"] * len(ccd_n_modocc))
 cccc.extend(["Non-\nCCD"] * len(nonccd_modocc))
-moddf = pd.DataFrame({"modocc": mmmm, "category" : cccc})
-boxplot = moddf.boxplot("modocc", by="category", figsize=(12, 8), showfliers=False)
+boxplot = sbn.boxplot(x=cccc, y=mmmm)#, showfliers=False)
 boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
 boxplot.set_ylabel("Occupancy per Modified Residue", size=36,fontname='Arial')
 boxplot.tick_params(axis="both", which="major", labelsize=16)
