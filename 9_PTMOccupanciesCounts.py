@@ -13,6 +13,12 @@ def ccd_gene_names(id_list_like):
     gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
 
+def geneIdToHngc(id_list_like):
+    '''Convert gene ID list to HNGC symbol if it exists'''
+    gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
+    gene_info = gene_info[gene_info["hgnc_symbol"] != ""]
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["hgnc_symbol"]
+
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
     gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
@@ -49,6 +55,14 @@ genes_analyzed = set(ccd_gene_names(genes_analyzed))
 ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
 ccd_filtered = set(ccd_gene_names(ccd_filtered))
 nonccdprotein = set(ccd_gene_names(nonccd_comp_ensg))
+
+# Get the HGNC symbols for lists for GO analysis
+bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)])))}).to_csv("output/hgnc_ccdtranscript.csv", index=False, header=False)
+pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)])))}).to_csv("output/hgnc_ccdprotein_transcript_regulated.csv", index=False, header=False)
+pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)])))}).to_csv("output/hgnc_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
+pd.DataFrame({"gene":list(set(geneIdToHngc(wp_ensg[~ccd_comp])))}).to_csv("output/hgnc_nonccdprotein.csv", index=False, header=False)
+pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))])))}).to_csv("output/hgnc_ccdprotein.csv", index=False, header=False)
 
 #%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
 # one or the other

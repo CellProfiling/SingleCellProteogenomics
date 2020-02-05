@@ -1,6 +1,7 @@
 #%% [markdown]
 # # Cell Cycle scRNA-Seq Analysis
-# We've shown in single cell imaging data that there is variability that is correlated to the cell cycle, as well as a majority of proteins that vary outside of the cell cycle, which might be due to metabolic processes or other sources of variation.
+# We've shown in single cell imaging data that there is variability that is correlated to the cell cycle, as well as a majority of proteins that vary outside of the cell cycle, 
+# which might be due to metabolic processes or other sources of variation.
 # 
 # Here, we've collected single-cell RNA-Seq (scRNA-Seq) data for these cells.
 # * How many cells were analyzed?
