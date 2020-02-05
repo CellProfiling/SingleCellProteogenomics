@@ -51,31 +51,34 @@ nonccdprotein = set(ccd_gene_names(nonccd_comp_ensg))
 #%% Let's take a look at protein stability
 # Idea: Is there a difference in protein stability or turnover for the proteins that are
 # transcriptionally regulated CCD vs non-transcriptionally regulated?
-# Execution: 
-# Output:
+# Execution: Aggregate the results per protein, and then make a boxplot for each category
+# Output: Boxplot for aggregated melting point results
 
 def weights(vals):
     '''normalizes all histogram bins to sum to 1'''
     return np.ones_like(vals)/float(len(vals))
     
-all_temps, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[]
-atp, trp, ntp, nnp = [], [], [], []
+all_temps, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[]
+atp, att, trp, ntp, nnp = [],[], [], [], []
 
 def add_temps_and_names(filename, title, splitname):
     '''Adds melting temperature measurements from supp info files to lists'''
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
+    ccd_at_stab = df[df["ProteinName"].isin(ccdtranscript)]
     ccd_t_stab = df[df["ProteinName"].isin(ccdprotein_transcript_regulated)]
     ccd_n_stab = df[df["ProteinName"].isin(ccdprotein_nontranscript_regulated)]
     nonccd_stab = df[df["ProteinName"].isin(nonccdprotein)]
 
     notna = pd.notna(df["Melting point [°C]"])
     all_temps.extend(df[notna]["Melting point [°C]"])
+    allccdtranscript.extend(ccd_at_stab[notna]["Melting point [°C]"])
     transcript_reg.extend(ccd_t_stab[notna]["Melting point [°C]"])
     nontranscr_reg.extend(ccd_n_stab[notna]["Melting point [°C]"])
     nonccd_temps.extend(nonccd_stab[notna]["Melting point [°C]"])
 
     atp.extend(df[notna]["ProteinName"])
+    att.extend(ccd_at_stab[notna]["ProteinName"])
     trp.extend(ccd_t_stab[notna]["ProteinName"])
     ntp.extend(ccd_n_stab[notna]["ProteinName"])
     nnp.extend(nonccd_stab[notna]["ProteinName"])
@@ -120,6 +123,38 @@ def stat_tests(title):
     results += f"{scipy.stats.ttest_ind(all_temps, transcript_reg)}: two sided t-test\n"
     results += f"{scipy.stats.kruskal(all_temps, transcript_reg)}: two sided kruskal\n"
     results += "\n"
+    results += "Testing whether transcript reg. CCD is different than all transcript CCD\n"
+    results += f"{np.mean(allccdtranscript)} +/- {np.std(allccdtranscript)}: all transcript CCD Proteins (mean, std)\n"
+    results += f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)\n"
+    results += f"{np.median(allccdtranscript)}: all transcript CCD Proteins (median)\n"
+    results += f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)\n"
+    results += f"{scipy.stats.ttest_ind(allccdtranscript, transcript_reg)}: two sided t-test\n"
+    results += f"{scipy.stats.kruskal(allccdtranscript, transcript_reg)}: two sided kruskal\n"
+    results += "\n"
+    results += "Testing whether non-transcript reg. CCD is different than all transcript CCD\n"
+    results += f"{np.mean(allccdtranscript)} +/- {np.std(allccdtranscript)}: all transcript CCD Proteins (mean, std)\n"
+    results += f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)\n"
+    results += f"{np.median(allccdtranscript)}: all transcript CCD Proteins (median)\n"
+    results += f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)\n"
+    results += f"{scipy.stats.ttest_ind(allccdtranscript, nontranscr_reg)}: two sided t-test\n"
+    results += f"{scipy.stats.kruskal(allccdtranscript, nontranscr_reg)}: two sided kruskal\n"
+    results += "\n"
+    results += "Testing whether transcript reg. CCD is different than non-CCD\n"
+    results += f"{np.mean(nonccd_temps)} +/- {np.std(nonccd_temps)}: Non-CCD Proteins (mean, std)\n"
+    results += f"{np.mean(transcript_reg)} +/- {np.std(transcript_reg)}: Transcript Reg. CCD (mean, std)\n"
+    results += f"{np.median(nonccd_temps)}: Non-CCD Proteins (median)\n"
+    results += f"{np.median(transcript_reg)}: Transcript Reg. CCD (median)\n"
+    results += f"{scipy.stats.ttest_ind(nonccd_temps, transcript_reg)}: two sided t-test\n"
+    results += f"{scipy.stats.kruskal(nonccd_temps, transcript_reg)}: two sided kruskal\n"
+    results += "\n"
+    results += "Testing whether nontranscript reg. CCD is different than non-CCD\n"
+    results += f"{np.mean(nonccd_temps)} +/- {np.std(nonccd_temps)}: Non-CCD Proteins (mean, std)\n"
+    results += f"{np.mean(nontranscr_reg)} +/- {np.std(nontranscr_reg)}: Non-Transcript Reg. CCD (mean, std)\n"
+    results += f"{np.median(nonccd_temps)}: Non-CCD Proteins (median)\n"
+    results += f"{np.median(nontranscr_reg)}: Non-Transcript Reg. CCD (median)\n"
+    results += f"{scipy.stats.ttest_ind(nonccd_temps, nontranscr_reg)}: two sided t-test\n"
+    results += f"{scipy.stats.kruskal(nonccd_temps, nontranscr_reg)}: two sided kruskal\n"
+    results += "\n"
     return results
 
 def temp_hist(title):
@@ -152,6 +187,7 @@ plt.show()
 plt.close()
 
 # Boxplots
+plt.figure(figsize=(10,10))
 mmmm = np.concatenate((all_temps, transcript_reg, nontranscr_reg, nonccd_temps))
 cccc = (["All Proteins"] * len(all_temps))
 cccc.extend(["Transcript's\nReg\nCCD"] * len(transcript_reg))
@@ -166,9 +202,10 @@ plt.show()
 plt.close()
 
 plt.figure(figsize=(10,10))
-mmmm = np.concatenate((all_temps, transcript_reg, nontranscr_reg, nonccd_temps))
+mmmm = np.concatenate((all_temps, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps))
 cccc = (["All Proteins"] * len(all_temps))
-cccc.extend(["Transcript's\nReg\nCCD"] * len(transcript_reg))
+cccc.extend(["All\nTranscript\nCCD"] * len(allccdtranscript))
+cccc.extend(["Transcript\nReg\nCCD"] * len(transcript_reg))
 cccc.extend(["Non-Transcript\nReg\nCCD"] * len(nontranscr_reg))
 cccc.extend(["Non-CCD"] * len(nonccd_temps))
 boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
