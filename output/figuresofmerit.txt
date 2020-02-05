@@ -55,3 +55,21 @@ this delay indicates that it may take a little less than the same amount of time
 
 
 
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 7.680766000000001 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (44.25%) peak in expression
+
+However, the majority (75.53516819571865%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 7.680766000000001 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (4.319233999999999 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+

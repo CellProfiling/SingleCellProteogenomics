@@ -9,6 +9,7 @@ import collections
 import fucci_plotting
 import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import seaborn as sbn
 
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 
@@ -356,7 +357,7 @@ plt.savefig("figures/transitions.pdf")
 plt.show()
 
     
-plt.hist(diff_max_pol * TOT_LEN)
+sbn.distplot(diff_max_pol * TOT_LEN)
 plt.xlabel("Delay in peak protein expression from peak RNA expression, hrs")
 plt.ylabel("Count of CCD Proteins")
 plt.tight_layout()
@@ -397,6 +398,11 @@ print(f"One-sided kruskal for median protein expression time higher than median 
 t, p = scipy.stats.ttest_1samp(diff_max_pol, 0)
 print(f"One-sided, one-sample t-test for mean delay in protein expression larger than zero: {2*p}")
 
+
+#%% Output tables
+pd.DataFrame({"gene" : wp_ensg, "max_pol_protein": wp_max_pol, "max_time_protein": wp_max_pol * TOT_LEN}).to_csv("output/max_pol_protein.csv", index=False)
+pd.DataFrame({"gene" : adata.var_names, "max_pol_rna": max_moving_avg_pol, "max_time_rna": max_moving_avg_pol * TOT_LEN}).to_csv("output/max_pol_rna.csv", index=False)
+pd.DataFrame({"gene" : })
 
 #%% Sanity checks 
 # double check that the names line up
