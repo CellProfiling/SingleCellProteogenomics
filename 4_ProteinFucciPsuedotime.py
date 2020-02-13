@@ -712,7 +712,8 @@ print(f"{sum(duplicated_ensg_ccd_bi2 == 2)}: number of replicated stainings show
 print(f"{sum(duplicated_ensg_ccd_bi2 == 1)}: number of replicated stainings shown to be CCD in just one replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 1)} also unimodally)")
 print(f"{sum(duplicated_ensg_ccd_bi2 == 0)}: number of replicated stainings shown to be non-CCD in both replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 0)} also unimodally)")
 
-protein_ct = len(np.unique(wp_ensg))
+bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+protein_ct = len(np.unique(np.concatenate((wp_ensg, bioccd))))
 ccd_protein_ct = sum(wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 2)
 nonccd_protein_ct = sum(~wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 0)
 duplicated_ensg_bimodal_generally = np.array([sum(wp_isbimodal_generally[wp_ensg == ensg]) for ensg in duplicated_ensg])
@@ -762,7 +763,6 @@ print(examples[~np.isin(examples,wp_ensg[wp_comp_ccd_use])])
 knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
 knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
 knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", dtype='str') # from GO proliferation
-bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
 print(f"{len(bioccd)}: number of mitotic structure proteins")
 
 ccd_prots_withmitotic = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
@@ -794,6 +794,10 @@ pd.DataFrame({
         "wp_comp_ccd":wp_comp_ccd_use[np.nonzero(np.isin(wp_ensg, examples))[0]],
         }).to_csv("output/CellCycleExamples.csv")
 
+ccdstring = np.array(["No                 "] * len(ccd_comp))
+ccdstring[wp_ensg[ccd_comp]] = "Pseudotime"
+ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
+ccdstring[wp_ensg[ccd_comp] & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
 pd.DataFrame({
     "well_plate" : u_well_plates, 
     "ENSG": wp_ensg,

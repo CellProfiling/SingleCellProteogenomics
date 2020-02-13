@@ -42,6 +42,7 @@ adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=T
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
 
 genes_analyzed = set(ccd_gene_names(genes_analyzed))
+nonccdtranscript = set(ccd_gene_names(adata.var_names[~ccdtranscript]))
 ccdtranscript = set(ccd_gene_names(adata.var_names[ccdtranscript]))
 ccdprotein_transcript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_transcript_regulated]))
 ccdprotein_nontranscript_regulated = set(ccd_gene_names(adata.var_names[ccdprotein_nontranscript_regulated]))
@@ -58,14 +59,15 @@ def weights(vals):
     '''normalizes all histogram bins to sum to 1'''
     return np.ones_like(vals)/float(len(vals))
     
-all_temps, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[]
-atp, att, trp, ntp, nnp = [],[], [], [], []
+all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
+atp, ant, att, trp, ntp, nnp = [],[], [], [], [],[]
 
 def add_temps_and_names(filename, title, splitname):
     '''Adds melting temperature measurements from supp info files to lists'''
     df = pd.read_csv(filename, delimiter="\t")
     df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
     ccd_at_stab = df[df["ProteinName"].isin(ccdtranscript)]
+    ccd_nt_stab = df[df["ProteinName"].isin(nonccdtranscript)]
     ccd_t_stab = df[df["ProteinName"].isin(ccdprotein_transcript_regulated)]
     ccd_n_stab = df[df["ProteinName"].isin(ccdprotein_nontranscript_regulated)]
     nonccd_stab = df[df["ProteinName"].isin(nonccdprotein)]
@@ -73,12 +75,14 @@ def add_temps_and_names(filename, title, splitname):
     notna = pd.notna(df["Melting point [°C]"])
     all_temps.extend(df[notna]["Melting point [°C]"])
     allccdtranscript.extend(ccd_at_stab[notna]["Melting point [°C]"])
+    allnonccdtranscript.extend(ccd_nt_stab[notna]["Melting point [°C]"])
     transcript_reg.extend(ccd_t_stab[notna]["Melting point [°C]"])
     nontranscr_reg.extend(ccd_n_stab[notna]["Melting point [°C]"])
     nonccd_temps.extend(nonccd_stab[notna]["Melting point [°C]"])
 
     atp.extend(df[notna]["ProteinName"])
     att.extend(ccd_at_stab[notna]["ProteinName"])
+    ant.extend(ccd_nt_stab[notna]["ProteinName"])
     trp.extend(ccd_t_stab[notna]["ProteinName"])
     ntp.extend(ccd_n_stab[notna]["ProteinName"])
     nnp.extend(nonccd_stab[notna]["ProteinName"])
@@ -202,17 +206,31 @@ plt.show()
 plt.close()
 
 plt.figure(figsize=(10,10))
-mmmm = np.concatenate((all_temps, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps))
+mmmm = np.concatenate((all_temps, allccdtranscript, allnonccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps))
 cccc = (["All Proteins"] * len(all_temps))
 cccc.extend(["All\nTranscript\nCCD"] * len(allccdtranscript))
+cccc.extend(["All\nTranscript\nNon-CCD"] * len(allnonccdtranscript))
 cccc.extend(["Transcript\nReg\nCCD"] * len(transcript_reg))
 cccc.extend(["Non-Transcript\nReg\nCCD"] * len(nontranscr_reg))
 cccc.extend(["Non-CCD"] * len(nonccd_temps))
 boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
-# boxplot.set_xlabel("Protein Set", size=14,fontname='Arial')
+boxplot = sbn.stripplot(x=cccc, y=mmmm)#, showfliers=False)
 boxplot.set_ylabel("Melting Point (°C)", size=36,fontname='Arial')
 boxplot.tick_params(axis="both", which="major", labelsize=18) 
 plt.savefig("figures/ProteinMeltingPointBoxSelect.pdf")
+plt.show()
+plt.close()
+
+plt.figure(figsize=(10,10))
+mmmm = np.concatenate((all_temps, transcript_reg, nontranscr_reg))
+cccc = (["All Proteins"] * len(all_temps))
+cccc.extend(["Transcript\nRegulated\nCCD Proteins"] * len(transcript_reg))
+cccc.extend(["Non-Transcript\nRegulated\nCCD Proteins"] * len(nontranscr_reg))
+boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
+# boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=0.2, color=".3", size=7, jitter=0.25)#, showfliers=False)
+boxplot.set_ylabel("Melting Point (°C)", size=36,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=22) 
+plt.savefig("figures/ProteinMeltingPointBoxSelect2.pdf")
 plt.show()
 plt.close()
 
@@ -240,39 +258,3 @@ np_save_overwriting("output/temperatures.nonccd_temps_prot.npy",nnp)
 # non-transcript regulated CCD proteins are more similar to all proteins on average,
 # and that difference is not significant.
 
-#%% Making boxplots and violin plots for the melting point data
-# Idea: trying out different visualizations for the above analysis
-# (boxplots work; violin not so much yet)
-
-data = [transcript_reg, nontranscr_reg, all_temps]
-labels=["Transcript Reg.\nCCD", "Non-Transcript Reg.\nCCD", "All Proteins"]
-plt.boxplot(data, labels=labels)
-plt.savefig("figures/ProteinMeltingPointsBoxplot.png")
-plt.show()
-plt.close()
-
-# def adjacent_values(vals, q1, q3):
-#     upper_adjacent_value = q3 + (q3 - q1) * 1.5
-#     upper_adjacent_value = np.clip(upper_adjacent_value, q3, vals[-1])
-
-#     lower_adjacent_value = q1 - (q3 - q1) * 1.5
-#     lower_adjacent_value = np.clip(lower_adjacent_value, vals[0], q1)
-#     return lower_adjacent_value, upper_adjacent_value
-
-# def set_axis_style(ax, labels):
-#     ax.get_xaxis().set_tick_params(direction='out')
-#     ax.xaxis.set_ticks_position('bottom')
-#     ax.set_xticks(np.arange(1, len(labels) + 1))
-#     ax.set_xticklabels(labels)
-#     ax.set_xlim(0.25, len(labels) + 0.75)
-#     ax.set_xlabel('Sample name')
-
-# fig, ax1 = plt.subplots(1, 1, figsize=(9,4))
-# parts = ax1.violinplot(data, showmeans=True, showmedians=False, showextrema=False)
-# quartile1, medians, quartile3 = np.percentile(data, [25, 50, 75])
-# whiskers = np.array([adjacent_values(sorted_array, q1, q3) for sorted_array, q1, q3 in zip(data, quartile1, quartile3)])
-# whiskersMin, whiskersMax = whiskers[:, 0], whiskers[:, 1]
-# set_axis_style(ax1, labels)
-# plt.show()
-
-#%%
