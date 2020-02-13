@@ -107,7 +107,7 @@ blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl
     "fe[i", "zinc", "cu[i" , # metals
     "sodium", "potassium", "calcium", "magnesium",] # counterions
 MIN_MOD_PEP = 1
-MIN_TOT_PEP = 3
+MIN_TOT_PEP = 5
 
 for idx in range(len(genes)):
     genesplit = str(genes[idx]).split("|")
@@ -129,30 +129,36 @@ for idx in range(len(genes)):
         else: continue
 
         # mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in blacklist)]
-        covered_fraction = float(sum([1 for c in seq[idxx] if c.islower()])) / float(len(seq[idxx]))
+        covered_fraction = float(sum([1 for c in seq[idxx] if c.isupper()])) / float(len(seq[idxx]))
         effective_length = float(len(seq[idxx])) * covered_fraction
         # mods_per_eff_base = math.log10(float(len(modstemp) + 1) / float(effective_length))
-        mods_per_eff_base = float(len(modstemp)) / float(effective_length)
+        modstempfiltered = []
         aanums, mods, occupancies, modpeptsss, totpeptsss = [],[],[],[],[]
         for oidx, occcc in enumerate(occupancytemp):
             isblacklisted = any(mod in modstemp[oidx].lower() for mod in blacklist)
             isonehitwonder = int(modpepts[oidx]) < MIN_MOD_PEP or int(totpepts[oidx]) < MIN_TOT_PEP
+            if not isblacklisted:
+                modstempfiltered.append(modstemp[oidx])
             if not "(" in occcc and not isblacklisted and not isonehitwonder: 
                 aanums.append(aatemp[oidx])
                 mods.append(modstemp[oidx])
                 occupancies.append(float(occcc))
                 modpeptsss.append(int(modpepts[oidx]))
                 totpeptsss.append(int(totpepts[oidx]))
+        mods_per_eff_base = float(len(modstempfiltered)) / float(effective_length)
         if genegene not in genemods: 
-            genemods[genegene] = ([mods_per_eff_base], occupancies, mods, 
+            genemods[genegene] = ([mods_per_eff_base], [(covered_fraction, effective_length)], [len(modstemp)], modstempfiltered, occupancies, mods, 
                 modpeptsss, totpeptsss, aanums)
         else:
             genemods[genegene][0].append(mods_per_eff_base)
-            genemods[genegene][1].extend(occupancies)
-            genemods[genegene][2].extend(mods)
-            genemods[genegene][3].extend(modpeptsss)
-            genemods[genegene][4].extend(totpeptsss)
-            genemods[genegene][5].extend(aanums)
+            genemods[genegene][1].append((covered_fraction, effective_length))
+            genemods[genegene][2].append(len(modstempfiltered))
+            genemods[genegene][3].extend(modstempfiltered)
+            genemods[genegene][4].extend(occupancies)
+            genemods[genegene][5].extend(mods)
+            genemods[genegene][6].extend(modpeptsss)
+            genemods[genegene][7].extend(totpeptsss)
+            genemods[genegene][8].extend(aanums)
 
 print(f"{str(len(targets))} proteins")
 print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
@@ -161,25 +167,33 @@ print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_transcript_regul
 print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(ccdprotein_nontranscript_regulated)} detected.")
 print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of proteins of {len(genes_analyzed)} detected.")
 
-unambigenes, modcts, avgocc, modsss = [], [], [], []
-protmodgene, modmod, occocc, aanumnum = [], [], [], []
+unambigenes, modcts, efflength, coveredfract, modrawcts, modrawlist, avgocc, modsss = [],[],[],[],[],[],[],[]
+protmodgene, modmod, occocc, aanumnum = [],[],[], []
 modpeps, totpeps = [], []
 for gene in genemods.keys():
     unambigenes.append(gene)
     modcts.append(np.median(genemods[gene][0]))
-    avgocc.append(np.median(genemods[gene][1]) if any(genemods[gene][1]) else 0)
-    modsss.append(", ".join(genemods[gene][2]))
-    for modidx, mod in enumerate(genemods[gene][2]):
+    coveredfract.append(np.median([g[0] for g in genemods[gene][1]]))
+    efflength.append(np.median([g[1] for g in genemods[gene][1]]))
+    modrawcts.append(np.median(genemods[gene][2]))
+    modrawlist.append(", ".join(genemods[gene][3]))
+    avgocc.append(np.median(genemods[gene][4]) if any(genemods[gene][4]) else 0)
+    modsss.append(", ".join(genemods[gene][5]))
+    for modidx, mod in enumerate(genemods[gene][5]):
         protmodgene.append(gene)
         modmod.append(mod)
-        occocc.append(genemods[gene][1][modidx])
-        modpeps.append(genemods[gene][3][modidx])
-        totpeps.append(genemods[gene][4][modidx])
-        aanumnum.append(genemods[gene][5][modidx])
+        occocc.append(genemods[gene][4][modidx])
+        modpeps.append(genemods[gene][6][modidx])
+        totpeps.append(genemods[gene][7][modidx])
+        aanumnum.append(genemods[gene][8][modidx])
         
 df = pd.DataFrame({
     "gene" : unambigenes, 
     "modcts" : modcts, 
+    "coveredfract" : coveredfract, 
+    "efflength" : efflength, 
+    "modrawcts" : modrawcts, 
+    "modrawlist" : modrawlist, 
     "avgocc" : avgocc,
     "modlist" : modsss})
 occdf = pd.DataFrame({
@@ -190,89 +204,91 @@ occdf = pd.DataFrame({
     "modpeps" : modpeps,
     "totpeps" : totpeps})
 
+def count_mods(analyzethese):
+    modctsdf = df[df["gene"].isin(analyzethese)]
+    modcts = modctsdf["modcts"]
+    avgocc = modctsdf["avgocc"]
+    modctsoccdf = occdf[occdf["gene"].isin(analyzethese)]
+    modocc = modctsoccdf["occupancy"]
+    return modctsdf, modcts, avgocc, modctsoccdf, modocc
+
+
 
 # all genes
-all_modctsdf = df[df["gene"].isin(genes_analyzed)]
-all_modcts = all_modctsdf["modcts"]
-all_avgocc = all_modctsdf["avgocc"]#[all_modctsdf["avgocc"] != 0]
-all_modctsoccdf = occdf[occdf["gene"].isin(genes_analyzed)]
-all_modocc = all_modctsoccdf["occupancy"]
-
+all_modctsdf, all_modcts, all_avgocc, all_modctsoccdf, all_modocc = count_mods(genes_analyzed) 
 # regev
-ccd_rt_modctsdf = df[df["gene"].isin(ccd_regev_filtered)]
-ccd_rt_modcts = ccd_rt_modctsdf["modcts"]
-ccd_rt_avgocc = ccd_rt_modctsdf["avgocc"]#[ccd_rt_modcts["avgocc"] != 0]
-ccd_rt_modctsoccdf = occdf[occdf["gene"].isin(ccd_regev_filtered)]
-ccd_rt_modocc = ccd_rt_modctsoccdf["occupancy"]
-
+ccd_rt_modctsdf, ccd_rt_modcts, ccd_rt_avgocc, ccd_rt_modctsoccdf, ccd_rt_modocc = count_mods(ccd_regev_filtered)
 # transcript CCD (all)
-ccd_at_modctsdf = df[df["gene"].isin(ccdtranscript)]
-ccd_at_modcts = ccd_at_modctsdf["modcts"]
-ccd_at_avgocc = ccd_at_modctsdf["avgocc"]#[ccd_at_modcts["avgocc"] != 0]
-ccd_at_modctsoccdf = occdf[occdf["gene"].isin(ccdtranscript)]
-ccd_at_modocc = ccd_at_modctsoccdf["occupancy"]
-
+ccd_at_modctsdf, ccd_at_modcts, ccd_at_avgocc, ccd_at_modctsoccdf, ccd_at_modocc = count_mods(ccdtranscript)
 # transcript non-CCD (all)
-ccd_nt_modctsdf = df[df["gene"].isin(nonccdtranscript)]
-ccd_nt_modcts = ccd_nt_modctsdf["modcts"]
-ccd_nt_avgocc = ccd_nt_modctsdf["avgocc"]#[ccd_nt_modcts["avgocc"] != 0]
-ccd_nt_modctsoccdf = occdf[occdf["gene"].isin(nonccdtranscript)]
-ccd_nt_modocc = ccd_nt_modctsoccdf["occupancy"]
-
+ccd_nt_modctsdf, ccd_nt_modcts, ccd_nt_avgocc, ccd_nt_modctsoccdf, ccd_nt_modocc = count_mods(nonccdtranscript)
 # transcript reg. CCD proteins
-ccd_t_modctsdf = df[df["gene"].isin(ccdprotein_transcript_regulated)]
-ccd_t_modcts = ccd_t_modctsdf["modcts"]
-ccd_t_avgocc = ccd_t_modctsdf["avgocc"]#[ccd_t_modcts["avgocc"] != 0]
-ccd_t_modctsoccdf = occdf[occdf["gene"].isin(ccdprotein_transcript_regulated)]
-ccd_t_modocc = ccd_t_modctsoccdf["occupancy"]
-
+ccd_t_modctsdf, ccd_t_modcts, ccd_t_avgocc, ccd_t_modctsoccdf, ccd_t_modocc = count_mods(ccdprotein_transcript_regulated)
 # non-transcript reg. CCD proteins
-ccd_n_modctsdf = df[df["gene"].isin(ccdprotein_nontranscript_regulated)]
-ccd_n_modcts = ccd_n_modctsdf["modcts"]
-ccd_n_avgocc = ccd_n_modctsdf["avgocc"]#[ccd_n_modcts["avgocc"] != 0]
-ccd_n_modctsoccdf = occdf[occdf["gene"].isin(ccdprotein_nontranscript_regulated)]
-ccd_n_modocc = ccd_n_modctsoccdf["occupancy"]
-
+ccd_n_modctsdf, ccd_n_modcts, ccd_n_avgocc, ccd_n_modctsoccdf, ccd_n_modocc = count_mods(ccdprotein_nontranscript_regulated)
 # CCD proteins
-ccd_modctsdf = df[df["gene"].isin(ccdprotein)]
-ccd_modcts = ccd_modctsdf["modcts"]
-ccd_avgocc = ccd_modctsdf["avgocc"]#[ccd_modcts["avgocc"] != 0]
-ccd_modctsoccdf = occdf[occdf["gene"].isin(ccdprotein)]
-ccd_modocc = ccd_modctsoccdf["occupancy"]
-
+ccd_modctsdf, ccd_modcts, ccd_avgocc, ccd_modctsoccdf, ccd_modocc = count_mods(ccdprotein)
 # non-CCD proteins
-nonccd_modctsdf = df[df["gene"].isin(nonccdprotein)]
-nonccd_modcts = nonccd_modctsdf["modcts"]
-nonccd_avgocc = nonccd_modctsdf["avgocc"]#[nonccd_modcts["avgocc"] != 0]
-nonccd_modctsoccdf = occdf[occdf["gene"].isin(nonccdprotein)]
-nonccd_modocc = nonccd_modctsoccdf["occupancy"]
+nonccd_modctsdf, nonccd_modcts, nonccd_avgocc, nonccd_modctsoccdf, nonccd_modocc = count_mods(nonccdprotein)
 
+categories = {
+    "all genes detected" : count_mods(genes_analyzed), 
+    # "Regev CCD" : count_mods(ccd_regev_filtered), 
+    "all transcript CCD genes" : count_mods(ccdtranscript), 
+    "all transcript non-CCD genes" : count_mods(nonccdtranscript), 
+    "transcript regulated CCD proteins" : count_mods(ccdprotein_transcript_regulated),
+    "non-transcript regulated CCD proteins" : count_mods(ccdprotein_nontranscript_regulated),
+    "non-CCD proteins" : count_mods(nonccdprotein),
+    "CCD proteins" : count_mods(ccdprotein)}
 
-# Just number of proteins with mods
-fom = "\n"
-fom += "COUNTS OF MODIFIED PROTEINS\n"
-fom += f"{str(len(all_modcts[all_modcts > 0]))} modified proteins ({str(round(float(len(all_modcts[all_modcts > 0]))/float(len(all_modcts))*100,2))}%) in all genes detected\n"
-fom += f"{str(len(ccd_rt_modcts[ccd_rt_modcts > 0]))} modified proteins ({str(round(float(len(ccd_rt_modcts[ccd_rt_modcts > 0]))/float(len(ccd_rt_modcts))*100,2))}%) in Regev CCD\n"
-fom += f"{str(len(ccd_at_modcts[ccd_at_modcts > 0]))} modified proteins ({str(round(float(len(ccd_at_modcts[ccd_at_modcts > 0]))/float(len(ccd_at_modcts))*100,2))}%) in all transcript CCD genes\n"
-fom += f"{str(len(ccd_t_modcts[ccd_t_modcts > 0]))} modified proteins ({str(round(float(len(ccd_t_modcts[ccd_t_modcts > 0]))/float(len(ccd_t_modcts))*100,2))}%) in transcript regulated CCD proteins\n"
-fom += f"{str(len(ccd_n_modcts[ccd_n_modcts > 0]))} modified proteins ({str(round(float(len(ccd_n_modcts[ccd_n_modcts > 0]))/float(len(ccd_n_modcts))*100,2))}%) in non-transcript regulated CCD proteins\n"
-fom += f"{str(len(nonccd_modcts[nonccd_modcts > 0]))} modified proteins ({str(round(float(len(nonccd_modcts[nonccd_modcts > 0]))/float(len(nonccd_modcts))*100,2))}%) in non-CCD proteins\n"
-fom += f"{str(len(ccd_modcts[ccd_modcts > 0]))} modified proteins ({str(round(float(len(ccd_modcts[ccd_modcts > 0]))/float(len(ccd_modcts))*100,2))}%) in CCD proteins\n"
-fom += "\n"
-fom += "COUNTS OF MODIFIED PROTEINS WITH MOD OCCUPANCY CUTOFFS\n"
-fom += f"{str(len(set(all_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(all_modctsoccdf['gene'])))/float(len(all_modcts))*100,2))}%) in all genes detected\n"
-fom += f"{str(len(set(ccd_rt_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_rt_modctsoccdf['gene'])))/float(len(ccd_rt_modcts))*100,2))}%) in Regev CCD\n"
-fom += f"{str(len(set(ccd_at_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_at_modctsoccdf['gene'])))/float(len(ccd_at_modcts))*100,2))}%) in all transcript CCD genes\n"
-fom += f"{str(len(set(ccd_t_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_t_modctsoccdf['gene'])))/float(len(ccd_t_modcts))*100,2))}%) in transcript regulated CCD proteins\n"
-fom += f"{str(len(set(ccd_nt_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_nt_modctsoccdf['gene'])))/float(len(ccd_nt_modcts))*100,2))}%) non-CCD transcript proteins\n"
-fom += f"{str(len(set(ccd_n_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_n_modctsoccdf['gene'])))/float(len(ccd_n_modcts))*100,2))}%) in non-transcript regulated CCD proteins\n"
-fom += f"{str(len(set(ccd_n_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_n_modctsoccdf['gene'])))/float(len(nonccd_modcts))*100,2))}%) in non-CCD proteins\n"
-fom += f"{str(len(set(ccd_modctsoccdf['gene'])))} modified proteins ({str(round(float(len(set(ccd_modctsoccdf['gene'])))/float(len(ccd_modcts))*100,2))}%) in CCD proteins\n"
-fom += "\n"
+counts_of_modified_proteins = pd.DataFrame({
+    "category" : list(categories.keys()),
+    # Modification counts
+    "modifiedProteins" : [len(v[1][v[1] > 0]) for v in categories.values()],
+    "modifiedProtein%" : [float(len(v[1][v[1] > 0])) / float(len(v[1])) * 100 for v in categories.values()],
+    "meanModSites" : [np.mean(v[0]["modrawcts"][v[1] > 0]) for v in categories.values()],    
+    "medianModSites" : [np.median(v[0]["modrawcts"][v[1] > 0]) for v in categories.values()],    
+    "totalModSites" : [sum(v[0]["modrawcts"][v[1] > 0]) for v in categories.values()],
+    "meanModPerEffBase, mean mods / seq length" : [np.mean(v[1][v[1] > 0]) for v in categories.values()],
+    "medianModPerEffBase, mean mods / seq length" : [np.median(v[1][v[1] > 0]) for v in categories.values()],
+    "twoSidedKruskal_vs_allProtsModPerEffBase" : [scipy.stats.kruskal(v[1][v[1] > 0], categories[list(categories.keys())[0]][1][categories[list(categories.keys())[0]][1] > 0])[1] for v in categories.values()],
+    # Modification occupancies
+    "modifiedOccProteins" : [len(set(v[3]['gene'])) for v in categories.values()],
+    "modifiedOccProtein%" : [float(len(set(v[3]['gene']))) / float(len(v[1])) * 100 for v in categories.values()],
+    "meanOccModSites" : [np.mean([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
+    "medianOccModSites" : [np.median([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
+    "totalOccModSites" : [sum([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
+    "twoSidedKruskal_vs_allProtsOccupancy" : [scipy.stats.kruskal(v[4], categories[list(categories.keys())[0]][4])[1] for v in categories.values()],
+    # Some figures of merit for the experiment
+    "medianCoverage" : [np.median(v[0]["coveredfract"]) for v in categories.values()],
+    "medianCoverageOfModProteins" : [np.median(v[0]["coveredfract"][v[1] > 0]) for v in categories.values()]})   
 
+counts_of_modified_proteins.to_csv("output/counts_of_modified_proteins.csv", index=False)
+
+#%% Look at box plots of these things
+def boxy(categories, category_values, title):
+    plt.figure(figsize=(10,10))
+    mmmm = np.concatenate(category_values) # values
+    cccc = np.concatenate([[category.replace(" ", "\n")] * len(category_values[cidx]) for cidx, category in enumerate(list(categories.keys()))]) # labels
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
+    # boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=0.3, color=".3", size=5, jitter=0.25)#, showfliers=False)
+    boxplot.set_ylabel(title, size=36,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=16)
+    # boxplot.set(ylim=(-0.01,1.01))
+    # plt.savefig("figures/ModsOccupancyBoxplotSelected.pdf")
+    # plt.title(title)
+    plt.show()
+    plt.close()
+
+boxy(categories, [v[0]["modrawcts"][v[1] > 0] for v in categories.values()], "Mod Sites Per Modified Protein")
+boxy(categories, [v[1][v[1] > 0] for v in categories.values()], "Mods Per Effective Base Per Modified Protein")
+boxy(categories, [[sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])] for v in categories.values()], "Occupied Sites Per Modified Protein")
+boxy(categories, [v[4] for v in categories.values()], "Occupancy Per Modified Residue")
+
+#%%
 
 # The t-test isn't good here because these counts don't form a normal distribution... it works with the log(x+1 / len) distribution
-fom += "COUNT OF MODIFICATIONS PER COVERED RESIDUE PER PROTEIN\n"
+fom = "COUNT OF MODIFICATIONS PER COVERED RESIDUE PER PROTEIN\n"
 fom += f"mean number of mods / seq length for all proteins: {np.mean(all_modcts)}\n"
 fom += f"mean number of mods / seq length for all transcriptionally regulated CCD: {np.mean(ccd_at_modcts)}\n"
 fom += f"mean number of mods / seq length for Diana's transcriptionally regulated CCD: {np.mean(ccd_t_modcts)}\n"
@@ -417,20 +433,20 @@ plt.show()
 plt.close()
 
 plt.figure(figsize=(10,10))
-mmmm = np.concatenate((ccd_at_modocc, ccd_nt_modocc, all_modocc, ccd_modocc, nonccd_modocc))
+mmmm = np.concatenate((all_modocc, ccd_modocc, nonccd_modocc))
 cccc = (["All"] * len(all_modocc))
-cccc.extend(["All\nTranscript\nCCD"] * len(ccd_at_modocc))
-cccc.extend(["All\nTranscript\nNon-CCD"] * len(ccd_nt_modocc))
+# cccc.extend(["All\nTranscript\nCCD"] * len(ccd_at_modocc))
+# cccc.extend(["All\nTranscript\nNon-CCD"] * len(ccd_nt_modocc))
 # cccc.extend(["Transcript\nReg. CCD"] * len(ccd_t_modocc))
 # cccc.extend(["Non-\nTranscript\nReg. CCD"] * len(ccd_n_modocc))
 cccc.extend(["CCD"] * len(ccd_modocc))
 cccc.extend(["Non-\nCCD"] * len(nonccd_modocc))
-boxplot = sbn.boxplot(x=cccc, y=mmmm)#, showfliers=False)
-boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=0.2, color=".3", size=7, jitter=0.25)#, showfliers=False)
+boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
+# boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=0.2, color=".3", size=7, jitter=0.25)#, showfliers=False)
 boxplot.set_ylabel("Occupancy per Modified Residue", size=36,fontname='Arial')
 boxplot.tick_params(axis="both", which="major", labelsize=16)
 boxplot.set(ylim=(-0.01,1.01))
-plt.savefig("figures/ModsOccupancyBoxplotSelected2.pdf")
+plt.savefig("figures/ModsOccupancyBoxplotSelected3.pdf")
 plt.show()
 plt.close()
 
