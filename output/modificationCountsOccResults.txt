@@ -1,100 +1,51 @@
-
-COUNTS OF MODIFIED PROTEINS
-2026 modified proteins (27.66%) in all genes detected
-32 modified proteins (38.1%) in Regev CCD
-120 modified proteins (41.1%) in all transcript CCD genes
-19 modified proteins (44.19%) in transcript regulated CCD proteins
-42 modified proteins (29.58%) in non-transcript regulated CCD proteins
-167 modified proteins (32.62%) in Diana's non-CCD proteins
-
-COUNTS OF MODIFIED PROTEINS WITH MOD OCCUPANCY CUTOFFS
-1012 modified proteins (13.82%) in all genes detected
-16 modified proteins (19.05%) in Regev CCD
-66 modified proteins (22.6%) in all transcript CCD genes
-5 modified proteins (11.63%) in transcript regulated CCD proteins
-946 modified proteins (13.45%) non-CCD transcript proteins
-22 modified proteins (15.49%) in non-transcript regulated CCD proteins
-22 modified proteins (4.3%) in non-CCD proteins
-27 modified proteins (14.44%) in non-CCD proteins
-
 COUNT OF MODIFICATIONS PER COVERED RESIDUE PER PROTEIN
-mean number of mods / seq length for all proteins: 0.007790893950338372
-mean number of mods / seq length for all transcriptionally regulated CCD: 0.012445562074305264
-mean number of mods / seq length for Diana's transcriptionally regulated CCD: 0.001951866054809321
-mean number of mods / seq length for Diana's non-transcriptionally regulated CCD: 0.0026014357033292035
-two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.6051053707692707
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.8772363269070689
+mean number of mods / seq length for all proteins: 0.0027597723605897353
+mean number of mods / seq length for all transcriptionally regulated CCD: 0.006560428756337756
+mean number of mods / seq length for Diana's transcriptionally regulated CCD: 0.0009399508015041041
+mean number of mods / seq length for Diana's non-transcriptionally regulated CCD: 0.0023192229974370775
+two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.20934402682450706
+two-sided t-test for same means of all and non-transcriptionally regulated: 0.1885575331013134
 
 median number of mods / seq length for all proteins: 0.0
 median number of mods / seq length for all transcriptionally regulated CCD: 0.0
 median number of mods / seq length for Diana's transcriptionally regulated CCD: 0.0
 median number of mods / seq length for Diana's non-transcriptionally regulated: 0.0
-one-sided kruskal for same medians of all transcriptionally reg. and non-transcriptionally regulated: 0.01642810143251012
-one-sided kruskal for same medians of Diana's transcriptionally reg. and non-transcriptionally regulated: 0.37754042231757967
-one-sided kruskal for same medians of all genes and Diana's transcriptionally reg: 0.12948538016803526
-one-sided kruskal for same medians of all genes and all transcriptionally reg: 8.06794230842626e-08
-one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.11786438367939542
-one-sided kruskal for same medians of all genes and non-transcriptionally reg: 1.3251541931253792
-one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 0.33376363899410705
-one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 5.501334669995263e-07
+one-sided kruskal for same medians of all transcriptionally reg. and non-transcriptionally regulated: 0.005283174083714925
+one-sided kruskal for same medians of Diana's transcriptionally reg. and non-transcriptionally regulated: 1.8538030214615502
+one-sided kruskal for same medians of all genes and Diana's transcriptionally reg: 1.8058580966819204
+one-sided kruskal for same medians of all genes and all transcriptionally reg: 2.292956087607676e-06
+one-sided kruskal for same medians of all genes and regev transcriptionally reg: 1.521631432558726
+one-sided kruskal for same medians of all genes and non-transcriptionally reg: 1.9798232620351772
+one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 1.9851654659258389
+one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 1.416117671316682e-05
 
 OCCUPANCY PER MODIFIED BASE
 Note: I excluded artifact modifications and required there to be
 at least 1 peptides with the modification to count it and
-at least 3 peptides covering the base total.
+at least 5 peptides covering the base total.
 
-mean occupancy per modified residue for all proteins: 0.3359167604049475
-mean occupancy per modified residue for all transcriptionally regulated CCD: 0.17341176470588276
-mean occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.2866666666666667
-mean occupancy per modified residue for Diana's non-transcriptionally regulated CCD: 0.447027027027027
-two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.3700757615565735
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
+mean occupancy per modified residue for all proteins: 0.2895240032546771
+mean occupancy per modified residue for all transcriptionally regulated CCD: 0.14803076923076944
+mean occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.18875
+mean occupancy per modified residue for Diana's non-transcriptionally regulated CCD: 0.3486153846153846
+two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.2511654046921914
+two-sided t-test for same means of all and non-transcriptionally regulated: 0.4298200322936512
+two-sided t-test for same means of all and non-transcriptionally regulated: 0.4298200322936512
+two-sided t-test for same means of all and non-transcriptionally regulated: 0.4298200322936512
 
-median occupancy per modified residue for all proteins: 0.14
-median occupancy per modified residue for all transcriptionally regulated CCD: 0.06
-median occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.26
-median occupancy per modified residue for Diana's non-transcriptionally regulated: 0.25
-one-sided kruskal for same medians of all transcriptionally reg. and non-transcript regulated: 2.246552137559769e-06
-one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non-transcript regulated: 1.7464736761739688
-one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: 0.001694258732954675
-one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: 0.8264914596942494
-one-sided kruskal for same medians of all genes and all transcriptionally reg: 1.3108247869234664e-13
-one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.6092828654091775
-one-sided kruskal for same medians of all genes and non-transcriptionally reg: 0.03520734799778821
-one-sided kruskal for same medians of all genes and non-CCD: 0.07956357981513695
-one-sided kruskal for same medians of CCD genes and non-CCD: 0.001694258732954675
-one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 0.08643086830462207
-one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 3.301764953113651e-14
-
-OCCUPANCY PER MODIFIED BASE
-Note: I excluded artifact modifications and required there to be
-at least 1 peptides with the modification to count it and
-at least 3 peptides covering the base total.
-
-mean occupancy per modified residue for all proteins: 0.3359167604049475
-mean occupancy per modified residue for all transcriptionally regulated CCD: 0.17341176470588276
-mean occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.2866666666666667
-mean occupancy per modified residue for Diana's non-transcriptionally regulated CCD: 0.447027027027027
-two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.3700757615565735
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
-two-sided t-test for same means of all and non-transcriptionally regulated: 0.7553472272535422
-
-median occupancy per modified residue for all proteins: 0.14
-median occupancy per modified residue for all transcriptionally regulated CCD: 0.06
-median occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.26
-median occupancy per modified residue for Diana's non-transcriptionally regulated: 0.25
-one-sided kruskal for same medians of all transcriptionally reg. and non-transcript regulated: 2.246552137559769e-06
-one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non-transcript regulated: 1.7464736761739688
-one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: 0.001694258732954675
-one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: 0.8264914596942494
-one-sided kruskal for same medians of all genes and all transcriptionally reg: 1.3108247869234664e-13
-one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.6092828654091775
-one-sided kruskal for same medians of all genes and non-transcriptionally reg: 0.03520734799778821
-one-sided kruskal for same medians of all genes and non-CCD: 0.07956357981513695
-one-sided kruskal for same medians of CCD genes and non-CCD: 0.001694258732954675
-one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 0.08643086830462207
-one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 3.301764953113651e-14
+median occupancy per modified residue for all proteins: 0.11
+median occupancy per modified residue for all transcriptionally regulated CCD: 0.05
+median occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.175
+median occupancy per modified residue for Diana's non-transcriptionally regulated: 0.14
+one-sided kruskal for same medians of all transcriptionally reg. and non-transcript regulated: 1.1637071668900036e-05
+one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non-transcript regulated: 1.6352940909734037
+one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: 0.018387337277529284
+one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: 1.1955978897560333
+one-sided kruskal for same medians of all genes and all transcriptionally reg: 1.6299705073985818e-11
+one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.6853809057709846
+one-sided kruskal for same medians of all genes and non-transcriptionally reg: 0.18311204194927969
+one-sided kruskal for same medians of all genes and non-CCD: 0.1272971274891285
+one-sided kruskal for same medians of CCD genes and non-CCD: 0.0016633127143914376
+one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 0.42245431275526735
+one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 1.681080847939065e-11
 
