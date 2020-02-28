@@ -1,0 +1,29 @@
+OCCUPANCY PER MODIFIED BASE
+Note: I excluded artifact modifications and required there to be
+
+mean occupancy per modified residue for all proteins: 0.3549518295916781
+mean occupancy per modified residue for all transcriptionally regulated CCD: 0.3554267371601199
+mean occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.4141221374045803
+mean occupancy per modified residue for Diana's non-transcriptionally regulated CCD: 0.3666706803130641
+two-sided t-test for same means of transcript and non-transcriptionally regulated: 0.00023803213361829113
+two-sided t-test for same means of all and non-transcriptionally regulated: 2.0142692668464623e-08
+two-sided t-test for same means of all and non-transcriptionally regulated: 2.0142692668464623e-08
+two-sided t-test for same means of all and non-transcriptionally regulated: 2.0142692668464623e-08
+
+median occupancy per modified residue for all proteins: 0.25
+median occupancy per modified residue for all transcriptionally regulated CCD: 0.25
+median occupancy per modified residue for Diana's transcriptionally regulated CCD: 0.32
+median occupancy per modified residue for Diana's non-transcriptionally regulated: 0.27
+one-sided kruskal for same medians of all transcriptionally reg. and non-transcript regulated: 0.028919449210176237
+one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non-transcript regulated: 0.002142936972662485
+one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: 1.981060531785367e-05
+one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: 7.956321930382565e-08
+one-sided kruskal for same medians of all genes and all transcriptionally reg: 0.6043021005979443
+one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.27837675564252384
+one-sided kruskal for same medians of all genes and non-transcriptionally reg: 0.047135273285815064
+one-sided kruskal for same medians of all genes and non-CCD: 0.7984372113789346
+one-sided kruskal for same medians of all genes and CCD: 1.1362144091454957e-08
+one-sided kruskal for same medians of CCD genes and non-CCD: 6.868953974960845e-08
+one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: 5.832792188190747e-08
+one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: 0.08146962123078079
+
