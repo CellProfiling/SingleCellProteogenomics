@@ -194,4 +194,31 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, outfolder, nbins=200):
 fucci_hist2d(centered_data, cart_data_ur, start_pt, "figures", NBINS)
 
 
-#%%
+#%% Make boxplots
+from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
+def boxplot_result(g1, s, g2, outfolder, ensg):
+    if not os.path.exists(f"{outfolder}_png"): os.mkdir(f"{outfolder}_png")
+    if not os.path.exists(f"{outfolder}_pdf"): os.mkdir(f"{outfolder}_pdf")
+    mmmm = np.concatenate((g1, s, g2))
+    cccc = (["G1"] * len(g1))
+    cccc.extend(["G1/S"] * len(s))
+    cccc.extend(["G2"] * len(g2))
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
+    boxplot.set_xlabel("", size=36,fontname='Arial')
+    boxplot.set_ylabel("Normalized Log10(TPM)", size=18,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=14)
+    plt.title("")
+    plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
+    plt.savefig(f"{outfolder}_pdf/GaussianClusteringProtein_{ensg}.pdf")
+    plt.close()
+    
+dd = "All"
+biotype_to_use="protein_coding"
+count_or_rpkm = "Tpms"
+adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
+adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
+
+g1, s, g2 = adata.obs["phase"] == "G1", adata.obs["phase"] == "S-ph", adata.obs["phase"] == "G2M"
+for iii, ensg in enumerate(adata.var_names):
+    maxtpm = np.max(np.concatenate((adata.X[g1,iii], adata.X[s,iii], adata.X[g2,iii])))
+    boxplot_result(adata.X[g1,iii] / maxtpm, adata.X[s,iii] / maxtpm, adata.X[g2,iii] / maxtpm, "figures/RNABoxplotByPhase", ensg)

@@ -215,6 +215,8 @@ plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.pdf'), transpare
 plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.png'), transparent=True)
 plt.show()
 
+np.save("output/pickles/wp_max_pol.npy", wp_max_pol, allow_pickle=True)
+
 #%% RNA heatmap
 # Idea: create a heatmap of peak RNA expression
 # Execution: use the same sort of methods as the previous cell

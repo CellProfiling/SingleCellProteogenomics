@@ -297,9 +297,9 @@ def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
     cccc = (["G1"] * len(g1))
     cccc.extend(["G1/S"] * len(s))
     cccc.extend(["G2"] * len(g2))
-    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False, color="grey")
     boxplot.set_xlabel("", size=36,fontname='Arial')
-    boxplot.set_ylabel("Cell Cycle Time, hrs", size=18,fontname='Arial')
+    boxplot.set_ylabel("Normalized Mean Intensity", size=18,fontname='Arial')
     boxplot.tick_params(axis="both", which="major", labelsize=14)
     plt.title("")
     plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
@@ -342,14 +342,14 @@ for iii, wp in enumerate(u_well_plates):
     wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])
     max_val_for_norm = np.max(ab_cell[curr_well_inds] if wp_iscell[iii] else ab_nuc[curr_well_inds] if wp_isnuc[iii] else ab_cyto[curr_well_inds])
     gaussian_boxplot_result(
-            (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm * TOT_LEN,
-            (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm * TOT_LEN,
-            (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm * TOT_LEN,
+            (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm,# * TOT_LEN,
+            (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm,# * TOT_LEN,
+            (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm,# * TOT_LEN,
             "figures/GaussianBoxplots", fileprefixes[iii])
     gaussian_boxplot_result(
-        mt_cell[curr_wp_g1] / max_val_for_norm * TOT_LEN, 
-        mt_cell[curr_wp_sph] / max_val_for_norm * TOT_LEN, 
-        mt_cell[curr_wp_g2] / max_val_for_norm * TOT_LEN, 
+        mt_cell[curr_wp_g1] / max_val_for_norm,# * TOT_LEN, 
+        mt_cell[curr_wp_sph] / max_val_for_norm,# * TOT_LEN, 
+        mt_cell[curr_wp_g2] / max_val_for_norm,# * TOT_LEN, 
         "figures/GaussianBoxplots_mt", f"{fileprefixes[iii]}_mt")
 
 # benjimini-hochberg multiple testing correction
