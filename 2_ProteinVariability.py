@@ -7,6 +7,8 @@ from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats import iqr, variation
+import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -103,6 +105,7 @@ pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_ph
 pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort), pol_reord(ab_cyto_sort), pol_reord(ab_cell_sort), pol_reord(mt_cell_sort)
 pol_sort_centered_data0, pol_sort_centered_data1 = pol_reord(centered_data_sort0), pol_reord(centered_data_sort1)
 pol_sort_area_cell, pol_sort_area_nuc = pol_reord(area_cell), pol_reord(area_nuc)
+pol_sort_fred, pol_sort_fgreen = pol_reord(log_red_fucci_zeroc_rescale), pol_reord(log_green_fucci_zeroc_rescale)
 
 #shift and re-scale "time"; reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
 pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
@@ -137,11 +140,71 @@ def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
     plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20,fontname='Arial')
     plt.tight_layout()
     plt.savefig(os.path.join('figures/masked_polar_hist.pdf'),transparent=True)
+    plt.show()
     plt.close()
 
 #visualize that result
 start_pt = pol2cart(R_2,start_phi)
 fucci_hist2d(centered_data,cart_data_ur,start_pt)
+
+# visualize the result of displaying GMNN over the plot
+fig, ax1 = plt.subplots(figsize=(10,10))
+mycmap = plt.cm.gray_r
+mycmap.set_under(color='w',alpha=None)
+ax1.hist2d(centered_data[:,0],centered_data[:,1],bins=200,alpha=1,cmap=mycmap)
+hist, xbins, ybins = np.histogram2d(cart_data_ur[0],cart_data_ur[1], bins=200, normed=True)
+extent = [xbins.min(),xbins.max(),ybins.min(),ybins.max()]
+im = ax1.imshow(
+        np.ma.masked_where(hist == 0, hist).T,
+        interpolation='nearest',
+        origin='lower',
+        extent=extent,
+        cmap='plasma')
+gmnn = "H05_55405991"
+gmnn_well_inds = pol_sort_well_plate==gmnn
+gmnn_ab_nuc = pol_sort_ab_nuc[gmnn_well_inds]
+im = ax1.scatter(pol_sort_centered_data0[gmnn_well_inds],pol_sort_centered_data1[gmnn_well_inds], c=gmnn_ab_nuc)
+fig.colorbar(im, ax=ax1)
+plt.xlabel(r'$log_{10}(GMNN_{fucci})$',size=20,fontname='Arial')
+plt.ylabel(r'$log_{10}(CDT1_{fucci})$',size=20,fontname='Arial')
+plt.savefig("figures/GMNN_FUCCI_plot.pdf")
+plt.show(); plt.close()
+
+# visualize the result of FUCCI intensities over pseudotime
+def mvavg(yvals, mv_window):
+    return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
+def mvpercentiles(yvals_binned):
+    return np.percentile(yvals_binned, [10, 25, 50, 75, 90], axis=1)
+
+G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
+#M_LEN = 0.5
+#We are excluding Mphase from this analysis
+TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
+plt.figure(figsize=(5,5))
+WINDOW = 100
+windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(pol_sort_norm_rev) - WINDOW + 1)])
+mvperc_red = mvpercentiles(pol_sort_centered_data1[windows])
+mvperc_green = mvpercentiles(pol_sort_centered_data0[windows])
+mvavg_xvals = mvavg(pol_sort_norm_rev, WINDOW)
+plt.fill_between(mvavg_xvals * TOT_LEN, mvperc_green[1], mvperc_green[-2], color="lightgreen", label="25th & 75th Percentiles")
+plt.fill_between(mvavg_xvals * TOT_LEN, mvperc_red[1], mvperc_red[-2], color="lightcoral", label="25th & 75th Percentiles")
+
+mvavg_red = mvavg(pol_sort_centered_data1, WINDOW)
+mvavg_green = mvavg(pol_sort_centered_data0, WINDOW)
+plt.plot(mvavg_xvals * TOT_LEN, mvavg_red, color="r", label="Mean Intensity")
+plt.plot(mvavg_xvals * TOT_LEN, mvavg_green, color="g", label="Mean Intensity")
+plt.xlabel('Cell Cycle Time, hrs')
+plt.ylabel('Log10 Tagged CDT1 & GMNN Intensity')
+plt.xticks(size=14)
+plt.yticks(size=14)
+# plt.ylim(0, 1)
+plt.tight_layout()
+plt.savefig("figures/FUCCIOverPseudotime.pdf")
+plt.savefig("figures/FUCCIOverPseudotime.png")
+plt.show()
+plt.close()
 
 #%% Measures of variance
 # Idea: Calculate measures of variance, and show them in plots
@@ -367,6 +430,32 @@ plt.savefig("figures/CVByImage.png")
 plt.show()
 plt.close()
 
+mmmm = np.concatenate((gini_comp, gini_mt))
+cccc = (["Protein"] * len(gini_comp))
+cccc.extend(["Microtubules"] * len(gini_mt))
+boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False, color="grey")
+boxplot.set_xlabel("", size=36,fontname='Arial')
+boxplot.set_ylabel("Gini", size=18,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=14)
+plt.title("")
+plt.savefig(f"figures/ProteinMicrotubuleGinis.png")
+plt.savefig(f"figures/ProteinMicrotubuleGinis.pdf")
+plt.close()
+print(f"{scipy.stats.kruskal(gini_comp, gini_mt)[1]}: p-value for difference between protein and microtubule stainings")
+
+mmmm = np.concatenate((var_comp, var_mt))
+cccc = (["Protein"] * len(var_comp))
+cccc.extend(["Microtubules"] * len(var_mt))
+boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False, color="grey")
+boxplot.set_xlabel("", size=36,fontname='Arial')
+boxplot.set_ylabel("Variance", size=18,fontname='Arial')
+boxplot.tick_params(axis="both", which="major", labelsize=14)
+plt.title("")
+plt.savefig(f"figures/ProteinMicrotubuleVariances.png")
+plt.savefig(f"figures/ProteinMicrotubuleVariances.pdf")
+plt.close()
+print(f"{scipy.stats.kruskal(var_comp, var_mt)[1]}: p-value for difference between protein and microtubule stainings")
+
 print(np.concatenate(wpi_img)[np.argmax(np.concatenate(var_comp_img))] + ": the image with the max variance")
 
 plt.hist(np.concatenate([vvv / var_comp[i] for i, vvv in enumerate(var_comp_img)]))
@@ -396,8 +485,13 @@ np_save_overwriting("output/pickles/pol_sort_ab_cell.npy", pol_sort_ab_cell)
 np_save_overwriting("output/pickles/pol_sort_mt_cell.npy", pol_sort_mt_cell)
 np_save_overwriting("output/pickles/pol_sort_area_cell.npy", pol_sort_area_cell)
 np_save_overwriting("output/pickles/pol_sort_area_nuc.npy", pol_sort_area_nuc)
+np_save_overwriting("output/pickles/pol_sort_fred.npy", pol_sort_fred)
+np_save_overwriting("output/pickles/pol_sort_fgreen.npy", pol_sort_fgreen)
 
 np_save_overwriting("output/pickles/mean_mean_comp.npy", mean_mean_comp)
 np_save_overwriting("output/pickles/cv_comp.npy", cv_comp)
 np_save_overwriting("output/pickles/gini_comp.npy", gini_comp)
 np_save_overwriting("output/pickles/var_comp.npy", var_comp)
+np_save_overwriting("output/pickles/cv_cell.npy", cv_cell)
+np_save_overwriting("output/pickles/gini_cell.npy", gini_cell)
+np_save_overwriting("output/pickles/var_cell.npy", var_cell)

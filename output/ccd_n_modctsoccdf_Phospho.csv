@@ -1,0 +1,1662 @@
+accession,gene,modification,residue,occupancy,modpeps,totpeps
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,12,0.93,42,45
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,15,0.04,2,45
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,17,0.04,2,45
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,31,0.1,5,51
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,36,0.08,4,51
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,41,0.84,63,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,44,0.07,5,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,44,0.04,3,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Citrullination on R,47,0.01,1,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,52,0.62,33,53
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,52,0.11,6,53
+"['H0YG79', 'Q9H6F5']",CCDC86,Succinylation on K,58,0.06,3,52
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,59,0.27,6,22
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,60,0.32,7,22
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,63,0.73,16,22
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,18,0.94,33,35
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,21,0.03,1,35
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,23,0.06,2,35
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,37,0.1,5,52
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,42,0.08,4,52
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,47,0.84,63,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,50,0.04,3,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,50,0.07,5,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Citrullination on R,53,0.01,1,75
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,58,0.11,6,53
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,58,0.62,33,53
+"['H0YG79', 'Q9H6F5']",CCDC86,Succinylation on K,64,0.06,3,52
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on T,65,0.25,6,24
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,66,0.29,7,24
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,69,0.67,16,24
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,80,0.26,19,74
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,91,0.74,55,74
+"['H0YG79', 'Q9H6F5']",CCDC86,Dimethylation on R,94,0.05,4,74
+"['H0YG79', 'Q9H6F5']",CCDC86,Citrullination on R,94,0.03,2,74
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on S,102,0.43,22,51
+"['H0YG79', 'Q9H6F5']",CCDC86,Phosphorylation on Y,109,0.84,31,37
+"['A6NKD9', 'H0YJE0']",CCDC85C,Phosphorylation on S,179,0.4,2,5
+"['A6NKD9', 'H0YJE0']",CCDC85C,Phosphorylation on S,187,0.2,1,5
+"['A6NKD9', 'H0YJE0']",CCDC85C,Phosphorylation on S,246,0.71,10,14
+"['A6NKD9', 'H0YJE0']",CCDC85C,Phosphorylation on S,251,0.43,6,14
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,542,0.47,9,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,551,0.26,5,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,554,0.16,3,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,555,0.6,9,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,557,0.07,1,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,560,0.43,3,7
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,688,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,691,0.25,2,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,542,0.47,9,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,551,0.26,5,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,554,0.16,3,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,555,0.6,9,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,557,0.07,1,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,560,0.43,3,7
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,688,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,691,0.25,2,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,436,0.47,9,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,445,0.26,5,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,448,0.16,3,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,449,0.6,9,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,451,0.07,1,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,454,0.43,3,7
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,582,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,585,0.25,2,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,333,0.47,9,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,342,0.26,5,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,345,0.16,3,19
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,346,0.6,9,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,348,0.07,1,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,351,0.43,3,7
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,467,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,470,0.25,2,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,542,0.44,8,18
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,551,0.28,5,18
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,554,0.17,3,18
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,555,0.6,9,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,557,0.07,1,15
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,560,0.43,3,7
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,266,0.29,4,14
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,274,0.57,8,14
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,278,0.33,2,6
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,280,0.17,1,6
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,283,0.6,3,5
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,378,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,381,0.25,2,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,333,0.29,4,14
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,341,0.57,8,14
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,345,0.33,2,6
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Citrullination on R,347,0.17,1,6
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,350,0.6,3,5
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,464,0.75,6,8
+"['A0A2R8Y570', 'A0A3B3IU06', 'A0A3B3IUD6', 'Q4VB86', 'P11171', 'A0A1B0GWG0', 'A0A2R8Y6D0']",EPB41,Phosphorylation on S,467,0.25,2,8
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,107,0.33,2,6
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,115,0.6,15,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,115,0.16,4,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,126,0.12,3,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,127,0.12,3,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,136,1.0,10,10
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,141,1.0,10,10
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,163,0.33,2,6
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,171,0.16,4,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,171,0.6,15,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,182,0.12,3,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,183,0.12,3,25
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,628,0.92,11,12
+"['H0YFD2', 'Q8N9T8']",KRI1,Phosphorylation on S,639,0.33,4,12
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on Y,3,0.71,5,7
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,6,0.71,5,7
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on T,11,0.11,1,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on T,14,0.22,2,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on K,16,0.22,2,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Formylation on K,16,0.11,1,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Trimethylation on K,16,0.11,1,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,39,0.17,3,18
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,42,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on P,44,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,48,0.03,5,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,61,0.46,71,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on E,65,0.17,26,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,70,0.01,2,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Dimethylation on K,70,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,70,0.03,4,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Trimethylation on K,70,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Formylation on K,70,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Glutarylation on K,70,0.03,5,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,70,0.01,2,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Acetylation on K,70,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,73,0.35,15,43
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,73,0.3,13,43
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,75,0.16,7,43
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,77,0.02,1,43
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,4,0.14,6,42
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,10,0.05,2,42
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Citrullination on R,13,0.14,6,42
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on R,13,0.14,6,42
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on P,14,0.02,1,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on N,16,0.02,1,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Nitrosylation on Y,17,0.04,2,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on Y,17,0.12,6,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Sulfonation on Y,17,0.04,2,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Nitrosylation on C,21,0.18,9,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,24,0.06,3,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on K,24,0.14,7,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Acetylation on K,24,0.12,6,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxybutyrylation on K,24,0.04,2,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,24,0.14,7,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Trimethylation on K,24,0.06,3,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Glutarylation on K,24,0.02,1,49
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,27,0.08,10,131
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Acetylation on K,27,0.02,2,131
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,27,0.03,4,131
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,27,0.02,2,131
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,32,0.11,18,160
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,N6-acetyllysine on K,32,0.02,3,160
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,32,0.03,4,160
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,32,0.01,1,160
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,43,0.01,1,171
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,43,0.01,2,171
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on R,45,0.03,5,171
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Citrullination on R,45,0.01,2,171
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on T,46,0.16,4,25
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,48,0.04,1,25
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on K,54,0.08,2,25
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,54,0.12,3,25
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on N,66,0.06,3,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Sulfonation on Y,67,0.04,2,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,70,0.31,16,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on P,71,0.02,1,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,73,0.02,1,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on K,73,0.02,1,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,73,0.04,2,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Formylation on K,73,0.02,1,52
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on T,78,0.44,7,16
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on K,80,0.12,2,16
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Formylation on K,80,0.06,1,16
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Trimethylation on K,80,0.06,1,16
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,103,0.17,3,18
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,106,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Hydroxylation on P,108,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,112,0.03,5,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,125,0.46,71,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on E,129,0.17,26,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,134,0.03,4,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on K,134,0.01,2,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Glutarylation on K,134,0.03,5,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Acetylation on K,134,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Dimethylation on K,134,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Trimethylation on K,134,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Formylation on K,134,0.01,1,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Succinylation on K,134,0.01,2,153
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,137,0.37,13,35
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,137,0.37,13,35
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,139,0.03,1,35
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Carboxylation on K,141,0.03,1,35
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,195,0.6,6,10
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on T,199,0.44,7,16
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,ADP-ribosylserine on S,207,0.83,10,12
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,N6-acetyllysine on K,212,0.42,5,12
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,214,0.18,3,17
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,218,0.23,3,13
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,243,0.12,1,8
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,254,0.42,5,12
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,4,0.56,5,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,10,0.22,2,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Methylation on R,13,0.11,1,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Citrullination on R,13,0.11,1,9
+"['E5RI98', 'P06748', 'E5RGW4']",NPM1,Phosphorylation on S,35,0.05,2,38
+['O95810'],CAVIN2,Phosphorylation on S,293,0.38,3,8
+['O95810'],CAVIN2,Phosphorylation on T,296,0.88,7,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Hydroxylation on K,454,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Hydroxylation on N,456,0.25,2,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,461,0.38,3,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,843,0.38,5,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,845,0.62,8,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,892,0.14,1,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,894,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,897,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,903,0.14,1,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Citrullination on R,914,0.14,1,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on T,1019,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on T,1022,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1023,0.71,5,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1124,0.67,4,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1126,0.17,1,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Sulfonation on Y,1201,0.4,2,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1205,0.4,2,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1211,0.2,1,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1234,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1244,0.14,1,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1495,0.08,1,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1496,0.08,1,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1503,0.77,10,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,359,1.0,5,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on Y,364,0.2,1,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Hydroxylation on K,490,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Hydroxylation on N,492,0.25,2,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,497,0.38,3,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Sulfonation on Y,502,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Citrullination on R,517,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,571,0.86,6,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,580,0.86,6,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,879,0.38,5,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,881,0.62,8,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,928,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,930,0.25,2,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,933,0.25,2,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,939,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on T,948,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Citrullination on R,950,0.12,1,8
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on T,1055,0.4,2,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1059,0.6,3,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1160,0.67,4,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1162,0.17,1,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Sulfonation on Y,1237,0.4,2,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1241,0.4,2,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1247,0.2,1,5
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1270,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1280,0.14,1,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1521,0.08,1,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1522,0.08,1,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,1529,0.77,10,13
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,5,0.67,4,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,7,0.17,1,6
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,79,0.29,2,7
+"['H0Y2V6', 'Q5SW79', 'H0Y4T4']",CEP170,Phosphorylation on S,89,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,117,0.86,6,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,117,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Hydroxylation on P,118,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,141,0.75,9,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,145,0.42,5,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,148,0.33,4,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on T,232,0.57,4,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,236,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,239,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,251,0.4,2,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,253,0.8,4,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on Y,261,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,270,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on Y,504,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,117,0.17,1,6
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,117,0.83,5,6
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Hydroxylation on P,118,0.17,1,6
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,141,0.75,9,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,145,0.42,5,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,148,0.33,4,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on T,232,0.57,4,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,236,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,239,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on Y,261,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,270,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on Y,504,0.2,1,5
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on T,610,0.71,5,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Sulfonation on Y,622,0.23,3,13
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,623,0.15,2,13
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,625,0.08,1,13
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,124,0.86,6,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,124,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Hydroxylation on P,125,0.14,1,7
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,148,0.75,9,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,152,0.42,5,12
+"['J3KP30', 'Q5QJE6', 'E9PRB3']",DNTTIP2,Phosphorylation on S,155,0.33,4,12
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,163,0.5,3,6
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,167,0.17,1,6
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,171,0.33,2,6
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,178,0.17,1,6
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,242,0.11,2,18
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,163,0.4,2,5
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,171,0.4,2,5
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,178,0.2,1,5
+"['U3KQ48', 'O00566']",MPHOSPH10,Phosphorylation on S,242,0.11,2,18
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on S,582,0.8,4,5
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on S,590,0.2,1,5
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on S,591,0.2,1,5
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on S,944,0.06,2,31
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on T,951,0.9,28,31
+"['B1AL79', 'Q16513']",PKN2,Phosphorylation on T,958,0.03,1,31
+"['B1AL79', 'Q16513']",PKN2,Citrullination on R,964,0.03,1,29
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on S,113,0.04,1,26
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,115,0.12,3,26
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,118,0.73,19,26
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,129,0.17,2,12
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,133,0.25,3,12
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on S,142,0.09,1,11
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on S,218,0.04,1,23
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,220,0.13,3,23
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,223,0.7,16,23
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,234,0.17,2,12
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on T,238,0.25,3,12
+"['C9J808', 'Q9BYG3']",NIFK,Phosphorylation on S,247,0.08,1,12
+"['O00139', 'D6R9M0']",KIF2A,Phosphorylation on S,137,1.0,6,6
+"['O00139', 'D6R9M0']",KIF2A,Nitrosylation on C,309,0.52,22,42
+"['O00139', 'D6R9M0']",KIF2A,Nitrosylation on Y,312,0.24,10,42
+"['O00139', 'D6R9M0']",KIF2A,Phosphorylation on T,554,0.33,2,6
+"['O00139', 'D6R9M0']",KIF2A,Phosphorylation on T,558,0.5,3,6
+"['H0Y501', 'H7C1J2', 'Q9H147']",DNTTIP1,Citrullination on R,114,0.2,1,5
+"['H0Y501', 'H7C1J2', 'Q9H147']",DNTTIP1,Citrullination on R,46,0.1,1,10
+"['H0Y501', 'H7C1J2', 'Q9H147']",DNTTIP1,Phosphorylation on S,88,1.0,11,11
+"['H0Y501', 'H7C1J2', 'Q9H147']",DNTTIP1,Citrullination on R,119,0.1,1,10
+"['H0Y501', 'H7C1J2', 'Q9H147']",DNTTIP1,Phosphorylation on S,161,1.0,11,11
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on T,228,0.32,6,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Glutarylation on K,235,0.05,1,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,243,0.29,2,7
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,334,0.64,9,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,334,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,343,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on T,192,0.32,6,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Glutarylation on K,199,0.05,1,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,207,0.29,2,7
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,298,0.64,9,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,298,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,307,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on T,228,0.32,6,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Glutarylation on K,235,0.05,1,19
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,243,0.29,2,7
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,334,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,334,0.64,9,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,343,0.21,3,14
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,29,0.65,11,17
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Phosphorylation on S,29,0.18,3,17
+"['E7EPK1', 'G3V1Q4', 'Q16181', 'A0A0U1RRM2']",SEPT7,Citrullination on R,38,0.18,3,17
+['P60903'],S100A10,Succinylation on K,47,0.29,5,17
+['P60903'],S100A10,Succinylation on K,54,0.05,1,22
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,17,1.0,10,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,27,0.29,4,14
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,30,0.14,2,14
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,373,0.67,4,6
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,654,1.0,7,7
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,660,0.14,1,7
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,738,0.6,6,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,744,0.5,5,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1267,0.62,8,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1270,0.62,8,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1604,1.0,6,6
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Methylation on K,1652,0.33,3,9
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1671,0.31,4,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1671,0.62,8,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1681,0.33,4,12
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1684,0.17,2,12
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1819,0.2,1,5
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1834,0.7,7,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1843,0.67,6,9
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1854,0.42,5,12
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1858,0.5,6,12
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Methylation on K,1862,0.17,2,12
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,1865,0.36,4,11
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,1872,0.18,2,11
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Methylation on R,1877,0.18,2,11
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2239,0.4,2,5
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,2240,0.8,4,5
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2251,0.62,8,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2260,0.85,11,13
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2269,0.43,3,7
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2274,0.43,3,7
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2281,0.43,3,7
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2636,0.33,3,9
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,2639,0.78,7,9
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,2640,0.11,1,9
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,3130,0.6,6,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,3135,0.2,2,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,3138,0.3,3,10
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on S,4849,0.2,1,5
+"['A0A3B3ISC8', 'O14686', 'F8VWW4']",KMT2D,Phosphorylation on T,4852,0.8,4,5
+['Q9NQC7'],CYLD,Phosphorylation on S,387,0.2,1,5
+['Q9NQC7'],CYLD,Phosphorylation on S,387,0.6,3,5
+['Q9NQC7'],CYLD,Phosphorylation on T,389,0.4,2,5
+['Q92539'],LPIN2,Phosphorylation on T,120,1.0,5,5
+['Q92539'],LPIN2,Phosphorylation on S,243,0.14,2,14
+['Q92539'],LPIN2,Phosphorylation on S,245,0.79,11,14
+['Q92539'],LPIN2,Phosphorylation on S,254,0.23,3,13
+['Q9UGY1'],NOL12,Phosphorylation on S,134,0.4,2,5
+['Q9UGY1'],NOL12,Phosphorylation on S,140,0.2,1,5
+['Q9UGY1'],NOL12,Phosphorylation on T,141,0.6,3,5
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,47,0.29,4,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.86,12,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.14,2,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,66,0.42,5,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,76,0.58,7,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Glutarylation on K,79,0.17,2,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Acetylation on K,82,0.13,2,15
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,88,0.07,1,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,91,0.79,11,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,97,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,98,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,116,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,133,0.17,1,6
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,139,0.17,1,6
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,150,0.25,4,16
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,151,0.81,13,16
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,195,0.57,4,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,201,0.57,4,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,47,0.29,4,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.86,12,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.14,2,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,66,0.42,5,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,76,0.58,7,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Glutarylation on K,79,0.17,2,12
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Acetylation on K,82,0.13,2,15
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,88,0.07,1,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,91,0.79,11,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,97,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,98,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,116,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,132,0.03,1,34
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,141,0.74,25,34
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,164,0.14,1,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,170,0.14,1,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,181,0.29,5,17
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,182,0.82,14,17
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,226,0.57,4,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,232,0.57,4,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,47,0.29,4,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.14,2,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,51,0.86,12,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,66,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,66,0.38,5,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,76,0.54,7,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Glutarylation on K,79,0.23,3,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Acetylation on K,82,0.13,2,15
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,88,0.07,1,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,91,0.79,11,14
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,97,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,98,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,116,0.08,1,13
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,132,0.04,1,24
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on S,141,0.62,15,24
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,165,0.17,1,6
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,171,0.17,1,6
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,182,0.25,4,16
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,183,0.81,13,16
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,227,0.57,4,7
+"['B4E135', 'M0R0Q7', 'P18858']",LIG1,Phosphorylation on T,233,0.57,4,7
+['P56182'],RRP1,Phosphorylation on S,291,0.12,2,16
+['P56182'],RRP1,Sulfonation on Y,300,0.12,2,16
+['P56182'],RRP1,Phosphorylation on S,383,1.0,17,17
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,504,0.41,7,17
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,506,0.59,10,17
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,1097,0.5,14,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,1099,0.07,2,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,1103,0.04,1,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,1109,0.14,4,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,1957,0.47,7,15
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,1959,0.53,8,15
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,2547,0.5,14,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on T,2549,0.07,2,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,2553,0.04,1,28
+"['A0A286YEZ9', 'O94915', 'F2Z2S2']",FRYL,Phosphorylation on S,2559,0.14,4,28
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,14,0.6,3,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,21,0.2,1,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,30,0.6,3,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,35,1.0,6,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,47,0.75,6,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,52,0.25,2,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,62,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,67,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,76,0.08,1,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,78,0.33,4,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,83,0.08,1,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,87,0.27,4,15
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,89,0.07,1,15
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on P,90,0.33,5,15
+"['I3L2J8', 'Q9UPN4']",CEP131,Citrullination on R,91,0.27,4,15
+"['I3L2J8', 'Q9UPN4']",CEP131,Methylation on R,91,0.27,4,15
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,93,0.14,2,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,105,0.21,3,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on P,106,0.14,2,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,107,0.07,1,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on K,109,0.14,2,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Methylation on K,109,0.07,1,14
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,114,0.62,5,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,120,0.38,3,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,144,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,145,0.33,2,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,150,0.33,2,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,308,0.89,8,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,312,0.33,3,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,381,0.44,4,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,381,0.11,1,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,387,0.22,2,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,14,0.6,3,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,21,0.2,1,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,30,0.6,3,5
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,47,0.75,6,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,52,0.25,2,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,62,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,67,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,76,0.08,1,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,78,0.33,4,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,83,0.08,1,12
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,87,0.22,4,18
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,89,0.06,1,18
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on P,90,0.28,5,18
+"['I3L2J8', 'Q9UPN4']",CEP131,Methylation on R,91,0.22,4,18
+"['I3L2J8', 'Q9UPN4']",CEP131,Citrullination on R,91,0.22,4,18
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,93,0.12,2,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,105,0.18,3,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on P,106,0.24,4,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,107,0.12,2,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Acetylation on K,109,0.06,1,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Methylation on K,109,0.18,3,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Hydroxylation on K,109,0.12,2,17
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,114,0.62,5,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,120,0.38,3,8
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,144,0.67,4,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,145,0.33,2,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,150,0.33,2,6
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,308,0.89,8,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,312,0.33,3,9
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,381,0.1,1,10
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on S,381,0.4,4,10
+"['I3L2J8', 'Q9UPN4']",CEP131,Phosphorylation on T,387,0.3,3,10
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,38,0.71,12,17
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,45,0.47,8,17
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on Y,53,0.11,1,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Sulfonation on Y,53,0.22,2,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,55,0.56,5,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,67,0.11,1,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,105,0.58,7,12
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,112,0.67,8,12
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on Y,120,0.11,1,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Sulfonation on Y,120,0.22,2,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,122,0.56,5,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,134,0.11,1,9
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,342,1.0,16,16
+"['H7BZD2', 'Q8N7R7']",CCNYL1,Phosphorylation on S,344,0.06,1,16
+['Q9H4L4'],SENP3,Phosphorylation on S,169,0.11,3,28
+['Q9H4L4'],SENP3,Phosphorylation on S,169,0.36,10,28
+['Q9H4L4'],SENP3,Phosphorylation on S,181,0.64,18,28
+['Q9H4L4'],SENP3,Citrullination on R,185,0.04,1,28
+['Q9H4L4'],SENP3,Phosphorylation on T,229,0.2,1,5
+['Q9H4L4'],SENP3,Phosphorylation on S,232,0.82,9,11
+['Q9H4L4'],SENP3,Phosphorylation on S,238,0.09,1,11
+['Q9H4L4'],SENP3,Phosphorylation on S,307,1.0,5,5
+"['A0A0U1RR27', 'Q7Z401']",DENND4A,Phosphorylation on S,1631,0.5,5,10
+"['A0A0U1RR27', 'Q7Z401']",DENND4A,Phosphorylation on S,1633,0.5,5,10
+"['A0A0U1RR27', 'Q7Z401']",DENND4A,Phosphorylation on S,1587,0.5,4,8
+"['A0A0U1RR27', 'Q7Z401']",DENND4A,Phosphorylation on S,1589,0.5,4,8
+['Q8IY81'],FTSJ3,Phosphorylation on S,335,0.67,6,9
+['Q8IY81'],FTSJ3,Phosphorylation on S,336,0.67,6,9
+['Q8IY81'],FTSJ3,Phosphorylation on T,351,0.11,1,9
+['Q8IY81'],FTSJ3,Phosphorylation on T,352,0.11,1,9
+['Q8IY81'],FTSJ3,Methylation on K,353,0.11,1,9
+['Q8IY81'],FTSJ3,Phosphorylation on S,356,0.17,1,6
+['Q8IY81'],FTSJ3,Methylation on K,357,0.17,1,6
+['Q8IY81'],FTSJ3,Phosphorylation on T,573,0.43,9,21
+['Q8IY81'],FTSJ3,Phosphorylation on S,576,0.57,12,21
+['Q8IY81'],FTSJ3,Phosphorylation on T,580,0.29,4,14
+['Q8IY81'],FTSJ3,Phosphorylation on S,584,0.21,3,14
+['Q8IY81'],FTSJ3,Phosphorylation on Y,587,0.21,3,14
+['Q8IY81'],FTSJ3,Hydroxylation on P,592,0.14,2,14
+['Q8IY81'],FTSJ3,Succinylation on K,593,0.07,1,14
+['Q8IY81'],FTSJ3,Hydroxylation on K,593,0.14,2,14
+['Q8IY81'],FTSJ3,Acetylation on K,593,0.07,1,14
+['Q8IY81'],FTSJ3,Phosphorylation on S,639,0.88,7,8
+['Q8IY81'],FTSJ3,Citrullination on R,640,0.12,1,8
+['Q8IY81'],FTSJ3,Phosphorylation on S,644,0.19,3,16
+['Q8IY81'],FTSJ3,Phosphorylation on S,688,0.35,8,23
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,12,0.03,1,31
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,26,0.54,19,35
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on Y,31,0.06,2,35
+"['A2A2V2', 'P42696']",RBM34,Sulfonation on Y,31,0.43,15,35
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,88,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Citrullination on R,94,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,97,0.27,3,11
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,97,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,28,0.54,19,35
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on Y,33,0.06,2,35
+"['A2A2V2', 'P42696']",RBM34,Sulfonation on Y,33,0.43,15,35
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,90,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Citrullination on R,96,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,99,0.09,1,11
+"['A2A2V2', 'P42696']",RBM34,Phosphorylation on S,99,0.27,3,11
+['Q76FK4'],NOL8,Phosphorylation on S,35,1.0,5,5
+['Q76FK4'],NOL8,Phosphorylation on T,41,0.6,3,5
+['Q76FK4'],NOL8,Phosphorylation on T,258,0.3,3,10
+['Q76FK4'],NOL8,Phosphorylation on S,265,0.2,2,10
+['Q76FK4'],NOL8,Phosphorylation on S,267,0.33,4,12
+['Q76FK4'],NOL8,Phosphorylation on S,268,0.42,5,12
+['Q76FK4'],NOL8,Phosphorylation on S,273,0.08,1,12
+['Q76FK4'],NOL8,Phosphorylation on T,275,0.08,1,12
+['Q76FK4'],NOL8,Phosphorylation on S,361,0.35,6,17
+['Q76FK4'],NOL8,Phosphorylation on S,365,0.24,4,17
+['Q76FK4'],NOL8,Phosphorylation on S,365,0.35,6,17
+['Q76FK4'],NOL8,Phosphorylation on T,528,1.0,7,7
+['Q76FK4'],NOL8,Phosphorylation on T,530,1.0,7,7
+['Q76FK4'],NOL8,Phosphorylation on S,660,0.86,6,7
+['Q76FK4'],NOL8,Phosphorylation on S,664,0.14,1,7
+['Q76FK4'],NOL8,Phosphorylation on T,795,0.6,3,5
+['Q76FK4'],NOL8,Phosphorylation on S,801,0.6,3,5
+['Q76FK4'],NOL8,Phosphorylation on S,1098,0.88,7,8
+['Q15019'],SEPT2,Sulfonation on Y,211,0.06,4,70
+['Q15019'],SEPT2,Carboxylation on D,215,0.07,5,70
+['Q15019'],SEPT2,Phosphorylation on S,218,0.29,20,70
+['Q15019'],SEPT2,Phosphorylation on S,218,0.56,39,70
+['Q15019'],SEPT2,Succinylation on K,225,0.03,2,70
+['Q15019'],SEPT2,Phosphorylation on T,228,0.11,6,53
+['Q6P1L5'],FAM117B,Phosphorylation on T,12,0.92,11,12
+['Q6P1L5'],FAM117B,Phosphorylation on S,271,0.6,3,5
+['Q6P1L5'],FAM117B,Phosphorylation on S,276,0.4,2,5
+['Q6P1L5'],FAM117B,Phosphorylation on T,277,0.4,2,5
+['Q6P1L5'],FAM117B,Phosphorylation on S,449,0.71,5,7
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,160,0.67,6,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,165,0.67,6,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,165,0.33,3,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,193,0.83,5,6
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,316,0.67,6,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,321,0.33,3,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,321,0.67,6,9
+"['D6RJC6', 'Q96EV8']",DTNBP1,Phosphorylation on S,349,0.83,5,6
+['O75683'],SURF6,Phosphorylation on S,74,1.0,6,6
+['O75683'],SURF6,Phosphorylation on S,138,1.0,7,7
+['O75683'],SURF6,Phosphorylation on T,184,0.33,2,6
+['O75683'],SURF6,Phosphorylation on T,190,0.17,1,6
+['O75683'],SURF6,Phosphorylation on S,206,0.6,3,5
+['O75683'],SURF6,Phosphorylation on S,212,0.2,1,5
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Methylation on R,607,0.38,3,8
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Citrullination on R,607,0.12,1,8
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Phosphorylation on T,10,0.43,3,7
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Phosphorylation on S,12,0.29,2,7
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Hydroxylation on N,336,0.47,16,34
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Hydroxylation on N,343,0.59,20,34
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Hydroxylation on P,344,0.15,5,34
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Nitrosylation on C,345,0.09,3,34
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Methylation on R,793,0.38,3,8
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Citrullination on R,793,0.12,1,8
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Phosphorylation on T,10,0.56,5,9
+"['J3KTM9', 'Q14974', 'J3QR48', 'J3QRG4', 'J3QKQ5']",KPNB1,Phosphorylation on S,12,0.44,4,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,163,0.17,2,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,164,1.0,12,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,177,1.0,10,10
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on T,179,0.2,2,10
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,187,0.24,6,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,191,0.04,1,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,193,0.32,8,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,198,0.86,12,14
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,308,0.5,3,6
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,315,0.83,5,6
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,327,1.0,9,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,332,0.22,2,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,336,0.11,1,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,698,1.0,5,5
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on T,702,0.2,1,5
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,166,0.17,2,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,167,1.0,12,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,180,1.0,10,10
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on T,182,0.2,2,10
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,190,0.24,6,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,194,0.04,1,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,196,0.32,8,25
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,201,0.86,12,14
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,209,0.57,4,7
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on T,218,0.14,1,7
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,221,0.14,1,7
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,444,0.5,3,6
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,451,0.83,5,6
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,463,1.0,9,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,468,0.22,2,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,472,0.11,1,9
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,834,1.0,5,5
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on T,838,0.2,1,5
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,982,0.17,2,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,983,1.0,12,12
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,1006,0.25,5,20
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,1010,0.05,1,20
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,1012,0.2,4,20
+"['B9EGQ5', 'M0QXA7', 'O95785']",WIZ,Phosphorylation on S,1017,0.86,12,14
+['Q96EU6'],RRP36,Phosphorylation on S,73,1.0,10,10
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,116,0.71,5,7
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,125,0.67,4,6
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,119,0.71,5,7
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,128,0.67,4,6
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,649,0.67,4,6
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,652,0.5,3,6
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,655,0.5,3,6
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on T,867,0.4,2,5
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,870,0.4,2,5
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,879,0.8,4,5
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1221,1.0,8,8
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1310,1.0,9,9
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1649,0.13,2,15
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on T,1654,0.93,25,27
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1700,0.71,5,7
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1701,0.14,1,7
+"['J3QLA3', 'J3QR21', 'Q7RTP6', 'J3QQT0']",MICAL3,Phosphorylation on S,1704,0.14,1,7
+"['O95347', 'A0A0C4DGE5']",SMC2,Phosphorylation on S,60,1.0,7,7
+"['O95347', 'A0A0C4DGE5']",SMC2,Phosphorylation on Y,67,0.86,6,7
+"['C9JRM9', 'P17029']",ZKSCAN1,Phosphorylation on T,10,0.2,1,5
+"['C9JRM9', 'P17029']",ZKSCAN1,Phosphorylation on S,13,1.0,5,5
+"['C9JRM9', 'P17029']",ZKSCAN1,Phosphorylation on S,208,1.0,7,7
+['Q9UKG1'],APPL1,Phosphorylation on S,393,0.29,2,7
+['Q9UKG1'],APPL1,Phosphorylation on S,403,0.86,6,7
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,516,0.09,1,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,518,0.09,1,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,523,0.82,9,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on Y,542,0.17,1,6
+"['J3QQW9', 'Q15022']",SUZ12,Citrullination on R,552,0.17,1,6
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,560,0.11,1,9
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,560,0.44,4,9
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,670,0.2,1,5
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,672,1.0,5,5
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,539,0.09,1,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,541,0.09,1,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,546,0.82,9,11
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on Y,565,0.17,1,6
+"['J3QQW9', 'Q15022']",SUZ12,Citrullination on R,575,0.17,1,6
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,583,0.44,4,9
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,583,0.11,1,9
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,693,0.2,1,5
+"['J3QQW9', 'Q15022']",SUZ12,Phosphorylation on S,695,1.0,5,5
+"['A0A087WVQ6', 'Q00610']",CLTC,Methylation on R,63,0.4,2,5
+"['A0A087WVQ6', 'Q00610']",CLTC,Phosphorylation on T,109,0.8,4,5
+"['A0A087WVQ6', 'Q00610']",CLTC,Citrullination on R,370,0.27,3,11
+"['A0A087WVQ6', 'Q00610']",CLTC,Phosphorylation on T,398,0.8,8,10
+"['A0A087WVQ6', 'Q00610']",CLTC,Phosphorylation on T,401,0.4,4,10
+"['A0A087WVQ6', 'Q00610']",CLTC,Hydroxylation on N,576,0.1,2,20
+"['A0A087WVQ6', 'Q00610']",CLTC,Methylation on R,63,0.4,2,5
+"['A0A087WVQ6', 'Q00610']",CLTC,Phosphorylation on T,105,0.8,4,5
+"['A0A087WVQ6', 'Q00610']",CLTC,Citrullination on R,366,0.27,3,11
+"['A0A087WVQ6', 'Q00610']",CLTC,Hydroxylation on N,572,0.1,2,20
+"['A0A087WVQ6', 'Q00610']",CLTC,Citrullination on R,1204,0.14,1,7
+"['A0A1B0GUS7', 'O14795']",UNC13B,Phosphorylation on S,2545,0.8,4,5
+['P09972'],ALDOC,Hydroxylation on N,181,0.17,1,6
+['Q8TBB5'],KLHDC4,Phosphorylation on S,413,0.5,4,8
+['Q8TBB5'],KLHDC4,Phosphorylation on S,424,0.25,2,8
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,103,0.15,4,27
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,108,0.72,21,29
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,121,0.29,2,7
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,204,0.8,45,56
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Succinylation on K,209,0.11,6,56
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,214,0.35,18,51
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,217,0.02,1,51
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Succinylation on K,219,0.02,1,51
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,221,0.4,2,5
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,223,1.0,5,5
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,273,0.5,3,6
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,274,0.83,5,6
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Succinylation on K,280,0.11,5,47
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Methylation on K,280,0.02,1,47
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,282,0.02,1,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,284,0.89,40,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,286,0.04,2,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on P,289,0.22,10,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Succinylation on K,291,0.02,1,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,297,0.27,12,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on P,298,0.02,1,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Citrullination on R,301,0.02,1,45
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,308,0.25,3,12
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,311,0.83,10,12
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,319,0.45,5,11
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,382,0.53,10,19
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,386,0.11,2,19
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,389,0.63,12,19
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,400,0.58,18,31
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on P,402,0.03,1,31
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,405,0.42,13,31
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on P,406,0.42,13,31
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,416,1.0,22,22
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,427,0.96,23,24
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,432,0.78,7,9
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,436,0.56,5,9
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,443,0.06,1,17
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,445,0.76,13,17
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,452,0.91,10,11
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,458,0.29,6,21
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,459,0.38,8,21
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,462,0.1,2,21
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,468,0.1,2,21
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,471,0.8,4,5
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,476,0.93,27,29
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on P,477,0.41,12,29
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Hydroxylation on K,481,0.03,1,29
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,502,0.1,1,10
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,505,0.8,8,10
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,507,0.1,1,10
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,537,0.78,7,9
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,542,0.33,3,9
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,566,0.86,6,7
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,570,0.29,2,7
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,572,0.43,3,7
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,603,0.83,10,12
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,627,0.14,2,14
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,632,0.07,1,14
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Sulfonation on Y,636,0.07,1,14
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Methylation on K,638,0.21,3,14
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Methylation on K,647,0.2,1,5
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,652,0.08,1,13
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,653,0.62,8,13
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,662,0.08,1,13
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,666,0.08,1,13
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,87,1.0,8,8
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on T,103,0.15,4,27
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,108,0.73,22,30
+"['Q96JM3', 'A0A2R8Y735']",CHAMP1,Phosphorylation on S,121,0.29,2,7
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,43,0.51,18,35
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,43,0.34,12,35
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,51,0.03,1,35
+"['P49768', 'G3V3P0']",PSEN1,Citrullination on R,54,0.11,4,35
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,59,0.08,3,37
+"['P49768', 'G3V3P0']",PSEN1,Citrullination on R,60,0.03,1,37
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,346,0.1,1,10
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,365,0.08,1,13
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,366,0.69,9,13
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,367,0.15,2,13
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,367,0.38,5,13
+"['P49768', 'G3V3P0']",PSEN1,Citrullination on R,377,0.08,1,13
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,39,0.33,12,36
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,39,0.5,18,36
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,47,0.03,1,36
+"['P49768', 'G3V3P0']",PSEN1,Citrullination on R,50,0.11,4,36
+"['P49768', 'G3V3P0']",PSEN1,Phosphorylation on S,55,0.11,4,36
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,90,0.05,1,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,92,0.24,5,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,99,0.05,1,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,105,0.12,3,25
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,106,0.12,3,25
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,110,0.12,1,8
+"['J3QSV6', 'O76021']",RSL1D1,Sulfonation on Y,114,0.25,2,8
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,311,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,313,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,324,0.06,1,17
+"['J3QSV6', 'O76021']",RSL1D1,Succinylation on K,330,0.12,2,17
+"['J3QSV6', 'O76021']",RSL1D1,Succinylation on K,331,0.11,1,9
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,357,0.02,2,91
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on N,358,0.03,3,91
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,360,0.44,40,91
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,360,0.42,38,91
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on P,369,0.02,2,91
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on K,372,0.01,1,91
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,374,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,391,0.74,17,23
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,391,0.17,4,23
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,395,0.25,7,28
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,400,0.07,2,28
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,414,0.8,8,10
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,420,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,426,0.6,3,5
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,90,0.05,1,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,92,0.24,5,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,99,0.05,1,21
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,105,0.12,3,25
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,106,0.12,3,25
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,110,0.12,1,8
+"['J3QSV6', 'O76021']",RSL1D1,Sulfonation on Y,114,0.25,2,8
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,312,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,314,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,325,0.06,1,17
+"['J3QSV6', 'O76021']",RSL1D1,Succinylation on K,331,0.12,2,17
+"['J3QSV6', 'O76021']",RSL1D1,Succinylation on K,332,0.11,1,9
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,358,0.02,2,92
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on N,359,0.03,3,92
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,361,0.41,38,92
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,361,0.43,40,92
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on P,370,0.02,2,92
+"['J3QSV6', 'O76021']",RSL1D1,Hydroxylation on K,373,0.01,1,92
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,375,0.25,2,8
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,392,0.17,4,23
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,392,0.74,17,23
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,396,0.25,7,28
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,401,0.07,2,28
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,415,0.8,8,10
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,421,0.17,1,6
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,427,0.6,3,5
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,443,0.08,1,12
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,445,0.83,10,12
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,464,0.73,8,11
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on T,465,0.09,1,11
+"['J3QSV6', 'O76021']",RSL1D1,Phosphorylation on S,467,0.64,7,11
+['Q92994'],BRF1,Phosphorylation on S,358,0.2,1,5
+['Q92994'],BRF1,Phosphorylation on T,365,0.2,1,5
+['Q92994'],BRF1,Phosphorylation on S,375,0.2,1,5
+['Q92994'],BRF1,Phosphorylation on S,442,0.4,2,5
+['Q92994'],BRF1,Phosphorylation on S,450,0.4,2,5
+['Q92994'],BRF1,Phosphorylation on S,547,0.43,3,7
+['Q92994'],BRF1,Phosphorylation on S,548,0.71,5,7
+['Q92994'],BRF1,Phosphorylation on S,564,0.14,1,7
+['Q92994'],BRF1,Phosphorylation on S,566,0.14,1,7
+['Q9NR30'],DDX21,Phosphorylation on T,15,0.5,3,6
+['Q9NR30'],DDX21,Hydroxylation on K,18,0.33,2,6
+['Q9NR30'],DDX21,Hydroxylation on K,60,0.1,1,10
+['Q9NR30'],DDX21,Hydroxylation on K,61,0.05,1,19
+['Q9NR30'],DDX21,Hydroxylation on P,64,0.06,2,35
+['Q9NR30'],DDX21,Phosphorylation on S,65,0.54,19,35
+['Q9NR30'],DDX21,Phosphorylation on S,71,0.29,10,35
+['Q9NR30'],DDX21,Hydroxylation on K,73,0.09,3,35
+['Q9NR30'],DDX21,Phosphorylation on S,84,0.52,11,21
+['Q9NR30'],DDX21,Phosphorylation on S,89,0.19,4,21
+['Q9NR30'],DDX21,Phosphorylation on T,115,1.0,6,6
+['Q9NR30'],DDX21,Phosphorylation on S,121,0.58,18,31
+['Q9NR30'],DDX21,Phosphorylation on S,168,0.17,5,30
+['Q9NR30'],DDX21,Phosphorylation on S,171,0.03,1,30
+['Q9NR30'],DDX21,Phosphorylation on S,173,0.03,1,30
+['Q9NR30'],DDX21,Hydroxylation on K,184,0.07,2,30
+['Q9NR30'],DDX21,Phosphorylation on T,315,0.54,7,13
+['Q9NR30'],DDX21,Citrullination on R,318,0.08,1,13
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on Y,22,0.07,1,14
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on S,27,0.57,8,14
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on T,105,0.6,3,5
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on S,107,1.0,5,5
+"['E9PBS1', 'P22234']",PAICS,Hydroxylation on N,136,0.11,2,19
+"['E9PBS1', 'P22234']",PAICS,Hydroxylation on P,138,0.26,5,19
+"['E9PBS1', 'P22234']",PAICS,Methylation on K,149,0.05,1,19
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on T,238,0.6,3,5
+"['E9PBS1', 'P22234']",PAICS,N-acetylalanine on A,1,1.0,6,6
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on Y,22,0.07,1,14
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on S,27,0.57,8,14
+"['E9PBS1', 'P22234']",PAICS,Hydroxylation on N,136,0.11,2,19
+"['E9PBS1', 'P22234']",PAICS,Hydroxylation on P,138,0.26,5,19
+"['E9PBS1', 'P22234']",PAICS,Methylation on K,149,0.05,1,19
+"['E9PBS1', 'P22234']",PAICS,Phosphorylation on T,238,0.6,3,5
+['Q14684'],RRP1B,Phosphorylation on S,245,0.45,13,29
+['Q14684'],RRP1B,Phosphorylation on S,255,0.55,16,29
+['Q14684'],RRP1B,Citrullination on R,257,0.07,2,29
+['Q14684'],RRP1B,Hydroxylation on P,446,0.11,1,9
+['Q14684'],RRP1B,Phosphorylation on S,460,0.67,6,9
+['Q14684'],RRP1B,Phosphorylation on T,515,0.94,16,17
+['Q14684'],RRP1B,Phosphorylation on T,708,0.71,5,7
+['Q14684'],RRP1B,Phosphorylation on S,711,0.57,4,7
+['Q14684'],RRP1B,Phosphorylation on T,730,0.27,3,11
+['Q14684'],RRP1B,Phosphorylation on S,731,0.73,8,11
+['Q14684'],RRP1B,HexNAc on S,732,0.09,1,11
+['Q14684'],RRP1B,Phosphorylation on S,735,0.18,2,11
+['P28838'],LAP3,N6-succinyllysine on K,45,0.33,3,9
+['P28838'],LAP3,Phosphorylation on S,54,0.1,1,10
+['P28838'],LAP3,N6-succinyllysine on K,61,0.1,1,10
+"['H3BT22', 'Q9Y5N6']",ORC6,Phosphorylation on T,146,0.93,14,15
+"['H3BT22', 'Q9Y5N6']",ORC6,Phosphorylation on T,195,0.93,14,15
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,32,0.21,6,28
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,35,0.27,12,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,35,0.02,1,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,N6-acetyllysine on K,35,0.11,5,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,52,0.14,9,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,52,0.26,17,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Phosphorylation on S,54,0.59,17,29
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,32,0.21,6,28
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,35,0.27,12,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,N6-acetyllysine on K,35,0.11,5,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,35,0.02,1,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,52,0.14,9,66
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,52,0.26,17,66
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Phosphorylation on S,54,0.6,18,30
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on R,156,0.67,4,6
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,15,0.21,6,28
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,18,0.27,12,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,18,0.02,1,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,N6-acetyllysine on K,18,0.11,5,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,35,0.14,9,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,35,0.26,17,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Phosphorylation on S,37,0.59,17,29
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on R,139,0.67,4,6
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,15,0.21,6,28
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,18,0.27,12,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,18,0.02,1,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,N6-acetyllysine on K,18,0.11,5,44
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Succinylation on K,35,0.14,9,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on K,35,0.26,17,65
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Phosphorylation on S,37,0.59,17,29
+"['G3V5Q1', 'P27695', 'G3V359', 'G3V5M0', 'G3V2D9']",APEX1,Methylation on R,139,0.67,4,6
+['O75151'],PHF2,Phosphorylation on S,474,1.0,10,10
+['O75151'],PHF2,Phosphorylation on T,479,0.7,7,10
+['O75151'],PHF2,Phosphorylation on S,537,0.75,6,8
+['O75151'],PHF2,Phosphorylation on T,541,0.25,2,8
+['O75151'],PHF2,Phosphorylation on S,625,1.0,6,6
+['O75151'],PHF2,Phosphorylation on T,654,1.0,5,5
+['O75151'],PHF2,Phosphorylation on S,655,0.4,2,5
+['O75151'],PHF2,Phosphorylation on S,853,0.71,5,7
+['O75151'],PHF2,Phosphorylation on Y,859,0.14,1,7
+['O75151'],PHF2,Phosphorylation on S,882,0.4,2,5
+['O75151'],PHF2,Phosphorylation on S,899,0.38,3,8
+['O75151'],PHF2,Phosphorylation on S,899,0.38,3,8
+['O75151'],PHF2,Sulfonation on Y,904,0.25,2,8
+['O75151'],PHF2,Phosphorylation on T,907,0.12,1,8
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on T,745,0.6,3,5
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on T,749,0.4,2,5
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on T,918,0.27,3,11
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,922,0.55,6,11
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,947,0.75,6,8
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,950,0.43,3,7
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on T,954,0.29,2,7
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,956,0.29,2,7
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,1017,0.33,2,6
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,1019,0.5,3,6
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,1239,1.0,14,14
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on T,1241,0.07,1,14
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,1663,0.5,5,10
+"['X6RI79', 'Q7Z333']",SETX,Phosphorylation on S,1667,0.5,5,10
+['Q9NWY4'],HPF1,N-acetylmethionine on M,1,1.0,6,6
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,226,0.6,3,5
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,228,0.4,2,5
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,494,0.25,2,8
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,495,0.12,1,8
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,1282,0.09,1,11
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on T,1288,0.82,9,11
+"['Q6P4R8', 'E9PQ59']",NFRKB,HexNAc on S,1291,0.27,3,11
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,1291,0.09,1,11
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,238,0.6,3,5
+"['Q6P4R8', 'E9PQ59']",NFRKB,Phosphorylation on S,240,0.4,2,5
+['Q14692'],BMS1,Phosphorylation on S,494,0.25,2,8
+['Q14692'],BMS1,Phosphorylation on S,504,0.75,6,8
+['Q14692'],BMS1,Phosphorylation on S,552,0.21,3,14
+['Q14692'],BMS1,Phosphorylation on S,558,0.71,10,14
+['Q14692'],BMS1,Citrullination on R,736,0.42,5,12
+['Q14692'],BMS1,Methylation on R,736,0.08,1,12
+['Q14692'],BMS1,Methylation on R,755,0.14,1,7
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,116,0.2,2,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,117,0.2,2,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,119,0.8,8,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,131,0.32,7,22
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,132,0.09,2,22
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,136,0.41,9,22
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Methylation on R,138,0.09,2,22
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Citrullination on R,138,0.14,3,22
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,144,0.08,1,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,145,0.33,4,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,148,0.5,6,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,152,0.33,4,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,246,0.94,15,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,248,0.06,1,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,264,1.0,6,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,467,0.83,5,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on T,469,0.17,1,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,542,0.6,9,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,542,0.07,1,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,545,0.27,4,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,551,0.2,3,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,584,0.4,6,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,586,0.47,7,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,597,0.07,1,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Methylation on R,599,0.27,4,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,611,0.2,2,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,612,0.2,2,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,614,0.8,8,10
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,626,0.3,7,23
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,627,0.09,2,23
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,631,0.39,9,23
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Citrullination on R,633,0.17,4,23
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Methylation on R,633,0.09,2,23
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,639,0.08,1,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,640,0.33,4,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,643,0.5,6,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,647,0.33,4,12
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,741,0.91,10,11
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,743,0.09,1,11
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,759,1.0,6,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,962,0.83,5,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on T,964,0.17,1,6
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1037,0.07,1,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1037,0.53,8,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1040,0.27,4,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1046,0.27,4,15
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1079,0.38,6,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1081,0.44,7,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,1092,0.06,1,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Citrullination on R,1094,0.06,1,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Methylation on R,1094,0.25,4,16
+"['G3V311', 'A1L390', 'G3V278']",PLEKHG3,Phosphorylation on S,76,1.0,7,7
+['Q92997'],DVL3,Methylation on K,66,0.2,1,5
+['Q92997'],DVL3,Phosphorylation on S,112,0.4,2,5
+['Q92997'],DVL3,Phosphorylation on T,695,0.83,5,6
+['Q92997'],DVL3,Dimethylated arginine on R,698,0.17,1,6
+['Q92997'],DVL3,Phosphorylation on S,700,0.33,2,6
+['Q14152'],EIF3A,Phosphorylation on S,884,0.88,15,17
+['Q14152'],EIF3A,Phosphorylation on S,895,0.25,3,12
+['Q14152'],EIF3A,Citrullination on R,1067,0.64,7,11
+['Q14152'],EIF3A,Citrullination on R,1070,0.1,1,10
+['Q14152'],EIF3A,Citrullination on R,1127,0.38,5,13
+['Q14152'],EIF3A,Phosphorylation on S,1188,0.71,10,14
+['Q14152'],EIF3A,Phosphorylation on S,1336,0.95,35,37
+"['G5E9M7', 'G5E9M9', 'Q14135']",VGLL4,Phosphorylation on S,58,1.0,5,5
+"['G5E9M7', 'G5E9M9', 'Q14135']",VGLL4,Phosphorylation on T,46,0.17,1,6
+"['G5E9M7', 'G5E9M9', 'Q14135']",VGLL4,Phosphorylation on S,52,0.83,5,6
+"['G5E9M7', 'G5E9M9', 'Q14135']",VGLL4,Phosphorylation on S,54,0.17,1,6
+['Q02878'],RPL6,N6-succinyllysine on K,207,0.2,1,5
+"['E9PFE2', 'Q9UHL9']",GTF2IRD1,Phosphorylation on S,448,0.88,7,8
+"['E9PFE2', 'Q9UHL9']",GTF2IRD1,Phosphorylation on S,448,0.8,4,5
+['Q9ULL1'],PLEKHG1,Phosphorylation on S,497,0.44,4,9
+['Q9ULL1'],PLEKHG1,Phosphorylation on S,506,0.25,2,8
+['Q9ULL1'],PLEKHG1,Phosphorylation on S,610,0.8,4,5
+['Q9ULL1'],PLEKHG1,Phosphorylation on S,611,0.2,1,5
+['Q9ULL1'],PLEKHG1,Phosphorylation on S,1192,0.86,6,7
+['Q9NZZ3'],CHMP5,Hydroxylation on N,81,0.09,1,11
+['Q9NZZ3'],CHMP5,Phosphorylation on S,86,0.45,5,11
+['Q9NZZ3'],CHMP5,Hydroxylation on N,93,0.09,1,11
+['Q9NZZ3'],CHMP5,Hydroxylation on K,100,0.36,4,11
+['Q9NZZ3'],CHMP5,Acetylation on K,100,0.09,1,11
+"['E9PM59', 'Q9H5J8']",TAF1D,Phosphorylation on S,131,0.33,2,6
+"['E9PM59', 'Q9H5J8']",TAF1D,Phosphorylation on S,138,0.83,5,6
+"['E9PM59', 'Q9H5J8']",TAF1D,Phosphorylation on S,206,0.5,3,6
+"['E9PM59', 'Q9H5J8']",TAF1D,Phosphorylation on T,219,0.33,2,6
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,99,0.22,2,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on T,115,0.44,4,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,121,0.11,1,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,75,0.22,2,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on T,91,0.44,4,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,97,0.11,1,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Methylation on R,442,0.14,1,7
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Citrullination on R,442,0.29,2,7
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,92,0.22,2,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on T,108,0.44,4,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Phosphorylation on S,114,0.11,1,9
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Methylation on R,479,0.14,1,7
+"['E9PCY0', 'Q6AWB1', 'Q14203']",DCTN1,Citrullination on R,479,0.29,2,7
+['Q96AT1'],KIAA1143,Citrullination on R,37,0.1,2,21
+['Q96AT1'],KIAA1143,Phosphorylation on S,50,0.9,63,70
+['Q96AT1'],KIAA1143,Succinylation on K,52,0.06,4,70
+['Q96AT1'],KIAA1143,Hydroxylation on K,52,0.07,5,70
+['Q96AT1'],KIAA1143,Hydroxylation on P,57,0.01,1,68
+['Q96AT1'],KIAA1143,Succinylation on K,63,0.04,3,68
+['Q96AT1'],KIAA1143,Phosphorylation on S,143,0.11,1,9
+['O95402'],MED26,Phosphorylation on S,299,0.67,4,6
+['O95402'],MED26,Phosphorylation on S,373,0.83,5,6
+['O95402'],MED26,Phosphorylation on S,376,0.17,1,6
+['O95402'],MED26,Phosphorylation on S,377,0.17,1,6
+['O95402'],MED26,Phosphorylation on S,447,0.75,9,12
+['O95402'],MED26,Phosphorylation on S,455,0.33,4,12
+"['F8WBL2', 'Q13895']",BYSL,Hydroxylation on P,94,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on S,98,0.47,8,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on S,98,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on T,107,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Methylation on K,110,0.06,1,17
+"['F8WBL2', 'Q13895']",BYSL,Hydroxylation on K,110,0.06,1,17
+"['F8WBL2', 'Q13895']",BYSL,Hydroxylation on P,94,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on S,98,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on S,98,0.47,8,17
+"['F8WBL2', 'Q13895']",BYSL,Phosphorylation on T,107,0.12,2,17
+"['F8WBL2', 'Q13895']",BYSL,Methylation on K,110,0.06,1,17
+"['F8WBL2', 'Q13895']",BYSL,Hydroxylation on K,110,0.06,1,17
+"['A0A3B3IUB9', 'Q9NR09']",BIRC6,Phosphorylation on S,419,0.14,1,7
+"['A0A3B3IUB9', 'Q9NR09']",BIRC6,Phosphorylation on S,426,0.86,6,7
+"['A0A3B3IUB9', 'Q9NR09']",BIRC6,Phosphorylation on S,480,1.0,5,5
+['Q8WXH2'],JPH3,Phosphorylation on S,420,0.71,5,7
+['Q8WXH2'],JPH3,Phosphorylation on S,422,0.43,3,7
+['Q8WXH2'],JPH3,Phosphorylation on S,669,0.8,4,5
+['Q8WXH2'],JPH3,Phosphorylation on S,670,1.0,5,5
+['Q8WXH2'],JPH3,Phosphorylation on S,703,0.14,1,7
+['Q8WXH2'],JPH3,Phosphorylation on S,710,1.0,7,7
+['Q9H4Z3'],PCIF1,Phosphorylation on S,14,0.17,1,6
+['Q9H4Z3'],PCIF1,Phosphorylation on S,17,0.17,1,6
+['Q9H4Z3'],PCIF1,Phosphorylation on S,19,0.5,3,6
+['Q9H4Z3'],PCIF1,Phosphorylation on S,30,0.33,2,6
+['Q96JM7'],L3MBTL3,Phosphorylation on S,601,0.32,12,38
+['Q96JM7'],L3MBTL3,Phosphorylation on S,608,0.18,7,38
+['Q96JM7'],L3MBTL3,Phosphorylation on S,610,0.61,23,38
+['P41743'],PRKCI,Phosphorylation on S,11,0.36,4,11
+['P41743'],PRKCI,Phosphorylation on T,13,0.09,1,11
+['P41743'],PRKCI,Phosphorylation on S,19,0.27,3,11
+['P41743'],PRKCI,Phosphorylation on S,23,0.45,5,11
+"['H7C2Q8', 'Q99848']",EBNA1BP2,Phosphorylation on S,319,0.4,2,5
+"['H7C2Q8', 'Q99848']",EBNA1BP2,Phosphorylation on S,325,0.4,2,5
+"['H7C2Q8', 'Q99848']",EBNA1BP2,Phosphorylation on S,264,0.57,4,7
+"['H7C2Q8', 'Q99848']",EBNA1BP2,Phosphorylation on S,270,0.43,3,7
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,164,0.67,8,12
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,184,0.5,6,12
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,192,0.2,1,5
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,194,0.4,2,5
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on T,198,0.2,1,5
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,552,0.5,4,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,559,0.5,4,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,575,1.0,8,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on T,580,0.62,5,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,723,0.67,4,6
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,731,0.17,1,6
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,9,0.5,4,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,16,0.5,4,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on S,32,1.0,8,8
+"['Q9H4M7', 'M0R0V1']",PLEKHA4,Phosphorylation on T,37,0.62,5,8
+['Q9NVP1'],DDX18,Phosphorylation on T,47,0.25,2,8
+['Q9NVP1'],DDX18,Phosphorylation on S,50,0.25,2,8
+['Q9NVP1'],DDX18,Methylation on R,51,0.25,2,8
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,940,1.0,6,6
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on Y,942,0.33,2,6
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on T,945,0.73,11,15
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,950,0.8,12,15
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,955,0.67,4,6
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,941,1.0,6,6
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on Y,943,0.33,2,6
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on T,946,0.73,11,15
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,951,0.8,12,15
+"['A0A2R8Y8C6', 'Q8WXX7']",AUTS2,Phosphorylation on S,956,0.67,4,6
+['P05412'],JUN,Succinylation on K,56,0.08,1,13
+['P05412'],JUN,Phosphorylation on T,62,0.9,27,30
+['P05412'],JUN,Phosphorylation on S,63,0.1,3,30
+['P05412'],JUN,Phosphorylation on S,73,0.71,10,14
+['P05412'],JUN,Hydroxylation on P,229,0.05,1,22
+['P05412'],JUN,Phosphorylation on T,231,0.23,5,22
+['P05412'],JUN,Phosphorylation on T,239,0.27,6,22
+['P05412'],JUN,Phosphorylation on S,243,0.68,15,22
+['P05412'],JUN,Methylation on R,252,0.14,3,22
+['P05412'],JUN,Citrullination on R,252,0.05,1,22
+['P00519'],ABL1,Phosphorylation on Y,393,0.95,19,20
+['P00519'],ABL1,Phosphorylation on S,915,0.8,4,5
+['P00519'],ABL1,Phosphorylation on S,919,0.6,3,5
+['Q9H0A0'],NAT10,Phosphorylation on T,932,0.33,3,9
+['Q9H0A0'],NAT10,Phosphorylation on S,934,0.22,2,9
+['Q9H0A0'],NAT10,Phosphorylation on S,934,0.22,2,9
+['O75923'],DYSF,Phosphorylation on S,1829,0.83,5,6
+['O75923'],DYSF,Phosphorylation on T,1831,0.5,3,6
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on Y,42,0.2,1,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,44,0.8,4,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,86,0.8,4,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,89,0.4,2,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,356,0.36,5,14
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on T,363,0.21,3,14
+"['A0A075B754', 'Q96QE3']",ATAD5,Methylation on K,366,0.14,2,14
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,1222,1.0,13,13
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,86,0.8,4,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,89,0.4,2,5
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,356,0.33,5,15
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on T,363,0.2,3,15
+"['A0A075B754', 'Q96QE3']",ATAD5,Methylation on K,366,0.13,2,15
+"['A0A075B754', 'Q96QE3']",ATAD5,Citrullination on R,367,0.17,1,6
+"['A0A075B754', 'Q96QE3']",ATAD5,Phosphorylation on S,1222,1.0,13,13
+"['D6R9X7', 'Q03468']",ERCC6,Phosphorylation on S,429,0.83,5,6
+"['D6R9X7', 'Q03468']",ERCC6,Phosphorylation on S,430,0.83,5,6
+"['D6R9X7', 'Q03468']",ERCC6,Phosphorylation on T,737,0.83,5,6
+"['D6R9X7', 'Q03468']",ERCC6,Phosphorylation on Y,741,0.67,4,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,13,0.33,2,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,20,0.17,1,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,27,0.33,2,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,34,0.17,1,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.43,3,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Phosphorylation on S,58,0.14,1,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.14,1,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.29,2,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.14,1,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.33,2,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.17,1,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.29,2,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.29,2,7
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.33,2,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.17,1,6
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Sulfonation on Y,55,0.14,2,14
+"['A0A0J9YWK1', 'A0A0J9YWM6', 'A0A1B0GTJ4', 'A0A1B0GUY0', 'A0A1B0GV49', 'A0A1B0GW65', 'F8VVF2', 'F8WD33']",ALDH7A1,Citrullination on R,62,0.07,1,14
+['Q13129'],RLF,Phosphorylation on S,632,0.92,12,13
+['Q13129'],RLF,Methylation on K,648,0.08,1,13
+['Q13129'],RLF,Phosphorylation on S,1020,0.2,1,5
+['Q13129'],RLF,Phosphorylation on S,1022,0.6,3,5
+['Q13129'],RLF,Phosphorylation on T,1268,0.2,1,5
+['Q13129'],RLF,Phosphorylation on S,1273,0.4,2,5
+['Q13129'],RLF,Phosphorylation on S,1277,0.4,2,5
+['Q13129'],RLF,Phosphorylation on T,1623,0.29,2,7
+['Q13129'],RLF,Phosphorylation on S,1628,0.57,4,7
+['P10075'],GLI4,Phosphorylation on S,86,0.17,1,6
+['P10075'],GLI4,Phosphorylation on S,89,1.0,6,6
+"['Q99504', 'B1APR7']",EYA3,Phosphorylation on T,261,0.25,2,8
+"['Q99504', 'B1APR7']",EYA3,Phosphorylation on T,269,0.25,2,8
+"['Q99504', 'B1APR7']",EYA3,Phosphorylation on S,271,0.12,1,8
+"['Q99504', 'B1APR7']",EYA3,Phosphorylation on T,274,0.25,3,12
+"['Q99504', 'B1APR7']",EYA3,Phosphorylation on S,278,0.17,2,12
+"['Q99504', 'B1APR7']",EYA3,Citrullination on R,279,0.17,2,12
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on T,57,0.08,1,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,67,0.15,2,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,125,0.38,3,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,128,0.12,1,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,553,1.0,6,6
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on T,57,0.08,1,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,67,0.15,2,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,125,0.38,3,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,128,0.12,1,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,196,0.79,11,14
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on T,63,0.08,1,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,73,0.15,2,13
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,131,0.38,3,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,134,0.12,1,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,202,1.0,8,8
+"['E7EX44', 'E9PGZ1', 'Q05682', 'C9JE79']",CALD1,Phosphorylation on S,789,1.0,5,5
+['Q9Y3T9'],NOC2L,Phosphorylation on S,49,0.81,42,52
+['Q9Y3T9'],NOC2L,Phosphorylation on S,56,0.13,6,45
+['Q9Y3T9'],NOC2L,Phosphorylation on S,58,0.33,15,45
+['Q9Y3T9'],NOC2L,Phosphorylation on S,60,0.11,5,45
+['Q9Y3T9'],NOC2L,Phosphorylation on S,672,0.12,3,24
+['Q9Y3T9'],NOC2L,Phosphorylation on S,673,0.12,3,24
+['Q9Y3T9'],NOC2L,Phosphorylation on S,682,0.04,1,24
+['Q9Y3T9'],NOC2L,Citrullination on R,684,0.46,11,24
+['Q9Y3T9'],NOC2L,Methylation on R,684,0.08,2,24
+['O60701'],UGDH,Phosphorylation on S,88,0.17,1,6
+['O60701'],UGDH,Phosphorylation on T,91,0.83,5,6
+"['A0A087WXZ1', 'A0A0U1RQC9', 'P04637']",TP53,Phosphorylation on S,156,1.0,5,5
+"['A0A087WXZ1', 'A0A0U1RQC9', 'P04637']",TP53,Phosphorylation on S,276,1.0,5,5
+"['A0A087WXZ1', 'A0A0U1RQC9', 'P04637']",TP53,Phosphorylation on S,315,1.0,5,5
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,166,0.86,6,7
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,169,0.14,1,7
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,171,0.14,1,7
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,209,1.0,10,10
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on T,214,0.3,3,10
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,166,0.86,6,7
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,169,0.14,1,7
+"['K7EM05', 'Q8NC06']",ACBD4,Phosphorylation on S,171,0.14,1,7
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,219,0.56,5,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,220,0.56,5,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,223,0.11,1,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,223,0.11,1,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,324,0.95,18,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,332,0.43,3,7
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,338,0.86,6,7
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,397,0.33,2,6
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,404,0.33,2,6
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,412,0.57,4,7
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,417,0.2,1,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,419,0.6,3,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,421,0.2,1,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,437,0.33,3,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,443,0.67,6,9
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,563,0.2,1,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,564,1.0,5,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Formylation on K,576,0.33,2,6
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,578,0.05,1,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,580,0.53,10,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,583,0.26,5,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on Y,592,0.32,6,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Sulfonation on Y,592,0.05,1,19
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,963,1.0,5,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on T,970,0.4,2,5
+"['A0A087WZL0', 'Q86UU1']",PHLDB1,Phosphorylation on S,971,0.2,1,5
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,146,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on Y,147,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Sulfonation on Y,147,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,148,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,152,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,146,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on Y,147,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Sulfonation on Y,147,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,148,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,152,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,146,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on Y,147,0.11,1,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Sulfonation on Y,147,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,148,0.33,3,9
+"['E5RGZ2', 'H0YKJ1', 'H0YLF2']",HMBOX1,Phosphorylation on S,152,0.11,1,9
+['O95125'],ZNF202,Phosphorylation on T,386,1.0,6,6
+['O95125'],ZNF202,Phosphorylation on T,387,0.67,4,6
+['Q6IBW4'],NCAPH2,Phosphorylation on S,282,0.29,4,14
+['Q6IBW4'],NCAPH2,Phosphorylation on S,284,0.1,3,31
+['Q6IBW4'],NCAPH2,Phosphorylation on S,284,0.29,9,31
+['Q6IBW4'],NCAPH2,Phosphorylation on S,288,0.55,17,31
+['Q6IBW4'],NCAPH2,Citrullination on R,293,0.03,1,31
+['Q5T5Y3'],CAMSAP1,Phosphorylation on S,722,0.2,1,5
+['Q5T5Y3'],CAMSAP1,Phosphorylation on S,725,0.4,2,5
+['Q5T5Y3'],CAMSAP1,Phosphorylation on S,1080,0.11,1,9
+['Q5T5Y3'],CAMSAP1,Phosphorylation on T,1082,0.89,8,9
+['Q8N0Y2'],ZNF444,Phosphorylation on T,228,0.33,3,9
+['Q8N0Y2'],ZNF444,Phosphorylation on S,232,1.0,9,9
+['O95400'],CD2BP2,Phosphorylation on S,195,1.0,16,16
+"['H3BM89', 'P36578']",RPL4,Phosphorylation on Y,117,0.29,4,14
+"['H3BM89', 'P36578']",RPL4,Sulfonation on Y,117,0.07,1,14
+"['H3BM89', 'P36578']",RPL4,Phosphorylation on S,201,1.0,7,7
+"['H3BM89', 'P36578']",RPL4,Hydroxylation on N,94,0.5,4,8
+"['H3BM89', 'P36578']",RPL4,Omega-N-methylarginine on R,97,0.38,3,8
+"['H3BM89', 'P36578']",RPL4,Phosphorylation on Y,211,0.29,4,14
+"['H3BM89', 'P36578']",RPL4,Sulfonation on Y,211,0.07,1,14
+['Q9C0A1'],ZFHX2,Phosphorylation on S,1425,0.78,7,9
+['Q9C0A1'],ZFHX2,Phosphorylation on S,1426,0.89,8,9
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,46,0.17,2,12
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,46,0.67,8,12
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,50,0.08,1,12
+"['Q96TC7', 'H0YNE5']",RMDN3,Methylation on R,61,0.08,1,12
+"['Q96TC7', 'H0YNE5']",RMDN3,Nitrosylation on C,128,0.86,6,7
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,212,0.17,1,6
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,232,0.83,5,6
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,46,0.73,8,11
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,46,0.18,2,11
+"['Q96TC7', 'H0YNE5']",RMDN3,Phosphorylation on S,50,0.09,1,11
+"['O94916', 'J3KRL6']",NFAT5,Phosphorylation on S,220,0.43,9,21
+"['O94916', 'J3KRL6']",NFAT5,Hydroxylation on N,221,0.05,1,21
+"['O94916', 'J3KRL6']",NFAT5,Phosphorylation on S,229,0.57,12,21
+"['O94916', 'J3KRL6']",NFAT5,Hydroxylation on K,231,0.05,1,21
+"['O94916', 'J3KRL6']",NFAT5,Methylation on K,231,0.05,1,21
+"['O94916', 'J3KRL6']",NFAT5,Phosphorylation on S,560,0.88,15,17
+"['O94916', 'J3KRL6']",NFAT5,Phosphorylation on S,567,0.11,2,18
+['Q9NYV6'],RRN3,Phosphorylation on S,44,1.0,10,10
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,326,0.17,1,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,327,0.83,5,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,330,0.17,1,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,588,0.6,3,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on Y,593,0.2,1,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,614,0.5,3,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,620,0.67,4,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,400,0.17,1,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,401,0.83,5,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,404,0.17,1,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,413,0.6,3,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,417,0.4,2,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,420,0.2,1,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,662,0.6,3,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on Y,667,0.2,1,5
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,688,0.5,3,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on T,694,0.67,4,6
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,966,1.0,9,9
+"['F5H837', 'Q08999']",RBL2,Phosphorylation on S,1110,1.0,8,8
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,95,0.11,1,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,103,0.67,6,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,105,0.11,1,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,380,0.11,1,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,388,0.67,6,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,390,0.11,1,9
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on T,438,0.2,1,5
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,444,0.2,1,5
+"['F8VZ96', 'O60285']",NUAK1,Phosphorylation on S,445,0.4,2,5
+['Q9Y3B9'],RRP15,N-acetylalanine on A,1,0.57,12,21
+['Q9Y3B9'],RRP15,Phosphorylation on S,8,0.9,19,21
+['Q9Y3B9'],RRP15,Citrulline on R,9,0.14,3,21
+['Q9Y3B9'],RRP15,Phosphorylation on S,11,0.2,4,20
+"['A0A087WYH5', 'B7Z6D5', 'Q96GQ7']",DDX27,Phosphorylation on S,135,0.17,1,6
+"['A0A087WYH5', 'B7Z6D5', 'Q96GQ7']",DDX27,Phosphorylation on S,146,0.17,1,6
+"['C9JFM2', 'C9JK00', 'Q6NV74']",KIAA1211L,Phosphorylation on S,910,0.14,1,7
+"['C9JFM2', 'C9JK00', 'Q6NV74']",KIAA1211L,Phosphorylation on S,912,0.71,5,7
+"['C9JFM2', 'C9JK00', 'Q6NV74']",KIAA1211L,Phosphorylation on S,919,0.86,6,7
+['O14978'],ZNF263,Phosphorylation on T,163,0.5,4,8
+['O14978'],ZNF263,Phosphorylation on S,166,0.2,1,5
+['Q99698'],LYST,Phosphorylation on T,2122,1.0,5,5
+['Q99698'],LYST,Phosphorylation on S,2128,0.6,3,5
+['Q9NPE2'],NGRN,Hydroxylation on P,39,0.17,1,6
+['Q9NPE2'],NGRN,Phosphorylation on S,41,1.0,6,6
+['Q6AHZ1'],ZNF518A,Phosphorylation on S,388,0.17,1,6
+['Q6AHZ1'],ZNF518A,Phosphorylation on S,390,0.33,2,6
+['Q6AHZ1'],ZNF518A,Phosphorylation on S,397,0.17,1,6
+['Q6AHZ1'],ZNF518A,Phosphorylation on T,398,0.17,1,6
+['Q96Q11'],TRNT1,Dimethylation on R,126,0.2,1,5
+['Q96Q11'],TRNT1,Citrullination on R,126,0.2,1,5
+['Q96Q11'],TRNT1,N6-acetyllysine on K,402,0.33,2,6
+['Q96JC9'],EAF1,Phosphorylation on S,29,1.0,7,7
+['Q96JC9'],EAF1,Phosphorylation on T,32,0.57,4,7
+['Q96JC9'],EAF1,Phosphorylation on S,158,1.0,12,12
+['Q96JC9'],EAF1,Phosphorylation on S,165,0.67,18,27
+['Q9UKD2'],MRTO4,Phosphorylation on S,80,0.31,4,13
+['Q9UKD2'],MRTO4,Phosphorylation on S,82,0.08,1,13
+['Q9UKD2'],MRTO4,Sulfonation on Y,85,0.08,1,13
+['Q9UKD2'],MRTO4,Phosphorylation on S,93,0.32,6,19
+['Q8WZ74'],CTTNBP2,Phosphorylation on S,1521,0.13,11,85
+['Q8WZ74'],CTTNBP2,Phosphorylation on S,1524,0.12,10,85
+['Q8WZ74'],CTTNBP2,Phosphorylation on S,1524,0.24,20,85
+['Q8WZ74'],CTTNBP2,Methylation on K,1532,0.09,8,85
+['Q8WZ74'],CTTNBP2,Carboxylation on K,1532,0.14,12,85
+['Q8WZ74'],CTTNBP2,Acetylation on K,1532,0.18,15,85
+['Q8WZ74'],CTTNBP2,Trimethylation on K,1532,0.07,6,85
+['Q8WZ74'],CTTNBP2,Formylation on K,1532,0.06,5,85
+['Q8WZ74'],CTTNBP2,Dimethylation on K,1532,0.05,4,85
+['Q8WZ74'],CTTNBP2,Carboxylation on K,1541,0.18,15,83
+['Q8WZ74'],CTTNBP2,Formylation on K,1541,0.1,8,83
+['Q8WZ74'],CTTNBP2,Acetylation on K,1541,0.04,3,83
+['Q8WZ74'],CTTNBP2,Methylation on K,1541,0.04,3,83
+['Q8WZ74'],CTTNBP2,Dimethylation on K,1541,0.02,2,83
+['Q8WZ74'],CTTNBP2,Methylation on K,1548,0.02,1,44
+['Q8WZ74'],CTTNBP2,Formylation on K,1548,0.02,1,44
+['Q8WZ74'],CTTNBP2,Acetylation on K,1548,0.02,1,44
+['Q14137'],BOP1,Phosphorylation on S,105,0.43,3,7
+['Q14137'],BOP1,Hydroxylation on K,175,0.07,1,15
+['Q14137'],BOP1,Hydroxylation on P,179,0.11,1,9
+['Q14137'],BOP1,Methylation on R,183,0.33,3,9
+['Q14137'],BOP1,Citrullination on R,183,0.33,3,9
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,187,1.0,7,7
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,189,0.14,1,7
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,220,0.43,3,7
+"['E7EMD6', 'O43572']",AKAP10,Methylation on R,228,0.29,2,7
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,187,1.0,7,7
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,189,0.14,1,7
+"['E7EMD6', 'O43572']",AKAP10,Phosphorylation on S,220,0.43,3,7
+"['E7EMD6', 'O43572']",AKAP10,Methylation on R,228,0.29,2,7
+['Q6PIJ6'],FBXO38,Phosphorylation on S,519,1.0,6,6
+"['F8VQZ9', 'Q00537', 'F8W1S5']",CDK17,Phosphorylation on S,137,1.0,10,10
+"['F8VQZ9', 'Q00537', 'F8W1S5']",CDK17,Phosphorylation on S,146,1.0,6,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on T,79,0.33,2,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,80,0.67,4,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,85,0.17,1,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,86,0.33,2,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on T,109,0.33,2,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,110,0.67,4,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,115,0.17,1,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,116,0.33,2,6
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on T,171,0.14,1,7
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Phosphorylation on S,173,0.57,4,7
+"['A0A096LNU1', 'Q9H6K5']",PRR36,Citrullination on R,227,0.4,2,5
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on S,24,0.27,3,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on S,29,0.27,3,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Hydroxylation on K,32,0.09,1,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on T,33,0.62,5,8
+"['H0Y9E6', 'Q9H3R5']",CENPH,Hydroxylation on K,41,0.12,1,8
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on S,59,0.18,2,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on S,64,0.27,3,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Hydroxylation on K,67,0.09,1,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on T,68,0.09,1,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Phosphorylation on T,68,0.45,5,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Hydroxylation on P,69,0.18,2,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Hydroxylation on K,76,0.18,2,11
+"['H0Y9E6', 'Q9H3R5']",CENPH,Methylation on K,76,0.09,1,11
+['Q9HCE5'],METTL14,Phosphorylation on S,399,1.0,15,15
+['Q9BVP2'],GNL3,Hydroxylation on K,488,0.1,1,10
+['Q9BVP2'],GNL3,Acetylation on K,488,0.2,2,10
+['Q9BVP2'],GNL3,Phosphorylation on S,490,0.21,3,14
+['Q9BVP2'],GNL3,Phosphorylation on T,494,0.43,6,14
+['Q9BVP2'],GNL3,Hydroxylation on N,502,0.21,3,14
+['Q9BVP2'],GNL3,Methylation on R,528,0.5,7,14
+['Q92979'],EMG1,N-acetylalanine on A,1,0.95,18,19
+['Q92979'],EMG1,Phosphorylation on S,5,0.89,17,19
+['Q92979'],EMG1,Phosphorylation on S,14,1.0,10,10
+['P07305'],H1F0,N-acetylthreonine on T,1,0.3,8,27
+['P07305'],H1F0,N-acetylmethionine on M,1,0.33,9,27
+['P07305'],H1F0,Phosphorylation on T,2,0.52,14,27
+['P07305'],H1F0,Deamidated asparagine on N,4,0.22,6,27
+['P07305'],H1F0,Phosphorylation on S,90,0.5,5,10
+['P07305'],H1F0,Phosphorylation on S,92,0.7,7,10
+['P07305'],H1F0,Phosphorylation on T,153,0.93,14,15
+"['H0YCR5', 'Q9BQC3']",DPH2,Phosphorylation on Y,256,0.2,1,5
+"['H0YCR5', 'Q9BQC3']",DPH2,Phosphorylation on S,261,1.0,5,5
+"['I3L0U5', 'Q6PK04']",CCDC137,Phosphorylation on S,19,1.0,9,9
+['Q9BUU2'],METTL22,Phosphorylation on S,132,0.33,3,9
+['Q9BUU2'],METTL22,Phosphorylation on S,134,1.0,9,9
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on T,278,0.67,6,9
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,280,0.44,4,9
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,407,0.4,2,5
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,409,0.6,3,5
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,447,0.33,2,6
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on T,450,0.17,1,6
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,451,0.5,3,6
+"['Q9BRS8', 'H0YMC6']",LARP6,Phosphorylation on S,455,0.17,1,6
+['Q53GT1'],KLHL22,Phosphorylation on S,596,0.17,2,12
+['Q53GT1'],KLHL22,Phosphorylation on T,605,0.86,12,14
+['O75928'],PIAS2,Phosphorylation on S,494,0.22,2,9
+['O75928'],PIAS2,Phosphorylation on T,496,0.11,1,9
+['O75928'],PIAS2,Phosphorylation on S,499,0.56,5,9
+['O75928'],PIAS2,Phosphorylation on T,501,0.11,1,9
+"['E5RG70', 'E5RJ88', 'E5RK47', 'Q9NV88', 'H0YBK3']",INTS9,Phosphorylation on T,563,0.71,5,7
+"['E5RG70', 'E5RJ88', 'E5RK47', 'Q9NV88', 'H0YBK3']",INTS9,Phosphorylation on S,564,0.71,5,7
+"['E5RG70', 'E5RJ88', 'E5RK47', 'Q9NV88', 'H0YBK3']",INTS9,Phosphorylation on T,37,0.71,5,7
+"['E5RG70', 'E5RJ88', 'E5RK47', 'Q9NV88', 'H0YBK3']",INTS9,Phosphorylation on S,38,0.71,5,7
+['P54253'],ATXN1,Phosphorylation on T,83,0.4,2,5
+['P54253'],ATXN1,Phosphorylation on Y,87,0.6,3,5
+['P54253'],ATXN1,Phosphorylation on S,406,0.4,2,5
+['P54253'],ATXN1,Phosphorylation on S,408,0.4,2,5
+['P54253'],ATXN1,Phosphorylation on T,409,0.4,2,5
+['P54253'],ATXN1,Phosphorylation on S,775,0.67,4,6
+['P54253'],ATXN1,Phosphorylation on S,779,0.5,3,6
+"['H0YJ17', 'Q8NEJ9']",NGDN,Phosphorylation on S,143,0.04,1,24
+['Q9NVU0'],POLR3E,Phosphorylation on S,161,0.8,8,10
+['Q9NVU0'],POLR3E,Phosphorylation on S,162,0.8,8,10
+['Q9NVU0'],POLR3E,Phosphorylation on S,503,0.27,4,15
+['Q9NVU0'],POLR3E,Phosphorylation on S,522,0.07,1,15
+['Q13610'],PWP1,Methylation on K,42,0.11,1,9
+['Q13610'],PWP1,Phosphorylation on S,50,0.21,4,19
+['Q13610'],PWP1,Phosphorylation on S,65,0.21,4,19
+['Q13610'],PWP1,Methylation on R,67,0.32,6,19
+['Q13610'],PWP1,Citrullination on R,67,0.05,1,19
+['Q13610'],PWP1,Phosphorylation on S,485,0.25,2,8
+['Q13610'],PWP1,Citrullination on R,493,0.25,2,8
+['Q13610'],PWP1,Phosphorylation on S,494,0.6,3,5
+['P16104'],H2AFX,Hydroxylation on N,90,0.09,3,33
+['P16104'],H2AFX,N6-succinyllysine on K,96,0.06,2,33
+['P16104'],H2AFX,Methylation on K,96,0.03,1,33
+['P16104'],H2AFX,Hydroxylation on K,96,0.03,1,33
+['P16104'],H2AFX,Phosphorylation on T,121,0.5,6,12
+['P16104'],H2AFX,Phosphorylation on S,122,0.08,1,12
+['P16104'],H2AFX,Phosphorylation on T,124,0.17,2,12
+['P16104'],H2AFX,Phosphorylation on S,140,0.31,4,13
+['P16104'],H2AFX,Phosphorylation on Y,143,0.31,4,13
+"['E9PRE7', 'P11498']",PC,Sulfonation on Y,845,0.2,1,5
+"['E9PRE7', 'P11498']",PC,Phosphorylation on T,853,0.2,1,5
+"['E9PRE7', 'P11498']",PC,Sulfonation on Y,862,0.4,2,5
+"['E9PRE7', 'P11498']",PC,Sulfonation on Y,871,0.4,2,5
+['Q6XZF7'],DNMBP,Phosphorylation on T,655,0.6,3,5
+['Q6XZF7'],DNMBP,Phosphorylation on S,659,0.8,4,5
+['Q6XZF7'],DNMBP,Phosphorylation on S,1407,0.89,8,9
+['Q9UBL3'],ASH2L,Phosphorylation on S,316,0.38,3,8
+['Q9UBL3'],ASH2L,Phosphorylation on S,321,0.62,5,8
+['Q9UBL3'],ASH2L,Phosphorylation on S,623,1.0,9,9
+['Q9Y463'],DYRK1B,Phosphorylation on Y,273,1.0,5,5
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Trimethylation on K,196,0.09,1,11
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Dimethylation on K,196,0.09,1,11
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Citrullination on R,201,0.4,2,5
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Methylation on R,201,0.2,1,5
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Dimethylation on K,224,0.25,2,8
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Methylation on K,224,0.12,1,8
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Formylation on K,224,0.12,1,8
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Trimethylation on K,187,0.09,1,11
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Dimethylation on K,187,0.09,1,11
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Citrullination on R,192,0.4,2,5
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Methylation on R,192,0.2,1,5
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Dimethylation on K,215,0.25,2,8
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Methylation on K,215,0.12,1,8
+"['A0A0R4J2E2', 'E5RIK1']",R3HCC1,Formylation on K,215,0.12,1,8
+['A8MU93'],C17orf100,Phosphorylation on S,48,0.09,1,11
+['A8MU93'],C17orf100,Phosphorylation on S,54,0.91,10,11
+['A8MU93'],C17orf100,Phosphorylation on S,56,0.45,5,11
+['O75037'],KIF21B,Sulfonation on Y,402,0.21,3,14
+['O75037'],KIF21B,Phosphorylation on Y,402,0.64,9,14
+['O75037'],KIF21B,Carboxylation on K,403,0.36,5,14
+['O75037'],KIF21B,Formylation on K,403,0.5,7,14
+['O75037'],KIF21B,Phosphorylation on S,693,0.33,2,6
+['O75037'],KIF21B,Phosphorylation on T,694,0.33,2,6
+['O75037'],KIF21B,Phosphorylation on Y,698,0.17,1,6
+['O75037'],KIF21B,Phosphorylation on S,1149,0.4,2,5
+['O75037'],KIF21B,Phosphorylation on S,1160,0.6,3,5
+['O75037'],KIF21B,Phosphorylation on T,1161,0.6,3,5
+['Q15018'],ABRAXAS2,Methylation on R,398,0.14,1,7
+['Q9UNL4'],ING4,Phosphorylation on S,145,0.6,3,5
+['Q9UNL4'],ING4,N6-acetyllysine on K,146,0.4,2,5
+['Q9UNL4'],ING4,N6-acetyllysine on K,148,0.22,2,9
+['Q9UNL4'],ING4,Phosphorylation on S,150,0.85,17,20
+['Q9UNL4'],ING4,N6-acetyllysine on K,156,0.2,4,20
+['Q8NDL9'],AGBL5,Phosphorylation on S,539,1.0,6,6
+['Q8NDL9'],AGBL5,Phosphorylation on S,548,0.67,4,6
+['Q8NDL9'],AGBL5,Phosphorylation on S,841,0.88,7,8
+['O94868'],FCHSD2,Phosphorylation on S,674,0.33,2,6
+['O94868'],FCHSD2,Phosphorylation on S,675,0.17,1,6
+['O94868'],FCHSD2,Phosphorylation on S,675,0.33,2,6
+['O94868'],FCHSD2,Phosphorylation on Y,677,0.33,2,6
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on S,337,0.4,2,5
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on S,343,0.6,3,5
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on T,345,0.4,2,5
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on S,337,0.4,2,5
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on S,343,0.6,3,5
+"['A0A0J9YWV4', 'X6RFI8']",RAB11FIP3,Phosphorylation on T,345,0.4,2,5
+['Q15013'],MAD2L1BP,Phosphorylation on S,102,0.83,5,6
+['F8WA42'],SUMF2,Phosphorylation on S,282,0.12,1,8
+['F8WA42'],SUMF2,Phosphorylation on S,296,0.12,1,8
+['F8WA42'],SUMF2,Phosphorylation on S,304,0.11,1,9
+['F8WA42'],SUMF2,Phosphorylation on S,306,0.22,2,9
+['F8WA42'],SUMF2,Pyridoxal phosphate on K,308,0.89,8,9
+['Q9NWA0'],MED9,N-acetylalanine on A,1,0.67,8,12
+['Q8IW41'],MAPKAPK5,Phosphorylation on S,33,0.21,10,47
+['Q13601'],KRR1,N-acetylalanine on A,1,0.38,6,16
+['Q13601'],KRR1,Phosphorylation on S,3,1.0,16,16
+['Q13601'],KRR1,Phosphorylation on S,5,0.12,2,16
+['Q7L5D6'],GET4,Phosphorylation on S,12,0.44,4,9

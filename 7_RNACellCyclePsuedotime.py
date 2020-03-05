@@ -3,6 +3,8 @@ from imports import *
 import numpy as np
 from scipy import stats
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
+import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
@@ -244,7 +246,22 @@ percent_ccd_variance = cell_cycle_variance / total_variance
 avg_expression = np.median(norm_exp_sort, 0)
 
 #%% randomize and calculate the mean difference in percent variances from random
-PERMUTATIONS = 200
+# bonferroni MTC
+def bonf(alpha, pvals):
+    pvalsarr = np.array(pvals)
+    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data
+    pvals_sortind = np.argsort(pvalsarr)
+    pvals_sorted = np.take(pvalsarr, pvals_sortind)
+    alphaBonf = alpha / float(len(pvalsarr))
+    rejectBonf = pvals_sorted <= alphaBonf
+    pvals_correctedBonf = pvals_sorted * float(len(pvalsarr))
+    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
+    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
+    rejectBonf_unsorted = np.empty_like(rejectBonf)
+    rejectBonf_unsorted[pvals_sortind] = rejectBonf
+    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
+
+PERMUTATIONS = 10000
 perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(PERMUTATIONS)])
 #norm_exp_sort_perm = np.asarray([np.take(normalized_exp_data, perm, axis=0) for perm in perms])
 #moving_averages_perm = np.apply_along_axis(mvavg, 1, norm_exp_sort_perm, WINDOW)
@@ -258,8 +275,15 @@ for iii, perm in enumerate(perms):
             np.var(moving_averages_perm, axis=0) / np.var(norm_exp_sort_perm, axis=0))
 percent_ccd_variance_rng = np.asarray(percent_ccd_variance_rng)
 mean_diff_from_rng = np.mean((percent_ccd_variance - percent_ccd_variance_rng).T, 1)
+np_save_overwriting("output/pickles/percent_ccd_variance_rng.npy", percent_ccd_variance_rng)
+np_save_overwriting("output/pickles/mean_diff_from_rng.npy", mean_diff_from_rng)
+
+alpha_ccd = 0.01
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
 pass_meandiff = mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
+ccd_var_comp_rng_wilcoxp = np.apply_along_axis(scipy.stats.wilcoxon, 1, (percent_ccd_variance - percent_ccd_variance_rng).T, None, "wilcox", False, "greater").T[1].T
+eq_percvar_adj, pass_eq_percvar_adj = bonf(alpha_ccd, ccd_var_comp_rng_wilcoxp)
+gtpass_eq_percvar_adj = pass_eq_percvar_adj & (percent_ccd_variance > np.median(percent_ccd_variance_rng, axis=0))
 print(f"{sum(pass_meandiff)}: number of transcripts that pass CCD by mean percvar diff from random > {MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM}")
 
 print(f"{sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], wp_ensg[ccd_comp]))}: number of CCD transcripts that are also CCD proteins")
@@ -272,15 +296,18 @@ plt.hlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(percent_ccd_variance), np.m
 plt.xlabel("Percent Variance Explained by Cell Cycle")
 plt.ylabel("Mean Difference from Random")
 plt.savefig("figures/MedianDiffFromRandom_RNA.png")
+plt.savefig("figures/MedianDiffFromRandom_RNA.pdf")
 plt.show()
 plt.close()
 
+eq_percvar_adj_nextafter = np.nextafter(eq_percvar_adj, eq_percvar_adj + 1)
 plt.figure(figsize=(10,10))
-plt.scatter(mean_diff_from_rng, -np.log10(pvals_corrected_), c=pass_meandiff, cmap="bwr_r")
-plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(-np.log10(pvals_corrected_)), np.max(-np.log10(pvals_corrected_)), color="gray")
+plt.scatter(mean_diff_from_rng, -np.log10(eq_percvar_adj_nextafter), c=pass_meandiff, cmap="bwr_r")
+plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(-np.log10(eq_percvar_adj_nextafter)), np.max(-np.log10(eq_percvar_adj_nextafter)), color="gray")
 plt.xlabel("Mean Difference from Random")
 plt.ylabel("-log10 adj p-value from randomization")
 plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.png")
+plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.pdf")
 plt.show()
 plt.close()
 
@@ -318,7 +345,8 @@ def temporal_mov_avg(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows
     plt.ylabel(fileprefix + ' RNA Expression')
     plt.xticks(size=14)
     plt.yticks(size=14)
-#    plt.legend(fontsize=14)
+    plt.ylim(0, 1)
+    #    plt.legend(fontsize=14)
     plt.tight_layout()
     if not os.path.exists(os.path.dirname(outfile)):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
@@ -459,8 +487,14 @@ plot_variances_tf(total_gini[ccdprotein], percent_ccd_variance[ccdprotein], pass
 plt.subplot(224)
 nonccdprotein = np.isin(adata.var_names, wp_ensg[nonccd_comp]) & ~np.isin(adata.var_names, bioccd)
 plot_variances_tf(total_gini[nonccdprotein], percent_ccd_variance[nonccdprotein], pass_meandiff[nonccdprotein], "Non-CCD Proteins", "DianaNonCCD", percent_var_cutoff, total_var_cutoff)
-plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.png")
+plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.pdf")
 plt.show()
+plt.close()
+
+plot_variances_tf(total_gini, percent_ccd_variance, pass_meandiff, "All Genes", "All", percent_var_cutoff, total_var_cutoff)
+plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}_allgenes.pdf")
+plt.show()
+plt.close()
 
 # Let's output those
 gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
@@ -484,7 +518,9 @@ percent_variance_tests = pd.DataFrame(
     "ccd_transcript" : pass_meandiff, #(rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff),
     "regev_ccd" : regevccdgenes,
     "ccd_protein" : ccdstring,
-    "nonccd_protein" : nonccdprotein})
+    "nonccd_protein" : nonccdprotein,
+    "mean_diff_from_rng":mean_diff_from_rng,
+    "-log10 CCD FDR":-np.log10(pvals_corrected_)})
 percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv", index=False)
 
 # And output the CCD genes that aren't in diana's CCD gene set

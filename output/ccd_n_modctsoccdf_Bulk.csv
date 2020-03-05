@@ -1,0 +1,66 @@
+accession,gene,modification,residue,occupancy,modpeps,totpeps
+"['E7EX44', 'E9PGZ1', 'Q05682']",CALD1,Phosphorylation on S,196,0.56,9,16
+['Q00610'],CLTC,N-acetylalanine on A,1,1.0,8,8
+['Q00610'],CLTC,Methylation on K,205,0.14,2,14
+['Q00610'],CLTC,Hydroxylation on N,602,0.14,26,182
+['Q00610'],CLTC,Acetylation on K,951,0.02,5,222
+['Q00610'],CLTC,Hydroxylation on P,953,0.11,25,229
+"['H0YHM6', 'A0A1B0GTG2', 'A0A1B0GW77', 'P49419']",ALDH7A1,Methylation on K,436,0.13,3,24
+"['H0YHM6', 'A0A1B0GTG2', 'A0A1B0GW77', 'P49419']",ALDH7A1,Methylation on K,454,0.13,3,24
+"['H0YHM6', 'A0A1B0GTG2', 'A0A1B0GW77', 'P49419']",ALDH7A1,Methylation on K,439,0.13,3,24
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on P,112,0.08,6,71
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on P,122,0.14,10,71
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Acetylation on K,125,0.08,6,71
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on K,125,0.03,2,71
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Methylation on R,156,1.0,7,7
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on P,112,0.12,28,238
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on P,122,0.19,45,238
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Acetylation on K,125,0.07,17,238
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Hydroxylation on K,125,0.04,9,238
+"['G3V3M6', 'P27695', 'G3V2D9', 'G3V5D9']",APEX1,Methylation on R,156,1.0,5,5
+"['P06748', 'E5RI98']",NPM1,Butyrylation on K,32,0.01,1,81
+"['P06748', 'E5RI98']",NPM1,Hydroxylation on N,66,0.01,19,3360
+"['P06748', 'E5RI98']",NPM1,Nitrosylation on Y,67,0.0,1,3360
+"['P06748', 'E5RI98']",NPM1,Hydroxylation on P,71,0.01,19,3360
+"['P06748', 'E5RI98']",NPM1,Methylation on K,73,0.02,73,3360
+"['P06748', 'E5RI98']",NPM1,Hydroxylation on P,85,0.01,10,1328
+"['P06748', 'E5RI98']",NPM1,Methylation on R,101,0.02,20,1328
+"['P06748', 'E5RI98']",NPM1,Hydroxylation on P,21,0.0,1,234
+"['P06748', 'E5RI98']",NPM1,Methylation on R,37,0.01,2,234
+"['P09972', 'J3KSV6']",ALDOC,Hydroxylation on P,185,0.03,1,36
+"['O94915', 'D6RJI4', 'H0Y9X0']",FRYL,N-acetylserine on S,1,1.0,12,12
+['Q9P289'],STK26,N-acetylalanine on A,1,1.0,20,20
+"['Q14974', 'J3QKQ5']",KPNB1,N-acetylmethionine on M,1,0.94,188,200
+"['Q14974', 'J3QKQ5']",KPNB1,Hydroxylation on N,196,0.04,18,449
+['Q9NR30'],DDX21,Phosphorylation on S,89,0.65,11,17
+['Q9NR30'],DDX21,Phosphorylation on S,121,0.18,16,91
+['Q9NR30'],DDX21,Hydroxylation on P,686,0.04,4,108
+['Q8IY81'],FTSJ3,Methylation on R,452,0.11,5,45
+['P16104'],H2AFX,Hydroxylation on P,110,0.07,3,45
+['P60903'],S100A10,Hydroxylation on P,40,0.09,72,778
+['P21980'],TGM2,N-acetylalanine on A,1,1.0,10,10
+['P21980'],TGM2,Hydroxylation on N,517,0.25,4,16
+"['P36578', 'H3BTP7', 'H3BU31']",RPL4,Citrullination on R,33,0.04,4,101
+"['Q9BYG3', 'C9J808', 'C9J6C5']",NIFK,N-acetylalanine on A,1,1.0,22,22
+"['Q9BYG3', 'C9J808', 'C9J6C5']",NIFK,Acetylation on K,192,0.07,3,44
+"['Q9BYG3', 'C9J808', 'C9J6C5']",NIFK,Phosphorylation on T,220,0.25,6,24
+"['Q16181', 'A0A0U1RRH9', 'A0A0U1RRM2', 'G3V1Q4']",SEPT7,Phosphorylation on S,334,0.14,3,22
+['P40121'],CAPG,N-acetylmethionine on M,1,1.0,27,27
+['P13929'],ENO3,Hydroxylation on P,141,0.02,35,2065
+['P13929'],ENO3,Hydroxylation on N,363,0.33,12,36
+['Q15050'],RRS1,N-acetylmethionine on M,1,1.0,18,18
+['P13674'],P4HA1,Hydroxylation on P,19,0.3,9,30
+"['Q6XZF7', 'A0A1B0GTX1']",DNMBP,Hydroxylation on P,1472,1.0,5,5
+"['Q8NEJ9', 'H0YJ17']",NGDN,N-acetylalanine on A,1,1.0,48,48
+"['P22234', 'D6RF62']",PAICS,N-acetylalanine on A,1,1.0,12,12
+['P60953'],CDC42,Nitrosylation on C,6,0.1,4,40
+"['Q5SW79', 'H0Y2V6', 'E7EMW0']",CEP170,Phosphorylation on S,838,0.29,6,21
+"['Q5SW79', 'H0Y2V6', 'E7EMW0']",CEP170,Phosphorylation on S,845,0.71,15,21
+['O94763'],URI1,N-acetylmethionine on M,1,1.0,9,9
+['P07305'],H1F0,N-acetylmethionine on M,1,0.27,6,22
+['P07305'],H1F0,N-acetylthreonine on T,1,0.18,4,22
+['Q9H6F5'],CCDC86,Phosphorylation on S,18,0.5,8,16
+['Q9H6F5'],CCDC86,Phosphorylation on S,26,0.25,4,16
+['Q7RTP6'],MICAL3,Citrullination on R,1048,1.0,12,12
+['Q7RTP6'],MICAL3,Citrullination on R,1053,0.33,4,12
+['Q8WTR2'],DUSP19,Citrullination on R,22,0.28,30,108

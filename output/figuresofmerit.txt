@@ -1,17 +1,62 @@
 --- protein pseudotime
 
-1426 proteins that were expressed and exhibited variations in the U-2 OS cell line were selected
+1424 proteins that were expressed and exhibited variations in the U-2 OS cell line were selected
 
-present the first evidence of cell cycle association for 236 proteins
+present the first evidence of cell cycle association for 235 proteins
 
-Based on this analysis, we identified 326 out of 1426 proteins (22.86115007012623%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained 8% or more variance in expression than random.
+Based on this analysis, we identified 321 out of 1424 proteins (22.542134831460675%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained 8% or more variance in expression than random.
 
-majority of the proteins analyzed (60.72931276297335%) showed cell-to-cell variations that were largely unexplained by cell cycle progression
+majority of the proteins analyzed (61.0252808988764%) showed cell-to-cell variations that were largely unexplained by cell cycle progression
 
-Of the 546 proteins (326 in interphase, 230 in mitotic structures, and 10 in both sets) identified to correlate to cell cycle progression, 236 (43.223443223443226%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining 310 proteins (56.776556776556774%),
+Of the 541 proteins (321 in interphase, 230 in mitotic structures, and 10 in both sets) identified to correlate to cell cycle progression, 235 (43.438077634011094%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining 306 proteins (56.561922365988906%),
 
-The patterns of variability were investigated for these 1255 proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was 6.890523021660636.
+The patterns of variability were investigated for these 1253 proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was 6.894891834655323.
 
-We determined that 995 proteins (69.77559607293128%) had unimodal intensity distributions, and 226 proteins (15.848527349228611%) were found to display bimodality
+We determined that 992 proteins (69.66292134831461%) had unimodal intensity distributions, and 227 proteins (15.941011235955056%) were found to display bimodality
 
-Of 43 bimodal samples that were analyzed for cell cycle dependence, 12 were CCD in one cluster (2 of these were CCD when analyzed unimodally), and 2 were CCD in both clusters (2 were also CCD when analyzed unimodally), and the remaining 29 were non-CCD in both clusters.
+Of 43 bimodal samples that were analyzed for cell cycle dependence, 12 were CCD in one cluster (2 of these were CCD when analyzed unimodally), and 2 were CCD in both clusters (2 were also CCD when analyzed unimodally), and the remaining 29 were non-CCD in both clusters.--- RNA pseudotime
+
+We identified 402 genes of 13450 protein-coding genes analyzed (2.9888475836431225%) to have variance in expression levels correlated to cell cycle progression
+
+We can attribute only 15.0% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing
+
+This includes 86.17021276595744% of known CCD transcripts. Of these, 72 were also cell cycle dependent proteins (15.0%). Of the 480 CCD proteins, 408 did not have CCD transcripts, including DUSP18 (Figure 2E). There were 29 CCD transcripts that were Non-CCD as proteins.
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 7.655333 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (44.27860696517413%) peak in expression
+
+However, the majority (74.5398773006135%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 7.655333 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (4.344667 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 7.655333 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (44.27860696517413%) peak in expression
+
+However, the majority (73.20872274143302%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 7.655333 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (4.344667 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+

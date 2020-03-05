@@ -8,6 +8,7 @@ from sklearn.neighbors import RadiusNeighborsRegressor
 from sklearn.mixture import GaussianMixture
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -118,6 +119,13 @@ def apply_manual_filtering(my_df, result_dict, ab_dict):
     print(f"{len(my_df_filtered)}: number of cells after filtering antibodies failed in HPAv19")
     print("finished filtering")
     
+    print("filtering mitotic proteins")
+    mitoticab = np.genfromtxt("input/processed/manual/mitotic_n_microtubules_to_remove.txt", dtype='str')
+    print(f"{len(my_df_filtered)}: number of cells before filtering mitotic/microtubule proteins")
+    my_df_filtered = my_df_filtered[~np.isin([ab_dict[wp] for wp in my_df_filtered.well_plate], mitoticab)]
+    print(f"{len(my_df_filtered)}: number of cells after filtering mitotic/microtubule proteins")
+    print("finished filtering")
+    
     return my_df_filtered
 
 def plot_areas(areas, title):
@@ -214,8 +222,8 @@ def metacompartments(u_well_plates, compartment_dict, my_df_filtered_variation):
     return wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation
 
 my_df_filtered_variation, my_df_filtered_novariation = apply_variation_filter(my_df_filtered, result_dict)
-#my_df_filtered_variation.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered_variation.csv")
-#my_df_filtered_novariation.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered_novariation.csv")
+my_df_filtered_variation.to_csv("output/nuc_predicted_prob_phases_filtered_variation.csv")
+#my_df_filtered_novariation.to_csv("output/nuc_predicted_prob_phases_filtered_novariation.csv")
 
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = read_sample_info(my_df_filtered_variation)
 
@@ -301,6 +309,7 @@ def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
     boxplot.set_xlabel("", size=36,fontname='Arial')
     boxplot.set_ylabel("Normalized Mean Intensity", size=18,fontname='Arial')
     boxplot.tick_params(axis="both", which="major", labelsize=14)
+    plt.ylim(0,1)
     plt.title("")
     plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
     plt.savefig(f"{outfolder}_pdf/GaussianClusteringProtein_{ensg}.pdf")
@@ -316,7 +325,7 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
 
 gaussian = GaussianMixture(n_components=3, random_state=1, max_iter=500)
 cluster_labels = gaussian.fit_predict(np.array([log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale]).T)
-clusternames = ["G2","G1","S-ph"]
+clusternames = ["G2","S-ph","G1"]
 for cluster in range(3):
     plt.hist2d(log_green_fucci_zeroc_rescale[cluster_labels == cluster],log_red_fucci_zeroc_rescale[cluster_labels == cluster],bins=200)
     plt.title(f"Gaussian clustered data, {clusternames[cluster]}")
@@ -327,9 +336,9 @@ for cluster in range(3):
     plt.close()
 
 # G1 is cluster 0; S-ph is cluster 1; G2 is cluster 2
-wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal = [],[],[]
-g1 = cluster_labels == 1
-sph = cluster_labels == 2
+wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_mt_kruskal = [],[],[],[]
+g1 = cluster_labels == 2
+sph = cluster_labels == 1
 g2 = cluster_labels == 0
 fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 for iii, wp in enumerate(u_well_plates):
@@ -340,16 +349,18 @@ for iii, wp in enumerate(u_well_plates):
     wp_cell_kruskal.append(scipy.stats.kruskal(ab_cell[curr_wp_g1], ab_cell[curr_wp_sph], ab_cell[curr_wp_g2])[1])
     wp_nuc_kruskal.append(scipy.stats.kruskal(ab_nuc[curr_wp_g1], ab_nuc[curr_wp_sph], ab_nuc[curr_wp_g2])[1])
     wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])
+    wp_mt_kruskal.append(scipy.stats.kruskal(mt_cell[curr_wp_g1], mt_cell[curr_wp_sph], mt_cell[curr_wp_g2])[1])
     max_val_for_norm = np.max(ab_cell[curr_well_inds] if wp_iscell[iii] else ab_nuc[curr_well_inds] if wp_isnuc[iii] else ab_cyto[curr_well_inds])
+    max_mt_for_norm = np.max(mt_cell[curr_well_inds])
     gaussian_boxplot_result(
             (ab_cell[curr_wp_g1] if wp_iscell[iii] else ab_nuc[curr_wp_g1] if wp_isnuc[iii] else ab_cyto[curr_wp_g1]) / max_val_for_norm,# * TOT_LEN,
             (ab_cell[curr_wp_sph] if wp_iscell[iii] else ab_nuc[curr_wp_sph] if wp_isnuc[iii] else ab_cyto[curr_wp_sph]) / max_val_for_norm,# * TOT_LEN,
             (ab_cell[curr_wp_g2] if wp_iscell[iii] else ab_nuc[curr_wp_g2] if wp_isnuc[iii] else ab_cyto[curr_wp_g2]) / max_val_for_norm,# * TOT_LEN,
             "figures/GaussianBoxplots", fileprefixes[iii])
     gaussian_boxplot_result(
-        mt_cell[curr_wp_g1] / max_val_for_norm,# * TOT_LEN, 
-        mt_cell[curr_wp_sph] / max_val_for_norm,# * TOT_LEN, 
-        mt_cell[curr_wp_g2] / max_val_for_norm,# * TOT_LEN, 
+        mt_cell[curr_wp_g1] / max_mt_for_norm,# * TOT_LEN, 
+        mt_cell[curr_wp_sph] / max_mt_for_norm,# * TOT_LEN, 
+        mt_cell[curr_wp_g2] / max_mt_for_norm,# * TOT_LEN, 
         "figures/GaussianBoxplots_mt", f"{fileprefixes[iii]}_mt")
 
 # benjimini-hochberg multiple testing correction
@@ -402,6 +413,7 @@ alpha_gauss = 0.05
 wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alpha_gauss, wp_cell_kruskal)
 wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alpha_gauss, wp_nuc_kruskal)
 wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alpha_gauss, wp_cyto_kruskal)
+wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt = benji_hoch(alpha_gauss, wp_mt_kruskal) 
 
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):    
     values_comp = np.empty_like(values_cell)

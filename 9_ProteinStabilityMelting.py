@@ -3,6 +3,7 @@ from imports import *
 from Bio import SeqIO
 from methods_RNASeqData import read_counts_and_phases, qc_filtering
 import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Import the genes names we're analyzing
 def ccd_gene_names(id_list_like):
@@ -189,6 +190,12 @@ statsresults = temp_hist("Aggregated Melting Points")
 plt.savefig("figures/ProteinMeltingPointsMedianed.png")
 plt.show()
 plt.close()
+
+pd.DataFrame({
+    "protein_name":atp,
+    "median_melting_point":all_temps,
+    "transcript_reg":np.isin(atp, trp),
+    "nontranscr_reg":np.isin(atp, ntp)}).to_csv("output/MedianMeltingPoints.csv",index=False)
 
 # Boxplots
 plt.figure(figsize=(10,10))

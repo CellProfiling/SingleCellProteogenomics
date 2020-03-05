@@ -9,6 +9,7 @@ import collections
 import fucci_plotting
 import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 

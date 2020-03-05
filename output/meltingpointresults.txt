@@ -40,18 +40,18 @@ Ttest_indResult(statistic=-1.3761256884596034, pvalue=0.1689904850507595): two s
 KruskalResult(statistic=6.36784198665032, pvalue=0.011620682924187668): two sided kruskal
 
 Testing whether transcript reg. CCD is different than non-CCD
-51.32991525423729 +/- 4.341520215317686: Non-CCD Proteins (mean, std)
+51.33612476370511 +/- 4.347866011939645: Non-CCD Proteins (mean, std)
 49.77741379310344 +/- 4.348234009478912: Transcript Reg. CCD (mean, std)
 50.74: Non-CCD Proteins (median)
 48.84: Transcript Reg. CCD (median)
-Ttest_indResult(statistic=2.5810060846093643, pvalue=0.010092810336982576): two sided t-test
-KruskalResult(statistic=11.939738084240258, pvalue=0.0005494920409110981): two sided kruskal
+Ttest_indResult(statistic=2.587423227965759, pvalue=0.00990968792817144): two sided t-test
+KruskalResult(statistic=11.946584073105376, pvalue=0.0005474766356640206): two sided kruskal
 
 Testing whether nontranscript reg. CCD is different than non-CCD
-51.32991525423729 +/- 4.341520215317686: Non-CCD Proteins (mean, std)
+51.33612476370511 +/- 4.347866011939645: Non-CCD Proteins (mean, std)
 51.00116033755274 +/- 3.8711133255634813: Non-Transcript Reg. CCD (mean, std)
 50.74: Non-CCD Proteins (median)
 50.34: Non-Transcript Reg. CCD (median)
-Ttest_indResult(statistic=1.0002144967350233, pvalue=0.3175225684029859): two sided t-test
-KruskalResult(statistic=0.6508237126897014, pvalue=0.4198183346665656): two sided kruskal
+Ttest_indResult(statistic=1.0175020086338042, pvalue=0.3092367796958814): two sided t-test
+KruskalResult(statistic=0.6859358347676119, pvalue=0.40755020369654815): two sided kruskal
 

@@ -13,6 +13,7 @@
 #%% Imports
 from imports import *
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Read RNA-Seq data and illustrate the data
 # Idea: Read in RNA-Seq data and do filtering

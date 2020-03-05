@@ -10,6 +10,10 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats import iqr, variation
 from scipy.stats import linregress
 from sklearn.mixture import GaussianMixture
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import silhouette_score
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -64,11 +68,28 @@ pol_sort_ab_cell = np.load("output/pickles/pol_sort_ab_cell.npy", allow_pickle=T
 pol_sort_mt_cell = np.load("output/pickles/pol_sort_mt_cell.npy", allow_pickle=True)
 pol_sort_area_cell=np.load("output/pickles/pol_sort_area_cell.npy", allow_pickle=True)
 pol_sort_area_nuc=np.load("output/pickles/pol_sort_area_nuc.npy", allow_pickle=True)
+pol_sort_fred = np.load("output/pickles/pol_sort_fred.npy", allow_pickle=True)
+pol_sort_fgreen = np.load("output/pickles/pol_sort_fgreen.npy", allow_pickle=True)
 
 wp_iscell = np.load("output/pickles/wp_iscell.npy", allow_pickle=True)
 wp_isnuc = np.load("output/pickles/wp_isnuc.npy", allow_pickle=True)
 wp_iscyto = np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)
 print("loaded")
+
+#%% read in reliability scores
+# ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
+# with open("input/processed/manual/reliabilityscores.txt") as file:
+#     for line in file:
+#         if line.startswith("Antibody RRID"): continue
+#         score = line.split('\t')[1].strip()
+#         ablist = line.split('\t')[0].replace(":","").replace(",","").split()
+#         for ab in ablist:
+#             if ab in wp_ab:
+#                 ab_scores[wp_ab_list.index(ab)] = score
+# compartmentstring = np.array(["Cell"] * len(wp_iscell))
+# compartmentstring[wp_iscyto] = "Cyto" 
+# compartmentstring[wp_isnuc] = "Nuc"
+# pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
 
 #%% Gaussian clustering to identify biomodal intensity distributions
 def _ecdf(x):
@@ -165,7 +186,9 @@ plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj)
 plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
 plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
 plt.savefig("figures/BimodalSignificance.png")
+plt.savefig("figures/BimodalSignificance.pdf")
 plt.show();plt.close()
+
 plt.scatter([sum(c1[0]) for c1 in wp_bimodal_cluster_idxs], [sum(c1[1]) for c1 in wp_bimodal_cluster_idxs], c=wp_enoughcellsinbothclusters, alpha=0.5, cmap="bwr_r")
 plt.xlabel("Cell Count, Cluster 1")
 plt.ylabel("Cell Count, Cluster 2")
@@ -200,6 +223,8 @@ S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
 #M_LEN = 0.5 #We are excluding Mphase from this analysis
 TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
 
+PERMUTATIONS = 10000
+
 def mvavg_perc_var(yvals,mv_window):
     yval_avg = np.convolve(yvals,np.ones((mv_window,))/mv_window, mode='valid')
     return np.var(yval_avg)/np.var(yvals), yval_avg
@@ -232,6 +257,7 @@ def temporal_mov_avg(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, 
     plt.xticks(size=14)
     plt.yticks(size=14)
 #    plt.legend(fontsize=14)
+    plt.ylim(0, 1)
     plt.tight_layout()
     if not os.path.exists(os.path.dirname(outfile)):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
@@ -243,15 +269,16 @@ def temporal_mov_avg_randomization_example(curr_pol, curr_ab_norm, curr_ab_norm_
     outfile = os.path.join(folder,fileprefix+'_mvavg.png')
     if os.path.exists(outfile): return
     plt.figure(figsize=(5,5))
-    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals * TOT_LEN, color="blue", label="Mean Intensity")
-    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals_rng * TOT_LEN, color="red", label="Mean Intensity, Randomized")
-    plt.scatter(curr_pol * TOT_LEN, curr_ab_norm * TOT_LEN, c='b', alpha=0.2, label="Normalized Intensity")
-    plt.scatter(curr_pol * TOT_LEN, curr_ab_norm_rng * TOT_LEN, c='r', alpha=0.2, label="Normalized Intensity, Randomized")
+    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals, color="blue", label="Mean Intensity")
+    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals_rng, color="red", label="Mean Intensity, Randomized")
+    plt.scatter(curr_pol * TOT_LEN, curr_ab_norm, c='b', alpha=0.2, label="Normalized Intensity")
+    plt.scatter(curr_pol * TOT_LEN, curr_ab_norm_rng, c='r', alpha=0.2, label="Normalized Intensity, Randomized")
     plt.xlabel('Cell Cycle Time, hrs')
     plt.ylabel(fileprefix.split("_")[0] + ' Protein Expression')
     plt.xticks(size=14)
     plt.yticks(size=14)
 #    plt.legend(fontsize=14)
+    plt.ylim(0, 1)
     plt.tight_layout()
     if not os.path.exists(os.path.dirname(outfile)):
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
@@ -347,7 +374,7 @@ for i, well in enumerate(u_well_plates):
     perc_var_mt_val, mvavg_mt = mvavg_perc_var(curr_mt_cell_norm, WINDOW)
     mvavg_xvals = mvavg(curr_pol, WINDOW)
     
-    perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(1000)])
+    perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(PERMUTATIONS)])
     curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm)
     curr_comp_percvar = np.asarray(perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val)
     curr_comp_mvavg = np.asarray(mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto)
@@ -378,8 +405,8 @@ for i, well in enumerate(u_well_plates):
         clusters = np.array([clust1gt] * len(clust1_idx))
         clusters[clust2_idx] = not clust1gt
         
-        perms1 = np.asarray([np.random.permutation(sum(clust1_idx)) for nnn in np.arange(1000)])
-        perms2 = np.asarray([np.random.permutation(sum(clust2_idx)) for nnn in np.arange(1000)])
+        perms1 = np.asarray([np.random.permutation(sum(clust1_idx)) for nnn in np.arange(PERMUTATIONS)])
+        perms2 = np.asarray([np.random.permutation(sum(clust2_idx)) for nnn in np.arange(PERMUTATIONS)])
         curr_comp_perm1 = np.asarray([curr_comp_norm[clust1_idx][perm] for perm in perms1])
         curr_comp_perm2 = np.asarray([curr_comp_norm[clust2_idx][perm] for perm in perms2])
         curr_clust1_mvavg_rng_comp = np.apply_along_axis(mvavg, 1, curr_comp_perm1, WINDOW)
@@ -421,14 +448,14 @@ for i, well in enumerate(u_well_plates):
          windows, None, folder, fileprefixes[i])
     
     # Uncomment to make the plots for microtubules (takes 10 mins)
-    # temporal_mov_avg(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
+    temporal_mov_avg(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
     
     if clusters is not None:
         temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
              mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
              windows, clusters, folder, fileprefixes[i] + "_clust1&2")
     
-alpha_ccd = 0.05
+alpha_ccd = 0.01
 perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
 perc_var_mt_rng, perc_var_comp_rng = np.array(perc_var_mt_rng), np.array(perc_var_comp_rng) 
 
@@ -468,9 +495,11 @@ def clust_to_wp_doub(clust, clust_idx):
     return wp_clust
 
 wp_comp_pass_eq_percvar_adj_clust1 = clust_to_wp(wp_comp_pass_eq_percvar_adj_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
+wp_comp_eq_percvar_adj_clust1 = clust_to_wp(wp_comp_eq_percvar_adj_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
 mean_diff_from_rng_clust1 = clust_to_wp_doub(mean_diff_from_rng_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
 wp_comp_ccd_difffromrng_clust1 = clust_to_wp(wp_comp_ccd_difffromrng_withbimodal[len(perc_var_comp):len(perc_var_comp) + len(perc_var_comp_clust1)], wp_isbimodal_fcpadj_pass)
 wp_comp_pass_eq_percvar_adj_clust2 = clust_to_wp(wp_comp_pass_eq_percvar_adj_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
+wp_comp_eq_percvar_adj_clust2 = clust_to_wp(wp_comp_eq_percvar_adj_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
 mean_diff_from_rng_clust2 = clust_to_wp_doub(mean_diff_from_rng_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
 wp_comp_ccd_difffromrng_clust2 = clust_to_wp(wp_comp_ccd_difffromrng_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
 
@@ -500,20 +529,23 @@ print(f"{sum(wp_comp_ccd_clust1 & wp_comp_ccd_clust2)}: bimodal samples with two
 wp_comp_ccd_use = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2 # percvar randomization, not like in original manuscript
 
 plt.figure(figsize=(10,10))
-plt.scatter(perc_var_comp, mean_diff_from_rng, c=wp_comp_ccd_use, cmap="bwr_r")
+plt.scatter(perc_var_comp_withbimodal, mean_diff_from_rng_withbimodal, c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
 plt.hlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(perc_var_comp), np.max(perc_var_comp), color="gray")
 plt.xlabel("Percent Variance Explained by Cell Cycle")
 plt.ylabel("Mean Difference from Random")
 plt.savefig("figures/MedianDiffFromRandom.png")
+plt.savefig("figures/MedianDiffFromRandom.pdf")
 plt.show()
 plt.close()
 
+pervar_adj_withbimodal_nextafter = np.nextafter(wp_comp_eq_percvar_adj_withbimodal, wp_comp_eq_percvar_adj_withbimodal + 1)
 plt.figure(figsize=(10,10))
-plt.scatter(mean_diff_from_rng, -np.log10(wp_comp_eq_percvar_adj), c=wp_comp_ccd_use, cmap="bwr_r")
-plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(-np.log10(wp_comp_eq_percvar_adj)), np.max(-np.log10(wp_comp_eq_percvar_adj)), color="gray")
+plt.scatter(mean_diff_from_rng_withbimodal, -np.log10(pervar_adj_withbimodal_nextafter), c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
+plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(-np.log10(pervar_adj_withbimodal_nextafter)), np.max(-np.log10(wp_comp_eq_percvar_adj_withbimodal)), color="gray")
 plt.xlabel("Mean Difference from Random")
 plt.ylabel("-log10 adj p-value from randomization")
 plt.savefig("figures/MedianDiffFromRandomVolcano.png")
+plt.savefig("figures/MedianDiffFromRandomVolcano.pdf")
 plt.show()
 plt.close()
 
@@ -532,7 +564,8 @@ nongaussccdfolder = f"figures/CCDAndNonGauss"
 nonccdfolder = f"figures/NonCCD"
 bimodalnonccdfolder = f"figures/NonCCDBimodal"
 replicatefolder = f"figures/Replicates"
-for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,replicatefolder]:
+examplesfolder = f"figures/Examples"
+for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,replicatefolder,examplesfolder]:
     if not os.path.exists(f): os.mkdir(f)
 
 # CCD Unimodal
@@ -577,6 +610,10 @@ for ensg in fileprefixes[wp_comp_ccd_gauss & ~wp_ccd_unibimodal]:
 for ensg in fileprefixes[~wp_comp_ccd_gauss & wp_ccd_unibimodal]:
     shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nongaussccdfolder, ensg+'_mvavg.pdf'))
     
+# Examples
+for ensg in fileprefixes[np.isin(wp_ensg,["ENSG00000011426","ENSG00000111605","ENSG00000102908","ENSG00000091651","ENSG00000083812","ENSG00000162999","ENSG00000134057","ENSG00000178999","ENSG00000156970","ENSG00000132768","ENSG00000138801","ENSG00000156239","ENSG00000019144","ENSG00000151702","ENSG00000123607","ENSG00000173599","ENSG00000109814"])]:
+    shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(examplesfolder, ensg+'_mvavg.pdf'))
+
 #%% Do the percent variance values match up with what we measured before for the genes?
 # Idea: take the perc var values from Devin's analysis and compare them to the ones now
 # Execution: run old code and save the data
@@ -766,6 +803,7 @@ knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", d
 print(f"{len(bioccd)}: number of mitotic structure proteins")
 
 ccd_prots_withmitotic = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
+total_proteins_minusmitotic = len(ccd_prots_withmitotic) - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
 total_ccd_proteins_withmitotic = len(ccd_prots_withmitotic)
 total_nonccd_proteins_minusmitotic = nonccd_protein_ct - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
 
@@ -788,34 +826,98 @@ plt.show()
 plt.close()
 
 pd.DataFrame({
-        "ENSG":wp_ensg[np.nonzero(np.isin(wp_ensg, examples))[0]],
-        "gini_comp":gini_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
-        "perc_var_comp":perc_var_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
-        "wp_comp_ccd":wp_comp_ccd_use[np.nonzero(np.isin(wp_ensg, examples))[0]],
-        }).to_csv("output/CellCycleExamples.csv")
+    "ENSG":wp_ensg[np.nonzero(np.isin(wp_ensg, examples))[0]],
+    "gini_comp":gini_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
+    "perc_var_comp":perc_var_comp[np.nonzero(np.isin(wp_ensg, examples))[0]],
+    "wp_comp_ccd":wp_comp_ccd_use[np.nonzero(np.isin(wp_ensg, examples))[0]],
+    }).to_csv("output/CellCycleExamples.csv")
 
 ccdstring = np.array(["No                 "] * len(ccd_comp))
-ccdstring[wp_ensg[ccd_comp]] = "Pseudotime"
+ccdstring[ccd_comp] = "Pseudotime"
 ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
-ccdstring[wp_ensg[ccd_comp] & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
 pd.DataFrame({
     "well_plate" : u_well_plates, 
     "ENSG": wp_ensg,
+    "antibody": wp_ab,
     "variance_comp":var_comp,
     "gini_comp":gini_comp,
     "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
     "mean_percvar_diff_from_random":mean_diff_from_rng,
     "wp_comp_kruskal_gaussccd_adj":wp_comp_kruskal_gaussccd_adj,
+    "log_10_pval_eq_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj, wp_comp_eq_percvar_adj+1)),
     "pass_median_diff":wp_comp_ccd_difffromrng,
     "pass_gauss":wp_comp_ccd_gauss,
     "CCD_COMP":ccd_comp,
+    "ccd_reason":ccdstring,
     "nonccd_comp":nonccd_comp,
     "wp_prev_ccd":wp_prev_ccd,
+    
+    # bimodal significance testing
+    "ccd_unimodal":wp_comp_ccd_difffromrng,
+    "ccd_clust1":wp_comp_ccd_clust1,
+    "clust1_difffromrng":mean_diff_from_rng_clust1,
+    "clust1_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust1, wp_comp_eq_percvar_adj_clust1+1)),
+    "ccd_clust2":wp_comp_ccd_clust2,
+    "ccd_clust2_difffromrng":mean_diff_from_rng_clust2,
+    "ccd_clust2_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust2, wp_comp_eq_percvar_adj_clust2+1)),
     }).to_csv("output/CellCycleVariationSummary.csv", index=False)
     
 pd.DataFrame({"ENSG":np.unique(wp_ensg[wp_prev_ccd & ~ccd_comp])}).to_csv("output/DianaCCDMissingProteins.csv")
 pd.DataFrame({"ENSG":np.unique(wp_ensg[~wp_prev_ccd & ccd_comp])}).to_csv("output/NewToDianaCCDProteins.csv")
 
+
+#%% Clustering pseudotime profiles
+# silhouette_scores = []
+# n_cluster_list = np.arange(2,59).astype(int)
+
+# minlength = np.min([len(xx) for xx in mvavgs_x])
+# mvavgs_comp = np.zeros((len(mvavgs_x), minlength))
+# xvals = np.arange(0, minlength) / minlength
+# for iii, xxx in enumerate(mvavgs_x):
+#     mvavg_y = mvavgs_cell[iii] if wp_iscell[iii] else mvavgs_nuc[iii] if wp_isnuc[iii] else mvavgs_cyto[iii]
+#     interp_xp = np.arange(0, len(xxx), float(len(xxx)) / float(minlength))
+#     if len(interp_xp) > minlength: interp_xp = np.arange(0, len(xxx), float(len(xxx)+1) / float(minlength))
+#     mvavgs_comp[iii] = np.interp(interp_xp, xxx, mvavg_y)
+#     plt.plot(xvals, mvavgs_comp[iii])
+
+# plt.savefig("figures/allproteinpsueodotime.png")
+# plt.show(); plt.close()
+
+# mvavgs_comp_df = pd.DataFrame(mvavgs_comp.T)
+# mvavgs_comp_df.index = xvals
+# sc = MinMaxScaler()
+# X = mvavgs_comp_df.values.copy()
+# X = sc.fit_transform(X.T)
+
+# for n_cluster in n_cluster_list:
+#     kmeans = KMeans(n_clusters=n_cluster)
+#     cluster_found = kmeans.fit_predict(X)
+#     silhouette_scores.append(silhouette_score(X, kmeans.labels_))
+    
+# plt.plot(n_cluster_list, silhouette_scores)
+# plt.savefig("figures/kmeans_silhouettes.png")
+# plt.show(); plt.close()
+
+# kmeans = KMeans(n_clusters=10)
+# cluster_found = kmeans.fit_predict(X)
+# cluster_found_series = pd.Series(cluster_found, name="cluster")
+
+# tsne = TSNE()
+# results_tsne = tsne.fit_transform
+
+# fig, ax = plt.subplots(1,1, figsize=(18,10))
+
+# folders = [f"figures/ProteinProfileCluster{clust}" for clust in cluster_found_series]
+# for f in np.unique(folders):
+#     if not os.path.exists(f): os.mkdir(f)
+# for iii, ensg in enumerate(fileprefixes[wp_comp_ccd_difffromrng]):
+#     shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(folders[iii], ensg +'_mvavg.pdf'))
+
+# colorlist=['b','r','g']
+# for cluster, color in zip(np.unique(cluster_found_series), colorlist):
+#     mvavgs_comp_df.xs(cluster, level=1).T.plot(ax=ax, legend=False, alpha=0.01, color=color, label=f"Cluster {cluster}")
+#     mvavgs_comp_df.xs(cluster, level=1).median().plot(ax=ax, legend=False, alpha=0.9, ls="--")    
 
 #%% Pickle the results needed later
 def np_save_overwriting(fn, arr):
@@ -832,13 +934,13 @@ pd.DataFrame({"gene": wp_ensg[nonccd_comp]}).to_csv("output/picklestxt/nonccd_co
 #%% Figures of merit
 with open("output/figuresofmerit.txt", "w") as file:
     fom = "--- protein pseudotime\n\n"
-    fom += f"{protein_ct} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
+    fom += f"{len(np.unique(wp_ensg))} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
     fom += f"present the first evidence of cell cycle association for {overlapping_knownccd1} proteins" + "\n\n"
-    fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {protein_ct} proteins ({100 * ccd_protein_ct / protein_ct}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained 8% or more variance in expression than random." + "\n\n"
-    fom += f"majority of the proteins analyzed ({100 * total_nonccd_proteins_minusmitotic / protein_ct}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
+    fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {len(np.unique(wp_ensg))} proteins ({100 * ccd_protein_ct / len(np.unique(wp_ensg))}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained 8% or more variance in expression than random." + "\n\n"
+    fom += f"majority of the proteins analyzed ({100 * total_nonccd_proteins_minusmitotic / len(np.unique(wp_ensg))}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
     fom += f"Of the {total_ccd_proteins_withmitotic} proteins ({ccd_protein_ct} in interphase, {len(bioccd)} in mitotic structures, and {-(total_ccd_proteins_withmitotic - ccd_protein_ct - len(bioccd))} in both sets) identified to correlate to cell cycle progression, {overlapping_knownccd1} ({100 * overlapping_knownccd1 / total_ccd_proteins_withmitotic}%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining {total_ccd_proteins_withmitotic - overlapping_knownccd1} proteins ({100* (total_ccd_proteins_withmitotic - overlapping_knownccd1) / total_ccd_proteins_withmitotic}%)," + "\n\n"
     fom += f"The patterns of variability were investigated for these {len(wp_ensg)} proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was {np.mean(wp_bimodal_fcmaxmin)}." + "\n\n"
-    fom += f"We determined that {unimodal_generally_protein_ct} proteins ({100 * unimodal_generally_protein_ct / protein_ct}%) had unimodal intensity distributions, and {bimodal_generally_protein_ct} proteins ({100 * bimodal_generally_protein_ct / protein_ct}%) were found to display bimodality" + "\n\n"
+    fom += f"We determined that {unimodal_generally_protein_ct} proteins ({100 * unimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) had unimodal intensity distributions, and {bimodal_generally_protein_ct} proteins ({100 * bimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) were found to display bimodality" + "\n\n"
     fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters."
     print(fom)
     file.write(fom)
