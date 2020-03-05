@@ -1,0 +1,9 @@
+accession,gene,modification,residue,occupancy,modpeps,totpeps
+['P19338'],NCL,Phosphorylation on S,67,0.38,3,8
+['P19338'],NCL,Acetylation on K,589,0.04,3,69
+['P19338'],NCL,Hydroxylation on N,618,0.04,3,73
+['P46013'],MKI67,ADP-ribosylation on S,1098,0.1,2,20
+['P46013'],MKI67,ADP-ribosylation on S,2072,0.1,2,20
+"['E9PEI0', 'Q69YH5']",CDCA2,Phosphorylation on S,591,0.27,3,11
+['P31350'],RRM2,Phosphorylation on S,20,0.33,9,27
+['P11388'],TOP2A,Phosphorylation on S,1393,0.25,5,20

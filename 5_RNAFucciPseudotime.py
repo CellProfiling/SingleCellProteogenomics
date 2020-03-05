@@ -4,6 +4,7 @@ from scipy.optimize import least_squares
 import decimal
 from stretch_time import stretch_time
 from methods_RNASeqData import read_counts_and_phases
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Fucci plots based on FACS intensities
 # Idea: make log-log fucci intensity plots for the cells analyzed by RNA-Seq
@@ -219,6 +220,6 @@ adata, phases = read_counts_and_phases(dd, count_or_rpkm, False, biotype_to_use)
 adata, phasesfilt = qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
 g1, s, g2 = adata.obs["phase"] == "G1", adata.obs["phase"] == "S-ph", adata.obs["phase"] == "G2M"
-for iii, ensg in enumerate(adata.var_names):
-    maxtpm = np.max(np.concatenate((adata.X[g1,iii], adata.X[s,iii], adata.X[g2,iii])))
-    boxplot_result(adata.X[g1,iii] / maxtpm, adata.X[s,iii] / maxtpm, adata.X[g2,iii] / maxtpm, "figures/RNABoxplotByPhase", ensg)
+# for iii, ensg in enumerate(adata.var_names):
+#     maxtpm = np.max(np.concatenate((adata.X[g1,iii], adata.X[s,iii], adata.X[g2,iii])))
+#     boxplot_result(adata.X[g1,iii] / maxtpm, adata.X[s,iii] / maxtpm, adata.X[g2,iii] / maxtpm, "figures/RNABoxplotByPhase", ensg)

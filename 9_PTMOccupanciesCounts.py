@@ -6,6 +6,7 @@ import re
 import math
 from methods_RNASeqData import read_counts_and_phases, qc_filtering
 import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Import the genes names we're analyzing
 def ccd_gene_names(id_list_like):
@@ -176,7 +177,8 @@ def analyze_ptms(filename):
     print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_transcript_regulated]))}: number of transcript regulated CCD genes from Diana's study of {len(ccdprotein_transcript_regulated)} detected.")
     print(f"{str(len([g for g in genemods.keys() if g in ccdprotein_nontranscript_regulated]))}: number of non-transcript regulated CCD genes from Diana's study of {len(ccdprotein_nontranscript_regulated)} detected.")
     print(f"{str(len([g for g in genemods.keys() if g in genes_analyzed]))}: number of proteins of {len(genes_analyzed)} detected.")
-
+    print(f"{np.median([genemods[g][1][0][0] for g in genemods.keys() if len(genemods[g][5]) >= 0])}: median coverage for all proteins")
+    print(f"{np.median([genemods[g][1][0][0] for g in genemods.keys() if len(genemods[g][5]) > 0])}: median coverage for modified proteins")
     return genemods
 
 def process_genemods(genemods):
@@ -247,6 +249,10 @@ def compare_ptm_regulation(df, occdf, analysisTitle):
     all_modctsoccdf.to_csv(f"output/all_modctsoccdf_{analysisTitle}.csv", index=False)
     ccd_modctsoccdf.to_csv(f"output/ccd_modctsoccdf_{analysisTitle}.csv", index=False)
     nonccd_modctsoccdf.to_csv(f"output/nonccd_modctsoccdf_{analysisTitle}.csv", index=False)
+    ccd_at_modctsoccdf.to_csv(f"output/ccd_at_modctsoccdf_{analysisTitle}.csv", index=False)
+    ccd_nt_modctsoccdf.to_csv(f"output/ccd_nt_modctsoccdf_{analysisTitle}.csv", index=False)
+    ccd_t_modctsoccdf.to_csv(f"output/ccd_t_modctsoccdf_{analysisTitle}.csv", index=False)
+    ccd_n_modctsoccdf.to_csv(f"output/ccd_n_modctsoccdf_{analysisTitle}.csv", index=False)
     
     categories = {
         "all genes detected" : count_mods(genes_analyzed, df, occdf), 
@@ -406,6 +412,21 @@ def compare_ptm_regulation(df, occdf, analysisTitle):
     plt.savefig(f"figures/ModsOccupancyBoxplotSelected4{analysisTitle}.pdf")
     plt.show()
     plt.close()
+    
+    pd.DataFrame({
+        "all_modocc":all_modocc,
+        "all_modocc_genes":all_modctsoccdf["gene"],
+        "ccd_t_modocc":ccd_t_modocc,
+        "ccd_t_modocc_genes":ccd_t_modctsoccdf["gene"],
+        "ccd_rt_modocc":ccd_rt_modocc,
+        "ccd_rt_modocc_genes":ccd_rt_modctsoccdf["gene"],
+        "ccd_at_modocc":ccd_at_modocc,
+        "ccd_at_modocc_genes":ccd_at_modctsoccdf["gene"],
+        "ccd_n_modocc":ccd_n_modocc,
+        "ccd_n_modocc_genes":ccd_n_modctsoccdf["gene"],
+        "nonccd_modocc":nonccd_modocc,
+        "nonccd_modocc_genes":nonccd_modctsoccdf["gene"],
+    }).to_pickle(f"output/modocc_{analysisTitle}.pkl")
 
 # read in and analyze MM results
 genemodsBulk = analyze_ptms(filenameBulk)
@@ -467,20 +488,7 @@ plt.close()
 # Conclusion: there's not much going on in terms of correlation to the peak expression of the protein
 
 #%% Pickle the results
-pd.DataFrame({
-    "all_modocc":all_modocc,
-    "all_modocc_genes":all_modctsoccdf["gene"],
-    "ccd_t_modocc":ccd_t_modocc,
-    "ccd_t_modocc_genes":ccd_t_modctsoccdf["gene"],
-    "ccd_rt_modocc":ccd_rt_modocc,
-    "ccd_rt_modocc_genes":ccd_rt_modctsoccdf["gene"],
-    "ccd_at_modocc":ccd_at_modocc,
-    "ccd_at_modocc_genes":ccd_at_modctsoccdf["gene"],
-    "ccd_n_modocc":ccd_n_modocc,
-    "ccd_n_modocc_genes":ccd_n_modctsoccdf["gene"],
-    "nonccd_modocc":nonccd_modocc,
-    "nonccd_modocc_genes":nonccd_modctsoccdf["gene"],
-}).to_pickle("output/modocc.pkl")
+
 
 #%% Finessing
 # Idea: What are these modifications that have high occupancies?

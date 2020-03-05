@@ -10,9 +10,9 @@ import fucci_plotting
 import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import seaborn as sbn
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
-
 
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
@@ -22,7 +22,6 @@ biotype_to_use="protein_coding"
 adata, phases = read_counts_and_phases(dd, count_or_rpkm, use_spike_ins=False, biotype_to_use=biotype_to_use)
 adata, phasesfilt = qc_filtering(adata, do_log_normalize=False, do_remove_blob=True)
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
-
 
 #%% Read in the protein data
 # Idea: read in the protein data to compare with the RNA seq data
@@ -129,44 +128,47 @@ def fix_nans(binned_values):
             binned_values[i] = np.mean([prevval,nextval])
     return binned_values
 
-xvals = np.linspace(0,1,num=21)
-wp_max_pol = []
-wp_binned_values = []
-for i, well in enumerate(u_well_plates):
-    curr_well_inds = pol_sort_well_plate==well
-    curr_pol = pol_sort_norm_rev[curr_well_inds]
-#    curr_fred = pol_sort_fred[curr_well_inds]
-#    curr_fgreen = pol_sort_fgreen[curr_well_inds]
-    curr_ab_cell, curr_ab_nuc, curr_ab_cyto, curr_mt_cell = pol_sort_ab_cell[curr_well_inds], pol_sort_ab_nuc[curr_well_inds],pol_sort_ab_cyto[curr_well_inds], pol_sort_mt_cell[curr_well_inds]
-
-    # Normalize FUCCI colors & mean intensities, normalized for display
-#    curr_fred_norm = curr_fred / np.max(curr_fred)
-#    curr_fgreen_norm = curr_fgreen / np.max(curr_fgreen)
-    curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
-    curr_ab_nuc_norm = curr_ab_nuc / np.max(curr_ab_nuc)
-    curr_ab_cyto_norm = curr_ab_cyto / np.max(curr_ab_cyto) 
-    curr_mt_cell_norm  = curr_mt_cell / np.max(curr_mt_cell)
+def bin_values(nbins):
+    xvals = np.linspace(0,1,num=nbins)
+    wp_max_pol = []
+    wp_binned_values = []
+    for i, well in enumerate(u_well_plates):
+        curr_well_inds = pol_sort_well_plate==well
+        curr_pol = pol_sort_norm_rev[curr_well_inds]
+    #    curr_fred = pol_sort_fred[curr_well_inds]
+    #    curr_fgreen = pol_sort_fgreen[curr_well_inds]
+        curr_ab_cell, curr_ab_nuc, curr_ab_cyto, curr_mt_cell = pol_sort_ab_cell[curr_well_inds], pol_sort_ab_nuc[curr_well_inds],pol_sort_ab_cyto[curr_well_inds], pol_sort_mt_cell[curr_well_inds]
     
-    # Compute binned values
-    binned_values = []
-    prev_xval = 0
-    for xval in xvals:
-        if xval==0:
-            prev_xval = xval
-            continue
-        curr_ab_norm = curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm
-        binned_values.append(np.median(curr_ab_norm[(curr_pol < xval) & (curr_pol >= prev_xval)]))
-        prev_xval = xval
+        # Normalize FUCCI colors & mean intensities, normalized for display
+    #    curr_fred_norm = curr_fred / np.max(curr_fred)
+    #    curr_fgreen_norm = curr_fgreen / np.max(curr_fgreen)
+        curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
+        curr_ab_nuc_norm = curr_ab_nuc / np.max(curr_ab_nuc)
+        curr_ab_cyto_norm = curr_ab_cyto / np.max(curr_ab_cyto) 
+        curr_mt_cell_norm  = curr_mt_cell / np.max(curr_mt_cell)
         
-    binned_values = binned_values/np.nanmax(binned_values)
-    binned_values = fix_nans(binned_values)
-    max_loc = np.nanargmax(binned_values)
-    if np.isnan(xvals[max_loc]): print('what')
-    
-    wp_max_pol.append(xvals[max_loc])
-    wp_binned_values.append(binned_values)
+        # Compute binned values
+        binned_values = []
+        prev_xval = 0
+        for xval in xvals:
+            if xval==0:
+                prev_xval = xval
+                continue
+            curr_ab_norm = curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm
+            binned_values.append(np.median(curr_ab_norm[(curr_pol < xval) & (curr_pol >= prev_xval)]))
+            prev_xval = xval
+            
+        binned_values = binned_values/np.nanmax(binned_values)
+        binned_values = fix_nans(binned_values)
+        max_loc = np.nanargmax(binned_values)
+        if np.isnan(xvals[max_loc]): print('what')
+        
+        wp_max_pol.append(xvals[max_loc])
+        wp_binned_values.append(binned_values)
+    return wp_max_pol, wp_binned_values
 
 # Make an expression array with the CCD proteins
+wp_max_pol, wp_binned_values = bin_values(20)
 wp_max_pol, wp_binned_values = np.array(wp_max_pol), np.array(wp_binned_values)
 wp_max_pol_ccd, wp_binned_values_ccd = wp_max_pol[ccd_comp], wp_binned_values[ccd_comp]
 wp_max_sort_inds = np.argsort(wp_max_pol_ccd)
@@ -216,6 +218,90 @@ plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.png'), transpare
 plt.show()
 
 np.save("output/pickles/wp_max_pol.npy", wp_max_pol, allow_pickle=True)
+
+#%% Correlations of related genes
+plt.rcParams['figure.figsize'] = (5, 5)
+plt.rcParams['figure.fontname'] = "Arial"
+
+def scatter_genes(gene1, gene2, r):
+    plt.scatter(wp_binned_values[wp_ensg == gene1[0]][0], wp_binned_values[wp_ensg == gene2[0]][0])
+    plt.xlabel(f"{gene1[1]} Expression Binned by Pseudotime", fontsize=14, fontname="Arial")
+    plt.ylabel(f"{gene2[1]} Expression Binned by Pseudotime", fontsize=14, fontname="Arial")
+    plt.text(np.min(wp_binned_values[wp_ensg == gene1[0]][0]), np.max(wp_binned_values[wp_ensg == gene2[0]][0]), f"Pearson's r = {r}", fontsize=14, fontname="Arial")
+    plt.savefig(f"figures/Correlations/{gene1[1]}_{gene2[1]}.pdf")
+    plt.show()
+    plt.close()
+
+for ensg in [("ENSG00000091651", "orc6"),
+             ("ENSG00000169740", "znf32"),
+             ("ENSG00000105173", "ccne1"),
+             ("ENSG00000162999", "dusp19"),
+             ("ENSG00000123607", "ttc21b"),
+             ("ENSG00000173599", "pc"),
+             ("ENSG00000134057", "ccnb1"),#, known
+             ("ENSG00000178999", "aurkb"),#, known
+             ("ENSG00000156970", "bub1b"),#, known
+             ("ENSG00000167065", "dusp18"),#, unknown
+             ("ENSG00000138801", "papss1"),#, unknown
+             ("ENSG00000156239", "n6amt1"),#, unknown
+             ("ENSG00000019144", "phldb1"),#, unknown
+             ("ENSG00000151702", "fli1"),#, unknown
+             ("ENSG00000132768", "dph2"),#, unknown
+             ("ENSG00000102908", "nfat5") # unknown
+             ]: 
+    print(ensg)
+    print(f"number of observations: {sum(pol_sort_well_plate==u_well_plates[wp_ensg == ensg[0]][0])}")
+    print(f"time of peak expression: {wp_max_pol[wp_ensg == ensg[0]][0]}")
+
+orc6_znf32 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000091651'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000169740'][0])
+scatter_genes(("ENSG00000091651", "ORC6"), ("ENSG00000169740", "ZNF32"), round(orc6_znf32[0], 2))
+ccne1_dusp19 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000105173'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000162999'][0])
+scatter_genes(("ENSG00000105173", "CCNE1"), ("ENSG00000162999", "DUSP19"), round(ccne1_dusp19[0], 2))
+ttc21b_pc = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000123607'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000173599'][0])
+
+bub1b_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000156970'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+scatter_genes(("ENSG00000156970", "BUB1B"), ("ENSG00000167065", "DUSP18"), round(bub1b_dusp18[0], 2))
+aurkb_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000178999'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+scatter_genes(("ENSG00000178999", "AURKB"), ("ENSG00000167065", "DUSP18"), round(aurkb_dusp18[0], 2))
+ccnb1_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000167065", "DUSP18"), round(ccnb1_dusp18[0], 2))
+
+ccnb1_papss1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000138801'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000138801", "PAPSS1"), round(ccnb1_papss1[0], 2))
+ccnb1_n6amt1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000156239'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000156239", "N6AMT1"), round(ccnb1_n6amt1[0], 2))
+ccnb1_phldb1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000019144'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000019144", "PHLDB1"), round(ccnb1_phldb1[0], 2))
+ccnb1_fli1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000151702'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000151702", "FLI1"), round(ccnb1_fli1[0], 2))
+ccnb1_dph2 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000132768'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000132768", "DPH2"), round(ccnb1_dph2[0], 2))
+ccnb1_nfat5 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
+                                  wp_binned_values[wp_ensg == 'ENSG00000102908'][0])
+scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000102908", "NFAT5"), round(ccnb1_nfat5[0], 2))
+
+print(f"correlation of ORC6 and ZNF32: {orc6_znf32[0]}")
+print(f"correlation of CCNE1 and DUSP19: {ccne1_dusp19[0]}")
+print(f"correlation of TTC21B and PC: {ttc21b_pc[0]}")
+print()
+print(f"correlation of bub1b_dusp18: {bub1b_dusp18[0]}")
+print(f"correlation of aurkb_dusp18: {aurkb_dusp18[0]}")
+print(f"correlation of ccnb1_papss1: {ccnb1_papss1[0]}")
+print(f"correlation of ccnb1_n6amt1: {ccnb1_n6amt1[0]}")
+print(f"correlation of ccnb1_phldb1: {ccnb1_phldb1[0]}")
+print(f"correlation of ccnb1_fli1: {ccnb1_fli1[0]}")
+print(f"correlation of ccnb1_dph2: {ccnb1_dph2[0]}")
 
 #%% RNA heatmap
 # Idea: create a heatmap of peak RNA expression
@@ -358,26 +444,51 @@ plt.savefig("figures/transitions.png")
 plt.savefig("figures/transitions.pdf")
 plt.show()
 
-    
-sbn.distplot(diff_max_pol * TOT_LEN)
+plt.hist(diff_max_pol * TOT_LEN, alpha=0.5)# kde=False, rug=True, fit=scipy.stats.gamma)
 plt.xlabel("Delay in peak protein expression from peak RNA expression, hrs")
 plt.ylabel("Count of CCD Proteins")
 plt.tight_layout()
-plt.savefig("figures/DelayPeakProteinRNA.png")
+plt.savefig("figures/DelayPeakProteinRNA.pdf")
 plt.show()
 plt.close()
 
-fig = plt.figure()
-ax1 = fig.add_subplot(111)
-ax1.hist(insct_prot_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak Protein Expression Time, hrs")
-ax1.hist(insct_rna_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak RNA Expression Time, hrs")
-plt.legend(loc="upper left")
-plt.xlabel("Division Cycle, hrs")
-plt.ylabel("Count of Cell Cycle Genes")
+f,ax = plt.subplots(figsize=(6,5))
+plt.scatter(x=insct_rna_max_pol_ccd * TOT_LEN, y=insct_prot_max_pol_ccd * TOT_LEN, c=diff_max_pol * TOT_LEN)
+# ax.hist(diff_max_pol * TOT_LEN, orientation="vertical", alpha=0.5)
+ax.yaxis.set_label_position("right")
+ax.yaxis.tick_right()
+ax.set_xticks([0,5,10,15,20])
+cbar = plt.colorbar()
+cbar.set_label('Temporal Delay, hrs',fontname='Arial',size=20)
+cbar.ax.tick_params(labelsize=18)
+plt.xlabel("Peak RNA Expression, hrs",fontname='Arial',size=20)
+plt.ylabel("Peak Protein Expression, hrs",fontname='Arial',size=20)
 plt.tight_layout()
-plt.savefig(f"figures/DelayPeakProteinRNA_separate.png")
+plt.savefig("figures/TemporalDelayScatter.pdf")
 plt.show()
 plt.close()
+
+# sbn.jointplot(x=insct_rna_max_pol_ccd * TOT_LEN, y=insct_prot_max_pol_ccd * TOT_LEN, kind="kde", color="k")
+# plt.close()
+
+# f,ax = plt.subplots(figsize=(6,6))
+# sbn.kdeplot(insct_rna_max_pol_ccd * TOT_LEN, insct_prot_max_pol_ccd * TOT_LEN, ax=ax, color="b")
+# sbn.distplot(insct_rna_max_pol_ccd * TOT_LEN, color="orange", kde=False, ax=ax)
+# sbn.distplot(insct_prot_max_pol_ccd * TOT_LEN, color="blue", kde=False, vertical=True, ax=ax)
+# ax.set_xlim(-4)
+# plt.close()
+
+# fig = plt.figure()
+# ax1 = fig.add_subplot(111)
+# ax1.hist(insct_prot_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak Protein Expression Time, hrs")
+# ax1.hist(insct_rna_max_pol_ccd * TOT_LEN, alpha=0.5, label="Peak RNA Expression Time, hrs")
+# plt.legend(loc="upper left")
+# plt.xlabel("Division Cycle, hrs")
+# plt.ylabel("Count of Cell Cycle Genes")
+# plt.tight_layout()
+# plt.savefig(f"figures/DelayPeakProteinRNA_separate.png")
+# plt.show()
+# plt.close()
 
 mmmm = np.concatenate((insct_prot_max_pol_ccd * TOT_LEN, insct_rna_max_pol_ccd * TOT_LEN))
 cccc = (["Protein"] * len(insct_prot_max_pol_ccd))
@@ -400,11 +511,82 @@ print(f"One-sided kruskal for median protein expression time higher than median 
 t, p = scipy.stats.ttest_1samp(diff_max_pol, 0)
 print(f"One-sided, one-sample t-test for mean delay in protein expression larger than zero: {2*p}")
 
+#%% Plot the variances against each other
+def gini(array):
+    """Calculate the Gini coefficient of a numpy array."""
+    # based on bottom eq: http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
+    # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
+    # All values are treated equally, arrays must be 1d:
+    # Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
+    array = array.flatten()
+    if np.amin(array) < 0: 
+        array -= np.amin(array) # Values cannot be negative
+    array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
+    index = np.arange(1, array.shape[0] + 1) # Index per array element
+    n = array.shape[0] # Number of array elements
+    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
+
+total_variance_rna = np.var(norm_exp_sort, 0)
+total_gini_rna = np.apply_along_axis(gini, 0, norm_exp_sort)
+total_cv_rna = np.apply_along_axis(scipy.stats.variation, 0, norm_exp_sort)
+var_comp_prot = np.load("output/pickles/var_comp.npy", allow_pickle=True)
+gini_comp_prot = np.load("output/pickles/gini_comp.npy", allow_pickle=True)
+cv_comp_prot = np.load("output/pickles/cv_comp.npy", allow_pickle=True)
+var_cell_prot = np.load("output/pickles/var_cell.npy", allow_pickle=True)
+gini_cell_prot = np.load("output/pickles/gini_cell.npy", allow_pickle=True)
+cv_cell_prot = np.load("output/pickles/cv_cell.npy", allow_pickle=True)
+
+prot_ensg = list(wp_ensg)
+rna_ensg = list(adata.var_names)
+both_ensg = np.intersect1d(prot_ensg, rna_ensg)
+both_prot_idx = np.array([prot_ensg.index(ensg) for ensg in both_ensg])
+both_rna_idx = np.array([rna_ensg.index(ensg) for ensg in both_ensg])
+insct_prot_variance = var_comp_prot[both_prot_idx]
+insct_prot_gini = gini_comp_prot[both_prot_idx]
+insct_prot_cv = cv_comp_prot[both_prot_idx]
+insct_prot_variance_cell = var_cell_prot[both_prot_idx]
+insct_prot_gini_cell = gini_cell_prot[both_prot_idx]
+insct_prot_cv_cell = cv_cell_prot[both_prot_idx]
+insct_rna_variance = total_variance_rna[both_rna_idx]
+insct_rna_gini = total_gini_rna[both_rna_idx]
+insct_rna_cv = total_cv_rna[both_rna_idx]
+
+plt.scatter(insct_rna_variance, insct_prot_variance_cell)
+plt.xlabel("Total RNA Variance")
+plt.ylabel("Total Protein Variance")
+plt.savefig("figures/ProteinRNAVariance.png")
+plt.show()
+plt.close()
+plt.scatter(insct_rna_gini, insct_prot_gini_cell)
+plt.xlabel("RNA Gini")
+plt.ylabel("Protein Gini")
+plt.savefig("figures/ProteinRNAGini.png")
+plt.show()
+plt.close()
+plt.scatter(insct_rna_cv, insct_prot_cv_cell)
+plt.xlabel("RNA CV")
+plt.ylabel("Protein CV")
+plt.savefig("figures/ProteinRNACV.png")
+plt.show()
+plt.close()
+
+pd.DataFrame({
+    "gene":both_ensg,
+    "variance_rna": insct_rna_variance,
+    "gini_rna":insct_rna_gini,
+    "cv_rna":insct_rna_cv,
+    "variance_comp_prot":insct_prot_variance,
+    "gini_comp_prot":insct_prot_gini,
+    "cv_comp_prot":insct_prot_cv,
+    "variance_cell_prot":insct_prot_variance_cell,
+    "gini_cell_prot":insct_prot_gini_cell,
+    "cv_cell_prot":insct_prot_cv_cell,
+    }).to_csv("output/VarianceRNAProtein.csv",index=False)
 
 #%% Output tables
 pd.DataFrame({"gene" : wp_ensg, "max_pol_protein": wp_max_pol, "max_time_protein": wp_max_pol * TOT_LEN}).to_csv("output/max_pol_protein.csv", index=False)
 pd.DataFrame({"gene" : adata.var_names, "max_pol_rna": max_moving_avg_pol, "max_time_rna": max_moving_avg_pol * TOT_LEN}).to_csv("output/max_pol_rna.csv", index=False)
-pd.DataFrame({"gene" : })
+# pd.DataFrame({"gene" : })
 
 #%% Sanity checks 
 # double check that the names line up
@@ -455,11 +637,16 @@ print(f"The name arrays are the same: {all(prot_names == rna_names)}")
 #plot_avg_rna_and_prot(name_prot_list, "figures/RNAProteinCCDAvgs")
 
 #%% Figures of merit
+peaked_after_g1_prot = sorted_maxpol_array * TOT_LEN > G1_LEN
+wp_ensg_counts_ccd = np.array([sum([eeee == ensg for eeee in wp_ensg[ccd_comp]]) for ensg in wp_ensg[ccd_comp]])
+duplicated_ensg_ccd = wp_ensg_counts_ccd > 1
+duplicated_ensg_peaked_after_g1 = np.array([sum(peaked_after_g1_prot[wp_ensg[ccd_comp] == ensg]) for ensg in duplicated_ensg_ccd])
+
 with open("output/figuresofmerit.txt", "a") as file:
     fom = "--- temporal delay\n\n"
     fom += f"significant delay in peak protein expression compared to transcript expression, {TOT_LEN * np.median(diff_max_pol)} hours on average" + "\n\n"
     fom += f"G1 is the longest period of the cell cycle, in which the majority of RNAs ({100 * sum(sorted_max_moving_avg_pol_ccd * TOT_LEN <= G1_LEN) / len(sorted_max_moving_avg_pol_ccd)}%) peak in expression" + "\n\n"
-    fom += f"However, the majority ({100 * sum(sorted_maxpol_array * TOT_LEN > G1_LEN) / len(sorted_maxpol_array)}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
+    fom += f"However, the majority ({100 * (sum(peaked_after_g1_prot[~duplicated_ensg_ccd]) + sum(duplicated_ensg_peaked_after_g1 == 2)) / len(np.unique(wp_ensg[ccd_comp]))}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
     fom += f"The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was {TOT_LEN * np.median(diff_max_pol)} hrs on average " + "\n\n"
     fom += f"this delay indicates that it may take a little less than the same amount of time ({12 - TOT_LEN * np.median(diff_max_pol)} hrs) to produce a target metabolite after peak expression of an enzyme." + "\n\n"
     fom += f"" + "\n\n"
