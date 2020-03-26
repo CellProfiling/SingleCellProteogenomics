@@ -313,14 +313,6 @@ def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
     plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
     plt.savefig(f"{outfolder}_pdf/GaussianClusteringProtein_{ensg}.pdf")
     plt.close()
-    
-def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
-    '''Get the values for the annotated compartment'''
-    values_comp = np.empty_like(values_cell)
-    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
-    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
-    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
-    return np.array(values_comp) 
 
 gaussian = GaussianMixture(n_components=3, random_state=1, max_iter=500)
 cluster_labels = gaussian.fit_predict(np.array([log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale]).T)
@@ -362,64 +354,11 @@ for iii, wp in enumerate(u_well_plates):
         mt_cell[curr_wp_g2] / max_mt_for_norm,# * TOT_LEN, 
         "figures/GaussianBoxplots_mt", f"{fileprefixes[iii]}_mt")
 
-# benjimini-hochberg multiple testing correction
-# source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
-def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection'''
-    nobs = len(x)
-    return np.arange(1,nobs+1)/float(nobs)
-
-def benji_hoch(alpha, pvals):
-    pvalsarr = np.array(pvals)
-    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data    
-    pvals_sortind = np.argsort(pvalsarr)
-    pvals_sorted = np.take(pvalsarr, pvals_sortind)
-    ecdffactor = _ecdf(pvals_sorted)
-    reject = pvals_sorted <= ecdffactor*alpha
-    reject = pvals_sorted <= ecdffactor*alpha
-    if reject.any():
-        rejectmax = max(np.nonzero(reject)[0])
-        reject[:rejectmax] = True
-    pvals_corrected_raw = pvals_sorted / ecdffactor
-    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
-    del pvals_corrected_raw
-    pvals_corrected[pvals_corrected>1] = 1
-    pvals_corrected_BH = np.empty_like(pvals_corrected)
-
-    # deal with sorting
-    pvals_corrected_BH[pvals_sortind] = pvals_corrected
-    del pvals_corrected
-    reject_BH = np.empty_like(reject)
-    reject_BH[pvals_sortind] = reject
-    return pvals_corrected_BH, reject_BH
-
-# bonferroni MTC
-def bonf(alpha, pvals):
-    pvalsarr = np.array(pvals)
-    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data    
-    pvals_sortind = np.argsort(pvals)
-    pvals_sorted = np.take(pvalsarr, pvals_sortind)
-    alphaBonf = alpha / float(len(pvalsarr))
-    rejectBonf = pvals_sorted <= alphaBonf
-    pvals_correctedBonf = pvals_sorted * float(len(pvalsarr))
-    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
-    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
-    rejectBonf_unsorted = np.empty_like(rejectBonf)
-    rejectBonf_unsorted[pvals_sortind] = rejectBonf
-    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
-
 alpha_gauss = 0.05
 wp_cell_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cell = benji_hoch(alpha_gauss, wp_cell_kruskal)
 wp_nuc_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_nuc = benji_hoch(alpha_gauss, wp_nuc_kruskal)
 wp_cyto_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_cyto = benji_hoch(alpha_gauss, wp_cyto_kruskal)
 wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt = benji_hoch(alpha_gauss, wp_mt_kruskal) 
-
-def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):    
-    values_comp = np.empty_like(values_cell)
-    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
-    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
-    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
-    return values_comp
 
 wp_comp_kruskal_gaussccd_p = values_comp(wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_iscell, wp_isnuc, wp_iscyto)
 wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp = benji_hoch(alpha_gauss, wp_comp_kruskal_gaussccd_p)
@@ -457,10 +396,6 @@ print(f"{sum(duplicated_ab_ccd == 0)}: number of duplicated antibodies shown to 
 
 
 #%% Pickle the results
-def np_save_overwriting(fn, arr):
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
-
 np_save_overwriting("output/pickles/u_plate.npy", u_plate)
 np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
 np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)

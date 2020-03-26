@@ -1,17 +1,8 @@
 #%% Imports
-from imports import *
+from utils import *
 import numpy as np
-import os, glob
-from scipy.optimize import least_squares
-from scipy.optimize import minimize_scalar
-from sklearn.neighbors import RadiusNeighborsRegressor
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from scipy.stats import iqr, variation
-from scipy.stats import linregress
+from scipy.stats import variation
 from sklearn.mixture import GaussianMixture
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import silhouette_score
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Read in the protein data
@@ -91,35 +82,6 @@ print("loaded")
 # pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
 
 #%% Gaussian clustering to identify biomodal intensity distributions
-def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection'''
-    nobs = len(x)
-    return np.arange(1, nobs + 1)/float(nobs)
-
-def benji_hoch(alpha, pvals):
-    pvals_array = np.array(pvals)
-    pvals_array[np.isnan(pvals_array)] = 1 # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvals_array)
-    pvals_sorted = np.take(pvals_array, pvals_sortind)
-    ecdffactor = _ecdf(pvals_sorted)
-    reject = pvals_sorted <= ecdffactor*alpha
-    reject = pvals_sorted <= ecdffactor*alpha
-    if reject.any():
-        rejectmax = max(np.nonzero(reject)[0])
-        reject[:rejectmax] = True
-    pvals_corrected_raw = pvals_sorted / ecdffactor
-    pvals_corrected = np.minimum.accumulate(pvals_corrected_raw[::-1])[::-1]
-    del pvals_corrected_raw
-    pvals_corrected[pvals_corrected>1] = 1
-    pvals_corrected_BH = np.empty_like(pvals_corrected)
-
-    # deal with sorting
-    pvals_corrected_BH[pvals_sortind] = pvals_corrected
-    del pvals_corrected
-    reject_BH = np.empty_like(reject)
-    reject_BH[pvals_sortind] = reject
-    return pvals_corrected_BH, reject_BH
-
 wp_bimodal_cluster_idxs = []
 wp_bimodal_diffmeans = []
 wp_bimodal_fcmeans = []
@@ -283,29 +245,6 @@ def temporal_mov_avg_randomization_example(curr_pol, curr_ab_norm, curr_ab_norm_
         os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
     plt.savefig(outfile)
     plt.close()
-
-# bonferroni MTC
-def bonf(alpha, pvals):
-    pvalsarr = np.array(pvals)
-    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvalsarr)
-    pvals_sorted = np.take(pvalsarr, pvals_sortind)
-    alphaBonf = alpha / float(len(pvalsarr))
-    rejectBonf = pvals_sorted <= alphaBonf
-    pvals_correctedBonf = pvals_sorted * float(len(pvalsarr))
-    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
-    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
-    rejectBonf_unsorted = np.empty_like(rejectBonf)
-    rejectBonf_unsorted[pvals_sortind] = rejectBonf
-    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
-
-def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
-    '''Get the values for the annotated compartment'''
-    values_comp = np.empty_like(values_cell)
-    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
-    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
-    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
-    return np.array(values_comp)
 
 def remove_outliers(values, return_values):
     '''Remove outliers on "values" and return "return_values" based on that filter'''
@@ -863,66 +802,9 @@ pd.DataFrame({
     }).to_csv("output/CellCycleVariationSummary.csv", index=False)
     
 pd.DataFrame({"ENSG":np.unique(wp_ensg[wp_prev_ccd & ~ccd_comp])}).to_csv("output/DianaCCDMissingProteins.csv")
-pd.DataFrame({"ENSG":np.unique(wp_ensg[~wp_prev_ccd & ccd_comp])}).to_csv("output/NewToDianaCCDProteins.csv")
-
-
-#%% Clustering pseudotime profiles
-# silhouette_scores = []
-# n_cluster_list = np.arange(2,59).astype(int)
-
-# minlength = np.min([len(xx) for xx in mvavgs_x])
-# mvavgs_comp = np.zeros((len(mvavgs_x), minlength))
-# xvals = np.arange(0, minlength) / minlength
-# for iii, xxx in enumerate(mvavgs_x):
-#     mvavg_y = mvavgs_cell[iii] if wp_iscell[iii] else mvavgs_nuc[iii] if wp_isnuc[iii] else mvavgs_cyto[iii]
-#     interp_xp = np.arange(0, len(xxx), float(len(xxx)) / float(minlength))
-#     if len(interp_xp) > minlength: interp_xp = np.arange(0, len(xxx), float(len(xxx)+1) / float(minlength))
-#     mvavgs_comp[iii] = np.interp(interp_xp, xxx, mvavg_y)
-#     plt.plot(xvals, mvavgs_comp[iii])
-
-# plt.savefig("figures/allproteinpsueodotime.png")
-# plt.show(); plt.close()
-
-# mvavgs_comp_df = pd.DataFrame(mvavgs_comp.T)
-# mvavgs_comp_df.index = xvals
-# sc = MinMaxScaler()
-# X = mvavgs_comp_df.values.copy()
-# X = sc.fit_transform(X.T)
-
-# for n_cluster in n_cluster_list:
-#     kmeans = KMeans(n_clusters=n_cluster)
-#     cluster_found = kmeans.fit_predict(X)
-#     silhouette_scores.append(silhouette_score(X, kmeans.labels_))
-    
-# plt.plot(n_cluster_list, silhouette_scores)
-# plt.savefig("figures/kmeans_silhouettes.png")
-# plt.show(); plt.close()
-
-# kmeans = KMeans(n_clusters=10)
-# cluster_found = kmeans.fit_predict(X)
-# cluster_found_series = pd.Series(cluster_found, name="cluster")
-
-# tsne = TSNE()
-# results_tsne = tsne.fit_transform
-
-# fig, ax = plt.subplots(1,1, figsize=(18,10))
-
-# folders = [f"figures/ProteinProfileCluster{clust}" for clust in cluster_found_series]
-# for f in np.unique(folders):
-#     if not os.path.exists(f): os.mkdir(f)
-# for iii, ensg in enumerate(fileprefixes[wp_comp_ccd_difffromrng]):
-#     shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(folders[iii], ensg +'_mvavg.pdf'))
-
-# colorlist=['b','r','g']
-# for cluster, color in zip(np.unique(cluster_found_series), colorlist):
-#     mvavgs_comp_df.xs(cluster, level=1).T.plot(ax=ax, legend=False, alpha=0.01, color=color, label=f"Cluster {cluster}")
-#     mvavgs_comp_df.xs(cluster, level=1).median().plot(ax=ax, legend=False, alpha=0.9, ls="--")    
+pd.DataFrame({"ENSG":np.unique(wp_ensg[~wp_prev_ccd & ccd_comp])}).to_csv("output/NewToDianaCCDProteins.csv") 
 
 #%% Pickle the results needed later
-def np_save_overwriting(fn, arr):
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
-
 np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
 np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
 np_save_overwriting("output/pickles/wp_ensg.npy", wp_ensg)

@@ -1,12 +1,9 @@
 #%% Imports
-from imports import *
+from utils import *
 import numpy as np
 from stretch_time import stretch_time
 from scipy.optimize import least_squares
-from scipy.optimize import minimize_scalar
-from sklearn.neighbors import RadiusNeighborsRegressor
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from scipy.stats import iqr, variation
+from scipy.stats import variation
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
@@ -213,28 +210,6 @@ plt.close()
 
 # benjimini-hochberg multiple testing correction
 # source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
-
-def gini(array):
-    """Calculate the Gini coefficient of a numpy array."""
-    # based on bottom eq: http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
-    # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
-    # All values are treated equally, arrays must be 1d:
-    # Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
-    array = array.flatten()
-    if np.amin(array) < 0: 
-        array -= np.amin(array) # Values cannot be negative
-    array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
-    index = np.arange(1, array.shape[0] + 1) # Index per array element
-    n = array.shape[0] # Number of array elements
-    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
-
-def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
-    '''Get the values for the annotated compartment'''
-    values_comp = np.empty_like(values_cell)
-    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
-    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
-    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
-    return np.array(values_comp)
 
 # Calculate variation
 use_log = False
@@ -473,10 +448,6 @@ print(f"{high_cv_img}: the images with greater than 4x the variance of the whole
 np.intersect1d(high_var_img, high_cv_img)
 
 #%%
-def np_save_overwriting(fn, arr):
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
-        
 np_save_overwriting("output/pickles/pol_sort_well_plate.npy", pol_sort_well_plate)
 np_save_overwriting("output/pickles/pol_sort_norm_rev.npy", pol_sort_norm_rev)
 np_save_overwriting("output/pickles/pol_sort_ab_nuc.npy", pol_sort_ab_nuc)
