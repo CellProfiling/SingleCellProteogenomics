@@ -1,7 +1,6 @@
 #%% Imports
-from imports import *
+from utils import *
 from Bio import SeqIO
-from methods_RNASeqData import read_counts_and_phases, qc_filtering
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
