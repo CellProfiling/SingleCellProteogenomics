@@ -2,7 +2,6 @@
 from imports import *
 import numpy as np
 import os, glob
-from stretch_time import stretch_time
 from scipy.optimize import least_squares
 from scipy.optimize import minimize_scalar
 from sklearn.neighbors import RadiusNeighborsRegressor
