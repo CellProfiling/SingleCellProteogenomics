@@ -1,8 +1,7 @@
 #%% Imports
 from utils import *
 import numpy as np
-from scipy.stats import variation
-from sklearn.mixture import GaussianMixture
+import sklearn.mixture
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Read in the protein data
@@ -91,7 +90,7 @@ wp_isbimodal_p = []
 wp_timebimodal_p = []
 wp_intensities = []
 
-gaussian = GaussianMixture(n_components=2, random_state=1, max_iter=500)
+gaussian = sklearn.mixture.GaussianMixture(n_components=2, random_state=1, max_iter=500)
 for i, well in enumerate(u_well_plates):
     curr_well_inds = pol_sort_well_plate==well # the reversal isn't really helpful here
     curr_pol = pol_sort_norm_rev[curr_well_inds]

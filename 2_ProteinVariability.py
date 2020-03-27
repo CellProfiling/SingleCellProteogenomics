@@ -2,8 +2,8 @@
 from utils import *
 import numpy as np
 from stretch_time import stretch_time
-from scipy.optimize import least_squares
-from scipy.stats import variation
+import scipy.optimize
+import scipy.stats
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
@@ -62,7 +62,7 @@ x0 = np.ones(5)
 x = fucci_data[:,0]
 y = fucci_data[:,1]
 center_estimate = np.mean(fucci_data[:,0]), np.mean(fucci_data[:,1])
-center_2 = least_squares(f_2, center_estimate, args=(x, y))
+center_2 = scipy.optimize.least_squares(f_2, center_estimate, args=(x, y))
 xc_2, yc_2 = center_2.x
 Ri_2       = calc_R(*center_2.x,x,y)
 R_2        = Ri_2.mean()
@@ -80,6 +80,7 @@ centered_data_sort1 = centered_data[pol_sort_inds,1]
 # Sort data by polar coordinates
 def pol_sort(inds, nuc, cyto, cell, mt):
     return nuc[inds], cyto[inds], cell[inds], mt[inds]
+
 well_plate_sort = well_plate[pol_sort_inds]
 well_plate_imgnb_sort = well_plate_imgnb[pol_sort_inds]
 ab_nuc_sort, ab_cyto_sort, ab_cell_sort, mt_cell_sort = pol_sort(pol_sort_inds,ab_nuc,ab_cyto,ab_cell,mt_cell)
@@ -240,10 +241,10 @@ for well in u_well_plates:
     var_cyto.append(np.var(curr_ab_cyto))
     var_mt.append(np.var(curr_mt_cell))
     
-    cv_cell.append(variation(curr_ab_cell))
-    cv_nuc.append(variation(curr_ab_nuc))
-    cv_cyto.append(variation(curr_ab_cyto))
-    cv_mt.append(variation(curr_mt_cell))
+    cv_cell.append(scipy.stats.variation(curr_ab_cell))
+    cv_nuc.append(scipy.stats.variation(curr_ab_nuc))
+    cv_cyto.append(scipy.stats.variation(curr_ab_cyto))
+    cv_mt.append(scipy.stats.variation(curr_mt_cell))
     
     gini_cell.append(gini(curr_ab_cell))
     gini_nuc.append(gini(curr_ab_nuc))
@@ -274,10 +275,10 @@ for well in u_well_plates:
         curr_var_cyto_img.append(np.var(curr_ab_cyto))
         curr_var_mt_img.append(np.var(curr_mt_cell))
         
-        curr_cv_cell_img.append(variation(curr_ab_cell))
-        curr_cv_nuc_img.append(variation(curr_ab_nuc))
-        curr_cv_cyto_img.append(variation(curr_ab_cyto))
-        curr_cv_mt_img.append(variation(curr_mt_cell))
+        curr_cv_cell_img.append(scipy.stats.variation(curr_ab_cell))
+        curr_cv_nuc_img.append(scipy.stats.variation(curr_ab_nuc))
+        curr_cv_cyto_img.append(scipy.stats.variation(curr_ab_cyto))
+        curr_cv_mt_img.append(scipy.stats.variation(curr_mt_cell))
     
     wpi_img.append(curr_wpi_img)
     var_cell_img.append(curr_var_cell_img)
