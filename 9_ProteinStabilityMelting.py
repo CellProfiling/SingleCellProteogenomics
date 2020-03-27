@@ -54,11 +54,6 @@ nonccdprotein = set(ccd_gene_names(nonccd_comp_ensg))
 # transcriptionally regulated CCD vs non-transcriptionally regulated?
 # Execution: Aggregate the results per protein, and then make a boxplot for each category
 # Output: Boxplot for aggregated melting point results
-
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-    
 all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
 atp, ant, att, trp, ntp, nnp = [],[], [], [], [],[]
 
@@ -245,10 +240,6 @@ with open("output/meltingpointresults.txt", 'w') as file:
     file.write(statsresults)
 
 #%% Pickle the results
-def np_save_overwriting(fn, arr):
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
-        
 np_save_overwriting("output/temperatures.all_temps.npy",all_temps)
 np_save_overwriting("output/temperatures.all_temp_prot.npy",atp)
 np_save_overwriting("output/temperatures.transcript_reg.npy",transcript_reg)

@@ -294,9 +294,3 @@ sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_ccdregev)
 sc.pl.umap(adata_ccdregev, color="fucci_time", show=True, save=True)
 shutil.move("figures/umap.pdf", f"figures/umap{dd}CellsPhaseNotListed.pdf")
-
-#%% [markdown]
-# Conclusion:
-# There is information about the cell cycle in the genes that aren't cell cycle dependent
-
-

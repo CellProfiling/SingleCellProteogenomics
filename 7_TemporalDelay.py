@@ -1,17 +1,12 @@
 #%% Imports
 from utils import *
 import numpy as np
-from scipy.optimize import least_squares
-from scipy.optimize import minimize_scalar
-from sklearn.neighbors import RadiusNeighborsRegressor
 import collections
 import fucci_plotting
 import operator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
-
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists, ccd_gene_names
 
 #%% Read in RNA-Seq data again and the CCD gene lists
 dd = "All"
@@ -252,42 +247,40 @@ for ensg in [("ENSG00000091651", "orc6"),
     print(f"number of observations: {sum(pol_sort_well_plate==u_well_plates[wp_ensg == ensg[0]][0])}")
     print(f"time of peak expression: {wp_max_pol[wp_ensg == ensg[0]][0]}")
 
-orc6_znf32 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000091651'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000169740'][0])
+orc6_znf32 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000091651'][0], wp_binned_values[wp_ensg == 'ENSG00000169740'][0])
 scatter_genes(("ENSG00000091651", "ORC6"), ("ENSG00000169740", "ZNF32"), round(orc6_znf32[0], 2))
-ccne1_dusp19 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000105173'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000162999'][0])
-scatter_genes(("ENSG00000105173", "CCNE1"), ("ENSG00000162999", "DUSP19"), round(ccne1_dusp19[0], 2))
-ttc21b_pc = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000123607'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000173599'][0])
 
-bub1b_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000156970'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+ccne1_dusp19 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000105173'][0], wp_binned_values[wp_ensg == 'ENSG00000162999'][0])
+scatter_genes(("ENSG00000105173", "CCNE1"), ("ENSG00000162999", "DUSP19"), round(ccne1_dusp19[0], 2))
+
+ttc21b_pc = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000123607'][0], wp_binned_values[wp_ensg == 'ENSG00000173599'][0])
+scatter_genes(("ENSG00000123607", "TTC21B"), ("ENSG00000173599", "PC"), round(bub1b_dusp18[0], 2))
+
+bub1b_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000156970'][0], wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
 scatter_genes(("ENSG00000156970", "BUB1B"), ("ENSG00000167065", "DUSP18"), round(bub1b_dusp18[0], 2))
-aurkb_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000178999'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+
+aurkb_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000178999'][0], wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
 scatter_genes(("ENSG00000178999", "AURKB"), ("ENSG00000167065", "DUSP18"), round(aurkb_dusp18[0], 2))
-ccnb1_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
+
+ccnb1_dusp18 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000167065'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000167065", "DUSP18"), round(ccnb1_dusp18[0], 2))
 
-ccnb1_papss1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000138801'][0])
+ccnb1_papss1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000138801'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000138801", "PAPSS1"), round(ccnb1_papss1[0], 2))
-ccnb1_n6amt1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000156239'][0])
+
+ccnb1_n6amt1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000156239'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000156239", "N6AMT1"), round(ccnb1_n6amt1[0], 2))
-ccnb1_phldb1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000019144'][0])
+
+ccnb1_phldb1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000019144'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000019144", "PHLDB1"), round(ccnb1_phldb1[0], 2))
-ccnb1_fli1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000151702'][0])
+
+ccnb1_fli1 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000151702'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000151702", "FLI1"), round(ccnb1_fli1[0], 2))
-ccnb1_dph2 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000132768'][0])
+
+ccnb1_dph2 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000132768'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000132768", "DPH2"), round(ccnb1_dph2[0], 2))
-ccnb1_nfat5 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], 
-                                  wp_binned_values[wp_ensg == 'ENSG00000102908'][0])
+
+ccnb1_nfat5 = scipy.stats.pearsonr(wp_binned_values[wp_ensg == 'ENSG00000134057'][0], wp_binned_values[wp_ensg == 'ENSG00000102908'][0])
 scatter_genes(("ENSG00000134057", "CCNB1"), ("ENSG00000102908", "NFAT5"), round(ccnb1_nfat5[0], 2))
 
 print(f"correlation of ORC6 and ZNF32: {orc6_znf32[0]}")
@@ -511,20 +504,6 @@ t, p = scipy.stats.ttest_1samp(diff_max_pol, 0)
 print(f"One-sided, one-sample t-test for mean delay in protein expression larger than zero: {2*p}")
 
 #%% Plot the variances against each other
-def gini(array):
-    """Calculate the Gini coefficient of a numpy array."""
-    # based on bottom eq: http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
-    # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
-    # All values are treated equally, arrays must be 1d:
-    # Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
-    array = array.flatten()
-    if np.amin(array) < 0: 
-        array -= np.amin(array) # Values cannot be negative
-    array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
-    index = np.arange(1, array.shape[0] + 1) # Index per array element
-    n = array.shape[0] # Number of array elements
-    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
-
 total_variance_rna = np.var(norm_exp_sort, 0)
 total_gini_rna = np.apply_along_axis(gini, 0, norm_exp_sort)
 total_cv_rna = np.apply_along_axis(scipy.stats.variation, 0, norm_exp_sort)

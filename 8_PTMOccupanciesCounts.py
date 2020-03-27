@@ -2,7 +2,6 @@
 from utils import *
 from Bio import SeqIO
 import sys, re, math
-from methods_RNASeqData import read_counts_and_phases, qc_filtering
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
@@ -229,10 +228,6 @@ def count_mods(analyzethese, df, occdf):
     return modctsdf, modcts, avgocc, modctsoccdf, modocc
 
 # Generate a histogram of effective mod counts with bins normalized to 1'''
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-
 def compare_ptm_regulation(df, occdf, analysisTitle):
     # all genes; regev; mRNA CCD (all); mRNA non-CCD (all); mRNA reg. CCD proteins; non-mRNA reg. CCD proteins; CCD proteins; non-CCD proteins
     all_modctsdf, all_modcts, all_avgocc, all_modctsoccdf, all_modocc = count_mods(genes_analyzed, df, occdf) 
@@ -518,80 +513,6 @@ print(ccd_rt_modctsoccdf[ccd_rt_modctsoccdf.occupancy >= 0]["modification"].valu
 print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0]["modification"].value_counts())
-
-#%% Graveyard; Look at box plots of these modification count
-# def boxy(categories, category_values, title):
-#     plt.figure(figsize=(10,10))
-#     mmmm = np.concatenate(category_values) # values
-#     cccc = np.concatenate([[category.replace(" ", "\n")] * len(category_values[cidx]) for cidx, category in enumerate(list(categories.keys()))]) # labels
-#     boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
-#     # boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=0.3, color=".3", size=5, jitter=0.25)#, showfliers=False)
-#     boxplot.set_ylabel(title, size=36,fontname='Arial')
-#     boxplot.tick_params(axis="both", which="major", labelsize=16)
-#     # boxplot.set(ylim=(-0.01,1.01))
-#     # plt.savefig("figures/ModsOccupancyBoxplotSelected.pdf")
-#     # plt.title(title)
-#     plt.show()
-#     plt.close()
-
-# boxy(categories, [v[0]["modrawcts"][v[1] > 0] for v in categories.values()], "Mod Sites Per Modified Protein")
-# boxy(categories, [v[1][v[1] > 0] for v in categories.values()], "Mods Per Effective Base Per Modified Protein")
-# boxy(categories, [[sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])] for v in categories.values()], "Occupied Sites Per Modified Protein")
-# boxy(categories, [v[4] for v in categories.values()], "Occupancy Per Modified Residue")
-
-# # The t-test isn't good here because these counts don't form a normal distribution... it works with the log(x+1 / len) distribution
-# fom = "COUNT OF MODIFICATIONS PER COVERED RESIDUE PER PROTEIN\n"
-# fom += f"mean number of mods / seq length for all proteins: {np.mean(all_modcts)}\n"
-# fom += f"mean number of mods / seq length for all transcriptionally regulated CCD: {np.mean(ccd_at_modcts)}\n"
-# fom += f"mean number of mods / seq length for Diana's transcriptionally regulated CCD: {np.mean(ccd_t_modcts)}\n"
-# fom += f"mean number of mods / seq length for Diana's non-transcriptionally regulated CCD: {np.mean(ccd_n_modcts)}\n"
-# t, p = scipy.stats.ttest_ind(ccd_t_modcts, ccd_n_modcts)
-# fom += f"two-sided t-test for same means of transcript and non-transcriptionally regulated: {p}\n"
-# t, p = scipy.stats.ttest_ind(all_modcts, ccd_t_modcts)
-# fom += f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}\n"
-# fom += "\n"
-# fom += f"median number of mods / seq length for all proteins: {np.median(all_modcts)}\n"
-# fom += f"median number of mods / seq length for all transcriptionally regulated CCD: {np.median(ccd_at_modcts)}\n"
-# fom += f"median number of mods / seq length for Diana's transcriptionally regulated CCD: {np.median(ccd_t_modcts)}\n"
-# fom += f"median number of mods / seq length for Diana's non-transcriptionally regulated: {np.median(ccd_n_modcts)}\n"
-# t, p = scipy.stats.kruskal(ccd_at_modcts, ccd_n_modcts)
-# fom += f"one-sided kruskal for same medians of all transcriptionally reg. and non-transcriptionally regulated: {2*p}\n"
-# t, p = scipy.stats.kruskal(ccd_t_modcts, ccd_n_modcts)
-# fom += f"one-sided kruskal for same medians of Diana's transcriptionally reg. and non-transcriptionally regulated: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts)
-# fom += f"one-sided kruskal for same medians of all genes and Diana's transcriptionally reg: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts)
-# fom += f"one-sided kruskal for same medians of all genes and all transcriptionally reg: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_rt_modcts)
-# fom += f"one-sided kruskal for same medians of all genes and regev transcriptionally reg: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_n_modcts)
-# fom += f"one-sided kruskal for same medians of all genes and non-transcriptionally reg: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_t_modcts, ccd_n_modcts)
-# fom += f"one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: {2*p}\n"
-# t, p = scipy.stats.kruskal(all_modcts, ccd_at_modcts, ccd_n_modcts)
-# fom += f"one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: {2*p}\n"
-# fom += "\n"
-        
-# Generate boxplots for effective mod counts
-# plt.figure(figsize=(10,10))
-# mmmm = np.concatenate((all_modcts, ccd_t_modcts, ccd_rt_modcts, ccd_at_modcts, ccd_n_modcts, nonccd_modcts))
-# cccc = (["All"] * len(all_modcts))
-# cccc.extend(["Transcript\nReg. CCD"] * len(ccd_t_modcts))
-# cccc.extend(["Regev\nTranscript\nCCD"] * len(ccd_rt_modcts))
-# cccc.extend(["All\nTranscript\nCCD"] * len(ccd_at_modcts))
-# cccc.extend(["Non-\nTranscript\nReg. CCD"] * len(ccd_n_modcts))
-# cccc.extend(["Non-CCD"] * len(nonccd_modcts))
-# boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False)
-# boxplot.set_xlabel("Protein Set", size=36,fontname='Arial')
-# boxplot.set_ylabel("Modifications per Covered Base", size=36,fontname='Arial')
-# boxplot.tick_params(axis="both", which="major")#, labelsize=16)
-# plt.title("")
-# plt.savefig("figures/ModsPerCoveredBaseBoxplot.png")
-# plt.show()
-# plt.close()
-
-
-
 
 
 #%% [markdown]
