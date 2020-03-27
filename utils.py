@@ -6,6 +6,7 @@ import matplotlib.colors as mpcolors
 import matplotlib.patches as mpatches
 import scanpy as sc
 import os
+import glob
 import shutil
 import scipy
 import scipy.stats
@@ -151,6 +152,10 @@ def bonf(alpha, pvals):
     rejectBonf_unsorted = np.empty_like(rejectBonf)
     rejectBonf_unsorted[pvals_sortind] = rejectBonf
     return pvals_correctedBonf_unsorted, rejectBonf_unsorted
+
+def weights(vals):
+    '''normalizes all histogram bins to sum to 1'''
+    return np.ones_like(vals)/float(len(vals))
 
 def np_save_overwriting(fn, arr):
     '''Helper function to always overwrite numpy pickles'''

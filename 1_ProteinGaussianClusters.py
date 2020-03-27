@@ -1,11 +1,7 @@
 #%% Imports
 from utils import *
 import numpy as np
-from scipy.optimize import least_squares
-from scipy.optimize import minimize_scalar
-from sklearn.neighbors import RadiusNeighborsRegressor
 from sklearn.mixture import GaussianMixture
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 

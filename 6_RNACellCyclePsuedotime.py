@@ -38,14 +38,6 @@ g2_exp = np.take(normalized_exp_data, np.nonzero(stages == "G2M")[0], axis=0)
 tests_fp = [scipy.stats.kruskal(g1_exp[:,geneidx], s_exp[:,geneidx], g2_exp[:,geneidx]) for geneidx in range(len(g1_exp[0,:]))]
 pvals = [p for (F, p) in tests_fp]
 
-# benjimini-hochberg multiple testing correction
-# source: https://www.statsmodels.org/dev/_modules/statsmodels/stats/multitest.html
-alpha = 0.01
-def _ecdf(x):
-    '''no frills empirical cdf used in fdrcorrection'''
-    nobs = len(x)
-    return np.arange(1,nobs+1)/float(nobs)
-
 pvals_sortind = np.argsort(pvals)
 pvals_sorted = np.take(pvals, pvals_sortind)
 ecdffactor = _ecdf(pvals_sorted)
@@ -175,10 +167,6 @@ plt.savefig(f"figures/stdev_expression{biotype_to_use}.png")
 plt.show()
 plt.close()
 
-def weights(vals):
-    '''normalizes all histogram bins to sum to 1'''
-    return np.ones_like(vals)/float(len(vals))
-
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 bins=np.histogram(np.hstack((variances, variances_regev, variances_dianaccd, variances_diananonccd)), bins=40)[1] #get the bin edges
@@ -217,20 +205,6 @@ WINDOW = 100
 def mvavg(yvals, mv_window):
     return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
 
-def gini(array):
-    """Calculate the Gini coefficient of a numpy array."""
-    # based on bottom eq: http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
-    # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
-    # All values are treated equally, arrays must be 1d:
-    # Written by: Olivia Guest github.com/oliviaguest/gini/blob/master/gini.py
-    array = array.flatten()
-    if np.amin(array) < 0: 
-        array -= np.amin(array) # Values cannot be negative
-    array = np.sort(array + 0.0000001) # Values must be sorted and nonzero
-    index = np.arange(1, array.shape[0] + 1) # Index per array element
-    n = array.shape[0] # Number of array elements
-    return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array))) # Gini coefficient
-
 expression_data = adata.X # log normalized
 normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
 fucci_time_inds = np.argsort(adata.obs["fucci_time"])
@@ -245,21 +219,6 @@ percent_ccd_variance = cell_cycle_variance / total_variance
 avg_expression = np.median(norm_exp_sort, 0)
 
 #%% randomize and calculate the mean difference in percent variances from random
-# bonferroni MTC
-def bonf(alpha, pvals):
-    pvalsarr = np.array(pvals)
-    pvalsarr[np.isnan(pvalsarr)] = 1 # fail the ones with not enough data
-    pvals_sortind = np.argsort(pvalsarr)
-    pvals_sorted = np.take(pvalsarr, pvals_sortind)
-    alphaBonf = alpha / float(len(pvalsarr))
-    rejectBonf = pvals_sorted <= alphaBonf
-    pvals_correctedBonf = pvals_sorted * float(len(pvalsarr))
-    pvals_correctedBonf_unsorted = np.empty_like(pvals_correctedBonf) 
-    pvals_correctedBonf_unsorted[pvals_sortind] = pvals_correctedBonf
-    rejectBonf_unsorted = np.empty_like(rejectBonf)
-    rejectBonf_unsorted[pvals_sortind] = rejectBonf
-    return pvals_correctedBonf_unsorted, rejectBonf_unsorted
-
 PERMUTATIONS = 10000
 perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(PERMUTATIONS)])
 #norm_exp_sort_perm = np.asarray([np.take(normalized_exp_data, perm, axis=0) for perm in perms])
@@ -507,14 +466,7 @@ ccdstring[np.isin(adata.var_names, wp_ensg[ccd_comp]) & np.isin(adata.var_names,
 percent_variance_tests = pd.DataFrame(
     {"gene" : adata.var_names, 
     "name" : [gene_id_name[x] if x in gene_id_name else "" for x in adata.var_names],
-#    "pvalue" : pvals, 
-#    "pvaladj_BH" : pvals_corrected_, 
-#    "reject_BH" : reject_, 
-#    "pvaladj_B" : pvals_correctedBonf_unsorted, 
-#    "reject_B" : rejectBonf_unsorted,
-#    "percent_variance" : percent_ccd_variance,
-#    "total_variance" : total_variance,
-    "ccd_transcript" : pass_meandiff, #(rejectBonf_unsorted) & (percent_ccd_variance > percent_var_cutoff) & (total_variance > total_var_cutoff),
+    "ccd_transcript" : pass_meandiff, 
     "regev_ccd" : regevccdgenes,
     "ccd_protein" : ccdstring,
     "nonccd_protein" : nonccdprotein,
@@ -526,10 +478,6 @@ percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv
 # percent_variance_tests[percent_variance_tests.significant & ~percent_variance_tests.ccd_protein].to_csv("output/transcript_regulation_significant_ccd_notindianasset.csv")
 
 # And keep track of the ccd genes with and without transcript regulation
-def np_save_overwriting(fn, arr):
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
-
 ccdtranscript = pass_meandiff
 ccdprotein_transcript_regulated = ccdprotein & pass_meandiff
 ccdprotein_nontranscript_regulated = ccdprotein & ~pass_meandiff
