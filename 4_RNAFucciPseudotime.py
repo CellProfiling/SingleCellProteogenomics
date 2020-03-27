@@ -3,7 +3,6 @@ from utils import *
 from scipy.optimize import least_squares
 import decimal
 from stretch_time import stretch_time
-from methods_RNASeqData import read_counts_and_phases
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Fucci plots based on FACS intensities

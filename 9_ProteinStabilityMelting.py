@@ -33,7 +33,6 @@ genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
 genes_analyzed = set(ccd_gene_names(genes_analyzed))
 
 # Read in RNA-Seq data again and the CCD gene lists
-from methods_RNASeqData import read_counts_and_phases, qc_filtering, ccd_gene_lists
 dd = "All"
 count_or_rpkm = "Tpms"
 biotype_to_use="protein_coding"

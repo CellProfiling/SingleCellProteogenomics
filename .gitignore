@@ -12,3 +12,4 @@ output/ProteinMod*
 output_devin/*
 input/raw/nuc*
 output/pickles*
+.ipynb_checkpoints
