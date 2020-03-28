@@ -6,6 +6,8 @@ import sklearn.mixture
 import seaborn as sbn
 import ProteinDataPreparation
 import ProteinGaussianClustering
+import ProteinFucciPseudotime
+import ProteinVariability
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data (methods in ProteinDataPreparation.py)
@@ -75,3 +77,12 @@ wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp, wp_mt_kruskal_ga
 
 # General look at replicates in mock-bulk analysis
 ProteinGaussianClustering.address_replicates(alpha_gauss, wp_pass_kruskal_gaussccd_bh_comp, wp_ensg, wp_ab, u_well_plates)
+
+#%% 
+# Idea: Calculate the polar coordinates and other stuff
+# Exec: Devin's calculations
+# Output: fucci plot with polar coordinates
+
+ProteinFucciPseudotime.fucci_polar_coordinate_calculations(fucci_data, 
+                           ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale)
+

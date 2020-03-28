@@ -36,14 +36,6 @@ area_cell=np.load("output/pickles/area_cell.npy", allow_pickle=True)
 area_nuc=np.load("output/pickles/area_nuc.npy", allow_pickle=True)
 print("loaded")
 
-#%% 
-# Idea: Calculate the polar coordinates and other stuff
-# Exec: Devin's calculations
-# Output: fucci plot with polar coordinates
-
-ProteinFucciPseudotime.fucci_polar_coordinate_calculations(fucci_data, 
-                           ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale)
-
 
 #%% Measures of variance
 # Idea: Calculate measures of variance, and show them in plots
