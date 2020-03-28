@@ -5,8 +5,8 @@ Created on Fri Mar 27 14:27:22 2020
 @author: antho
 """
 
-from utils import *
-import numpy as np
+from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import utils
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 EMPTYWELLS = set(["B11_6745","C11_6745","D11_6745","E11_6745","F11_6745","G11_6745","H11_6745",
@@ -61,10 +61,7 @@ def read_sample_info(df):
     utils.np_save_overwriting("output/pickles/area_cyto.npy", area_cyto)
     utils.np_save_overwriting("output/pickles/well_plate.npy", well_plate)
     utils.np_save_overwriting("output/pickles/well_plate_imgnb.npy", well_plate_imgnb)
-    utils.np_save_overwriting("output/pickles/ab_nuc.npy", ab_nuc)
-    utils.np_save_overwriting("output/pickles/ab_cyto.npy", ab_cyto)
-    utils.np_save_overwriting("output/pickles/ab_cell.npy", ab_cell)
-    utils.np_save_overwriting("output/pickles/mt_cell.npy", mt_cell)
+
     
     return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment
 
@@ -249,6 +246,10 @@ def read_sample_data(df):
     red_fucci = np.asarray(df.Intensity_MeanIntensity_CorrResizedRedFUCCI)
     
     # Pickle the results
+    utils.np_save_overwriting("output/pickles/ab_nuc.npy", ab_nuc)
+    utils.np_save_overwriting("output/pickles/ab_cyto.npy", ab_cyto)
+    utils.np_save_overwriting("output/pickles/ab_cell.npy", ab_cell)
+    utils.np_save_overwriting("output/pickles/mt_cell.npy", mt_cell)
     utils.np_save_overwriting("output/pickles/green_fucci.npy", green_fucci)
     utils.np_save_overwriting("output/pickles/red_fucci.npy", red_fucci)
 

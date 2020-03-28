@@ -1,13 +1,9 @@
 #%% Imports
-from utils import *
-import utils
+from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import ProteinDataPreparation, ProteinGaussianClustering, ProteinVariability, ProteinFucciPseudotime, ProteinBimodality
+from SingleCellProteogenomics import CellCycleDependence
 import numpy as np
 import sklearn.mixture
-import seaborn as sbn
-import ProteinDataPreparation
-import ProteinGaussianClustering
-import ProteinFucciPseudotime
-import ProteinVariability
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data (methods in ProteinDataPreparation.py)
@@ -22,7 +18,6 @@ my_df_filtered = ProteinDataPreparation.apply_manual_filtering(my_df, result_dic
 my_df_filtered = ProteinDataPreparation.apply_big_nucleus_filter(my_df_filtered)
 my_df_filtered = ProteinDataPreparation.apply_cell_count_filter(my_df_filtered)
 my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
-
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = ProteinDataPreparation.read_sample_info(my_df_filtered)
 wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = ProteinDataPreparation.previous_results(u_well_plates, result_dict, ensg_dict, ab_dict)
 
@@ -86,3 +81,56 @@ ProteinGaussianClustering.address_replicates(alpha_gauss, wp_pass_kruskal_gaussc
 ProteinFucciPseudotime.fucci_polar_coordinate_calculations(fucci_data, 
                            ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale)
 
+#%% Calculate measures of variance of protein abundance in single cells
+# Idea: Calculate measures of variance, and show them in plots
+# Execution: Now that we already have the data filtered for variability, this is just descriptive.
+# Output: scatters of antibody vs microtubule variances by different measures of variaibility
+
+use_log = False # toggle for using log-transformed intensities; we decided to use natural intensities
+mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell = ProteinVariability.calculate_variation(use_log, 
+                                                u_well_plates, wp_iscell, wp_isnuc, wp_iscyto, 
+                                                pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, pol_sort_well_plate_imgnb)
+
+# Compare variances for protein and microtubules, the internal control for each image
+general_boxplot((var_comp, var_mt), ("Protein", "Microtubules"), "", "Variance", "", False, f"figures/ProteinMicrotubuleVariances.pdf")
+general_boxplot((cv_comp, gini_mt), ("Protein", "Microtubules"), "", "CV", "", False, f"figures/ProteinMicrotubuleCVs.pdf")
+general_boxplot((gini_comp, gini_mt), ("Protein", "Microtubules"), "", "Gini", "", False, f"figures/ProteinMicrotubuleGinis.pdf")
+print(f"{scipy.stats.kruskal(var_comp, var_mt)[1]}: p-value for difference between protein and microtubule variances")
+print(f"{scipy.stats.kruskal(cv_comp, gini_mt)[1]}: p-value for difference between protein and microtubule CVs")
+print(f"{scipy.stats.kruskal(gini_comp, gini_mt)[1]}: p-value for difference between protein and microtubule Gini indices")
+
+#%% read in reliability scores
+# ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
+# with open("input/processed/manual/reliabilityscores.txt") as file:
+#     for line in file:
+#         if line.startswith("Antibody RRID"): continue
+#         score = line.split('\t')[1].strip()
+#         ablist = line.split('\t')[0].replace(":","").replace(",","").split()
+#         for ab in ablist:
+#             if ab in wp_ab:
+#                 ab_scores[wp_ab_list.index(ab)] = score
+# compartmentstring = np.array(["Cell"] * len(wp_iscell))
+# compartmentstring[wp_iscyto] = "Cyto" 
+# compartmentstring[wp_isnuc] = "Nuc"
+# pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
+
+#%% Gaussian clustering to identify biomodal intensity distributions
+wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs = ProteinBimodality.identify_bimodal_intensity_distributions(u_well_plates, 
+             pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+             wp_iscell, wp_isnuc, wp_iscyto)
+
+#%% Determine cell cycle dependence for each protein
+use_log_ccd = False
+do_remove_outliers = True
+
+# Determine cell cycle dependence for proteins
+wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder = CellCycleDependence.cell_cycle_dependence_protein(
+                    use_log_ccd, do_remove_outliers,
+                    pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+                    wp_iscell, wp_isnuc, wp_iscyto,
+                    wp_isbimodal_fcpadj_pass)
+
+# Move the temporal average plots to more informative places
+CellCycleDependence.copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss)
+
+#%%

@@ -5,54 +5,51 @@ Created on Fri Mar 27 16:20:24 2020
 @author: antho
 """
 
-from utils import *
-import utils
-from stretch_time import stretch_time
-import numpy as np
+from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import utils
+from SingleCellProteogenomics.MovingAverages import mvpercentiles, mvavg
 import scipy.optimize
-import scipy.stats
 import sklearn.mixture
-import seaborn as sbn
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 NBINS = 150 #number of bins, arbitrary choice for now
 WINDOW_FUCCI_PSEUDOTIME = 100
 
-G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
-G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
-S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
-#M_LEN = 0.5
-#We are excluding Mphase from this analysis
-TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
+class FucciCellCycle:
+    '''Object representing the length of the FUCCI cell cycle'''
+    # Length of the cell cycle observed for the FUCCI cell line
+    G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
+    G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
+    S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
+    M_LEN = 0.5 # We excluded M-phase from this analysis
+    TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
 
+## POLAR COORDINATE FUNCTIONS
 def calc_R(xc, yc, x, y):
     """ calculate the distance of each 2D points from the center (xc, yc) """
     return np.sqrt((x-xc)**2 + (y-yc)**2)
-
 def f_2(c,x,y):
     """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
     print(c)
     Ri = calc_R(c[0],c[1],x,y)
     return Ri - Ri.mean()
-
 def cart2pol(x, y):
+    '''Convert cartesian coordinates to polar coordinates'''
     rho = np.sqrt(x**2 + y**2)
     phi = np.arctan2(y, x)
     return(rho, phi)
-
 def pol_sort(inds, nuc, cyto, cell, mt):
     '''Sort data by polar coordinates'''
     return nuc[inds], cyto[inds], cell[inds], mt[inds]
-
 def pol_reord(arr, more_than_start, less_than_start):
     '''Reorder an array based on the start position of the polar coordinate model'''
     return np.concatenate((arr[more_than_start],arr[less_than_start]))
-
 def pol2cart(rho, phi):
     '''Apply uniform radius (rho) and convert back'''
     x = rho * np.cos(phi)
     y = rho * np.sin(phi)
     return(x, y)
+
 
 def fucci_hist2d(centered_data,cart_data_ur,start_pt,nbins=200):
     fig, ax1 = plt.subplots(figsize=(10,10))
@@ -100,12 +97,6 @@ def visualize_gmnn_agreement(centered_data, pol_sort_well_plate, pol_sort_ab_nuc
     plt.savefig("figures/GMNN_FUCCI_plot.pdf")
     plt.show()
     plt.close()
-
-def mvavg(yvals, mv_window):
-    return np.convolve(yvals, np.ones((mv_window,))/mv_window, mode='valid')
-def mvpercentiles(yvals_binned):
-    return np.percentile(yvals_binned, [10, 25, 50, 75, 90], axis=1)
-
 
 def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_data1, pol_sort_centered_data0):
     '''visualize FUCCI intensities over pseudotime'''
@@ -181,7 +172,7 @@ def fucci_polar_coordinate_calculations(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_ce
     pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
     pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
     pol_sort_norm_rev = 1-pol_sort_norm
-    pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
+    pol_sort_norm_rev = stretch_time.stretch_time(pol_sort_norm_rev)
     
     cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
     
