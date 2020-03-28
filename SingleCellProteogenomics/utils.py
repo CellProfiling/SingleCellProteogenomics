@@ -10,6 +10,7 @@ import glob
 import shutil
 import scipy
 import scipy.stats
+import seaborn as sbn
 
 def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
     '''
@@ -161,3 +162,30 @@ def np_save_overwriting(fn, arr):
     '''Helper function to always overwrite numpy pickles'''
     with open(fn,"wb") as f:    
         np.save(f, arr, allow_pickle=True)
+        
+def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile):
+    '''Make a boxplot given equal length group_values and group_labels'''
+    if len(group_values) != len(group_labels): 
+        print("Error: general_boxplot() requires equal length group_values and group_labels.")
+        exit(1)
+    mmmm = np.concatenate(group_values)
+    ccc = np.concatenate([[label] * len(group_values[iii]) for iii, label in enumerate(group_labels)])
+    boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=showfliers, color="grey")
+    boxplot.set_xlabel(xlabel, size=36,fontname='Arial')
+    boxplot.set_ylabel(ylabel, size=18,fontname='Arial')
+    boxplot.tick_params(axis="both", which="major", labelsize=14)
+    plt.title(title)
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()  
+
+def general_scatter(x, y, xlabel, ylabel, outfile):
+    '''Make a general scatterplot with matplotlib'''
+    plt.figure(figsize=(10,10))
+    plt.scatter(x, y, label="all")
+    plt.ylabel(xlabel)
+    plt.xlabel(ylabel)
+    plt.legend()
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()

@@ -5,8 +5,8 @@ Created on Fri Mar 27 14:58:35 2020
 @author: antho
 """
 
-from utils import *
-import utils
+from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import utils
 import numpy as np
 import sklearn.mixture
 import seaborn as sbn
