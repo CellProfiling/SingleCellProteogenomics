@@ -6,7 +6,7 @@ Created on Fri Mar 27 16:20:24 2020
 """
 
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils
+from SingleCellProteogenomics import utils, stretch_time
 from SingleCellProteogenomics.MovingAverages import mvpercentiles, mvavg
 from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 import scipy.optimize
@@ -186,4 +186,8 @@ def fucci_polar_coordinate_calculations(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_ce
     utils.np_save_overwriting("output/pickles/pol_sort_area_nuc.npy", pol_sort_area_nuc)
     utils.np_save_overwriting("output/pickles/pol_sort_fred.npy", pol_sort_fred)
     utils.np_save_overwriting("output/pickles/pol_sort_fgreen.npy", pol_sort_fgreen)
+    
+    return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, 
+        pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 
+        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen)
     

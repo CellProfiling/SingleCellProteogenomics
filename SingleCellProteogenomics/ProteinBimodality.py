@@ -8,8 +8,9 @@ Methods for assessing bimodality of protein intensity distributions.
 """
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
+import sklearn.mixture
 
-def identify_bimodal_intensity_distributions(u_well_plates, 
+def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
              pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
              wp_iscell, wp_isnuc, wp_iscyto):
     '''

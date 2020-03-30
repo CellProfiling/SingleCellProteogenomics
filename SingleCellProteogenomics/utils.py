@@ -169,7 +169,7 @@ def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showflier
         print("Error: general_boxplot() requires equal length group_values and group_labels.")
         exit(1)
     mmmm = np.concatenate(group_values)
-    ccc = np.concatenate([[label] * len(group_values[iii]) for iii, label in enumerate(group_labels)])
+    cccc = np.concatenate([[label] * len(group_values[iii]) for iii, label in enumerate(group_labels)])
     boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=showfliers, color="grey")
     boxplot.set_xlabel(xlabel, size=36,fontname='Arial')
     boxplot.set_ylabel(ylabel, size=18,fontname='Arial')
