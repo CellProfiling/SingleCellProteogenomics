@@ -1,6 +1,6 @@
 #%% imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle
+from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle, FucciPseudotime
 from scipy.optimize import least_squares
 import decimal
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
@@ -42,64 +42,10 @@ fucci_scatter(phasesFiltintSeqCenter, f"figures/FucciPlot{tt}ByPhase.png")
 # Execution: Adapt Devin's code for the cells sorted for RNA-Seq
 # Output: Plot of all fucci pseudotimes; table of pseudotimes for each cell
 
-# TIMING OF PHASE TRANSITIONS (MANUALLY DETERMINED BY DIANA)
-#hours (for the G1/S cutoff)
-G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
-G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
-S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
-#M_LEN = 0.5 #We are excluding Mphase from this analysis
-TOT_LEN = G1_LEN + G1_S_TRANS + S_G2_LEN
-G1_PROP = G1_LEN / TOT_LEN
-G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
-S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
 phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
-x = phasesFilt["Green530"]
-y = phasesFilt["Red585"]
-fucci_data = np.column_stack([x, y])
-center_est_xy = np.mean(x), np.mean(y)
-center_est2_xy = least_squares(f_2, center_est_xy, args=(x, y))
-xc_2, yc_2 = center_est2_xy.x
-Ri_2       = calc_R(*center_est2_xy.x,x,y)
-R_2        = Ri_2.mean()
-residu_2   = sum((Ri_2 - R_2)**2)
-
-# Center data
-centered_data = fucci_data - center_est2_xy.x
-
-pol_data = cart2pol(centered_data[:,0],centered_data[:,1])
-pol_sort_inds = np.argsort(pol_data[1])
-pol_sort_rho = pol_data[0][pol_sort_inds]
-pol_sort_phi = pol_data[1][pol_sort_inds]
-centered_data_sort0 = centered_data[pol_sort_inds,0]
-centered_data_sort1 = centered_data[pol_sort_inds,1]
-
-# Rezero to minimum --resoning, cells disappear during mitosis, so we should have the fewest detected cells there
-NBINS = 150 #number of bins, arbitrary choice for now
-bins = plt.hist(pol_sort_phi,NBINS)
-start_phi = bins[1][np.argmin(bins[0])]
-
-# Move those points to the other side
-more_than_start = np.greater(pol_sort_phi,start_phi)
-less_than_start = np.less_equal(pol_sort_phi,start_phi)
-pol_sort_rho_reorder = np.concatenate((pol_sort_rho[more_than_start],pol_sort_rho[less_than_start]))
-pol_sort_inds_reorder = np.concatenate((pol_sort_inds[more_than_start],pol_sort_inds[less_than_start]))
-pol_sort_phi_reorder = np.concatenate((pol_sort_phi[more_than_start],pol_sort_phi[less_than_start]+np.pi*2))
-pol_sort_centered_data0 = np.concatenate((centered_data_sort0[more_than_start],centered_data_sort0[less_than_start]))
-pol_sort_centered_data1 = np.concatenate((centered_data_sort1[more_than_start],centered_data_sort1[less_than_start]))
-pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
-
-# Shift and re-scale "time"
-# reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
-pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
-pol_sort_norm_rev = 1 - pol_sort_norm 
-pol_sort_norm_rev = stretch_time.stretch_time(pol_sort_norm_rev)
-plt.tight_layout()
-plt.savefig(f"figures/FucciAllPseudotimeHist.png")
-plt.show()
-
-# Apply uniform radius (rho) and convert back
-cart_data_ur = pol2cart(np.repeat(R_2, len(centered_data)), pol_data[1])
+polar_coord_results = FucciPseudotime.fucci_polar_coords(phasesFilt["Green530"], phasesFilt["Red585"], "RNA")
+pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, cart_data_ur, start_point = polar_coord_results
 
 # Assign cells a pseudotime and visualize in fucci plot
 pol_unsort = np.argsort(pol_sort_inds_reorder)
@@ -126,10 +72,6 @@ pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
 # Idea: Generate a plot of the centered data
 # Execution: hist2d
 # Output: 2d hist
-
-start_pt = pol2cart(R_2,start_phi)
-g1_end_pt = pol2cart(R_2,start_phi + (1 - G1_PROP) * 2 * np.pi)
-g1s_end_pt = pol2cart(R_2,start_phi + (1 - G1_S_PROP) * 2 * np.pi)
 
 def plot_annotate_time(fraction):
     pt = pol2cart(R_2,start_phi + (1 - fraction) * 2 * np.pi)
