@@ -6,8 +6,7 @@ Created on Sat Mar 28 15:51:50 2020
 """
 
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils
-import SingleCellProteogenomics.MovingAverages
+from SingleCellProteogenomics import utils, MovingAverages
 
 WINDOW = 10 # Number of points for moving average window
 PERMUTATIONS = 10000
@@ -22,27 +21,39 @@ def clust_to_wp_doub(clust, clust_idx):
     wp_clust[clust_idx] = clust
     return wp_clust
 
-def permutation_analysis_protein(curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
+def remove_outliers_idx(values):
+    '''Returns indices of outliers to remove'''
+    max_cutoff = np.mean(values) + 5 * np.std(values)
+    min_cutoff = np.mean(values) - 5 * np.std(values)
+    return (values < max_cutoff) & (values > min_cutoff)
+
+def remove_outliers(values, return_values):
+    '''Remove outliers on "values" and return "return_values" based on that filter'''
+    return return_values[remove_outliers_idx(values)]
+
+def permutation_analysis_protein(idx, curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
                                  perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val,
                                  wp_iscell, wp_isnuc, wp_iscyto,
                                  mvavg_cell, mvavg_nuc, mvavg_cyto):
     '''Randomization analysis of cell cycle dependence: permute cell order and calculate percent variance due to the cell cycle'''
     perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(PERMUTATIONS)])
-    curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm)
-    curr_comp_percvar = np.asarray(perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val)
-    curr_comp_mvavg = np.asarray(mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto)
+    curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[idx] else curr_ab_nuc_norm if wp_isnuc[idx] else curr_ab_cyto_norm)
+    curr_comp_percvar = np.asarray(perc_var_cell_val if wp_iscell[idx] else perc_var_nuc_val if wp_isnuc[idx] else perc_var_cyto_val)
+    curr_comp_mvavg = np.asarray(mvavg_cell if wp_iscell[idx] else mvavg_nuc if wp_isnuc[idx] else mvavg_cyto)
     curr_comp_perm = np.asarray([curr_comp_norm[perm] for perm in perms])
     curr_mt_perm = np.asarray([curr_mt_cell_norm[perm] for perm in perms])
     curr_mvavg_rng_comp = np.apply_along_axis(MovingAverages.mvavg, 1, curr_comp_perm, WINDOW)
     curr_mvavg_rng_mt = np.apply_along_axis(MovingAverages.mvavg, 1, curr_mt_perm, WINDOW)
     curr_percvar_rng_comp = np.var(curr_mvavg_rng_comp, axis=1) / np.var(curr_comp_perm, axis=1)
     curr_percvar_rng_mt = np.var(curr_mvavg_rng_mt, axis=1) / np.var(curr_mt_perm, axis=1)
-    return curr_percvar_rng_comp, curr_percvar_rng_mt
+    return (curr_comp_norm, curr_comp_percvar, curr_comp_mvavg, curr_comp_perm, curr_mt_perm, 
+        curr_mvavg_rng_comp, curr_mvavg_rng_mt, curr_percvar_rng_comp, curr_percvar_rng_mt)
     
-def cell_cycle_dependence_protein(use_log_ccd, do_remove_outliers,
+def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
                                   pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+                                  pol_sort_area_cell, pol_sort_area_nuc,
                                   wp_iscell, wp_isnuc, wp_iscyto,
-                                  wp_isbimodal_fcpadj_pass):
+                                  wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs):
     '''
     Use a moving average model of protein expression over the cell cycle to determine cell cycle dependence.
     Generates plots for each gene
@@ -99,8 +110,9 @@ def cell_cycle_dependence_protein(use_log_ccd, do_remove_outliers,
         mvavg_xvals = MovingAverages.mvavg(curr_pol, WINDOW)
         
         # Permutation analysis
-        perc_var_comp_rng, perc_var_mt_rng = permutation_analysis_protein(curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
+        permutation_result = permutation_analysis_protein(i, curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
                                  perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val, wp_iscell, wp_isnuc, wp_iscyto, mvavg_cell, mvavg_nuc, mvavg_cyto)
+        curr_comp_norm, curr_comp_percvar, curr_comp_mvavg, curr_comp_perm, curr_mt_perm, curr_mvavg_rng_comp, curr_mvavg_rng_mt, curr_percvar_rng_comp, curr_percvar_rng_mt = permutation_result
         perc_var_comp_rng.append(curr_percvar_rng_comp)
         perc_var_mt_rng.append(curr_percvar_rng_mt)
         
@@ -136,14 +148,14 @@ def cell_cycle_dependence_protein(use_log_ccd, do_remove_outliers,
             
             windows1 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust1_idx) - WINDOW + 1)])
             windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
-            MovingAverages.temporal_mov_avg(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, None, folder, fileprefixes[i] + "_clust1")
-            MovingAverages.temporal_mov_avg(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, None, folder, fileprefixes[i] + "_clust2")
+            MovingAverages.temporal_mov_avg_protein(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, None, folder, fileprefixes[i] + "_clust1")
+            MovingAverages.temporal_mov_avg_protein(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, None, folder, fileprefixes[i] + "_clust2")
         
         # Make example plots for the randomization trials, but no need for the bimodal ones
         elif np.mean(curr_comp_percvar - curr_percvar_rng_comp) > 0.05:
             median_rng_idx = np.argsort(curr_percvar_rng_comp)
             for iii, idx in enumerate([0,len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)//2,3*len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)-1]):
-                MovingAverages.temporal_mov_avg_randomization_example(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], 
+                MovingAverages.temporal_mov_avg_randomization_example_protein(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], 
                                          mvavg_xvals, curr_comp_mvavg, curr_mvavg_rng_comp[median_rng_idx[idx]], 
                                          folder_rng, f"{fileprefixes[i]}_withrandomization_{iii}")
     
@@ -164,15 +176,15 @@ def cell_cycle_dependence_protein(use_log_ccd, do_remove_outliers,
         
         # Uncomment to make the plots (takes 10 mins)
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
-        MovingAverages.temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
+        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
              mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
              windows, None, folder, fileprefixes[i])
         
         # Uncomment to make the plots for microtubules (takes 10 mins)
-        MovingAverages.temporal_mov_avg(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
+        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
         
         if clusters is not None:
-            MovingAverages.temporal_mov_avg(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
+            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
                  mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
                  windows, clusters, folder, fileprefixes[i] + "_clust1&2")
         
@@ -445,11 +457,7 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
     overlapping_knownccd1 = sum(np.isin(ccd_prots_withmitotic, np.concatenate((knownccd1, knownccd2, knownccd3))))
     overlapping_knownccd2 = sum(np.isin(ccd_prots_withmitotic, knownccd2))
     overlapping_knownccd3 = sum(np.isin(ccd_prots_withmitotic, knownccd3))
-    
-    # pickle the results
-    utils.np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
-    utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
-    
+
     with open("output/figuresofmerit.txt", "w") as file:
         fom = "--- protein pseudotime\n\n"
         fom += f"{len(np.unique(wp_ensg))} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
@@ -462,3 +470,55 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
         fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters."
         print(fom)
         file.write(fom)
+       
+   #%% read in reliability scores
+    # ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
+    # with open("input/processed/manual/reliabilityscores.txt") as file:
+    #     for line in file:
+    #         if line.startswith("Antibody RRID"): continue
+    #         score = line.split('\t')[1].strip()
+    #         ablist = line.split('\t')[0].replace(":","").replace(",","").split()
+    #         for ab in ablist:
+    #             if ab in wp_ab:
+    #                 ab_scores[wp_ab_list.index(ab)] = score
+    # compartmentstring = np.array(["Cell"] * len(wp_iscell))
+    # compartmentstring[wp_iscyto] = "Cyto" 
+    # compartmentstring[wp_isnuc] = "Nuc"
+    # pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
+ 
+       
+    ccdstring = np.array(["No                 "] * len(ccd_comp))
+    ccdstring[ccd_comp] = "Pseudotime"
+    ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
+    ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+    pd.DataFrame({
+        "well_plate" : u_well_plates, 
+        "ENSG": wp_ensg,
+        "antibody": wp_ab,
+        "variance_comp":var_comp,
+        "gini_comp":gini_comp,
+        "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
+        "mean_percvar_diff_from_random":mean_diff_from_rng,
+        "wp_comp_kruskal_gaussccd_adj":wp_comp_kruskal_gaussccd_adj,
+        "log_10_pval_eq_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj, wp_comp_eq_percvar_adj+1)),
+        "pass_median_diff":wp_comp_ccd_difffromrng,
+        "pass_gauss":wp_comp_ccd_gauss,
+        "CCD_COMP":ccd_comp,
+        "ccd_reason":ccdstring,
+        "nonccd_comp":nonccd_comp,
+        "wp_prev_ccd":wp_prev_ccd,
+        
+        # bimodal significance testing
+        "ccd_unimodal":wp_comp_ccd_difffromrng,
+        "ccd_clust1":wp_comp_ccd_clust1,
+        "clust1_difffromrng":mean_diff_from_rng_clust1,
+        "clust1_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust1, wp_comp_eq_percvar_adj_clust1+1)),
+        "ccd_clust2":wp_comp_ccd_clust2,
+        "ccd_clust2_difffromrng":mean_diff_from_rng_clust2,
+        "ccd_clust2_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust2, wp_comp_eq_percvar_adj_clust2+1)),
+        }).to_csv("output/CellCycleVariationSummary.csv", index=False)
+    
+    # pickle the results
+    utils.np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
+    utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
+    

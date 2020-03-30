@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Analysis of protein abundance by cell cycle phase.
+-  Uses Gaussian clustering to group cell expression into cell cycle phases.
+-  This is referred to as the mock-bulk analysis in the paper.
+
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+"""
+
 #%% Imports
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import ProteinDataPreparation, ProteinGaussianClustering, ProteinVariability, ProteinFucciPseudotime, ProteinBimodality
@@ -72,99 +81,3 @@ wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp, wp_mt_kruskal_ga
 
 # General look at replicates in mock-bulk analysis
 ProteinGaussianClustering.address_replicates(alpha_gauss, wp_pass_kruskal_gaussccd_bh_comp, wp_ensg, wp_ab, u_well_plates)
-
-#%% 
-# Idea: Calculate the polar coordinates and other stuff
-# Exec: Devin's calculations
-# Output: fucci plot with polar coordinates
-
-ProteinFucciPseudotime.fucci_polar_coordinate_calculations(fucci_data, 
-                           ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale)
-
-#%% Calculate measures of variance of protein abundance in single cells
-# Idea: Calculate measures of variance, and show them in plots
-# Execution: Now that we already have the data filtered for variability, this is just descriptive.
-# Output: scatters of antibody vs microtubule variances by different measures of variaibility
-
-use_log = False # toggle for using log-transformed intensities; we decided to use natural intensities
-mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell = ProteinVariability.calculate_variation(use_log, 
-                                                u_well_plates, wp_iscell, wp_isnuc, wp_iscyto, 
-                                                pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, pol_sort_well_plate_imgnb)
-
-# Compare variances for protein and microtubules, the internal control for each image
-general_boxplot((var_comp, var_mt), ("Protein", "Microtubules"), "", "Variance", "", False, f"figures/ProteinMicrotubuleVariances.pdf")
-general_boxplot((cv_comp, gini_mt), ("Protein", "Microtubules"), "", "CV", "", False, f"figures/ProteinMicrotubuleCVs.pdf")
-general_boxplot((gini_comp, gini_mt), ("Protein", "Microtubules"), "", "Gini", "", False, f"figures/ProteinMicrotubuleGinis.pdf")
-print(f"{scipy.stats.kruskal(var_comp, var_mt)[1]}: p-value for difference between protein and microtubule variances")
-print(f"{scipy.stats.kruskal(cv_comp, gini_mt)[1]}: p-value for difference between protein and microtubule CVs")
-print(f"{scipy.stats.kruskal(gini_comp, gini_mt)[1]}: p-value for difference between protein and microtubule Gini indices")
-
-#%% read in reliability scores
-# ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
-# with open("input/processed/manual/reliabilityscores.txt") as file:
-#     for line in file:
-#         if line.startswith("Antibody RRID"): continue
-#         score = line.split('\t')[1].strip()
-#         ablist = line.split('\t')[0].replace(":","").replace(",","").split()
-#         for ab in ablist:
-#             if ab in wp_ab:
-#                 ab_scores[wp_ab_list.index(ab)] = score
-# compartmentstring = np.array(["Cell"] * len(wp_iscell))
-# compartmentstring[wp_iscyto] = "Cyto" 
-# compartmentstring[wp_isnuc] = "Nuc"
-# pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
-
-#%% Gaussian clustering to identify biomodal intensity distributions
-wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs = ProteinBimodality.identify_bimodal_intensity_distributions(u_well_plates, 
-             pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
-             wp_iscell, wp_isnuc, wp_iscyto)
-
-#%% Determine cell cycle dependence for each protein
-use_log_ccd = False
-do_remove_outliers = True
-alphaa = 0.05
-
-# Determine cell cycle dependence for proteins
-wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder = CellCycleDependence.cell_cycle_dependence_protein(
-                    use_log_ccd, do_remove_outliers,
-                    pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
-                    wp_iscell, wp_isnuc, wp_iscyto,
-                    wp_isbimodal_fcpadj_pass)
-
-# Move the temporal average plots to more informative places
-CellCycleDependence.copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss)
-CellCycleDependence.global_plots_protein(alphaa, u_well_plates, perc_var_comp, mean_mean_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj)
-CellCycleDependence.analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal)
-
-ccdstring = np.array(["No                 "] * len(ccd_comp))
-ccdstring[ccd_comp] = "Pseudotime"
-ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
-ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
-pd.DataFrame({
-    "well_plate" : u_well_plates, 
-    "ENSG": wp_ensg,
-    "antibody": wp_ab,
-    "variance_comp":var_comp,
-    "gini_comp":gini_comp,
-    "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
-    "mean_percvar_diff_from_random":mean_diff_from_rng,
-    "wp_comp_kruskal_gaussccd_adj":wp_comp_kruskal_gaussccd_adj,
-    "log_10_pval_eq_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj, wp_comp_eq_percvar_adj+1)),
-    "pass_median_diff":wp_comp_ccd_difffromrng,
-    "pass_gauss":wp_comp_ccd_gauss,
-    "CCD_COMP":ccd_comp,
-    "ccd_reason":ccdstring,
-    "nonccd_comp":nonccd_comp,
-    "wp_prev_ccd":wp_prev_ccd,
-    
-    # bimodal significance testing
-    "ccd_unimodal":wp_comp_ccd_difffromrng,
-    "ccd_clust1":wp_comp_ccd_clust1,
-    "clust1_difffromrng":mean_diff_from_rng_clust1,
-    "clust1_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust1, wp_comp_eq_percvar_adj_clust1+1)),
-    "ccd_clust2":wp_comp_ccd_clust2,
-    "ccd_clust2_difffromrng":mean_diff_from_rng_clust2,
-    "ccd_clust2_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust2, wp_comp_eq_percvar_adj_clust2+1)),
-    }).to_csv("output/CellCycleVariationSummary.csv", index=False)
-
-#%%

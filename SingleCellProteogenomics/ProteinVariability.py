@@ -6,10 +6,11 @@ Created on Fri Mar 27 19:28:05 2020
 """
 
 from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import utils
 import scipy.optimize
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
-def plot_average_intensities_by_batch(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt, wp_iscell, wp_isnuc, wp_iscyto):
+def plot_average_intensities_by_batch(u_well_plates, mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt, wp_iscell, wp_isnuc, wp_iscyto):
     '''Plot average intensities by batch to look at agreement'''
     mean_mean_comp = values_comp(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, wp_iscell, wp_isnuc, wp_iscyto)
     firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
@@ -40,6 +41,7 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
     cell_counts = []
     
     wpi_img = []
+    gini_cell_img, gini_nuc_img, gini_cyto_img, gini_mt_img = [],[],[],[] # mean intensity g per field of view
     var_cell_img, var_nuc_img, var_cyto_img, var_mt_img = [],[],[],[] # mean intensity variances per field of view
     cv_cell_img, cv_nuc_img, cv_cyto_img, cv_mt_img = [], [], [], []
     
@@ -65,10 +67,10 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
         cv_cyto.append(scipy.stats.variation(curr_ab_cyto))
         cv_mt.append(scipy.stats.variation(curr_mt_cell))
         
-        gini_cell.append(gini(curr_ab_cell))
-        gini_nuc.append(gini(curr_ab_nuc))
-        gini_cyto.append(gini(curr_ab_cyto))
-        gini_mt.append(gini(curr_mt_cell))
+        gini_cell.append(utils.gini(curr_ab_cell))
+        gini_nuc.append(utils.gini(curr_ab_nuc))
+        gini_cyto.append(utils.gini(curr_ab_cyto))
+        gini_mt.append(utils.gini(curr_mt_cell))
         
         # Save the mean mean intensities
         mean_mean_cell.append(np.mean(curr_ab_cell))
@@ -78,6 +80,7 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
         
         curr_well_plate_imgnbs = pol_sort_well_plate_imgnb[curr_well_inds]
         curr_wpi_img = []
+        curr_gini_cell_img, curr_gini_nuc_img, curr_gini_cyto_img, curr_gini_mt_img = [],[],[],[] # mean intensity variances per field of view
         curr_var_cell_img, curr_var_nuc_img, curr_var_cyto_img, curr_var_mt_img = [],[],[],[] # mean intensity variances per field of view
         curr_cv_cell_img, curr_cv_nuc_img, curr_cv_cyto_img, curr_cv_mt_img = [], [], [], []
         for wpi in np.unique(curr_well_plate_imgnbs):
@@ -94,6 +97,11 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
             curr_var_cyto_img.append(np.var(curr_ab_cyto))
             curr_var_mt_img.append(np.var(curr_mt_cell))
             
+            curr_gini_cell_img.append(utils.gini(curr_ab_cell))
+            curr_gini_nuc_img.append(utils.gini(curr_ab_nuc))
+            curr_gini_cyto_img.append(utils.gini(curr_ab_cyto))
+            curr_gini_mt_img.append(utils.gini(curr_mt_cell))
+            
             curr_cv_cell_img.append(scipy.stats.variation(curr_ab_cell))
             curr_cv_nuc_img.append(scipy.stats.variation(curr_ab_nuc))
             curr_cv_cyto_img.append(scipy.stats.variation(curr_ab_cyto))
@@ -105,13 +113,18 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
         var_cyto_img.append(curr_var_cyto_img)
         var_mt_img.append(curr_var_mt_img)
         
+        gini_cell_img.append(curr_gini_cell_img)
+        gini_nuc_img.append(curr_gini_nuc_img)
+        gini_cyto_img.append(curr_gini_cyto_img)
+        gini_mt_img.append(curr_gini_mt_img)
+        
         cv_cell_img.append(curr_cv_cell_img)
         cv_nuc_img.append(curr_cv_nuc_img)
         cv_cyto_img.append(curr_cv_cyto_img)
         cv_mt_img.append(curr_cv_mt_img)
     
     print("Plotting average intensities of proteins and microtubules by batch.")
-    plot_average_intensities_by_batch(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt, wp_iscell, wp_isnuc, wp_iscyto)
+    plot_average_intensities_by_batch(u_well_plates, mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt, wp_iscell, wp_isnuc, wp_iscyto)
     
     print("Making general plots for variance, CV, and gini by compartment")
     var_cell, var_nuc, var_cyto, var_mt = np.array(var_cell), np.array(var_nuc), np.array(var_cyto), np.array(var_mt)
@@ -119,13 +132,13 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
     cv_cell, cv_nuc, cv_cyto, cv_mt = np.array(cv_cell), np.array(cv_nuc), np.array(cv_cyto), np.array(cv_mt)
     general_boxplot((var_cell, var_cyto, var_nuc, var_mt), ("var_cell", "var_cyto", "var_nuc", "var_mt"),
                 "Metacompartment", f"Variance using {'log' if use_log else 'natural'} intensity values",
-                "", "figures/VarianceBoxplot.png")
+                "", True, "figures/VarianceBoxplot.png")
     general_boxplot((cv_cell, cv_cyto, cv_nuc, cv_mt), ("cv_cell", "cv_cyto", "cv_nuc", "cv_mt"),
                 "Metacompartment", f"Coeff. of Var. using {'log' if use_log else 'natural'} intensity values",
-                "", "figures/CVBoxplot.png")
+                "", True, "figures/CVBoxplot.png")
     general_boxplot((gini_cell, gini_cyto, gini_nuc, gini_mt), ("gini_cell", "gini_cyto", "gini_nuc", "gini_mt"),
                 "Metacompartment", f"Gini using {'log' if use_log else 'natural'} intensity values",
-                "", "figures/GiniBoxplot.png")
+                "", True, "figures/GiniBoxplot.png")
 
     print("Making general plots for variance, CV, and gini in the compartment the protein localizes to")
     mean_mean_comp = values_comp(mean_mean_cell, mean_mean_nuc, mean_mean_cyto, wp_iscell, wp_isnuc, wp_iscyto)
@@ -168,5 +181,5 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
     np_save_overwriting("output/pickles/cv_cell.npy", cv_cell)
     np_save_overwriting("output/pickles/gini_cell.npy", gini_cell)
     np_save_overwriting("output/pickles/var_cell.npy", var_cell)
-    return mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell
+    return mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell, var_mt, gini_mt, cv_mt
 
