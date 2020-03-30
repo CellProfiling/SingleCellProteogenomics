@@ -7,7 +7,7 @@ Created on Fri Mar 27 21:21:59 2020
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
-from SingleCellProteogenomics.ProteinFucciPseudotime import FucciCellCycle
+from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 
 TOT_LEN = FucciCellCycle().TOT_LEN
 

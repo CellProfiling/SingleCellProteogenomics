@@ -8,21 +8,14 @@ Created on Fri Mar 27 16:20:24 2020
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
 from SingleCellProteogenomics.MovingAverages import mvpercentiles, mvavg
+from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 import scipy.optimize
 import sklearn.mixture
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 NBINS = 150 #number of bins, arbitrary choice for now
 WINDOW_FUCCI_PSEUDOTIME = 100
-
-class FucciCellCycle:
-    '''Object representing the length of the FUCCI cell cycle'''
-    # Length of the cell cycle observed for the FUCCI cell line
-    G1_LEN = 10.833 #hours (plus 10.833, so 13.458hrs for the S/G2 cutoff)
-    G1_S_TRANS = 2.625 #hours (plus 10.833 and 2.625 so 25.433 hrs for the G2/M cutoff)
-    S_G2_LEN = 11.975 #hours (this should be from the G2/M cutoff above to the end)
-    M_LEN = 0.5 # We excluded M-phase from this analysis
-    TOT_LEN = G1_LEN+G1_S_TRANS+S_G2_LEN
+TOT_LEN = FucciCellCycle().TOT_LEN
 
 ## POLAR COORDINATE FUNCTIONS
 def calc_R(xc, yc, x, y):
