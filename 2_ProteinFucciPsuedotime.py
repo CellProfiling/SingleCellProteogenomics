@@ -46,9 +46,10 @@ print(f"{scipy.stats.kruskal(cv_comp, gini_mt)[1]}: p-value for difference betwe
 print(f"{scipy.stats.kruskal(gini_comp, gini_mt)[1]}: p-value for difference between protein and microtubule Gini indices")
 
 #%% Gaussian clustering to identify biomodal intensity distributions
-wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs = ProteinBimodality.identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
+bimodal_results = ProteinBimodality.identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
              pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
              wp_iscell, wp_isnuc, wp_iscyto)
+wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_isbimodal_generally, wp_bimodal_fcmaxmin = bimodal_results
 
 #%% Determine cell cycle dependence for each protein
 use_log_ccd = False
@@ -56,16 +57,22 @@ do_remove_outliers = True
 alphaa = 0.05
 
 # Determine cell cycle dependence for proteins
-wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder = CellCycleDependence.cell_cycle_dependence_protein(
-                    u_well_plates, wp_ensg,
-                    use_log_ccd, do_remove_outliers,
-                    pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
-                    pol_sort_area_cell, pol_sort_area_nuc,
-                    wp_iscell, wp_isnuc, wp_iscyto,
-                    wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs)
+ccd_results = CellCycleDependence.cell_cycle_dependence_protein(
+        u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
+        pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+        pol_sort_area_cell, pol_sort_area_nuc,
+        wp_iscell, wp_isnuc, wp_iscyto,
+        wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj)
+wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, folder = ccd_results
 
 # Move the temporal average plots to more informative places
-CellCycleDependence.copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss)
-CellCycleDependence.global_plots_protein(alphaa, u_well_plates, perc_var_comp, mean_mean_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj)
-CellCycleDependence.analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal)
+CellCycleDependence.copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss)
+CellCycleDependence.global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj)
+CellCycleDependence.analyze_ccd_variation_protein(
+    folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
+    wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
+    var_comp, gini_comp, 
+    mean_diff_from_rng, wp_comp_kruskal_gaussccd_adj, wp_comp_eq_percvar_adj, 
+    mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
+    wp_isbimodal_fcpadj_pass, wp_isbimodal_generally, wp_ccd_unibimodal, wp_bimodal_fcmaxmin, wp_comp_ccd_gauss)
 

@@ -98,4 +98,4 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
     plt.savefig("figures/BimodalCellCount.png")
     plt.show();plt.close()
     
-    return wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs
+    return wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_isbimodal_generally, wp_bimodal_fcmaxmin
