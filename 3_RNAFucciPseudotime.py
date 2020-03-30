@@ -3,7 +3,7 @@ from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle
 from scipy.optimize import least_squares
 import decimal
-plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Fucci plots based on FACS intensities
 # Idea: make log-log fucci intensity plots for the cells analyzed by RNA-Seq
