@@ -10,6 +10,7 @@ from SingleCellProteogenomics import utils, MovingAverages
 
 WINDOW = 10 # Number of points for moving average window
 PERMUTATIONS = 10000
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
 
 def clust_to_wp(clust, clust_idx):
     wp_clust = np.array([False] * len(clust_idx))
@@ -32,9 +33,9 @@ def remove_outliers(values, return_values):
     return return_values[remove_outliers_idx(values)]
 
 def permutation_analysis_protein(idx, curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
-                                 perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val,
-                                 wp_iscell, wp_isnuc, wp_iscyto,
-                                 mvavg_cell, mvavg_nuc, mvavg_cyto):
+        perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val,
+        wp_iscell, wp_isnuc, wp_iscyto,
+        mvavg_cell, mvavg_nuc, mvavg_cyto):
     '''Randomization analysis of cell cycle dependence: permute cell order and calculate percent variance due to the cell cycle'''
     perms = np.asarray([np.random.permutation(len(curr_pol)) for nnn in np.arange(PERMUTATIONS)])
     curr_comp_norm = np.asarray(curr_ab_cell_norm if wp_iscell[idx] else curr_ab_nuc_norm if wp_isnuc[idx] else curr_ab_cyto_norm)
@@ -49,21 +50,23 @@ def permutation_analysis_protein(idx, curr_pol, curr_ab_cell_norm, curr_ab_nuc_n
     return (curr_comp_norm, curr_comp_percvar, curr_comp_mvavg, curr_comp_perm, curr_mt_perm, 
         curr_mvavg_rng_comp, curr_mvavg_rng_mt, curr_percvar_rng_comp, curr_percvar_rng_mt)
     
+def get_fileprefixes(wp_ensg):
+    '''Generate the file prefixes for given genes'''
+    return np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
+
 def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
-                                  pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
-                                  pol_sort_area_cell, pol_sort_area_nuc,
-                                  wp_iscell, wp_isnuc, wp_iscyto,
-                                  wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs):
+        pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+        pol_sort_area_cell, pol_sort_area_nuc,
+        wp_iscell, wp_isnuc, wp_iscyto,
+        wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj):
     '''
     Use a moving average model of protein expression over the cell cycle to determine cell cycle dependence.
     Generates plots for each gene
     '''
-    xvals = np.linspace(0, 1, num=21)
     perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
     perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
     perc_var_comp_clust1, perc_var_comp_clust2, mvavgs_comp_clust1, mvavgs_comp_clust2, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng, mvavgs_x_clust1, mvavgs_x_clust2 = [],[],[],[],[],[],[],[] # percent variances for bimodal
     mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt, mvavgs_x = [],[],[],[],[] # moving average y values & x value
-    mvavgs_cell_rng, mvavgs_nuc_rng, mvavgs_cyto_rng, mvavgs_mt_rng = [],[],[],[] # moving average y values from randomization
     cell_counts = []
     
     analysis = "MeanRng"
@@ -73,7 +76,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     if not os.path.exists(folder): os.mkdir(folder)
     if not os.path.exists(folder_mt): os.mkdir(folder_mt)
     if not os.path.exists(folder_rng): os.mkdir(folder_rng)
-    fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
+    fileprefixes = get_fileprefixes(wp_ensg)
     
     for i, well in enumerate(u_well_plates):
     #    print(well)
@@ -204,7 +207,6 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     wp_comp_gtpass_eq_percvar_adj_withbimodal = wp_comp_pass_eq_percvar_adj_withbimodal & (perc_var_comp_withbimodal > np.median(perc_var_comp_rng_withbimodal, axis=1))
     
     # median differences from random
-    MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
     print(f"Requiring {MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM*100}% additional percent variance explained than random.")
     mean_diff_from_rng_withbimodal = np.mean((perc_var_comp_withbimodal - perc_var_comp_rng_withbimodal.T).T, 1)
     wp_comp_ccd_difffromrng_withbimodal = mean_diff_from_rng_withbimodal >= MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
@@ -249,8 +251,8 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     print(f"{sum(wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2)}: bimodal samples with one CCD cluster ({sum((wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2) & wp_comp_ccd_difffromrng)}: also CCD unimodally)")
     print(f"{sum(wp_comp_ccd_clust1 & wp_comp_ccd_clust2)}: bimodal samples with two CCD clusters ({sum((wp_comp_ccd_clust1 & wp_comp_ccd_clust2) & wp_comp_ccd_difffromrng)}: also CCD unimodally)")
     
-    wp_comp_ccd_use = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2 # percvar randomization, not like in original manuscript
-    
+    wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
+
     plt.figure(figsize=(10,10))
     plt.scatter(perc_var_comp_withbimodal, mean_diff_from_rng_withbimodal, c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
     plt.hlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(perc_var_comp), np.max(perc_var_comp), color="gray")
@@ -272,9 +274,15 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     plt.show()
     plt.close()
     
-    return wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder
+    return (wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, 
+        wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, 
+        mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, 
+        folder)
 
-def copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss):
+def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss):
+    '''Copy the plots generated for each gene to a more informative location'''
+    fileprefixes = get_fileprefixes(wp_ensg)
+
     # Copy profiles to the right place:
     # 1) CCD Unimodal
     # 2) CCD Bimodal
@@ -289,9 +297,8 @@ def copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpad
     nongaussccdfolder = f"figures/CCDAndNonGauss"
     nonccdfolder = f"figures/NonCCD"
     bimodalnonccdfolder = f"figures/NonCCDBimodal"
-    replicatefolder = f"figures/Replicates"
     examplesfolder = f"figures/Examples"
-    for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,replicatefolder,examplesfolder]:
+    for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,examplesfolder]:
         if not os.path.exists(f): os.mkdir(f)
     
     # CCD Unimodal
@@ -326,7 +333,6 @@ def copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpad
         shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.pdf'), os.path.join(bimodalnonccdfolder, ensg+'_clust2_mvavg.pdf'))
         
     # Gauss and CCD
-    wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
     for ensg in fileprefixes[wp_comp_ccd_gauss & wp_ccd_unibimodal]:
         shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdgaussccdfolder, ensg+'_mvavg.pdf'))
     # Gauss and Non-CCD
@@ -335,21 +341,16 @@ def copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpad
     # Non-Gauss and CCD
     for ensg in fileprefixes[~wp_comp_ccd_gauss & wp_ccd_unibimodal]:
         shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nongaussccdfolder, ensg+'_mvavg.pdf'))
-        
-    # Examples
-    for ensg in fileprefixes[np.isin(wp_ensg,["ENSG00000011426","ENSG00000111605","ENSG00000102908","ENSG00000091651","ENSG00000083812","ENSG00000162999","ENSG00000134057","ENSG00000178999","ENSG00000156970","ENSG00000132768","ENSG00000138801","ENSG00000156239","ENSG00000019144","ENSG00000151702","ENSG00000123607","ENSG00000173599","ENSG00000109814"])]:
-        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(examplesfolder, ensg+'_mvavg.pdf'))
 
-def global_plots_protein(alphaa, u_well_plates, perc_var_comp, mean_mean_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj):
+def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj):
     '''Illustrate the CCD variances of all proteins'''
-    u_well_plates_list = list(u_well_plates)
     utils.general_scatter(perc_var_comp, mean_mean_comp, "percent variance", "mean mean intensity", f"figures/PercVarVsMeanMeanIntensity_comp.png")
     utils.general_scatter(mean_mean_comp, mean_diff_from_rng, "Mean Mean Intensity", "Mean Additional Percent Variance Explained than Random", f"figures/IntensityVsMeanDiff.png")
     utils.general_scatter_color(gini_comp, perc_var_comp, "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
                                 -np.log10(wp_comp_kruskal_gaussccd_adj), "FDR for Cell Cycle Dependence", True,
                                 "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentProteinFractionVariance.png")
     utils.general_scatter_color(gini_comp, perc_var_comp, "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
-                                wp_comp_ccd_use, "", False, 
+                                wp_ccd_unibimodal, "", False, 
                                 "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentProteinFractionVarianceTF.png",
                                 "bwr_r", 0.5)
     utils.general_scatter_color(cv_comp, perc_var_comp, "CV of Protein Expression", "Fraction of Variance Due to Cell Cycle",
@@ -376,7 +377,13 @@ def analyze_replicates(wp_ccd_with_replicates, wp_ensg, analysis_tag):
     print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate, {analysis_tag}")
     print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate,  {analysis_tag}")
     
-def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_isbimodal_fcpadj_pass):
+def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
+            wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
+            var_comp, gini_comp, 
+            mean_diff_from_rng, wp_comp_kruskal_gaussccd_adj, wp_comp_eq_percvar_adj, 
+            mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
+            wp_isbimodal_fcpadj_pass, wp_isbimodal_generally, wp_ccd_unibimodal, wp_bimodal_fcmaxmin, wp_comp_ccd_gauss):
+    '''Analyze the cell cycle dependence for all the proteins'''
     n_tot_variable = len(u_well_plates)
     ccd_comp = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
     nonccd_comp = ~ccd_comp
@@ -385,7 +392,6 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
     print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
     
     ### address gene redundancy
-    wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
     wp_ccd_bimodalonecluster = wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2
     wp_ccd_bimodaltwocluster = wp_comp_ccd_clust1 & wp_comp_ccd_clust2
     wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
@@ -435,11 +441,13 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
             "well_plate_pair":[",".join(pair) for pair in duplicated_ensg_pairs],
             "sum(ccd)":duplicated_ensg_ccd,
             "sum(bulk_ccd)":np.array([sum(wp_comp_ccd_gauss[wp_ensg == ensg]) for ensg in duplicated_ensg]),
-            "ccd_pair":[",".join([str(wp_comp_ccd_use[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
+            "ccd_pair":[",".join([str(wp_ccd_unibimodal[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
         }).to_csv("output/ReplicatedCellCycleDependentProteins.csv")
     
     # Replicates
-    for ensg in fileprefixes[ensg_is_duplicated]:
+    replicatefolder = "figures/Replicates"
+    if not os.path.exists(replicatefolder): os.mkdir(replicatefolder)
+    for ensg in get_fileprefixes(wp_ensg)[ensg_is_duplicated]:
         for file in glob.glob(os.path.join(folder, f"{ensg}*_mvavg.png")):
             shutil.copy(file, os.path.join(replicatefolder, os.path.basename(file)))
             
@@ -453,10 +461,7 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
     total_proteins_minusmitotic = len(ccd_prots_withmitotic) - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
     total_ccd_proteins_withmitotic = len(ccd_prots_withmitotic)
     total_nonccd_proteins_minusmitotic = nonccd_protein_ct - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
-    
     overlapping_knownccd1 = sum(np.isin(ccd_prots_withmitotic, np.concatenate((knownccd1, knownccd2, knownccd3))))
-    overlapping_knownccd2 = sum(np.isin(ccd_prots_withmitotic, knownccd2))
-    overlapping_knownccd3 = sum(np.isin(ccd_prots_withmitotic, knownccd3))
 
     with open("output/figuresofmerit.txt", "w") as file:
         fom = "--- protein pseudotime\n\n"
@@ -471,30 +476,35 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
         print(fom)
         file.write(fom)
        
-   #%% read in reliability scores
-    # ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
-    # with open("input/processed/manual/reliabilityscores.txt") as file:
-    #     for line in file:
-    #         if line.startswith("Antibody RRID"): continue
-    #         score = line.split('\t')[1].strip()
-    #         ablist = line.split('\t')[0].replace(":","").replace(",","").split()
-    #         for ab in ablist:
-    #             if ab in wp_ab:
-    #                 ab_scores[wp_ab_list.index(ab)] = score
-    # compartmentstring = np.array(["Cell"] * len(wp_iscell))
-    # compartmentstring[wp_iscyto] = "Cyto" 
-    # compartmentstring[wp_isnuc] = "Nuc"
-    # pd.DataFrame({"ENSG":wp_ensg,"ab":wp_ab, "ab_hpa_scores": ab_scores, "compartment": compartmentstring}).to_csv("output/antibody_list.csv",index=False)
- 
-       
+    # read in reliability scores
+    wp_ab_list = list(wp_ab)
+    ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
+    with open("input/processed/manual/reliabilityscores.txt") as file:
+        for line in file:
+            if line.startswith("Antibody RRID"): continue
+            score = line.split('\t')[1].strip()
+            ablist = line.split('\t')[0].replace(":","").replace(",","").split()
+            for ab in ablist:
+                if ab in wp_ab:
+                    ab_scores[wp_ab_list.index(ab)] = score
+
+    # Make strings to represent the metacompartment
+    compartmentstring = np.array(["Cell"] * len(wp_iscell))
+    compartmentstring[wp_iscyto] = "Cyto" 
+    compartmentstring[wp_isnuc] = "Nuc" 
+    
+    # Make strings to represent the CCD conclusion
     ccdstring = np.array(["No                 "] * len(ccd_comp))
     ccdstring[ccd_comp] = "Pseudotime"
     ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
     ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+    
     pd.DataFrame({
         "well_plate" : u_well_plates, 
         "ENSG": wp_ensg,
         "antibody": wp_ab,
+        "antibody_hpa_scores" : ab_scores,
+        "compartment" : compartmentstring,
         "variance_comp":var_comp,
         "gini_comp":gini_comp,
         "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
@@ -506,7 +516,6 @@ def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrn
         "CCD_COMP":ccd_comp,
         "ccd_reason":ccdstring,
         "nonccd_comp":nonccd_comp,
-        "wp_prev_ccd":wp_prev_ccd,
         
         # bimodal significance testing
         "ccd_unimodal":wp_comp_ccd_difffromrng,

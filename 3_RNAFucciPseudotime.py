@@ -1,5 +1,5 @@
 #%% imports
-from utils import *
+from SingleCellProteogenomics.utils import *
 from scipy.optimize import least_squares
 import decimal
 from stretch_time import stretch_time
