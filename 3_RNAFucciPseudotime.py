@@ -1,8 +1,8 @@
 #%% imports
 from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle
 from scipy.optimize import least_squares
 import decimal
-from stretch_time import stretch_time
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Fucci plots based on FACS intensities
@@ -53,16 +53,6 @@ G1_PROP = G1_LEN / TOT_LEN
 G1_S_PROP = G1_S_TRANS / TOT_LEN + G1_PROP
 S_G2_PROP = S_G2_LEN / TOT_LEN + G1_S_PROP
 
-def calc_R(xc, yc, x, y):
-    """ calculate the distance of each 2D points from the center (xc, yc) """
-    return np.sqrt((x-xc)**2 + (y-yc)**2)
-
-def f_2(c,x,y):
-    """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
-    print(c)
-    Ri = calc_R(c[0],c[1],x,y)
-    return Ri - Ri.mean()
-
 phasesFilt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
 x = phasesFilt["Green530"]
 y = phasesFilt["Red585"]
@@ -76,17 +66,6 @@ residu_2   = sum((Ri_2 - R_2)**2)
 
 # Center data
 centered_data = fucci_data - center_est2_xy.x
-
-# Convert data to polar
-def cart2pol(x, y):
-    rho = np.sqrt(x**2 + y**2)
-    phi = np.arctan2(y, x)
-    return(rho, phi)
-
-def pol2cart(rho, phi):
-    x = rho * np.cos(phi)
-    y = rho * np.sin(phi)
-    return(x, y)
 
 pol_data = cart2pol(centered_data[:,0],centered_data[:,1])
 pol_sort_inds = np.argsort(pol_data[1])
@@ -114,7 +93,7 @@ pol_sort_shift = pol_sort_phi_reorder+np.abs(np.min(pol_sort_phi_reorder))
 # reverse "time" since the cycle goes counter-clockwise wrt the fucci plot
 pol_sort_norm = pol_sort_shift/np.max(pol_sort_shift)
 pol_sort_norm_rev = 1 - pol_sort_norm 
-pol_sort_norm_rev = stretch_time(pol_sort_norm_rev)
+pol_sort_norm_rev = stretch_time.stretch_time(pol_sort_norm_rev)
 plt.tight_layout()
 plt.savefig(f"figures/FucciAllPseudotimeHist.png")
 plt.show()
