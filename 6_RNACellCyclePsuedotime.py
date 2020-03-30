@@ -282,55 +282,8 @@ def mvpercentiles(yvals_binned):
     return np.percentile(yvals_binned, [10, 25, 50, 75, 90], axis=1)
 
 do_remove_outliers = True
-def remove_outliers_idx(values):
-    '''Remove outliers on "values" and return "return_values" based on that filter'''
-    max_cutoff = np.mean(values) + 5 * np.std(values)
-    min_cutoff = np.mean(values) - 5 * np.std(values)
-    return (values < max_cutoff) & (values > min_cutoff)
 
-def temporal_mov_avg(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
-    plt.close()
-    outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
-    if os.path.exists(outfile): return
-    plt.figure(figsize=(5,5))
-    mvperc = mvpercentiles(curr_ab_norm[windows])
-    plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[0], mvperc[-1], color="bisque", label="10th & 90th Percentiles")
-    plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[1], mvperc[-2], color="orange", alpha=0.7, label="25th & 75th Percentiles")
-    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals, color="tab:orange", label="Mean Intensity")
-    filteridx = remove_outliers_idx(curr_ab_norm)
-    plt.scatter(fucci_time[filteridx] * TOT_LEN, curr_ab_norm[filteridx], c='darkorange', alpha=0.2)
-    plt.xlabel('Cell Cycle Time, hrs')
-    plt.ylabel(fileprefix + ' RNA Expression')
-    plt.xticks(size=14)
-    plt.yticks(size=14)
-    plt.ylim(0, 1)
-    #    plt.legend(fontsize=14)
-    plt.tight_layout()
-    if not os.path.exists(os.path.dirname(outfile)):
-        os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
-    plt.savefig(outfile)
-    plt.close()
-    
-def temporal_mov_avg_randomization_example(fucci_time, curr_ab_norm, curr_ab_norm_rng, mvavg_xvals, mvavg_yvals, mvavg_yvals_rng, folder, fileprefix):
-    plt.close()
-    outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
-    if os.path.exists(outfile): return
-    plt.figure(figsize=(5,5))
-    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals, color="tab:orange", label="Mean Intensity")
-    plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals_rng, color="purple", label="Mean Intensity, Randomized")
-    plt.scatter(fucci_time * TOT_LEN, curr_ab_norm, c='tab:orange', alpha=0.2, label="Normalized Intensity")
-    plt.scatter(fucci_time * TOT_LEN, curr_ab_norm_rng, c='purple', alpha=0.2, label="Normalized Intensity, Randomized")
-    plt.xlabel('Cell Cycle Time, hrs')
-    plt.ylabel(fileprefix.split("_")[0] + ' RNA Expression')
-    plt.xticks(size=14)
-    plt.yticks(size=14)
-#    plt.legend(fontsize=14)
-    plt.tight_layout()
-    if not os.path.exists(os.path.dirname(outfile)):
-        os.mkdir(os.path.join(os.getcwd(), os.path.dirname(outfile)))
-    plt.savefig(outfile)
-    plt.close()
-    
+
 for iii, ensg in enumerate(adata.var_names):
     plt.close('all')
     if iii % 500 == 0: print(f"well {iii} of {len(adata.var_names)}")  
@@ -338,15 +291,6 @@ for iii, ensg in enumerate(adata.var_names):
     windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(adata.obs["fucci_time"][fucci_time_inds]) - WINDOW + 1)])
     temporal_mov_avg(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], windows, f"figures/RNAPseudotimes", f"{ensg}")
 
-     # Make example plots for the randomization trials
-#    if mean_diff_from_rng[iii] > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM:
-#        norm_exp_sort_perms = np.take(norm_exp_sort[:,iii], perms, axis=0)
-#        moving_averages_perms = np.apply_along_axis(mvavg, 1, norm_exp_sort_perm, WINDOW)
-#        percvar_rng = np.var(moving_averages_perm, axis=0) / np.var(norm_exp_sort_perm, axis=0)
-#        mean_rng_idx = np.argsort(percvar_rng)
-#        for jjj, idx in enumerate([0,len(percent_ccd_variance_rng)//4,len(percent_ccd_variance_rng)//2,3*len(percent_ccd_variance_rng)//4,len(percent_ccd_variance_rng)-1]):
-#            temporal_mov_avg_randomization_example(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], norm_exp_sort_perms[:,mean_rng_idx[idx]], mvavg_xvals, moving_averages, moving_averages_perms[:,mean_rng_idx[idx]], f"figures/RNARandomizationExamples", f"{ensg}_{jjj}")
- 
 
 def plot_variances(total_var, percent_var, expression_color, title, file_tag):
     '''Plots percent variances from cell line against total variance'''

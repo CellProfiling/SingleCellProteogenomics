@@ -122,6 +122,7 @@ wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs = ProteinBimodality.identify_b
 #%% Determine cell cycle dependence for each protein
 use_log_ccd = False
 do_remove_outliers = True
+alphaa = 0.05
 
 # Determine cell cycle dependence for proteins
 wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder = CellCycleDependence.cell_cycle_dependence_protein(
@@ -132,5 +133,38 @@ wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gau
 
 # Move the temporal average plots to more informative places
 CellCycleDependence.copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss)
+CellCycleDependence.global_plots_protein(alphaa, u_well_plates, perc_var_comp, mean_mean_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj)
+CellCycleDependence.analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal)
+
+ccdstring = np.array(["No                 "] * len(ccd_comp))
+ccdstring[ccd_comp] = "Pseudotime"
+ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
+ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+pd.DataFrame({
+    "well_plate" : u_well_plates, 
+    "ENSG": wp_ensg,
+    "antibody": wp_ab,
+    "variance_comp":var_comp,
+    "gini_comp":gini_comp,
+    "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
+    "mean_percvar_diff_from_random":mean_diff_from_rng,
+    "wp_comp_kruskal_gaussccd_adj":wp_comp_kruskal_gaussccd_adj,
+    "log_10_pval_eq_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj, wp_comp_eq_percvar_adj+1)),
+    "pass_median_diff":wp_comp_ccd_difffromrng,
+    "pass_gauss":wp_comp_ccd_gauss,
+    "CCD_COMP":ccd_comp,
+    "ccd_reason":ccdstring,
+    "nonccd_comp":nonccd_comp,
+    "wp_prev_ccd":wp_prev_ccd,
+    
+    # bimodal significance testing
+    "ccd_unimodal":wp_comp_ccd_difffromrng,
+    "ccd_clust1":wp_comp_ccd_clust1,
+    "clust1_difffromrng":mean_diff_from_rng_clust1,
+    "clust1_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust1, wp_comp_eq_percvar_adj_clust1+1)),
+    "ccd_clust2":wp_comp_ccd_clust2,
+    "ccd_clust2_difffromrng":mean_diff_from_rng_clust2,
+    "ccd_clust2_log10pval_percvar":-np.log10(np.nextafter(wp_comp_eq_percvar_adj_clust2, wp_comp_eq_percvar_adj_clust2+1)),
+    }).to_csv("output/CellCycleVariationSummary.csv", index=False)
 
 #%%

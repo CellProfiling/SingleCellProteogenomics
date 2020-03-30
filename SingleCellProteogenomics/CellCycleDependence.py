@@ -260,4 +260,205 @@ def cell_cycle_dependence_protein(use_log_ccd, do_remove_outliers,
     plt.show()
     plt.close()
     
-    return wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2
+    return wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss, folder
+
+def copy_mvavg_plots_protein(folder, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_comp_ccd_gauss):
+    # Copy profiles to the right place:
+    # 1) CCD Unimodal
+    # 2) CCD Bimodal
+    # 3) Non-CCD
+    # 3) Gaussian analysis and CCD (unimodal or bimodal)
+    # 4) Gaussian analysis and non-CCD (unimodal or bimodal)
+    ccdunifolder = f"figures/CCDUnimodal"
+    ccdunibifolder = f"figures/CCDUnimodalAndBimodal"
+    ccdpbifolder = f"figures/CCDBimodal"
+    ccdgaussccdfolder = f"figures/GaussAndCCD"
+    ccdgaussnonccdfolder = f"figures/GaussAndNonCCD"
+    nongaussccdfolder = f"figures/CCDAndNonGauss"
+    nonccdfolder = f"figures/NonCCD"
+    bimodalnonccdfolder = f"figures/NonCCDBimodal"
+    replicatefolder = f"figures/Replicates"
+    examplesfolder = f"figures/Examples"
+    for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,replicatefolder,examplesfolder]:
+        if not os.path.exists(f): os.mkdir(f)
+    
+    # CCD Unimodal
+    for ensg in fileprefixes[wp_comp_ccd_difffromrng]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdunifolder, ensg +'_mvavg.pdf'))
+        
+    # CCD Unimodal and Bimodal
+    for ensg in fileprefixes[wp_comp_ccd_difffromrng & (wp_comp_ccd_clust1 | wp_comp_ccd_clust2)]:
+        shutil.copy(os.path.join(folder, ensg+'_clust1&2_mvavg.pdf'), os.path.join(ccdunibifolder, ensg +'_clust1&2_mvavg.pdf'))
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdunibifolder, ensg +'_mvavg.pdf'))
+    for ensg in fileprefixes[wp_comp_ccd_difffromrng & wp_comp_ccd_clust1]:
+        shutil.copy(os.path.join(folder, ensg+'_clust1_mvavg.pdf'), os.path.join(ccdunibifolder, ensg+'_clust1_mvavg.pdf'))
+    for ensg in fileprefixes[wp_comp_ccd_difffromrng & wp_comp_ccd_clust2]:
+        shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.pdf'), os.path.join(ccdunibifolder, ensg+'_clust2_mvavg.pdf'))
+        
+    # CCD Bimodal
+    for ensg in fileprefixes[~wp_comp_ccd_difffromrng & wp_comp_ccd_clust1]:
+        shutil.copy(os.path.join(folder, ensg+'_clust1&2_mvavg.pdf'), os.path.join(ccdpbifolder, ensg +'_clust1&2_mvavg.pdf'))
+        shutil.copy(os.path.join(folder, ensg+'_clust1_mvavg.pdf'), os.path.join(ccdpbifolder, ensg+'_clust1_mvavg.pdf'))
+    for ensg in fileprefixes[~wp_comp_ccd_difffromrng & wp_comp_ccd_clust2]:
+        shutil.copy(os.path.join(folder, ensg+'_clust1&2_mvavg.pdf'), os.path.join(ccdpbifolder, ensg +'_clust1&2_mvavg.pdf'))
+        shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.pdf'), os.path.join(ccdpbifolder, ensg+'_clust2_mvavg.pdf'))
+    
+    # Non-CCD 
+    for ensg in fileprefixes[~wp_comp_ccd_difffromrng & ~wp_comp_ccd_clust1 & ~wp_comp_ccd_clust2]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nonccdfolder, ensg+'_mvavg.pdf'))
+        
+    # Non-CCD Bimodal
+    for ensg in fileprefixes[wp_isbimodal_fcpadj_pass & ~wp_comp_ccd_clust1 & ~wp_comp_ccd_clust2]:
+        shutil.copy(os.path.join(folder, ensg+'_clust1&2_mvavg.pdf'), os.path.join(bimodalnonccdfolder, ensg +'_clust1&2_mvavg.pdf'))
+        shutil.copy(os.path.join(folder, ensg+'_clust1_mvavg.pdf'), os.path.join(bimodalnonccdfolder, ensg+'_clust1_mvavg.pdf'))
+        shutil.copy(os.path.join(folder, ensg+'_clust2_mvavg.pdf'), os.path.join(bimodalnonccdfolder, ensg+'_clust2_mvavg.pdf'))
+        
+    # Gauss and CCD
+    wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
+    for ensg in fileprefixes[wp_comp_ccd_gauss & wp_ccd_unibimodal]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdgaussccdfolder, ensg+'_mvavg.pdf'))
+    # Gauss and Non-CCD
+    for ensg in fileprefixes[wp_comp_ccd_gauss & ~wp_ccd_unibimodal]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdgaussnonccdfolder, ensg+'_mvavg.pdf'))
+    # Non-Gauss and CCD
+    for ensg in fileprefixes[~wp_comp_ccd_gauss & wp_ccd_unibimodal]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nongaussccdfolder, ensg+'_mvavg.pdf'))
+        
+    # Examples
+    for ensg in fileprefixes[np.isin(wp_ensg,["ENSG00000011426","ENSG00000111605","ENSG00000102908","ENSG00000091651","ENSG00000083812","ENSG00000162999","ENSG00000134057","ENSG00000178999","ENSG00000156970","ENSG00000132768","ENSG00000138801","ENSG00000156239","ENSG00000019144","ENSG00000151702","ENSG00000123607","ENSG00000173599","ENSG00000109814"])]:
+        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(examplesfolder, ensg+'_mvavg.pdf'))
+
+def global_plots_protein(alphaa, u_well_plates, perc_var_comp, mean_mean_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj):
+    '''Illustrate the CCD variances of all proteins'''
+    u_well_plates_list = list(u_well_plates)
+    utils.general_scatter(perc_var_comp, mean_mean_comp, "percent variance", "mean mean intensity", f"figures/PercVarVsMeanMeanIntensity_comp.png")
+    utils.general_scatter(mean_mean_comp, mean_diff_from_rng, "Mean Mean Intensity", "Mean Additional Percent Variance Explained than Random", f"figures/IntensityVsMeanDiff.png")
+    utils.general_scatter_color(gini_comp, perc_var_comp, "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
+                                -np.log10(wp_comp_kruskal_gaussccd_adj), "FDR for Cell Cycle Dependence", True,
+                                "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentProteinFractionVariance.png")
+    utils.general_scatter_color(gini_comp, perc_var_comp, "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
+                                wp_comp_ccd_use, "", False, 
+                                "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentProteinFractionVarianceTF.png",
+                                "bwr_r", 0.5)
+    utils.general_scatter_color(cv_comp, perc_var_comp, "CV of Protein Expression", "Fraction of Variance Due to Cell Cycle",
+                                -np.log10(wp_comp_kruskal_gaussccd_adj), "FDR for Cell Cycle Dependence", True, 
+                                "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentCVProteinFractionVariance.png")
+    
+    plt.figure(figsize=(10,10))
+    plt.scatter(perc_var_comp, -np.log10(wp_comp_eq_percvar_adj))
+    plt.xlabel("percent variance new")
+    plt.ylabel("-log10 FDR for CCD")
+    plt.hlines(-np.log10(alphaa), np.min(perc_var_comp), np.max(perc_var_comp))
+    plt.savefig(f"figures/PercVarVsLog10FdrCCD_comp.png")
+    plt.show()
+    plt.close()
+    
+def analyze_replicates(wp_ccd_with_replicates, wp_ensg, analysis_tag):
+    wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
+    ensg_is_duplicated = wp_ensg_counts > 1
+    duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
+    duplicated_ensg_ccd = np.array([sum(wp_ccd_with_replicates[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    print(f"{sum(wp_ccd_with_replicates[~ensg_is_duplicated])}: number of CCD proteins (no replicate, {analysis_tag})")
+    print(f"{sum(~wp_ccd_with_replicates[~ensg_is_duplicated])}: number of non-CCD proteins (no replicate, {analysis_tag})")
+    print(f"{sum(duplicated_ensg_ccd == 2)}: number of replicated stainings shown to be CCD in both replicates, {analysis_tag}")
+    print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate, {analysis_tag}")
+    print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate,  {analysis_tag}")
+    
+def analyze_ccd_variation_protein(u_well_plates, wp_ensg, wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_isbimodal_fcpadj_pass):
+    n_tot_variable = len(u_well_plates)
+    ccd_comp = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
+    nonccd_comp = ~ccd_comp
+    print(f"{n_tot_variable}: # total proteins showing variation")
+    print(f"{sum(ccd_comp)}: CCD variable proteins (before addressing redundancy and mitotic structures)")
+    print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
+    
+    ### address gene redundancy
+    wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
+    wp_ccd_bimodalonecluster = wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2
+    wp_ccd_bimodaltwocluster = wp_comp_ccd_clust1 & wp_comp_ccd_clust2
+    wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
+    ensg_is_duplicated = wp_ensg_counts > 1
+    duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
+    duplicated_ensg_pairs = [u_well_plates[wp_ensg == ensg] for ensg in duplicated_ensg]
+    print(f"{sum(wp_ccd_unibimodal[~ensg_is_duplicated])}: number of CCD proteins (no replicate, unimodal and bimodal)")
+    print(f"{sum(~wp_ccd_unibimodal[~ensg_is_duplicated])}: number of non-CCD proteins (no replicate, unimodal and bimodal)")
+    print(f"{sum(wp_ccd_bimodalonecluster[~ensg_is_duplicated])}: bimodal samples with one CCD cluster ({sum((wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)[~ensg_is_duplicated])}: also CCD unimodally), no replicate")
+    print(f"{sum(wp_ccd_bimodaltwocluster[~ensg_is_duplicated])}: bimodal samples with two CCD clusters ({sum((wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)[~ensg_is_duplicated])}: also CCD unimodally), no replicate")
+    duplicated_ensg_ccd = np.array([sum(wp_ccd_unibimodal[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    print(f"{sum(duplicated_ensg_ccd == 2)}: number of replicated stainings shown to be CCD in both replicates, unimodal and bimodal")
+    print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate, unimodal and bimodal")
+    print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate, unimodal and bimodal")
+    duplicated_ensg_ccd_bi1 = np.array([sum(wp_ccd_bimodalonecluster[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    duplicated_ensg_ccd_plusunimodal = np.array([sum((wp_comp_ccd_difffromrng & wp_ccd_bimodalonecluster)[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    print(f"{sum(duplicated_ensg_ccd_bi1 == 2)}: number of replicated stainings shown to be CCD in both replicates, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 2)} also unimodally)")
+    print(f"{sum(duplicated_ensg_ccd_bi1 == 1)}: number of replicated stainings shown to be CCD in just one replicate, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 1)} also unimodally)")
+    print(f"{sum(duplicated_ensg_ccd_bi1 == 0)}: number of replicated stainings shown to be non-CCD in both replicate, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 0)} also unimodally)")
+    duplicated_ensg_ccd_bi2 = np.array([sum(wp_ccd_bimodaltwocluster[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    duplicated_ensg_ccd_plusunimodal = np.array([sum((wp_comp_ccd_difffromrng & wp_ccd_bimodaltwocluster)[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    print(f"{sum(duplicated_ensg_ccd_bi2 == 2)}: number of replicated stainings shown to be CCD in both replicates, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 2)} also unimodally)")
+    print(f"{sum(duplicated_ensg_ccd_bi2 == 1)}: number of replicated stainings shown to be CCD in just one replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 1)} also unimodally)")
+    print(f"{sum(duplicated_ensg_ccd_bi2 == 0)}: number of replicated stainings shown to be non-CCD in both replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 0)} also unimodally)")
+    
+    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+    protein_ct = len(np.unique(np.concatenate((wp_ensg, bioccd))))
+    ccd_protein_ct = sum(wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 2)
+    nonccd_protein_ct = sum(~wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 0)
+    duplicated_ensg_bimodal_generally = np.array([sum(wp_isbimodal_generally[wp_ensg == ensg]) for ensg in duplicated_ensg])
+    unimodal_generally_protein_ct = sum(~wp_isbimodal_generally[~ensg_is_duplicated]) + sum(duplicated_ensg_bimodal_generally < 2)
+    bimodal_generally_protein_ct = sum(wp_isbimodal_generally[~ensg_is_duplicated]) + sum(duplicated_ensg_bimodal_generally == 2)
+    print(f"{ccd_protein_ct}: number of ccd proteins; addressed replicates; not including mitotic structures")
+    
+    # Decision: remove proteins that didn't pass CCD in both replicates
+    ccd_comp[np.isin(wp_ensg, duplicated_ensg[duplicated_ensg_ccd == 1])] = False
+    nonccd_comp[np.isin(wp_ensg, duplicated_ensg[duplicated_ensg_ccd == 1])] = False
+    
+    # Analyze replicates for CCD proteins (both mock-bulk and pseudotime analysis)
+    analyze_replicates(wp_comp_ccd_gauss, wp_ensg, "gauss")
+    analyze_replicates(wp_comp_ccd_gauss & wp_comp_ccd_difffromrng, wp_ensg, "CCD and gaussian")
+    analyze_replicates(wp_comp_ccd_gauss & ~wp_comp_ccd_difffromrng, wp_ensg, "not CCD and gaussian")
+    analyze_replicates(~wp_comp_ccd_gauss & wp_comp_ccd_difffromrng, wp_ensg, "CCD and not gaussian")
+    
+    pd.DataFrame({
+            "ENSG":duplicated_ensg,
+            "well_plate_pair":[",".join(pair) for pair in duplicated_ensg_pairs],
+            "sum(ccd)":duplicated_ensg_ccd,
+            "sum(bulk_ccd)":np.array([sum(wp_comp_ccd_gauss[wp_ensg == ensg]) for ensg in duplicated_ensg]),
+            "ccd_pair":[",".join([str(wp_comp_ccd_use[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
+        }).to_csv("output/ReplicatedCellCycleDependentProteins.csv")
+    
+    # Replicates
+    for ensg in fileprefixes[ensg_is_duplicated]:
+        for file in glob.glob(os.path.join(folder, f"{ensg}*_mvavg.png")):
+            shutil.copy(file, os.path.join(replicatefolder, os.path.basename(file)))
+            
+    # Accounting for biologically CCD ones
+    knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
+    knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
+    knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", dtype='str') # from GO proliferation
+    print(f"{len(bioccd)}: number of mitotic structure proteins")
+    
+    ccd_prots_withmitotic = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
+    total_proteins_minusmitotic = len(ccd_prots_withmitotic) - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
+    total_ccd_proteins_withmitotic = len(ccd_prots_withmitotic)
+    total_nonccd_proteins_minusmitotic = nonccd_protein_ct - sum(np.isin(wp_ensg[nonccd_comp], bioccd))
+    
+    overlapping_knownccd1 = sum(np.isin(ccd_prots_withmitotic, np.concatenate((knownccd1, knownccd2, knownccd3))))
+    overlapping_knownccd2 = sum(np.isin(ccd_prots_withmitotic, knownccd2))
+    overlapping_knownccd3 = sum(np.isin(ccd_prots_withmitotic, knownccd3))
+    
+    # pickle the results
+    utils.np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
+    utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
+    
+    with open("output/figuresofmerit.txt", "w") as file:
+        fom = "--- protein pseudotime\n\n"
+        fom += f"{len(np.unique(wp_ensg))} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
+        fom += f"present the first evidence of cell cycle association for {overlapping_knownccd1} proteins" + "\n\n"
+        fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {len(np.unique(wp_ensg))} proteins ({100 * ccd_protein_ct / len(np.unique(wp_ensg))}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained 8% or more variance in expression than random." + "\n\n"
+        fom += f"majority of the proteins analyzed ({100 * total_nonccd_proteins_minusmitotic / len(np.unique(wp_ensg))}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
+        fom += f"Of the {total_ccd_proteins_withmitotic} proteins ({ccd_protein_ct} in interphase, {len(bioccd)} in mitotic structures, and {-(total_ccd_proteins_withmitotic - ccd_protein_ct - len(bioccd))} in both sets) identified to correlate to cell cycle progression, {overlapping_knownccd1} ({100 * overlapping_knownccd1 / total_ccd_proteins_withmitotic}%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining {total_ccd_proteins_withmitotic - overlapping_knownccd1} proteins ({100* (total_ccd_proteins_withmitotic - overlapping_knownccd1) / total_ccd_proteins_withmitotic}%)," + "\n\n"
+        fom += f"The patterns of variability were investigated for these {len(wp_ensg)} proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was {np.mean(wp_bimodal_fcmaxmin)}." + "\n\n"
+        fom += f"We determined that {unimodal_generally_protein_ct} proteins ({100 * unimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) had unimodal intensity distributions, and {bimodal_generally_protein_ct} proteins ({100 * bimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) were found to display bimodality" + "\n\n"
+        fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters."
+        print(fom)
+        file.write(fom)

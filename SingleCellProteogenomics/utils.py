@@ -189,3 +189,17 @@ def general_scatter(x, y, xlabel, ylabel, outfile):
     plt.savefig(outfile)
     plt.show()
     plt.close()
+    
+def general_scatter_color(x, y, xlabel, ylabel, c, clabel, show_color_bar, title, outfile, cmap="viridis", alpha=1):
+    '''Make a general scatterplot with color using matplotlib'''
+    plt.figure(figsize=(10,10))
+    plt.scatter(x, y, c=c, cmap=cmap, alpha=alpha)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    if show_color_bar:
+        cb = plt.colorbar()
+        cb.set_label(clabel)
+    plt.title(title)
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()
