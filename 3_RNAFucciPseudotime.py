@@ -42,8 +42,9 @@ FucciPseudotime.pseudotime_umap(adata) # Generate a UMAP with the pseudotime ove
 RNADataPreparation.demonstrate_loss_of_umap_cycle(adata)
 
 # Read in the currated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
+bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = RNADataPreparation.ccd_gene_lists(adata)
-adata_regevccdgenes = np.isin(adata.var_names, ccd_regev_filtered)
+adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
 
 # Generate plots with expression of genes overlayed
 do_make_gene_expression_plots = False
@@ -61,7 +62,7 @@ if do_make_gene_expression_plots:
     RNACellCycleDependence.plot_expression_facs(nonccd_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/NonCcdGeneFucci")
 
 #%% Cluster the expression into phases and analyze it that way
-bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, adata_regevccdgenes, biotype_to_use)
+bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use)
 if do_make_gene_expression_plots:
      # Remove?
     RNACellCycleDependence.plot_expression_boxplots(adata, ccd_regev_filtered, bulk_phase_tests, "figures/RegevGeneBoxplots")
@@ -69,8 +70,6 @@ if do_make_gene_expression_plots:
     RNACellCycleDependence.plot_expression_boxplots(adata, nonccd_filtered, bulk_phase_tests, "figures/DianaNonCcdGeneBoxplots")
 
 #%% Moving average calculations and randomization analysis for RNA
-adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
-
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)
 percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms = rna_ccd_analysis_results
 

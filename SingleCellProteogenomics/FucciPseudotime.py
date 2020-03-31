@@ -56,7 +56,7 @@ def drange(x, y, jump):
     x += decimal.Decimal(jump)
 
 def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, analysis_title, R_2, start_phi, nbins=200,
-        show_gmnn = False, pol_sort_well_plate = np.empty(), pol_sort_ab_nuc = np.empty(), pol_sort_centered_data0 = np.empty(), pol_sort_centered_data1 = np.empty()):
+        show_gmnn = False, pol_sort_well_plate = [], pol_sort_ab_nuc = [], pol_sort_centered_data0 = [], pol_sort_centered_data1 = []):
     '''Visualize the log-FUCCI intensities and phase transitions'''
     fig, ax1 = plt.subplots(figsize=(10,10))
     mycmap = plt.cm.gray_r
@@ -85,14 +85,14 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
         plt.annotate(f"  {fucci.G1_LEN} hrs (end of G1)", (g1_end_pt[0],g1_end_pt[1]))
         plt.annotate(f"  {fucci.G1_LEN + fucci.G1_S_TRANS} hrs (end of S)", (g1s_end_pt[0],g1s_end_pt[1]))
         for yeah in list(drange(decimal.Decimal(0.1), 0.9, '0.1')):
-            plot_annotate_time(yeah)
+            plot_annotate_time(R_2, start_phi, yeah)
     plt.xlabel(r'$\propto log_{10}(GMNN_{fucci})$',size=20,fontname='Arial')
     plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20,fontname='Arial')
     plt.tight_layout()
     if show_gmnn:
-        plt.savefig(f'figures/GMNN_FUCCI_plot.pdf') ,transparent=True)
+        plt.savefig(f'figures/GMNN_FUCCI_plot.pdf', transparent=True)
     else:
-        plt.savefig(f'figures/masked_polar_hist_{analysis_title}.pdf'), transparent=True)
+        plt.savefig(f'figures/masked_polar_hist_{analysis_title}.pdf', transparent=True)
     plt.show()
     plt.close()
 
@@ -180,7 +180,7 @@ def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, are
                         log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_point, g1_end_pt, g1s_end_pt, cart_data_ur = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur = polar_coord_results
 
     well_plate_sort, well_plate_imgnb_sort = well_plate[pol_sort_inds], well_plate_imgnb[pol_sort_inds]
     ab_nuc_sort, ab_cyto_sort, ab_cell_sort, mt_cell_sort = pol_sort(pol_sort_inds,ab_nuc,ab_cyto,ab_cell,mt_cell)
@@ -209,9 +209,12 @@ def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, are
         pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 
         pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen)
 
+def get_phase_colormap():
+    return { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
+
 def defined_phases_scatter(phases_filtered, outfile):
     '''Generate a FUCCI plot (log intensities of the GFP and RFP tags) colored by phase'''
-    plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["Stage"].apply(lambda x: colormap[x]))
+    plt.scatter(phases_filtered["Green530"], phases_filtered["Red585"], c = phases_filtered["Stage"].apply(lambda x: get_phase_colormap()[x]))
     plt.legend(legendboxes, labels)
     plt.tight_layout()
     plt.savefig(outfile)
@@ -219,13 +222,13 @@ def defined_phases_scatter(phases_filtered, outfile):
 
 def pseudotime_rna(adata, phases_filt):
     phases_validIntPhase = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
-    utils.general_scatter_color(phases_validInt_validPhase["Green530"], phases_validInt_validPhase["Red585"], "log(Green530)", "log(Red585)", 
-        phases_filtered["Stage"].apply(lambda x: colormap[x]), "Cell Cycle Phase", False, "", "figures/FucciPlotByPhase_RNA.png", 
-        { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" })
+    utils.general_scatter_color(phases_validIntPhase["Green530"], phases_validIntPhase["Red585"], "log(Green530)", "log(Red585)", 
+        phases_validIntPhase["Stage"].apply(lambda x: get_phase_colormap()[x]), "Cell Cycle Phase", False, "", "figures/FucciPlotByPhase_RNA.png", 
+        get_phase_colormap())
     
     phases_validInt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
-    polar_coord_results = FucciPseudotime.fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, cart_data_ur, start_point = polar_coord_results
+    polar_coord_results = fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur = polar_coord_results
 
     # Assign cells a pseudotime and visualize in fucci plot
     pol_unsort = np.argsort(pol_sort_inds_reorder)
@@ -248,7 +251,6 @@ def pseudotime_rna(adata, phases_filt):
     # Save fucci times, so they can be used in other workbooks
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
-    norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
     cell_time_sort = pd.DataFrame({"fucci_time" : fucci_time_sort, "cell" : np.take(adata.obs_names, fucci_time_inds)})
     cell_time_sort.to_csv("output/CellPseudotimes.csv")
     pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
@@ -256,5 +258,6 @@ def pseudotime_rna(adata, phases_filt):
 def pseudotime_umap(adata):
     '''Display FUCCI pseudotime on the UMAP created from the gene expression'''
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adata)
     sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime.pdf")
