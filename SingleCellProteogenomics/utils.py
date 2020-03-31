@@ -19,8 +19,6 @@ import scipy
 import scipy.stats
 import seaborn as sbn
 
-
-
 def ccd_gene_names(id_list_like):
     '''Convert gene ID list to gene name list'''
     gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])

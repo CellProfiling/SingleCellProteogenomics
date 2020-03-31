@@ -10,7 +10,7 @@ import sys, re, math
 import seaborn as sbn
 import pandas as pd
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from scipy import stats
 from SingleCellProteogenomics import utils
 
@@ -282,4 +282,3 @@ def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed,
         "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected3{analysisTitle}.pdf", ylim=(-0.01,1.01))
     utils.general_boxplot((ccd_modocc, all_modocc, ccd_at_modocc), ("CCD\nProtein PTMs", "All\nProtein PTMs", "CCD\nTranscript\nProtein PTMs"),
         "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected4{analysisTitle}.pdf", ylim=(-0.01,1.01))
-        
