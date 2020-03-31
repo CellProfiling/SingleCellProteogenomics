@@ -22,7 +22,7 @@ wp_iscell, wp_isnuc, wp_iscyto = import_dict["wp_iscell"], import_dict["wp_isnuc
 # Exec: Devin's calculations
 # Output: fucci plot with polar coordinates
 
-pseudotime_result = ProteinFucciPseudotime.pseudotime_protein(fucci_data, 
+pseudotime_result = FucciPseudotime.pseudotime_protein(fucci_data, 
                            ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,
                            well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale)
 pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen = pseudotime_result
