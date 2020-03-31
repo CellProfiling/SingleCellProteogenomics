@@ -8,8 +8,7 @@ plt.rcParams['figure.fontname'] = "Arial"
 import_dict = Loaders.load_temporal_delay()
 u_well_plates, wp_ensg = import_dict["u_well_plates"], import_dict["wp_ensg"]
 wp_iscell, wp_isnuc, wp_iscyto = import_dict["wp_iscell"], import_dict["wp_isnuc"], import_dict["wp_iscyto"]
-ccd_comp, ccdtranscript,  = import_dict["ccd_comp"], import_dict["ccdtranscript"] 
-ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated = import_dict["ccdprotein_transcript_regulated"], import_dict["ccdprotein_nontranscript_regulated"]
+ccd_comp, ccdtranscript = import_dict["ccd_comp"], import_dict["ccdtranscript"] 
 pol_sort_well_plate, pol_sort_norm_rev = import_dict["pol_sort_well_plate"], import_dict["pol_sort_norm_rev"]
 pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = import_dict["pol_sort_ab_nuc"], import_dict["pol_sort_ab_cyto"], import_dict["pol_sort_ab_cell"], import_dict["pol_sort_mt_cell"]
 var_comp_prot, gini_comp_prot, cv_comp_prot = import_dict["var_comp"], import_dict["gini_comp"], import_dict["cv_comp"]
@@ -20,13 +19,13 @@ var_cell_prot, gini_cell_prot, cv_cell_prot = import_dict["var_cell"], import_di
 # Output: heatmap; correlations of known/novel proteins
 highlights = []#'ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
 highlights_ensg = []#'ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
+
 protein_heatmap_results = TemporalDelay.protein_heatmap(highlights, highlights_ensg, 
     ccd_comp, u_well_plates, wp_ensg, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto)
 sorted_maxpol_array, wp_binned_values, wp_max_pol, wp_max_pol_ccd, xvals = protein_heatmap_results
 
-# Corrlations of known and novel proteins that peak at similar times
+# Correlations of known and novel proteins that peak at similar times
 TemporalDelay.peak_expression_correlation_analysis(wp_binned_values, wp_max_pol, wp_ensg, pol_sort_well_plate, u_well_plates)
-
 
 #%% Create a heatmap of peak RNA expression
 highlight_names, highlight_ensg = [],[]

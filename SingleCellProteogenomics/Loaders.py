@@ -37,7 +37,7 @@ def load_protein_fucci_pseudotime():
         "wp_isnuc" :  np.load("output/pickles/wp_isnuc.npy", allow_pickle=True),
         "wp_iscyto" :  np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)}
 
-def load_temporal_delay();
+def load_temporal_delay():
     return_dict = load_protein_fucci_pseudotime()
     add_dict = {
         "ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
@@ -57,6 +57,45 @@ def load_temporal_delay();
         "pol_sort_area_nuc" : np.load("output/pickles/pol_sort_area_nuc.npy", allow_pickle=True),
         "pol_sort_fred" :  np.load("output/pickles/pol_sort_fred.npy", allow_pickle=True),
         "pol_sort_fgreen" :  np.load("output/pickles/pol_sort_fgreen.npy", allow_pickle=True)}
+    for item in add_dict.items():
+        return_dict[item.key] = item.value
+    return return_dict
+
+def load_ptm_stability():
+    return_dict = load_temporal_delay()
+
+    # Get the labels in terms of ENSG
+    ccdtranscript = np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)
+    ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)
+    ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
+    genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+    ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
+
+    # Convert them to gene names and store them as such
+    ccdtranscript_names = set(utils.ccd_gene_names(adata.var_names[ccdtranscript]))
+    nonccdtranscript_names = set(utils.ccd_gene_names(adata.var_names[~ccdtranscript]))
+    ccdprotein_transcript_regulated_names = set(utils.ccd_gene_names(adata.var_names[ccdprotein_transcript_regulated]))
+    ccdprotein_nontranscript_regulated_names = set(utils.ccd_gene_names(adata.var_names[ccdprotein_nontranscript_regulated]))
+    genes_analyzed_names = set(utils.ccd_gene_names(genes_analyzed))
+    ccd_regev_filtered_names = set(utils.ccd_gene_names(ccd_regev_filtered))
+    ccd_filtered_names = set(utils.ccd_gene_names(ccd_filtered))
+    nonccdprotein_names = set(utils.ccd_gene_names(return_dict["wp_ensg"][return_dict["nonccd_comp"]]))
+    ccdprotein_names = set(utils.ccd_gene_names(np.unique(return_dict["wp_ensg"][return_dict["ccd_comp"]])) # just pseudotime
+
+    add_dict = {
+        "wp_max_pol" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
+        "ccd_regev_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
+        "ccd_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
+        "nonccd_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
+        "ccdtranscript_names" : ccdtranscript_names,
+        "nonccdtranscript_names" : nonccdtranscript_names,
+        "ccdprotein_transcript_regulated_names" : ccdprotein_transcript_regulated_names,
+        "ccdprotein_nontranscript_regulated_names" : ccdprotein_nontranscript_regulated_names,
+        "genes_analyzed_names" : genes_analyzed_names,
+        "ccd_regev_filtered_names" : ccd_regev_filtered_names,
+        "ccd_filtered_names" : ccd_filtered_names,
+        "nonccdprotein_names" : nonccdprotein_names,
+        "ccdprotein_names" : ccdprotein_names}
     for item in add_dict.items():
         return_dict[item.key] = item.value
     return return_dict
