@@ -102,9 +102,9 @@ def np_save_overwriting(fn, arr):
     '''Helper function to always overwrite numpy pickles'''
     with open(fn,"wb") as f:    
         np.save(f, arr, allow_pickle=True)
-        
-def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile):
-    '''Make a boxplot given equal length group_values and group_labels'''
+
+def general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim=()):
+    '''Set up a boxplot given equal length group_values and group_labels'''
     if len(group_values) != len(group_labels): 
         print("Error: general_boxplot() requires equal length group_values and group_labels.")
         exit(1)
@@ -114,10 +114,24 @@ def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showflier
     boxplot.set_xlabel(xlabel, size=36,fontname='Arial')
     boxplot.set_ylabel(ylabel, size=18,fontname='Arial')
     boxplot.tick_params(axis="both", which="major", labelsize=14)
+    if len(ylim) > 0: boxplot.set(ylim=ylim)
     plt.title(title)
+    return cccc, mmmm
+
+def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim=()):
+    '''Make a boxplot given equal length group_values and group_labels'''
+    general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim)
     plt.savefig(outfile)
     plt.show()
-    plt.close()  
+    plt.close()
+
+def boxplot_with_stripplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, alpha=0.3, size=5, jitter=0.25, ylim=()):
+    plt.figure(figsize=(10,10))
+    cccc, mmmm = general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim)
+    boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=alpha, color=".3", size=size, jitter=jitter)
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()
 
 def general_scatter(x, y, xlabel, ylabel, outfile):
     '''Make a general scatterplot with matplotlib'''
@@ -157,3 +171,59 @@ def general_histogram(x, xlabel, ylabel, alpha, outfile):
 def format_p(p):
     '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
+
+## GENE NAME - ENSG CONVERSIONS
+
+def ccd_gene_names(id_list_like):
+    '''Convert gene ID list to gene name list'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
+
+def geneIdToHngc(id_list_like):
+    '''Convert gene ID list to HNGC symbol if it exists'''
+    gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
+    gene_info = gene_info[gene_info["hgnc_symbol"] != ""]
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["hgnc_symbol"]
+
+def geneIdToHngc_withgaps(id_list_like):
+    '''Convert gene ID list to HNGC symbol if it exists'''
+    gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
+    gene_info = gene_info[gene_info["hgnc_symbol"] != ""]
+    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["hgnc_symbol"]
+
+def ccd_gene_lists(adata):
+    '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
+    ccd=pd.read_csv("output/picklestxt/ccd_compartment_ensg.txt")#"input/processed/manual/ccd_genes.txt")
+    nonccd=pd.read_csv("output/picklestxt/nonccd_compartment_ensg.txt")#("input/processed/manual/nonccd_genes.txt")
+    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    return ccd_regev_filtered, ccd_filtered, nonccd_filtered
+
+def save_gene_names_by_category(adata):
+    '''Save files containing the gene names for each category of CCD proteins/transcripts'''
+    # Get the HGNC symbols for lists for GO analysis
+    pd.DataFrame({"gene" : list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)])))
+        }).to_csv("output/hgnc_ccdtranscript.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)])))
+        }).to_csv("output/hgnc_ccdprotein_transcript_regulated.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)])))
+        }).to_csv("output/hgnc_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(geneIdToHngc(wp_ensg[~ccd_comp])))
+        }).to_csv("output/hgnc_nonccdprotein.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(geneIdToHngc(np.concatenate((wp_ensg[ccd_comp], bioccd)))))
+        }).to_csv("output/hgnc_ccdprotein.csv", index=False, header=False)
+
+    # Save the geneIds for each category
+    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)]))
+        }).to_csv("output/ensg_ccdtranscript.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)]))
+        }).to_csv("output/ensg_ccdprotein_transcript_regulated.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)]))
+        }).to_csv("output/ensg_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
+    pd.DataFrame({"gene":list(set(wp_ensg[nonccd_comp]))
+        }).to_csv("output/ensg_nonccdprotein.csv", index=False, header=False)
+    pd.DataFrame({"gene": ccd_comp_ensg
+        }).to_csv("output/ensg_ccdprotein.csv", index=False, header=False)
