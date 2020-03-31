@@ -31,6 +31,15 @@ def mvmed_perc_var(yvals, windows):
     yval_avg = mvmed(yvals[windows])
     return np.var(yval_avg) / np.var(yvals), yval_avg
 
+def remove_outliers_idx(values):
+    '''Returns indices of outliers to remove'''
+    max_cutoff = np.mean(values) + 5 * np.std(values)
+    min_cutoff = np.mean(values) - 5 * np.std(values)
+    return (values < max_cutoff) & (values > min_cutoff)
+
+def remove_outliers(values, return_values):
+    '''Remove outliers on "values" and return "return_values" based on that filter'''
+    return return_values[remove_outliers_idx(values)]
 
 ## MOVING AVERAGE PLOTS
 
@@ -56,7 +65,7 @@ def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, w
     plt.savefig(outfile)
     plt.close()
         
-def temporal_mov_avg_rna(rna_or_protein, fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
+def temporal_mov_avg_rna(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
     plt.close()
     outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return

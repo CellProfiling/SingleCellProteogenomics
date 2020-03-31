@@ -22,16 +22,6 @@ def clust_to_wp_doub(clust, clust_idx):
     wp_clust[clust_idx] = clust
     return wp_clust
 
-def remove_outliers_idx(values):
-    '''Returns indices of outliers to remove'''
-    max_cutoff = np.mean(values) + 5 * np.std(values)
-    min_cutoff = np.mean(values) - 5 * np.std(values)
-    return (values < max_cutoff) & (values > min_cutoff)
-
-def remove_outliers(values, return_values):
-    '''Remove outliers on "values" and return "return_values" based on that filter'''
-    return return_values[remove_outliers_idx(values)]
-
 def permutation_analysis_protein(idx, curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
         perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val,
         wp_iscell, wp_isnuc, wp_iscyto,
@@ -91,11 +81,11 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         curr_mt_cell = pol_sort_mt_cell[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_mt_cell[curr_well_inds])
         if do_remove_outliers:
             curr_comp = curr_ab_cell if wp_iscell[i] else curr_ab_nuc if wp_isnuc[i] else curr_ab_cyto
-            curr_pol = remove_outliers(curr_comp, curr_pol)
-            curr_ab_cell = remove_outliers(curr_comp,curr_ab_cell)
-            curr_ab_nuc = remove_outliers(curr_comp,curr_ab_nuc)
-            curr_ab_cyto = remove_outliers(curr_comp,curr_ab_cyto)
-            curr_mt_cell = remove_outliers(curr_comp,curr_mt_cell)
+            curr_pol = MovingAverages.remove_outliers(curr_comp, curr_pol)
+            curr_ab_cell = MovingAverages.remove_outliers(curr_comp,curr_ab_cell)
+            curr_ab_nuc = MovingAverages.remove_outliers(curr_comp,curr_ab_nuc)
+            curr_ab_cyto = MovingAverages.remove_outliers(curr_comp,curr_ab_cyto)
+            curr_mt_cell = MovingAverages.remove_outliers(curr_comp,curr_mt_cell)
     
         # Normalize mean intensities, normalized for display
         curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
@@ -124,7 +114,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         if wp_isbimodal_fcpadj_pass[i]:
             clust1_idx, clust2_idx = wp_bimodal_cluster_idxs[i]
             if do_remove_outliers:
-                clust1_idx, clust2_idx = remove_outliers(curr_comp, clust1_idx), remove_outliers(curr_comp, clust2_idx)
+                clust1_idx, clust2_idx = MovingAverages.remove_outliers(curr_comp, clust1_idx), MovingAverages.remove_outliers(curr_comp, clust2_idx)
             perc_var_comp_clust1_val, mvavg_clust1 = MovingAverages.mvavg_perc_var(curr_comp_norm[clust1_idx], WINDOW)
             perc_var_comp_clust2_val, mvavg_clust2 = MovingAverages.mvavg_perc_var(curr_comp_norm[clust2_idx], WINDOW)
             mvavgs_x_clust1.append(MovingAverages.mvavg(curr_pol[clust1_idx], WINDOW))

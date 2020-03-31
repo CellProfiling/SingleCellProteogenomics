@@ -78,6 +78,13 @@ def ccd_gene_lists(adata):
     nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
     return ccd_regev_filtered, ccd_filtered, nonccd_filtered
 
+def is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered):
+    '''Return whether the genes in RNA-Seq analysis are 1) CCD by present protein analysis 2) non-CCD by present protein analysis, 3) curated published CCD'''
+    ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
+    nonccdprotein = np.isin(adata.var_names, wp_ensg[nonccd_comp]) & ~np.isin(adata.var_names, bioccd)
+    regevccdgenes = np.isin(adata.var_names, ccd_regev_filtered)
+    return ccdprotein, nonccdprotein, regevccdgenes
+
 def general_plots():
     '''Make plots to illustrate the results of the scRNA-Seq analysis'''
     plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
