@@ -32,19 +32,31 @@ def load_protein_fucci_pseudotime():
         "wp_comp_kruskal_gaussccd_adj" :  np.load("output/pickles/wp_comp_kruskal_gaussccd_adj.npy", allow_pickle=True),
         "wp_pass_kruskal_gaussccd_bh_comp" :  np.load("output/pickles/wp_pass_kruskal_gaussccd_bh_comp.npy", allow_pickle=True),
         "fucci_data" :  np.load("output/pickles/fucci_data.npy", allow_pickle=True),
-
-        # "pol_sort_well_plate" :  np.load("output/pickles/pol_sort_well_plate.npy", allow_pickle=True),
-        # "pol_sort_norm_rev" :  np.load("output/pickles/pol_sort_norm_rev.npy", allow_pickle=True),
-        # "pol_sort_ab_nuc" :  np.load("output/pickles/pol_sort_ab_nuc.npy", allow_pickle=True),
-        # "pol_sort_ab_cyto" :  np.load("output/pickles/pol_sort_ab_cyto.npy", allow_pickle=True),
-        # "pol_sort_ab_cell" :  np.load("output/pickles/pol_sort_ab_cell.npy", allow_pickle=True),
-        # "pol_sort_mt_cell" :  np.load("output/pickles/pol_sort_mt_cell.npy", allow_pickle=True),
-        # "pol_sort_area_cell" : np.load("output/pickles/pol_sort_area_cell.npy", allow_pickle=True),
-        # "pol_sort_area_nuc" : np.load("output/pickles/pol_sort_area_nuc.npy", allow_pickle=True),
-        # "pol_sort_fred" :  np.load("output/pickles/pol_sort_fred.npy", allow_pickle=True),
-        # "pol_sort_fgreen" :  np.load("output/pickles/pol_sort_fgreen.npy", allow_pickle=True),
        
         "wp_iscell" :  np.load("output/pickles/wp_iscell.npy", allow_pickle=True),
         "wp_isnuc" :  np.load("output/pickles/wp_isnuc.npy", allow_pickle=True),
         "wp_iscyto" :  np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)}
-     
+
+def load_temporal_delay();
+    return_dict = load_protein_fucci_pseudotime()
+    add_dict = {
+        "ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
+        "var_comp" : np.load("output/pickles/var_comp.npy", allow_pickle=True),
+        "gini_comp" : np.load("output/pickles/gini_comp.npy", allow_pickle=True),
+        "cv_comp" : np.load("output/pickles/cv_comp.npy", allow_pickle=True),
+        "var_cell" : np.load("output/pickles/var_cell.npy", allow_pickle=True),
+        "gini_cell" : np.load("output/pickles/gini_cell.npy", allow_pickle=True),
+        "cv_cell" : np.load("output/pickles/cv_cell.npy", allow_pickle=True),
+        "pol_sort_well_plate" :  np.load("output/pickles/pol_sort_well_plate.npy", allow_pickle=True),
+        "pol_sort_norm_rev" :  np.load("output/pickles/pol_sort_norm_rev.npy", allow_pickle=True),
+        "pol_sort_ab_nuc" :  np.load("output/pickles/pol_sort_ab_nuc.npy", allow_pickle=True),
+        "pol_sort_ab_cyto" :  np.load("output/pickles/pol_sort_ab_cyto.npy", allow_pickle=True),
+        "pol_sort_ab_cell" :  np.load("output/pickles/pol_sort_ab_cell.npy", allow_pickle=True),
+        "pol_sort_mt_cell" :  np.load("output/pickles/pol_sort_mt_cell.npy", allow_pickle=True),
+        "pol_sort_area_cell" : np.load("output/pickles/pol_sort_area_cell.npy", allow_pickle=True),
+        "pol_sort_area_nuc" : np.load("output/pickles/pol_sort_area_nuc.npy", allow_pickle=True),
+        "pol_sort_fred" :  np.load("output/pickles/pol_sort_fred.npy", allow_pickle=True),
+        "pol_sort_fgreen" :  np.load("output/pickles/pol_sort_fgreen.npy", allow_pickle=True)}
+    for item in add_dict.items():
+        return_dict[item.key] = item.value
+    return return_dict

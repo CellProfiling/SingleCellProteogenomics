@@ -144,6 +144,16 @@ def general_scatter_color(x, y, xlabel, ylabel, c, clabel, show_color_bar, title
     plt.show()
     plt.close()
 
+def general_histogram(x, xlabel, ylabel, alpha, outfile):
+    '''Make a general histogram'''
+    plt.hist(x, alpha=alpha)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.tight_layout()
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()
+
 def format_p(p):
     '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
