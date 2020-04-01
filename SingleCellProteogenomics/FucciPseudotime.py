@@ -228,7 +228,7 @@ def pseudotime_rna(adata, phases_filt):
     
     phases_validInt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
     polar_coord_results = fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2 = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Assign cells a pseudotime and visualize in fucci plot
     pol_unsort = np.argsort(pol_sort_inds_reorder)
