@@ -2,7 +2,6 @@
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, Loaders, TemporalDelay
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
-plt.rcParams['figure.fontname'] = "Arial"
 
 #%% Read in the protein data
 import_dict = Loaders.load_temporal_delay()

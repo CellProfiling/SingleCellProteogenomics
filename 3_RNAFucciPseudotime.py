@@ -37,9 +37,9 @@ if do_make_boxplots:
 #%% Idea: Display general RNA expression patterns in single cells using UMAP dimensionality reduction, and display with FUCCI pseudotime overlayed
 FucciPseudotime.pseudotime_umap(adata) # Generate a UMAP with the pseudotime overlayed
 
-# We can also show that the cycle pattern disappears when the curated CCD genes or CCD proteins are removed,
-# demonstrating that there's valuable information about cycling in these datasets
-RNADataPreparation.demonstrate_loss_of_umap_cycle(adata)
+# We can also show that the cycle pattern remains when the curated CCD genes or CCD proteins are removed,
+# demonstrating that there's still valuable information about cell cycling beyond what was called CCD
+RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
 
 # Read in the currated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
 bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
@@ -76,11 +76,6 @@ percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_
 RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered)
 RNACellCycleDependence.mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
-
-# (Remove?) What are these low percent variance ones that are significant?
-print("What are these low percent variance ones that are significant?")
-low_variance_signif = (percent_ccd_variance < 0.03) & ccd_comp & pass_meandiff
-print(np.array(adata.var_names)[low_variance_signif])
 
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls

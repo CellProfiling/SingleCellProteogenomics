@@ -6,6 +6,8 @@ Created on Mon Mar 30 12:41:32 2020
 """
 
 import numpy as np
+import pandas as pd
+from SingleCellProteogenomics import utils
 
 def load_protein_fucci_pseudotime():
     return {
@@ -39,8 +41,8 @@ def load_protein_fucci_pseudotime():
 
 def load_temporal_delay():
     return_dict = load_protein_fucci_pseudotime()
-    add_dict = {
-        "ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
+    add_dict = {"ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
+        "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
         "var_comp" : np.load("output/pickles/var_comp.npy", allow_pickle=True),
         "gini_comp" : np.load("output/pickles/gini_comp.npy", allow_pickle=True),
         "cv_comp" : np.load("output/pickles/cv_comp.npy", allow_pickle=True),
@@ -58,14 +60,16 @@ def load_temporal_delay():
         "pol_sort_fred" :  np.load("output/pickles/pol_sort_fred.npy", allow_pickle=True),
         "pol_sort_fgreen" :  np.load("output/pickles/pol_sort_fgreen.npy", allow_pickle=True)}
     for item in add_dict.items():
-        return_dict[item.key] = item.value
+        return_dict[item[0]] = item[1]
     return return_dict
 
-def load_ptm_stability():
+def load_ptm_and_stability(adata):
     return_dict = load_temporal_delay()
 
     # Get the labels in terms of ENSG
-    ccdtranscript = np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)
+    ccdtranscript = return_dict["ccdtranscript"]
+    ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
+    nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
     ccdprotein_transcript_regulated = np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)
     ccdprotein_nontranscript_regulated = np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)
     genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
@@ -79,14 +83,10 @@ def load_ptm_stability():
     genes_analyzed_names = set(utils.ccd_gene_names(genes_analyzed))
     ccd_regev_filtered_names = set(utils.ccd_gene_names(ccd_regev_filtered))
     ccd_filtered_names = set(utils.ccd_gene_names(ccd_filtered))
-    nonccdprotein_names = set(utils.ccd_gene_names(return_dict["wp_ensg"][return_dict["nonccd_comp"]]))
-    ccdprotein_names = set(utils.ccd_gene_names(np.unique(return_dict["wp_ensg"][return_dict["ccd_comp"]])) # just pseudotime
+    nonccdprotein_names = set(utils.ccd_gene_names(return_dict["wp_ensg"][nonccd_comp]))
+    ccdprotein_names = set(utils.ccd_gene_names(np.unique(return_dict["wp_ensg"][ccd_comp]))) # just pseudotime
 
-    add_dict = {
-        "wp_max_pol" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
-        "ccd_regev_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
-        "ccd_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
-        "nonccd_filtered" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
+    add_dict = {"wp_max_pol" : np.load("output/pickles/wp_max_pol.npy", allow_pickle=True),
         "ccdtranscript_names" : ccdtranscript_names,
         "nonccdtranscript_names" : nonccdtranscript_names,
         "ccdprotein_transcript_regulated_names" : ccdprotein_transcript_regulated_names,
@@ -97,5 +97,5 @@ def load_ptm_stability():
         "nonccdprotein_names" : nonccdprotein_names,
         "ccdprotein_names" : ccdprotein_names}
     for item in add_dict.items():
-        return_dict[item.key] = item.value
+        return_dict[item[0]] = item[1]
     return return_dict

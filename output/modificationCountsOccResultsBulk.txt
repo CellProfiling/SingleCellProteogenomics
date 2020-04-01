@@ -19,7 +19,7 @@ one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non
 one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: 0.018387337277529284
 one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: 1.1955978897560333
 one-sided kruskal for same medians of all genes and all transcriptionally reg: 1.6299705073985818e-11
-one-sided kruskal for same medians of all genes and regev transcriptionally reg: 0.6853809057709846
+one-sided kruskal for same medians of all genes and regev transcriptionally reg: nan
 one-sided kruskal for same medians of all genes and non-transcriptionally reg: 0.18311204194927969
 one-sided kruskal for same medians of all genes and non-CCD: 0.1272971274891285
 one-sided kruskal for same medians of all genes and CCD: 0.018248265109330607

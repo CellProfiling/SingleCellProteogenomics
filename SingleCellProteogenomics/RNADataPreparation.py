@@ -151,7 +151,7 @@ def analyze_noncycling_cells():
     sc.pl.umap(adata, color="louvain", show=True, save=True)
     shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after.pdf")
 
-def demonstrate_loss_of_umap_cycle(adata):
+def demonstrate_umap_cycle_without_ccd(adata):
     '''
     Idea: We should expect that the UMAP does not recognize a cycle when cycling transcripts are removed.
     Removing the CCD genes from the 93 curated genes or the 300-or-so CCD proteins identified in this work lead to UMAPs that are not cyclical. 
