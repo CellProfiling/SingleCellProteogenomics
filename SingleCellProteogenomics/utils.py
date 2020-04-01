@@ -185,15 +185,9 @@ def geneIdToHngc(id_list_like):
 def geneIdToHngc_withgaps(id_list_like):
     '''Convert gene ID list to HNGC symbol if it exists'''
     gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
-    hgnc_symbols = []
-    with_hgnc = list(gene_info[gene_info["hgnc_symbol"] != ""]["hgnc_symbol"])
-    gene_id_with_hgnc = list(gene_info[gene_info["hgnc_symbol"] != ""]["gene_id"])
-    hgnc_symbols = 
-    for idd in id_list_like:
-        if idd in gene_id_with_hgnc: 
-            hgnc_symbols.append(with_hgnc[gene_id_with_hgnc.index(idd)])
-        else:
-            hngc_symbols.append("")
+    with_hgnc = list(gene_info["hgnc_symbol"])
+    gene_id_with_hgnc = list(gene_info["gene_id"])
+    hgnc_symbols = [with_hgnc[gene_id_with_hgnc.index(ensg)] for ensg in id_list_like]
     return hgnc_symbols
 
 def ccd_gene_lists(adata):
