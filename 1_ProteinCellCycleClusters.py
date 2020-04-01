@@ -9,10 +9,7 @@ Analysis of protein abundance by cell cycle phase.
 
 #%% Imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import ProteinDataPreparation, ProteinGaussianClustering, ProteinVariability, ProteinFucciPseudotime, ProteinBimodality
-from SingleCellProteogenomics import CellCycleDependence
-import numpy as np
-import sklearn.mixture
+from SingleCellProteogenomics import ProteinDataPreparation, ProteinGaussianClustering, ProteinVariability, ProteinBimodality, ProteinCellCycleDependence
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data (methods in ProteinDataPreparation.py)
