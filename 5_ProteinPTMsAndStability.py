@@ -1,6 +1,6 @@
 #%% Imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils, Loaders, RNADataPreparation, PTMAnalysis
+from SingleCellProteogenomics import utils, Loaders, RNADataPreparation, PTMAnalysis, ProteinStabilityAnalysis
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
 
 #%% Import the genes names we're analyzing
@@ -87,4 +87,5 @@ print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0]["modification"].valu
 print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 
-
+#%% Perform melting point analysis
+ProteinStabilityAnalysis.melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein)
