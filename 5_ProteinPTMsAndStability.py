@@ -38,6 +38,16 @@ dfPhospho, occdfPhospho = PTMAnalysis.process_genemods(genemodsPhospho)
 PTMAnalysis.compare_ptm_regulation(dfBulk, occdfBulk, "Bulk", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
 PTMAnalysis.compare_ptm_regulation(dfPhospho, occdfPhospho, "Phospho", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
 
+#%% Perform melting point analysis
+# Idea: A lower melting point for a protein indicates a higher propensity to unfold, 
+#    and so the melting points measured by MS proteomics serve as a useful way to study the protein stability of CCD proteins
+# Output: Boxplots illustrating differences in stability for different classes of CCD proteins
+ProteinStabilityAnalysis.melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein)
+
+
+
+
+
 #%% Look at time of peak expression for phosphosites on proteins that are CCD
 # Conclusion: there's not much going on in terms of correlation to the peak expression of the protein
 hngcWithGaps = list(geneIdToHngc_withgaps(wp_ensg))
@@ -87,5 +97,3 @@ print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0]["modification"].valu
 print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 
-#%% Perform melting point analysis
-ProteinStabilityAnalysis.melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein)
