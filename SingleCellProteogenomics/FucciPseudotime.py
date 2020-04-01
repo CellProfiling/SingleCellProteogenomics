@@ -174,13 +174,13 @@ def fucci_polar_coords(x, y, analysis_title):
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, analysis_title, R_2, start_phi)
 
     return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, 
-        more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur)
+        more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
 def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb,
                         log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     well_plate_sort, well_plate_imgnb_sort = well_plate[pol_sort_inds], well_plate_imgnb[pol_sort_inds]
     ab_nuc_sort, ab_cyto_sort, ab_cell_sort, mt_cell_sort = pol_sort(pol_sort_inds,ab_nuc,ab_cyto,ab_cell,mt_cell)
@@ -228,7 +228,7 @@ def pseudotime_rna(adata, phases_filt):
     
     phases_validInt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
     polar_coord_results = fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2 = polar_coord_results
 
     # Assign cells a pseudotime and visualize in fucci plot
     pol_unsort = np.argsort(pol_sort_inds_reorder)
