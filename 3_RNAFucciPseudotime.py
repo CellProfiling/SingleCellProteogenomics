@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Analysis of transcript abundance in individual cells over cell division time.
+-  Cell division time is measured with FUCCI markers and modeled in log-log space using polar coordinates.
+-  RNA abundance was measured with single-cell RNA sequencing.
+-  FUCCI marker intensities are measured for each individual cell with fluorescence assisted cell sorting (FACS)
+
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+"""
+
 #%% imports
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle, FucciPseudotime, RNADataPreparation, RNACellCycleDependence

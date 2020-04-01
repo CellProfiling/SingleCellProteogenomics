@@ -2,7 +2,7 @@
 """
 Analysis of protein abundance by cell cycle phase.
 -  Uses Gaussian clustering to group cell expression into cell cycle phases.
--  This is referred to as the mock-bulk analysis in the paper.
+-  This is referred to as the "mock-bulk" analysis in the paper.
 
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
