@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 14:58:35 2020
+Clustering the cells into cell cycle phases using FUCCI cell cycle markers:
+    - The log intensities of FUCCI markers, CDT1 and GMNN, are centered in log-log space to remove batch effects
+    - Gaussian clustering into three phases (G1, S-transition, G2) are used to distinguish phases
+    - Differences in protein abundance evaluated for significance using Kruskal-Wallis tests
+    - This constitutes a "mock-bulk" analysis using single cell data
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *

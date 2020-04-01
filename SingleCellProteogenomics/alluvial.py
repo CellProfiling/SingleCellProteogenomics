@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Methods for creating alluvial plots.
+
+Copied from https://github.com/vinsburg/alluvial_diagram. License provided in alluvial_LICENSE file in this directory.
+
+@author: vinsburg
+@author: Anthony J. Cesnik, cesnik@stanford.edu (commenting only)
+"""
+
 import numpy as np
 from collections import Counter, defaultdict
 import matplotlib.pyplot as plt

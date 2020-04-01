@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 18:52:36 2020
+Utility functions for:
+    - Statistics
+    - Saving results
+    - Plotting
+    - Gene ID - Gene name conversions
 
 @author: antho
 """
@@ -192,13 +196,14 @@ def geneIdToHngc_withgaps(id_list_like):
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")   
     wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
     ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
     nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
     ccd=wp_ensg[ccd_comp]
     nonccd=wp_ensg[nonccd_comp]
-    ccd_regev_filtered = list(ccd_regev[np.isin(ccd_regev, adata.var_names)])
+    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
     ccd_filtered = list(ccd[np.isin(ccd, adata.var_names)])
     nonccd_filtered = list(nonccd[np.isin(nonccd, adata.var_names)])
     return ccd_regev_filtered, ccd_filtered, nonccd_filtered

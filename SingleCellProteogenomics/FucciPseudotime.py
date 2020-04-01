@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 16:20:24 2020
+Includes modeling of the cell cycle using FUCCI cell cycle markers.
+The FUCCI markers are modeled using a polar coordinate model of the CDT1 and GMNN log-intensities.
+The markers were measured for each cell in protein measurements using confocal microscopy.
+The markers were measured for each cell in RNA analysis using FACS intentensities.
 
-@author: antho
+@author: devinsullivan
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *
@@ -14,16 +18,16 @@ import sklearn.mixture
 import decimal
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
-NBINS_POLAR_COORD = 150 #number of bins for polar coord calculation, arbitrary choice for now
-WINDOW_FUCCI_PSEUDOTIME = 100
-fucci = FucciCellCycle()
+NBINS_POLAR_COORD = 150 # Number of bins for polar coord calculation, arbitrary choice for now
+WINDOW_FUCCI_PSEUDOTIME = 100 # Window used for visualizing FUCCI intensities over pseudotime
+fucci = FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
 ## POLAR COORDINATE FUNCTIONS
 def calc_R(xc, yc, x, y):
-    """ calculate the distance of each 2D points from the center (xc, yc) """
+    '''Calculate the distance of each 2D points from the center (xc, yc)'''
     return np.sqrt((x-xc)**2 + (y-yc)**2)
 def f_2(c,x,y):
-    """ calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc) """
+    '''Calculate the algebraic distance between the data points and the mean circle centered at c=(xc, yc)'''
     print(c)
     Ri = calc_R(c[0],c[1],x,y)
     return Ri - Ri.mean()
@@ -51,13 +55,17 @@ def plot_annotate_time(R_2, start_phi, fraction):
     plt.scatter(pt[0],pt[1],c='c',linewidths=4)
     plt.annotate(f"  {round(fraction * fucci.TOT_LEN, 2)} hrs", (pt[0], pt[1]))
 def drange(x, y, jump):
-  while x < y:
-    yield float(x)
-    x += decimal.Decimal(jump)
+    '''Increment `x` by a decimal `jump` until greater than `y`'''
+    while x < y:
+        yield float(x)
+        x += decimal.Decimal(jump)
 
 def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, analysis_title, R_2, start_phi, nbins=200,
         show_gmnn = False, pol_sort_well_plate = [], pol_sort_ab_nuc = [], pol_sort_centered_data0 = [], pol_sort_centered_data1 = []):
-    '''Visualize the log-FUCCI intensities and phase transitions'''
+    '''
+    Visualize the log-FUCCI intensities and phase transitions.
+    If `show_gmnn` is true, generate an overlay of the GMNN antibody staining intensities.
+    '''
     fig, ax1 = plt.subplots(figsize=(10,10))
     mycmap = plt.cm.gray_r
     mycmap.set_under(color='w',alpha=None)
@@ -210,6 +218,7 @@ def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, are
         pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen)
 
 def get_phase_colormap():
+    '''Get colormap used for cell cycle phase illustrations'''
     return { "G1" : "blue", "G2M" : "orange", "S-ph" : "green" }
 
 def defined_phases_scatter(phases_filtered, outfile):
@@ -221,6 +230,11 @@ def defined_phases_scatter(phases_filtered, outfile):
     plt.close()
 
 def pseudotime_rna(adata, phases_filt):
+    '''
+    Model the pseudotime of FUCCI markers measured by FACS for cell analyzed with single-cell RNA sequencing
+    Input: RNA-Seq data; cell cycle phase for each cell
+    Output: Cell cycle pseudotime for each cell; plots illustrating FUCCI intensities over pseudotime
+    '''
     phases_validIntPhase = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
     utils.general_scatter_color(phases_validIntPhase["Green530"], phases_validIntPhase["Red585"], "log(Green530)", "log(Red585)", 
         phases_validIntPhase["Stage"].apply(lambda x: get_phase_colormap()[x]), "Cell Cycle Phase", False, "", "figures/FucciPlotByPhase_RNA.png", 
@@ -256,7 +270,11 @@ def pseudotime_rna(adata, phases_filt):
     pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
 
 def pseudotime_umap(adata):
-    '''Display FUCCI pseudotime on the UMAP created from the gene expression'''
+    '''
+    Display FUCCI pseudotime on the UMAP created from the gene expression.
+    Input: RNA-Seq data
+    Output: UMAP diagram
+    '''
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata)
     sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)

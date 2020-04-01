@@ -18,8 +18,8 @@ fucci = FucciCellCycle.FucciCellCycle()
 
 #%% Import the genes names we're analyzing
 # Read in RNA-Seq data again and the CCD gene lists
-plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
-adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
 import_dict = Loaders.load_ptm_and_stability(adata)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 12:26:52 2020
+Lengths of the FUCCI cell cycle phases.
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 class FucciCellCycle:

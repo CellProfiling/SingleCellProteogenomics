@@ -1,23 +1,36 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 28 15:51:50 2020
+Methods for assessing cell cycle dependence of protein abundance in single cells.
+-  Percent variance attributed to the cell cycle was calculated using the (variance of moving average / total variance)
+-  Randomization analysis was used to determine statistical significance of high percent variances due to the cell cycle
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: devinsullivan
 """
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
 
-WINDOW = 10 # Number of points for moving average window
-PERMUTATIONS = 10000
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
+WINDOW = 10 # Number of points for moving average window for protein analysis
+PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
 def clust_to_wp(clust, clust_idx):
+    '''
+    clust: boolean-typed numpy array
+    Gather results for either high- and low-expressing cell populations from combined results.
+    (The high- and low-expressing populations were combined with all single-population results for multiple testing correction.)
+    '''
     wp_clust = np.array([False] * len(clust_idx))
     wp_clust[clust_idx] = clust
     return wp_clust
 
 def clust_to_wp_doub(clust, clust_idx):
+    '''
+    clust: double-typed numpy array
+    Gather results for either high- and low-expressing cell populations from combined results.
+    (The high- and low-expressing populations were combined with all single-population results for multiple testing correction.)
+    '''
     wp_clust = np.array([0.0] * len(clust_idx))
     wp_clust[clust_idx] = clust
     return wp_clust
@@ -357,6 +370,7 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
     plt.close()
     
 def analyze_replicates(wp_ccd_with_replicates, wp_ensg, analysis_tag):
+    '''Some antibodies were replicated in a second batch; analyze the replication results'''
     wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
     ensg_is_duplicated = wp_ensg_counts > 1
     duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])

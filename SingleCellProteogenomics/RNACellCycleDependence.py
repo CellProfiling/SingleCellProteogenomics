@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 19:31:42 2020
+Methods for assessing cell cycle dependence of RNA abundances in single cells.
+-  Percent variance attributed to the cell cycle was calculated using the (variance of moving average / total variance)
+-  Randomization analysis was used to determine statistical significance of high percent variances due to the cell cycle
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages, FucciCellCycle, FucciPseudotime, RNADataPreparation
 
-WINDOW = 100
-PERMUTATIONS = 10000
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08
-fucci = FucciCellCycle.FucciCellCycle()
+WINDOW = 100 # Number of points for moving average window for protein analysis
+PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
+
+fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
 def boxplot_result(g1, s, g2, outfolder, ensg):
     '''Make boxplots of RNA expression by phase'''
@@ -64,6 +67,7 @@ def plot_expression_facs(genelist, normalized_exp_data, phases, var_names, outfo
         plt.close()
 
 def plot_expression_boxplots(adata, genelist, bulk_phase_tests, outfolder):
+    '''Generate plots of RNA expression by phase in a boxplots'''
     notfound = []
     if not os.path.exists(outfolder): os.mkdir(outfolder)
     for gene in genelist:

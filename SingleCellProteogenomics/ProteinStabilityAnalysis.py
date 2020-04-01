@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 31 21:04:12 2020
+Analysis of mass spectrometry (MS) proteomic profiling of protein melting points:
+    - Allows evaluation of protein stability, since lower melting points indicate higher propensity for unfolding
+    - The results from three different cell lines (A549, HEK293, HepG2) were averaged for each protein
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 import numpy as np

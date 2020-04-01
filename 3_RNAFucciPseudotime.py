@@ -22,7 +22,7 @@ nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
 # Execution: Adapt Devin's code for the cells sorted for RNA-Seq
 # Output: Make log-log fucci intensity plots for the cells analyzed by RNA-Seq; Plot of all fucci pseudotimes; table of pseudotimes for each cell
-adata, phases_filt = RNADataPreparation.read_counts_and_phases("All", "Counts", False, "protein_coding") # no qc, yet
+adata, phases_filt = RNADataPreparation.read_counts_and_phases("Counts", False, "protein_coding") # no qc, yet
 FucciPseudotime.pseudotime_rna(adata, phases_filt)
 
 #%% Single cell RNA-Seq data preparation and general analysis
@@ -32,8 +32,8 @@ RNADataPreparation.analyze_noncycling_cells()
 #%% Idea: Similar to mock-bulk analysis for proteins, we can evaluate each gene bundled by phase across cells
 # Execution: Make boxplots of RNA expression by phase
 # Output: boxplots for each gene
-plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
-adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize=True, do_remove_blob=True)
 g1, s, g2 = adata.obs["phase"] == "G1", adata.obs["phase"] == "S-ph", adata.obs["phase"] == "G2M"
 do_make_boxplots = False
@@ -51,7 +51,7 @@ RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
 
 # Read in the currated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
 bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
-ccd_regev_filtered, ccd_filtered, nonccd_filtered = RNADataPreparation.ccd_gene_lists(adata)
+ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
 adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
 
 # Generate plots with expression of genes overlayed
