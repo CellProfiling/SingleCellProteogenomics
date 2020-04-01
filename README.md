@@ -6,7 +6,7 @@ This repository contains the code used to perform the single-cell proteogenomic 
 Please find the preprint manuscript here: https://www.biorxiv.org/content/10.1101/543231v2
 
 ## Structure of repository
-The .ipynb file contains all code and output from the analysis files, which are listed in order of execution, e.g. "1_", "2_" etc. The output of each script is used in the subsequent script to speed up reanalysis if necessary.
+The [SpatiotemporalProteogenomics.ipynb](https://github.com/CellProfiling/SingleCellProteogenomics/blob/master/SpatiotemporalProteogenomics.ipynb) file contains all code and output from the analysis files, which are listed in order of execution, e.g. "1_", "2_" etc. The output of each script is used in the subsequent script to speed up reanalysis if necessary.
 
 The logic for these analyses is contained in the SingleCellProteogenomics folder.
 
