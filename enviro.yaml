@@ -8,3 +8,7 @@ dependencies:
   - scanpy
   - scipy
   - matplotlib
+  - scikit-learn
+  - seaborn
+  - biopython
+  - basemap
