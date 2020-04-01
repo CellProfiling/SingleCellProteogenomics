@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Investigation of the properties of proteins with different cell cycle regulation using PTMs and stability measurements
+-  PTMs are observed using previously published bulk and phospho-enriched mass spectrometry (MS) proteomic data
+-  Differences in PTM regulation is inferred using PTM occupancy for each PTM site
+-  Protein stability was measured by MS thermal profiling in an external study
+-  Differences in thermal shifts indicate different stabilities and propensity for unfolding
+
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+"""
+
 #%% Imports
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, Loaders, FucciCellCycle, RNADataPreparation, PTMAnalysis, ProteinStabilityAnalysis

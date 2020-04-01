@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Analysis of protein abundance in individual cells over cell division time.
+-  Cell division time is measured with FUCCI markers and modeled in log-log space using polar coordinates.
+-  The cell division time modeling is referred to as the "pseudotime" analysis in the paper.
+-  Protein abundance is measured in individual asynchronous cells using immunofluorescence and antibody staining.
+
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+"""
+
 #%% Imports
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import Loaders, FucciPseudotime, ProteinVariability, ProteinBimodality, ProteinCellCycleDependence
