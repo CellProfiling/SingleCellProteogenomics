@@ -1,8 +1,6 @@
 #%% imports
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle, FucciPseudotime, RNADataPreparation, RNACellCycleDependence
-from scipy.optimize import least_squares
-import decimal
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
@@ -61,13 +59,13 @@ if do_make_gene_expression_plots:
     RNACellCycleDependence.plot_expression_facs(ccd_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/CcdGeneFucci")
     RNACellCycleDependence.plot_expression_facs(nonccd_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/NonCcdGeneFucci")
 
-#%% Cluster the expression into phases and analyze it that way
+# Cluster the expression into phases and analyze it that way
 bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use)
 if do_make_gene_expression_plots:
      # Remove?
     RNACellCycleDependence.plot_expression_boxplots(adata, ccd_regev_filtered, bulk_phase_tests, "figures/RegevGeneBoxplots")
-    RNACellCycleDependence.plot_expression_boxplots(adata, ccd_filtered, bulk_phase_tests, "figures/DianaCcdGeneBoxplots")
-    RNACellCycleDependence.plot_expression_boxplots(adata, nonccd_filtered, bulk_phase_tests, "figures/DianaNonCcdGeneBoxplots")
+    RNACellCycleDependence.plot_expression_boxplots(adata, ccd_filtered, bulk_phase_tests, "figures/CcdGeneBoxplots")
+    RNACellCycleDependence.plot_expression_boxplots(adata, nonccd_filtered, bulk_phase_tests, "figures/NonCcdGeneBoxplots")
 
 #%% Moving average calculations and randomization analysis for RNA
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)

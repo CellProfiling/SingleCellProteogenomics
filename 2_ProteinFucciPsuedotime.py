@@ -1,11 +1,10 @@
 #%% Imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import FucciPseudotime, ProteinVariability, ProteinBimodality, CellCycleDependence
-from SingleCellProteogenomics.Loaders import load_protein_fucci_pseudotime
+from SingleCellProteogenomics import Loaders, FucciPseudotime, ProteinVariability, ProteinBimodality, ProteinCellCycleDependence
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 #%% Read in the protein data
-import_dict = load_protein_fucci_pseudotime()
+import_dict = Loaders.load_protein_fucci_pseudotime()
 u_plate, well_plate, well_plate_imgnb, u_well_plates = import_dict["u_plate"], import_dict["well_plate"], import_dict["well_plate_imgnb"], import_dict["u_well_plates"]
 ab_nuc, ab_cyto, ab_cell, mt_cell = import_dict["ab_nuc"], import_dict["ab_cyto"], import_dict["ab_cell"], import_dict["mt_cell"]
 area_cell, area_nuc =  import_dict["area_cell"], import_dict["area_nuc"]
