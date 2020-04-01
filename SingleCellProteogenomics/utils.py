@@ -191,17 +191,24 @@ def geneIdToHngc_withgaps(id_list_like):
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")    
-    ccd=pd.read_csv("output/picklestxt/ccd_compartment_ensg.txt")#"input/processed/manual/ccd_genes.txt")
-    nonccd=pd.read_csv("output/picklestxt/nonccd_compartment_ensg.txt")#("input/processed/manual/nonccd_genes.txt")
-    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
-    ccd_filtered = list(gene_info[(gene_info["name"].isin(ccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
-    nonccd_filtered = list(gene_info[(gene_info["name"].isin(nonccd["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
+    wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
+    ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
+    nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
+    ccd=wp_ensg[ccd_comp]
+    nonccd=wp_ensg[nonccd_comp]
+    ccd_regev_filtered = list(ccd_regev[np.isin(ccd_regev, adata.var_names)])
+    ccd_filtered = list(ccd[np.isin(ccd, adata.var_names)])
+    nonccd_filtered = list(nonccd[np.isin(nonccd, adata.var_names)])
     return ccd_regev_filtered, ccd_filtered, nonccd_filtered
 
 def save_gene_names_by_category(adata):
     '''Save files containing the gene names for each category of CCD proteins/transcripts'''
+    wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
+    ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
+    nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
+    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+
     # Get the HGNC symbols for lists for GO analysis
     pd.DataFrame({"gene" : list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)])))
         }).to_csv("output/hgnc_ccdtranscript.csv", index=False, header=False)
@@ -209,7 +216,7 @@ def save_gene_names_by_category(adata):
         }).to_csv("output/hgnc_ccdprotein_transcript_regulated.csv", index=False, header=False)
     pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)])))
         }).to_csv("output/hgnc_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(geneIdToHngc(wp_ensg[~ccd_comp])))
+    pd.DataFrame({"gene":list(set(geneIdToHngc(wp_ensg[nonccd_comp])))
         }).to_csv("output/hgnc_nonccdprotein.csv", index=False, header=False)
     pd.DataFrame({"gene":list(set(geneIdToHngc(np.concatenate((wp_ensg[ccd_comp], bioccd)))))
         }).to_csv("output/hgnc_ccdprotein.csv", index=False, header=False)
@@ -223,5 +230,5 @@ def save_gene_names_by_category(adata):
         }).to_csv("output/ensg_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
     pd.DataFrame({"gene":list(set(wp_ensg[nonccd_comp]))
         }).to_csv("output/ensg_nonccdprotein.csv", index=False, header=False)
-    pd.DataFrame({"gene": ccd_comp_ensg
+    pd.DataFrame({"gene": wp_ensg[ccd_comp]
         }).to_csv("output/ensg_ccdprotein.csv", index=False, header=False)

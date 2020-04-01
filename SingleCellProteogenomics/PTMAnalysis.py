@@ -21,7 +21,7 @@ blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl
 MIN_MOD_PEP = 1
 MIN_TOT_PEP = 5
 
-def analyze_ptms(filename):
+def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, genes_analyzed):
     file = pd.read_csv(filename, sep="\t", index_col=False)
     targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
     modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
@@ -149,7 +149,7 @@ def count_mods(analyzethese, df, occdf):
 
 # Generate a histogram of effective mod counts with bins normalized to 1'''
 def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed, 
-    ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein):
+           ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein):
     # all genes; regev; mRNA CCD (all); mRNA non-CCD (all); mRNA reg. CCD proteins; non-mRNA reg. CCD proteins; CCD proteins; non-CCD proteins
     all_modctsdf, all_modcts, all_avgocc, all_modctsoccdf, all_modocc = count_mods(genes_analyzed, df, occdf) 
     ccd_rt_modctsdf, ccd_rt_modcts, ccd_rt_avgocc, ccd_rt_modctsoccdf, ccd_rt_modocc = count_mods(ccd_regev_filtered, df, occdf)
@@ -188,14 +188,14 @@ def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed,
         "totalModSites" : [sum(v[0]["modrawcts"][v[1] > 0]) for v in categories.values()],
         "meanModPerEffBase, mean mods / seq length" : [np.mean(v[1][v[1] > 0]) for v in categories.values()],
         "medianModPerEffBase, mean mods / seq length" : [np.median(v[1][v[1] > 0]) for v in categories.values()],
-        "twoSidedKruskal_vs_allProtsModPerEffBase" : [scipy.stats.kruskal(v[1][v[1] > 0], categories[list(categories.keys())[0]][1][categories[list(categories.keys())[0]][1] > 0])[1] for v in categories.values()],
+        "twoSidedKruskal_vs_allProtsModPerEffBase" : [stats.kruskal(v[1][v[1] > 0], categories[list(categories.keys())[0]][1][categories[list(categories.keys())[0]][1] > 0])[1] for v in categories.values()],
         # Modification occupancies
         "modifiedOccProteins" : [len(set(v[3]['gene'])) for v in categories.values()],
         "modifiedOccProtein%" : [float(len(set(v[3]['gene']))) / float(len(v[1])) * 100 for v in categories.values()],
         "meanOccModSites" : [np.mean([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
         "medianOccModSites" : [np.median([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
         "totalOccModSites" : [sum([sum(v[3]["gene"] == gene) for gene in set(v[3]['gene'])]) for v in categories.values()],
-        "twoSidedKruskal_vs_allProtsOccupancy" : [scipy.stats.kruskal(v[4], categories[list(categories.keys())[0]][4])[1] for v in categories.values()],
+        "twoSidedKruskal_vs_allProtsOccupancy" : [stats.kruskal(v[4], categories[list(categories.keys())[0]][4])[1] for v in categories.values()],
         # Some figures of merit for the experiment
         "medianCoverage" : [np.median(v[0]["coveredfract"]) for v in categories.values()],
         "medianCoverageOfModProteins" : [np.median(v[0]["coveredfract"][v[1] > 0]) for v in categories.values()]})   
@@ -211,42 +211,42 @@ def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed,
     fom += f"mean occupancy per modified residue for all transcriptionally regulated CCD: {np.mean(ccd_at_modocc)}\n"
     fom += f"mean occupancy per modified residue for Diana's transcriptionally regulated CCD: {np.mean(ccd_t_modocc)}\n"
     fom += f"mean occupancy per modified residue for Diana's non-transcriptionally regulated CCD: {np.mean(ccd_n_modocc)}\n"
-    t, p = scipy.stats.ttest_ind(ccd_t_modocc, ccd_n_modocc)
+    t, p = stats.ttest_ind(ccd_t_modocc, ccd_n_modocc)
     fom += f"two-sided t-test for same means of transcript and non-transcriptionally regulated: {p}\n"
-    t, p = scipy.stats.ttest_ind(all_modocc, ccd_t_modocc)
+    t, p = stats.ttest_ind(all_modocc, ccd_t_modocc)
     fom += f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}\n"
-    t, p = scipy.stats.ttest_ind(all_modocc, ccd_t_modocc)
+    t, p = stats.ttest_ind(all_modocc, ccd_t_modocc)
     fom += f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}\n"
-    t, p = scipy.stats.ttest_ind(all_modocc, ccd_t_modocc)
+    t, p = stats.ttest_ind(all_modocc, ccd_t_modocc)
     fom += f"two-sided t-test for same means of all and non-transcriptionally regulated: {p}\n"
     fom += "\n"
     fom += f"median occupancy per modified residue for all proteins: {np.median(all_modocc)}\n"
     fom += f"median occupancy per modified residue for all transcriptionally regulated CCD: {np.median(ccd_at_modocc)}\n"
     fom += f"median occupancy per modified residue for Diana's transcriptionally regulated CCD: {np.median(ccd_t_modocc)}\n"
     fom += f"median occupancy per modified residue for Diana's non-transcriptionally regulated: {np.median(ccd_n_modocc)}\n"
-    t, p = scipy.stats.kruskal(ccd_at_modocc, ccd_n_modocc)
+    t, p = stats.kruskal(ccd_at_modocc, ccd_n_modocc)
     fom += f"one-sided kruskal for same medians of all transcriptionally reg. and non-transcript regulated: {2*p}\n"
-    t, p = scipy.stats.kruskal(ccd_t_modocc, ccd_n_modocc)
+    t, p = stats.kruskal(ccd_t_modocc, ccd_n_modocc)
     fom += f"one-sided kruskal for same medians of Diana's transcriptionally reg. CCD and non-transcript regulated: {2*p}\n"
-    t, p = scipy.stats.kruskal(np.concatenate((ccd_t_modocc, ccd_n_modocc)), nonccd_modocc)
+    t, p = stats.kruskal(np.concatenate((ccd_t_modocc, ccd_n_modocc)), nonccd_modocc)
     fom += f"one-sided kruskal for same medians of Diana's CCD and non-CCD regulated: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_t_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_t_modocc)
     fom += f"one-sided kruskal for same medians of all genes and Diana's transcriptionally reg CCD: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_at_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_at_modocc)
     fom += f"one-sided kruskal for same medians of all genes and all transcriptionally reg: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_rt_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_rt_modocc)
     fom += f"one-sided kruskal for same medians of all genes and regev transcriptionally reg: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_n_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_n_modocc)
     fom += f"one-sided kruskal for same medians of all genes and non-transcriptionally reg: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, nonccd_modocc)
+    t, p = stats.kruskal(all_modocc, nonccd_modocc)
     fom += f"one-sided kruskal for same medians of all genes and non-CCD: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_modocc)
     fom += f"one-sided kruskal for same medians of all genes and CCD: {2*p}\n"
-    t, p = scipy.stats.kruskal(ccd_modocc, nonccd_modocc)
+    t, p = stats.kruskal(ccd_modocc, nonccd_modocc)
     fom += f"one-sided kruskal for same medians of CCD genes and non-CCD: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_t_modocc, ccd_n_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_t_modocc, ccd_n_modocc)
     fom += f"one-sided kruskal for same medians of all, Diana's transcript CCD, and non-transcriptionally regulated: {2*p}\n"
-    t, p = scipy.stats.kruskal(all_modocc, ccd_at_modocc, ccd_n_modocc)
+    t, p = stats.kruskal(all_modocc, ccd_at_modocc, ccd_n_modocc)
     fom += f"one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: {2*p}\n"
     fom += "\n"
     

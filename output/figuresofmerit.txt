@@ -60,3 +60,103 @@ this delay indicates that it may take a little less than the same amount of time
 
 
 
+--- RNA pseudotime
+
+We identified 401 genes of 13450 protein-coding genes analyzed (2.9814126394052045%) to have variance in expression levels correlated to cell cycle progression
+
+We can attribute only 15.0% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing
+
+This includes 86.17021276595744% of known CCD transcripts. Of these, 72 were also cell cycle dependent proteins (15.0%). Of the 480 CCD proteins, 408 did not have CCD transcripts, including DUSP18 (Figure 2E). There were 28 CCD transcripts that were Non-CCD as proteins.
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 8.557535210526318 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (43.64089775561097%) peak in expression
+
+However, the majority (75.70093457943925%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 8.557535210526318 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (3.442464789473682 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 8.557535210526318 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (43.64089775561097%) peak in expression
+
+However, the majority (75.70093457943925%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 8.557535210526318 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (3.442464789473682 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 8.557535210526318 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (43.64089775561097%) peak in expression
+
+However, the majority (75.70093457943925%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 8.557535210526318 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (3.442464789473682 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 8.557535210526318 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (43.64089775561097%) peak in expression
+
+However, the majority (75.70093457943925%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 8.557535210526318 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (3.442464789473682 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+
+--- temporal delay
+
+significant delay in peak protein expression compared to transcript expression, 8.557535210526318 hours on average
+
+G1 is the longest period of the cell cycle, in which the majority of RNAs (43.64089775561097%) peak in expression
+
+However, the majority (75.70093457943925%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases
+
+The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was 8.557535210526318 hrs on average 
+
+this delay indicates that it may take a little less than the same amount of time (3.442464789473682 hrs) to produce a target metabolite after peak expression of an enzyme.
+
+
+
+
+
+
+

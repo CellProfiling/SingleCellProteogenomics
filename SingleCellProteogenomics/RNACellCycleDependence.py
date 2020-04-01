@@ -243,7 +243,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         fom = "--- RNA pseudotime\n\n"
         fom += f"We identified {sum(ccdtranscript)} genes of {len(ccdtranscript)} protein-coding genes analyzed ({100 * sum(ccdtranscript) / len(ccdtranscript)}%) to have variance in expression levels correlated to cell cycle progression" + "\n\n"
         fom += f"We can attribute only {100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing" + "\n\n"
-        fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names(adata_regevccdgenes))) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
+        fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names[adata_regevccdgenes])) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
         fom += f"" + "\n\n"
         print(fom)
         file.write(fom)
@@ -297,18 +297,21 @@ def ccd_analysis_of_spikeins(adata_spikeins, perms):
     total_cv_spike = np.apply_along_axis(scipy.stats.variation, 0, norm_exp_sort_spike)
     percent_ccd_variance_spike = cell_cycle_variance_spike / total_variance_spike
     # avg_expression_spike = np.apply_along_axis(np.median, 0, norm_exp_sort_spike)
-    print(f"mean +/- stdev of spike-in variance: {np.mean(total_variance_spike)} +/- {np.std(total_variance_spike)}")
-    print(f"median of spike-in variance: {np.median(total_variance_spike)}")
+    print("Percent variance of spike-in:")
     print(f"mean +/- stdev of spike-in variance explained by cell cycle: {np.mean(percent_ccd_variance_spike)} +/- {np.std(percent_ccd_variance_spike)}")
     print(f"median of spike-in variance explained by cell cycle: {np.median(percent_ccd_variance_spike)}")
 
     percent_ccd_variance_rng_spike = []
     for iii, perm in enumerate(perms):
-        if iii % 50 == 0: print(f"permutation {iii}")
+        if iii % 1000 == 0: print(f"permutation {iii}")
         norm_exp_sort_perm_spike = np.take(normalized_exp_data_spike, perm, axis=0)
         moving_averages_perm_spike = np.apply_along_axis(MovingAverages.mvavg, 0, norm_exp_sort_perm_spike, WINDOW)
         percent_ccd_variance_rng_spike.append(
                 np.var(moving_averages_perm_spike, axis=0) / np.var(norm_exp_sort_perm_spike, axis=0))
     percent_ccd_variance_rng_spike = np.asarray(percent_ccd_variance_rng_spike)
     mean_diff_from_rng_spike = np.mean((percent_ccd_variance_spike - percent_ccd_variance_rng_spike).T, 1)
-    print(f"mean +/- stdev of spike-in mean difference from random percent variance: {np.mean(mean_diff_from_rng_spike)} +/- {np.std(mean_diff_from_rng_spike)}")
+    print("Percent additional variance CCD than random of spike-in")
+    print(f"mean +/- stdev of spike-in mean additional percent variance from random: {np.mean(mean_diff_from_rng_spike)} +/- {np.std(mean_diff_from_rng_spike)}")
+    print(f"median of spike-in addtional variance explained by cell cycle than random: {np.median(mean_diff_from_rng_spike)}")
+
+    utils.general_boxplot((percent_ccd_variance_spike, mean_diff_from_rng_spike), ("Percent Variance\nCCD Spike-In", "Percent Additional\nCCD Variance Spike-In"), "", "Percent Variance CCD", "", True, "figures/RNASpikeinVarianceBoxplot.png")

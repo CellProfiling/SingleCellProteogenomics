@@ -40428,6 +40428,15 @@ accession,gene,modification,residue,occupancy,modpeps,totpeps
 ['Q86YR5'],GPSM1,Phosphorylation on T,503,0.71,5,7
 ['Q14147'],DHX34,Phosphorylation on T,973,0.33,2,6
 ['Q14147'],DHX34,Phosphorylation on S,976,0.83,5,6
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,21,1.0,19,19
+"['Q96GN5', 'C9J8L0']",CDCA7L,Methylation on R,30,0.05,1,19
+"['Q96GN5', 'C9J8L0']",CDCA7L,Methylation on K,54,0.58,19,33
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on T,77,0.2,1,5
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,79,0.2,1,5
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,105,0.12,1,8
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,261,0.38,3,8
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on T,266,0.88,7,8
+"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,70,0.12,1,8
 ['Q9HCJ6'],VAT1L,Hydroxylation on P,384,0.07,1,15
 ['Q9HCJ6'],VAT1L,Phosphorylation on T,385,0.07,1,15
 ['Q9HCJ6'],VAT1L,Phosphorylation on S,409,0.2,3,15

@@ -306,7 +306,7 @@ def rna_heatmap(highlight_names, highlight_ensg, ccdtranscript, xvals):
 def compare_variances_prot_v_rna(adata, norm_exp_sort, wp_ensg, var_comp_prot, gini_comp_prot, cv_comp_prot, var_cell_prot, gini_cell_prot, cv_cell_prot):
     '''Compare the measures of variance for RNA and protein and make scatterplots'''
     total_variance_rna = np.var(norm_exp_sort, 0)
-    total_gini_rna = np.apply_along_axis(utils, gini, 0, norm_exp_sort)
+    total_gini_rna = np.apply_along_axis(utils.gini, 0, norm_exp_sort)
     total_cv_rna = np.apply_along_axis(scipy.stats.variation, 0, norm_exp_sort)
 
     prot_ensg = list(wp_ensg)
@@ -377,7 +377,7 @@ def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd,
     ax.yaxis.set_label_position("right")
     ax.yaxis.tick_right()
     ax.set_xticks([0,5,10,15,20])
-    cbar = plt.colorbar()
+    cbar = plt.colorbar(pad=0.15)
     cbar.set_label('Temporal Delay, hrs',fontname='Arial',size=20)
     cbar.ax.tick_params(labelsize=18)
     plt.xlabel("Peak RNA Expression, hrs",fontname='Arial',size=20)

@@ -2527,15 +2527,6 @@ accession,gene,modification,residue,occupancy,modpeps,totpeps
 ['P30307'],CDC25C,Phosphorylation on S,216,0.61,17,28
 ['P30530'],AXL,Phosphorylation on Y,866,0.2,1,5
 ['P30530'],AXL,Phosphorylation on S,875,0.4,2,5
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,21,1.0,19,19
-"['Q96GN5', 'C9J8L0']",CDCA7L,Methylation on R,30,0.05,1,19
-"['Q96GN5', 'C9J8L0']",CDCA7L,Methylation on K,54,0.58,19,33
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on T,77,0.2,1,5
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,79,0.2,1,5
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,105,0.12,1,8
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,261,0.38,3,8
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on T,266,0.88,7,8
-"['Q96GN5', 'C9J8L0']",CDCA7L,Phosphorylation on S,70,0.12,1,8
 "['A0A087WV86', 'Q6PGQ7']",BORA,Phosphorylation on S,393,0.33,2,6
 "['A0A087WV86', 'Q6PGQ7']",BORA,Phosphorylation on S,400,0.5,3,6
 "['A0A087WV86', 'Q6PGQ7']",BORA,Phosphorylation on S,318,0.4,2,5

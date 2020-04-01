@@ -8,16 +8,15 @@ plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF tex
 plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
 adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
-import_dict = Loaders.load_ptm_and_stability(adata)
 
+import_dict = Loaders.load_ptm_and_stability(adata)
 wp_max_pol = import_dict["wp_max_pol"]
 ccdtranscript, nonccdtranscript = import_dict["ccdtranscript_names"], import_dict["nonccdtranscript_names"]
-ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated = import_dict["ccdprotein_transcript_regulated"], import_dict["ccdprotein_nontranscript_regulated"]
+ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated = import_dict["ccdprotein_transcript_regulated_names"], import_dict["ccdprotein_nontranscript_regulated_names"]
 genes_analyzed = import_dict["genes_analyzed_names"]
 ccd_regev_filtered, ccd_filtered = import_dict["ccd_regev_filtered_names"], import_dict["ccd_filtered_names"] 
 ccdprotein, nonccdprotein = import_dict["ccdprotein_names"], import_dict["nonccdprotein_names"]
-
-utils.save_gene_names_by_category(adata)
+utils.save_gene_names_by_category(adata) # We're using gene names for this analysis instead of ENSG gene identifiers, so save those gene names
 
 #%% Analyze the PTMs from bulk U2OS data and see if they are more expressed
 # one or the other
@@ -28,16 +27,16 @@ utils.save_gene_names_by_category(adata)
 # Output: # of PTMs per protein in each class and for all proteins
 
 # Read in MetaMorpheus results
-genemodsBulk = PTMAnalysis.analyze_ptms("input/raw/U2OSBulkAllProteinGroups.tsv")
-genemodsPhospho = PTMAnalysis.analyze_ptms("input/raw/U2OSPhosphoAllProteinGroups.tsv")
+genemodsBulk = PTMAnalysis.analyze_ptms("input/raw/U2OSBulkAllProteinGroups.tsv", ccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, genes_analyzed)
+genemodsPhospho = PTMAnalysis.analyze_ptms("input/raw/U2OSPhosphoAllProteinGroups.tsv", ccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, genes_analyzed)
 
 # Analyze the modification occupancy for each PTM site
 dfBulk, occdfBulk = PTMAnalysis.process_genemods(genemodsBulk)
 dfPhospho, occdfPhospho = PTMAnalysis.process_genemods(genemodsPhospho)
 
 # Compare the PTM regulation between transcript and non-transcript regulated groups
-PTMAnalysis.compare_ptm_regulation(dfBulk, occdfBulk, "Bulk")
-PTMAnalysis.compare_ptm_regulation(dfPhospho, occdfPhospho, "Phospho")
+PTMAnalysis.compare_ptm_regulation(dfBulk, occdfBulk, "Bulk", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
+PTMAnalysis.compare_ptm_regulation(dfPhospho, occdfPhospho, "Phospho", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
 
 #%% Look at time of peak expression for phosphosites on proteins that are CCD
 # Conclusion: there's not much going on in terms of correlation to the peak expression of the protein
@@ -88,42 +87,4 @@ print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0]["modification"].valu
 print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 
-
-#%% [markdown]
-# # Bulk U2OS analysis results (modification counts)
-#
-# It turns out the significance went away when I filtered out an artifact I missed (iron adducts),
-# and then after checking all transcript-regulated CCD genes, rather than just the 
-# set in Diana's study, it all went away.
-# 
-# On the bright side, there are some really interesting modifications even in the 
-# bulk sequencing: plenty of phosphorylations and even a nitrosylation on BUB1B that's
-# not in UniProt.
-#
-# This also doesn't work with the metals anymore, nor does it work with
-# just phosphorylations.
-#
-# When I drop the non-CCD proteins in there, there is
-
-
-
-
-#%% [markdown]
-# Some thoughts on occupancy. It looks like there's a significant difference in occupancies between
-# the different protein sets. There are a lot of ones (fully occupied), and I'm sure that's biased by
-# there less labile modifications like n-acetylation. Even so, when I look at the modifications
-# at high occupancy, I'm surprised to find that the non-CCD set is pretty rich with a few phosphos,
-# a hydroxylation, and a citrullination.
-#
-# Well, I could do the count of mods with occupancy > 0.5. It looks like the ratio of those mod sites
-# is pretty high.
-# 
-# But I wonder if I should take this all with a grain of salt. The number of mod sites I'm detecting
-# is pretty low for the sub categories. Yet, there are still some interesting phosphorylations in
-# there, and the N-acetylations don't dominate as much as I expected.
-
-#%%
-# Idea: Do a modification class based occupancy comparison
-# Exec: Group the modifications by type; calculate the differences in occupancy between categories
-# Output: Table of modification categories and statistical results comparing the categories
 
