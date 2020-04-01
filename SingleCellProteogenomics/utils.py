@@ -19,11 +19,6 @@ import scipy
 import scipy.stats
 import seaborn as sbn
 
-def ccd_gene_names(id_list_like):
-    '''Convert gene ID list to gene name list'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
-
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
     '''Get the values for the annotated compartment'''
     values_comp = np.empty_like(values_cell)
@@ -31,6 +26,13 @@ def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_is
     values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
     values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
     return np.array(values_comp) 
+
+def np_save_overwriting(fn, arr):
+    '''Helper function to always overwrite numpy pickles'''
+    with open(fn,"wb") as f:    
+        np.save(f, arr, allow_pickle=True)
+
+## STATISTICS HELPERS
 
 def gini(array):
     """Calculate the Gini coefficient of a numpy array."""
@@ -92,14 +94,11 @@ def bonf(alpha, pvals):
     rejectBonf_unsorted[pvals_sortind] = rejectBonf
     return pvals_correctedBonf_unsorted, rejectBonf_unsorted
 
+## PLOTTING HELPERS
+
 def weights(vals):
     '''normalizes all histogram bins to sum to 1'''
     return np.ones_like(vals)/float(len(vals))
-
-def np_save_overwriting(fn, arr):
-    '''Helper function to always overwrite numpy pickles'''
-    with open(fn,"wb") as f:    
-        np.save(f, arr, allow_pickle=True)
 
 def general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim=()):
     '''Set up a boxplot given equal length group_values and group_labels'''
