@@ -1,6 +1,6 @@
 # SingleCellProteogenomics
 
-This repository contains the code used to perform the single-cell proteogenomic analysis of the human cell cycle. This study was based on immunofluorescence staining of ~200k cells for single-cell analysis of proteomic heterogeneity and ~1k cells for analysis of single-cell RNA variability. These analyses were integrated with mass spectrometry (MS) proteomic studies to investigate the functional importance of transcript-regulated and non-transcript regulated variability.
+This repository contains the code (see [SpatiotemporalProteogenomics.ipynb](https://github.com/CellProfiling/SingleCellProteogenomics/blob/master/SpatiotemporalProteogenomics.ipynb)) used to perform the single-cell proteogenomic analysis of the human cell cycle. This study was based on immunofluorescence staining of ~200k cells for single-cell analysis of proteomic heterogeneity and ~1k cells for analysis of single-cell RNA variability. These analyses were integrated with mass spectrometry (MS) proteomic studies to investigate the functional importance of transcript-regulated and non-transcript regulated variability.
 
 ## Preprint
 Please find the preprint manuscript here: https://www.biorxiv.org/content/10.1101/543231v2
