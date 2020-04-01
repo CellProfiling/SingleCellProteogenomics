@@ -134,7 +134,6 @@ def melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcrip
     plt.savefig("figures/ProteinMeltingPointsMedianed.png")
     plt.show()
     plt.close()
-
     pd.DataFrame({
         "protein_name":atp,
         "median_melting_point":all_temps,
@@ -142,13 +141,6 @@ def melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcrip
         "nontranscr_reg":np.isin(atp, ntp)}).to_csv("output/MedianMeltingPoints.csv",index=False)
 
     # Boxplots
-    print(len(all_temps))
-    print(len(transcript_reg))
-    print(len(nontranscr_reg))
-    print(len(nonccd_temps))
-    print(len(allccdtranscript))
-    print(len(allnonccdtranscript))
-    print(len(transcript_reg))
     utils.general_boxplot((all_temps, transcript_reg, nontranscr_reg, nonccd_temps), ("All Proteins", "Transcript's\nReg\nCCD", "Non-Transcript\nReg\nCCD", "Non-CCD"), 
         "Protein Set", "Melting Point (°C)", "", True, "figures/ProteinMeltingPointBox.pdf")
     utils.boxplot_with_stripplot((all_temps, allccdtranscript, allnonccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps), 

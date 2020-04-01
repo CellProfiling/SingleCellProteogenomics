@@ -1,7 +1,9 @@
 #%% Imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils, Loaders, RNADataPreparation, PTMAnalysis, ProteinStabilityAnalysis
-plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'] = 42, 42 #Make PDF text readable
+from SingleCellProteogenomics import utils, Loaders, FucciCellCycle, RNADataPreparation, PTMAnalysis, ProteinStabilityAnalysis
+plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
+
+fucci = FucciCellCycle.FucciCellCycle()
 
 #%% Import the genes names we're analyzing
 # Read in RNA-Seq data again and the CCD gene lists
@@ -10,7 +12,7 @@ adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
 import_dict = Loaders.load_ptm_and_stability(adata)
-wp_max_pol = import_dict["wp_max_pol"]
+wp_ensg, wp_max_pol = import_dict["wp_ensg"], import_dict["wp_max_pol"]
 ccdtranscript, nonccdtranscript = import_dict["ccdtranscript_names"], import_dict["nonccdtranscript_names"]
 ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated = import_dict["ccdprotein_transcript_regulated_names"], import_dict["ccdprotein_nontranscript_regulated_names"]
 genes_analyzed = import_dict["genes_analyzed_names"]
@@ -34,7 +36,11 @@ genemodsPhospho = PTMAnalysis.analyze_ptms("input/raw/U2OSPhosphoAllProteinGroup
 dfBulk, occdfBulk = PTMAnalysis.process_genemods(genemodsBulk)
 dfPhospho, occdfPhospho = PTMAnalysis.process_genemods(genemodsPhospho)
 
-# Compare the PTM regulation between transcript and non-transcript regulated groups
+# Investigate whether PTM occupancies have correlations with cell division pseudotime (they don't with this dataset)
+PTMAnalysis.temporal_ptm_regulation_not_observed(dfBulk, occdfBulk, "Bulk", wp_max_pol, wp_ensg, ccdprotein)
+PTMAnalysis.temporal_ptm_regulation_not_observed(dfPhospho, occdfPhospho, "Phospho", wp_max_pol, wp_ensg, ccdprotein)
+
+# Compare the PTM regulation using PTM site occupancies between transcript and non-transcript regulated groups
 PTMAnalysis.compare_ptm_regulation(dfBulk, occdfBulk, "Bulk", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
 PTMAnalysis.compare_ptm_regulation(dfPhospho, occdfPhospho, "Phospho", genes_analyzed, ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein)
 
@@ -44,56 +50,4 @@ PTMAnalysis.compare_ptm_regulation(dfPhospho, occdfPhospho, "Phospho", genes_ana
 # Output: Boxplots illustrating differences in stability for different classes of CCD proteins
 ProteinStabilityAnalysis.melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein)
 
-
-
-
-
-#%% Look at time of peak expression for phosphosites on proteins that are CCD
-# Conclusion: there's not much going on in terms of correlation to the peak expression of the protein
-hngcWithGaps = list(geneIdToHngc_withgaps(wp_ensg))
-ccd_modctsdf, ccd_modcts, ccd_avgocc, ccd_modctsoccdf, ccd_modocc = count_mods(ccdprotein, dfPhospho, occdfPhospho)
-maxpol_per_gene = np.array([wp_max_pol[hngcWithGaps.index(gene)] if gene in hngcWithGaps else -1 for gene in ccd_modctsoccdf["gene"]])
-
-plt.scatter(maxpol_per_gene[maxpol_per_gene >= 0], ccd_modocc[maxpol_per_gene >= 0])
-plt.close()
-
-phase = np.array(["g1" if pol * fucci.TOT_LEN < fucci.G1_LEN else "g1s" if pol * fucci.TOT_LEN >= fucci.G1_LEN and pol * fucci.TOT_LEN < fucci.G1_LEN + fucci.G1_S_TRANS else "g2" for pol in maxpol_per_gene if pol >= 0])
-g1 = ccd_modocc[maxpol_per_gene >= 0][phase == "g1"]
-g1s = ccd_modocc[maxpol_per_gene >= 0][phase == "g1s"]
-g2 = ccd_modocc[maxpol_per_gene >= 0][phase == "g2"]
-
-utils.boxplot_with_stripplot((g1, g1s, g2), ("G1", "G1S", "G2"),
-        "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected{analysisTitle}.pdf",alpha=0.2, size=7, jitter=0.25, ylim=(-0.01,1.01))
-
-
-#%% Finessing
-# Idea: What are these modifications that have high occupancies?
-# Exec: pandas
-# Output: table of modifications and the counts at different cutoffs
-print(all_modctsoccdf[all_modctsoccdf.occupancy == 1]["modification"].value_counts())
-print(ccd_rt_modctsoccdf[ccd_rt_modctsoccdf.occupancy == 1]["modification"].value_counts())
-print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy == 1]["modification"].value_counts())
-print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy == 1]["modification"].value_counts())
-print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy == 1]["modification"].value_counts())
-
-#%%
-print(all_modctsoccdf[all_modctsoccdf.occupancy >= 0.5]["modification"].value_counts())
-print(ccd_rt_modctsoccdf[ccd_rt_modctsoccdf.occupancy >= 0.5]["modification"].value_counts())
-print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0.5]["modification"].value_counts())
-print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0.5]["modification"].value_counts())
-print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0.5]["modification"].value_counts())
-
-#%%
-print(all_modctsoccdf[all_modctsoccdf.occupancy >= 0.5]["modification"].value_counts() / all_modctsoccdf["modification"].value_counts())
-print(ccd_rt_modctsoccdf[ccd_rt_modctsoccdf.occupancy >= 0.5]["modification"].value_counts() / ccd_rt_modctsoccdf["modification"].value_counts())
-print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0.5]["modification"].value_counts() / ccd_at_modctsoccdf["modification"].value_counts())
-print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0.5]["modification"].value_counts() / ccd_t_modctsoccdf["modification"].value_counts())
-print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0.5]["modification"].value_counts() / ccd_n_modctsoccdf["modification"].value_counts())
-
-#%%
-print(all_modctsoccdf[all_modctsoccdf.occupancy >= 0]["modification"].value_counts())
-print(ccd_rt_modctsoccdf[ccd_rt_modctsoccdf.occupancy >= 0]["modification"].value_counts())
-print(ccd_at_modctsoccdf[ccd_at_modctsoccdf.occupancy >= 0]["modification"].value_counts())
-print(ccd_t_modctsoccdf[ccd_t_modctsoccdf.occupancy >= 0]["modification"].value_counts())
-print(ccd_n_modctsoccdf[ccd_n_modctsoccdf.occupancy >= 0]["modification"].value_counts())
 

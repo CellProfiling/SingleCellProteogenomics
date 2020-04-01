@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from SingleCellProteogenomics import utils
+from SingleCellProteogenomics import utils, FucciCellCycle
 
 blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
     "fe[i", "zinc", "cu[i" , # metals
@@ -20,8 +20,11 @@ blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl
     "tmt6-plex"] # isotopic labels
 MIN_MOD_PEP = 1
 MIN_TOT_PEP = 5
+fucci = FucciCellCycle.FucciCellCycle()
 
 def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, genes_analyzed):
+    '''Load MetaMorpheus protein results and store information regarding protein PTMs'''
+    print(f"Loading {filename} ...")
     file = pd.read_csv(filename, sep="\t", index_col=False)
     targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
     modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
@@ -34,7 +37,6 @@ def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdpr
     seqs = list(targets["Sequence Coverage"])
     modinfos = list(targets["Modification Info List"])
     genemods = {}
-    
     for idx in range(len(genes)):
         accesplit = str(accessions[idx]).split("|")
         genesplit = str(genes[idx]).split("|")
@@ -87,7 +89,6 @@ def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdpr
                 genemods[genegene][7].extend(totpeptsss)
                 genemods[genegene][8].extend(aanums)
                 genemods[genegene][9].append(accesplit[idxx])
-
     print(f"{str(len(targets))} proteins")
     print(f"{str(len(modifiedProteins))} modified proteins ({str(round(float(len(modifiedProteins))/float(len(targets))*100,2))}%)")
     print(f"{str(len([g for g in genemods.keys() if g in ccdtranscript]))}: number of all transcript regulated CCD genes of {len(ccdtranscript)} detected.")
@@ -99,6 +100,7 @@ def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdpr
     return genemods
 
 def process_genemods(genemods):
+    '''Convert information packaged from loading modification information into counts and occupancies'''
     unambigenes, modcts, efflength, coveredfract, modrawcts, modrawlist, avgocc, modsss = [],[],[],[],[],[],[],[]
     protmodgene, protmodacc, modmod, occocc, aanumnum, modpeps, totpeps = [],[],[],[],[], [], []
     for gene in genemods.keys():
@@ -118,7 +120,6 @@ def process_genemods(genemods):
             modpeps.append(genemods[gene][6][modidx])
             totpeps.append(genemods[gene][7][modidx])
             aanumnum.append(genemods[gene][8][modidx])
-        
     df = pd.DataFrame({
         "gene" : unambigenes, 
         "modcts" : modcts, 
@@ -136,10 +137,10 @@ def process_genemods(genemods):
         "occupancy" : occocc,
         "modpeps" : modpeps,
         "totpeps" : totpeps})
-    
     return df, occdf
 
 def count_mods(analyzethese, df, occdf):
+    '''Gather modification observations from a certain subset of proteins'''
     modctsdf = df[df["gene"].isin(analyzethese)]
     modcts = modctsdf["modcts"]
     avgocc = modctsdf["avgocc"]
@@ -147,9 +148,28 @@ def count_mods(analyzethese, df, occdf):
     modocc = modctsoccdf["occupancy"]
     return modctsdf, modcts, avgocc, modctsoccdf, modocc
 
-# Generate a histogram of effective mod counts with bins normalized to 1'''
+def temporal_ptm_regulation_not_observed(df, occdf, analysisTitle, wp_max_pol, wp_ensg, ccdprotein):
+    '''Investigate whether there is a correlation between cell division time and modification occupancies'''
+    # Conclusion: there's not much going on in terms of correlation of modification occupancy to the peak expression of the protein in this dataset
+    # Time of peak expression
+    hngcWithGaps = list(utils.geneIdToHngc_withgaps(wp_ensg))
+    ccd_modctsdf, ccd_modcts, ccd_avgocc, ccd_modctsoccdf, ccd_modocc = count_mods(ccdprotein, df, occdf)
+    maxpol_per_gene = np.array([wp_max_pol[hngcWithGaps.index(gene)] if gene in hngcWithGaps else -1 for gene in ccd_modctsoccdf["gene"]])
+    # Phase of peak expression  
+    phase = np.array(["g1" if pol * fucci.TOT_LEN < fucci.G1_LEN else "g1s" if pol * fucci.TOT_LEN >= fucci.G1_LEN and pol * fucci.TOT_LEN < fucci.G1_LEN + fucci.G1_S_TRANS else "g2" for pol in maxpol_per_gene if pol >= 0])
+    g1 = ccd_modocc[maxpol_per_gene >= 0][phase == "g1"]
+    g1s = ccd_modocc[maxpol_per_gene >= 0][phase == "g1s"]
+    g2 = ccd_modocc[maxpol_per_gene >= 0][phase == "g2"]
+    
+    # Plot time of peak expression (scatterplot) and phase of peak expression (boxplot)
+    utils.general_scatter(maxpol_per_gene[maxpol_per_gene >= 0] * fucci.TOT_LEN, ccd_modocc[maxpol_per_gene >= 0], 
+         "Cell Division Time, hrs", "PTM Site Occupancy", f"figures/ModOccVsTimeOfPeakExpression{analysisTitle}.png")
+    utils.boxplot_with_stripplot((g1, g1s, g2), ("G1", "S-trans", "G2"),
+         "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected{analysisTitle}.pdf",alpha=0.2, size=7, jitter=0.25, ylim=(-0.01,1.01))
+
 def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed, 
            ccd_regev_filtered, ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, ccdprotein, nonccdprotein):
+    '''Investigate modification occupancies on differently regulated CCD proteins using MetaMorpheus results'''
     # all genes; regev; mRNA CCD (all); mRNA non-CCD (all); mRNA reg. CCD proteins; non-mRNA reg. CCD proteins; CCD proteins; non-CCD proteins
     all_modctsdf, all_modcts, all_avgocc, all_modctsoccdf, all_modocc = count_mods(genes_analyzed, df, occdf) 
     ccd_rt_modctsdf, ccd_rt_modcts, ccd_rt_avgocc, ccd_rt_modctsoccdf, ccd_rt_modocc = count_mods(ccd_regev_filtered, df, occdf)
@@ -250,6 +270,20 @@ def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed,
     fom += f"one-sided kruskal for same medians of all, all transcript CCD, and non-transcriptionally regulated: {2*p}\n"
     fom += "\n"
     
+    # Generate boxplots for mod occupancies
+    utils.general_boxplot((all_modocc, ccd_t_modocc, ccd_rt_modocc, ccd_at_modocc, ccd_n_modocc, nonccd_modocc), 
+        ("All", "Transcript\nReg. CCD", "Regev\nTranscript\nCCD", "All\nTranscript\nCCD", "Non-\nTranscript\nReg. CCD", "Non-\nCCD"),
+        "Protein Set", "Occupancy per Modified Residue", "", True, f"figures/ModsOccupancyBoxplot{analysisTitle}.pdf", ylim=(-0.01,1.01))
+    # Generate a the same boxplot with a stripplot
+    utils.boxplot_with_stripplot((all_modocc, ccd_t_modocc, ccd_rt_modocc, ccd_at_modocc, ccd_n_modocc, nonccd_modocc), 
+        ("All", "Transcript\nReg. CCD", "Regev\nTranscript\nCCD", "All\nTranscript\nCCD", "Non-\nTranscript\nReg. CCD", "Non-\nCCD"),
+        "Protein Set", "Occupancy per Modified Residue", "", True, f"figures/ModsOccupancyBoxplotSelected{analysisTitle}.pdf",alpha=0.3, size=5, jitter=0.25, ylim=(-0.01,1.01))
+    # Generate boxplot for the significant difference higlighted in text
+    utils.general_boxplot((all_modocc, ccd_modocc, nonccd_modocc), ("All", "CCD", "Non-\nCCD"),
+        "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected3{analysisTitle}.pdf", ylim=(-0.01,1.01))
+    utils.general_boxplot((ccd_modocc, all_modocc, ccd_at_modocc), ("CCD\nProtein PTMs", "All\nProtein PTMs", "CCD\nTranscript\nProtein PTMs"),
+        "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected4{analysisTitle}.pdf", ylim=(-0.01,1.01))
+    
     # save and print results
     print(fom)
     with open(f"output/modificationCountsOccResults{analysisTitle}.txt", 'w') as file:
@@ -269,16 +303,5 @@ def compare_ptm_regulation(df, occdf, analysisTitle, genes_analyzed,
         "nonccd_modocc_genes":nonccd_modctsoccdf["gene"],
     }).to_pickle(f"output/modocc_{analysisTitle}.pkl")
         
-    # Generate boxplots for mod occupancies
-    utils.general_boxplot((all_modocc, ccd_t_modocc, ccd_rt_modocc, ccd_at_modocc, ccd_n_modocc, nonccd_modocc), 
-        ("All", "Transcript\nReg. CCD", "Regev\nTranscript\nCCD", "All\nTranscript\nCCD", "Non-\nTranscript\nReg. CCD", "Non-\nCCD"),
-        "Protein Set", "Occupancy per Modified Residue", "", True, f"figures/ModsOccupancyBoxplot{analysisTitle}.pdf", ylim=(-0.01,1.01))
-    # Generate a the same boxplot with a stripplot
-    utils.boxplot_with_stripplot((all_modocc, ccd_t_modocc, ccd_rt_modocc, ccd_at_modocc, ccd_n_modocc, nonccd_modocc), 
-        ("All", "Transcript\nReg. CCD", "Regev\nTranscript\nCCD", "All\nTranscript\nCCD", "Non-\nTranscript\nReg. CCD", "Non-\nCCD"),
-        "Protein Set", "Occupancy per Modified Residue", "", True, f"figures/ModsOccupancyBoxplotSelected{analysisTitle}.pdf",alpha=0.3, size=5, jitter=0.25, ylim=(-0.01,1.01))
-    # Generate boxplot for the significant difference higlighted in text
-    utils.general_boxplot((all_modocc, ccd_modocc, nonccd_modocc), ("All", "CCD", "Non-\nCCD"),
-        "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected3{analysisTitle}.pdf", ylim=(-0.01,1.01))
-    utils.general_boxplot((ccd_modocc, all_modocc, ccd_at_modocc), ("CCD\nProtein PTMs", "All\nProtein PTMs", "CCD\nTranscript\nProtein PTMs"),
-        "", "Occupancy per Modified Residue", "", False, f"figures/ModsOccupancyBoxplotSelected4{analysisTitle}.pdf", ylim=(-0.01,1.01))
+
+
