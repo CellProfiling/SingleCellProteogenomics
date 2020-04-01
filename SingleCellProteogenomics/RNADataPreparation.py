@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 18:52:36 2020
+Preparation of single-cell RNA sequencing data:
+    - Loads FACS intensity data for FUCCI markers for each cell
+    - Uses scanpy for loading, filtering, and making QC plots of RNA-Seq data across single cells
+    - Evaluates global patterns of RNA expression with UMAP dimensionality reduction
+    - Evaluates increase in reads and gene count over the cell cycle with increasing cell size
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 import pandas as pd
@@ -11,12 +15,12 @@ import scanpy as sc
 import matplotlib.pyplot as plt
 import os, shutil
 import seaborn as sbn
+from SingleCellProteogenomics import utils
 
-def read_counts_and_phases(dd, count_or_rpkm, use_spike_ins, biotype_to_use):
+def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use):
     '''
     Read data into scanpy; Read phases and FACS intensities
-    * dd: "All", "355", "356", "357"
-    * count_or_rpkm: "Counts" or "Tpms"
+        - count_or_rpkm: Must be "Counts" or "Tpms"
     '''
     read_file = f"input/processed/scanpy/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else "")
     if biotype_to_use != None and len(biotype_to_use) > 0:
@@ -67,20 +71,6 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     print(f"data shape after filtering: {adata.X.shape}")
     return adata, phases_filt
 
-def ccd_gene_lists(adata):
-    '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")   
-    wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
-    ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
-    nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
-    ccd=wp_ensg[ccd_comp]
-    nonccd=wp_ensg[nonccd_comp]
-    ccd_regev_filtered = list(gene_info[(gene_info["name"].isin(ccd_regev["gene"])) & (gene_info["gene_id"].isin(adata.var_names))]["gene_id"])
-    ccd_filtered = list(ccd[np.isin(ccd, adata.var_names)])
-    nonccd_filtered = list(nonccd[np.isin(nonccd, adata.var_names)])
-    return ccd_regev_filtered, ccd_filtered, nonccd_filtered
-
 def is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered):
     '''Return whether the genes in RNA-Seq analysis are 1) CCD by present protein analysis 2) non-CCD by present protein analysis, 3) curated published CCD'''
     ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
@@ -90,8 +80,8 @@ def is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered):
 
 def general_plots():
     '''Make plots to illustrate the results of the scRNA-Seq analysis'''
-    plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
-    adata, phases = read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+    valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
 
     # QC plots before filtering
     sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
@@ -125,10 +115,10 @@ def general_plots():
 
 def analyze_noncycling_cells():
     '''The raw UMAP shows a group of cells that appear sequestered from cycling; investigate those'''
-    plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
+    valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
     do_log_normalization = True
     do_remove_blob = False
-    adata, phases = read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob) 
 
     # Unsupervised clustering and generate the gene list for the uncycling cells, aka the unknown blob
@@ -156,7 +146,7 @@ def demonstrate_umap_cycle_without_ccd(adata):
     Idea: We should expect that the UMAP does not recognize a cycle when cycling transcripts are removed.
     Removing the CCD genes from the 93 curated genes or the 300-or-so CCD proteins identified in this work lead to UMAPs that are not cyclical. 
     '''
-    ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+    ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
     adata_ccdregev = adata[:, [x for x in adata.var_names if x not in ccd_regev_filtered]]
     sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata_ccdregev)
@@ -174,8 +164,8 @@ def readcount_and_genecount_over_pseudotime():
     To demonstrate why we normalize read counts per cell, these plots show the increase in read count over the cell cycle as the cell grows.
     We also show the resulting increase in the number of genes detected.
     '''
-    plate, valuetype, use_spikeins, biotype_to_use = "All", "Counts", False, "protein_coding"
-    adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+    valuetype, use_spikeins, biotype_to_use = "Counts", False, "protein_coding"
+    adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     expression_data = adata.X
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)

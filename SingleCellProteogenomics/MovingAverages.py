@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 21:21:59 2020
+Methods for calculating moving averages of single-cell protein and RNA expression over the cell division cycle.
 
-@author: antho
+@author: devinsullivan
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
 from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 
-TOT_LEN = FucciCellCycle().TOT_LEN
+TOT_LEN = FucciCellCycle().TOT_LEN  # Object representing FUCCI cell cycle phase durations
 
 ## MOVING AVERAGE FUNCTIONS
 
@@ -44,6 +45,11 @@ def remove_outliers(values, return_values):
 ## MOVING AVERAGE PLOTS
 
 def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, clusters, folder, fileprefix):
+    '''
+    Generates a moving average plot for one protein
+    Input: Antibody intensity measurements for the current protein
+    Output: Moving average plot with scatter of protein abundance measurement for each cell over the cell cycle
+    '''
     plt.close()
     outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return
@@ -66,6 +72,11 @@ def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, w
     plt.close()
         
 def temporal_mov_avg_rna(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
+    '''
+    Generates a moving average plot for one transcript
+    Input: Antibody intensity measurements for the current gene
+    Output: Moving average plot with scatter of gene expression measurement for each cell over the cell cycle
+    '''
     plt.close()
     outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return
@@ -89,6 +100,11 @@ def temporal_mov_avg_rna(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, win
     plt.close()
     
 def temporal_mov_avg_randomization_example_protein(curr_pol, curr_ab_norm, curr_ab_norm_rng, mvavg_xvals, mvavg_yvals, mvavg_yvals_rng, folder, fileprefix, rna_or_protein = "Protein"):
+    '''
+    Generates a moving average plot for one protein illustrating the protein measurements (blue) and randomization of those measurements (red)
+    Input: Antibody intensity measurements for the current gene; results from randomization of the cell order
+    Output: Moving average plot with original measurements and results of randomization
+    '''
     outfile = os.path.join(folder,fileprefix+'_mvavg.png')
     if os.path.exists(outfile): 
         return

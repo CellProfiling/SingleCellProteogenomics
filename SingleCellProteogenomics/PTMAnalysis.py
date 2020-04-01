@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 31 16:26:07 2020
+Analysis of PTM regulation using bulk and phospho-enriched mass spectrometry (MS) proteomic data:
+    - PTM site occupancy was used to infer differences in PTM regulation
+    - MS proteomic data was analyzed by MetaMorpheus
+    - Protein level results with PTM occupancies are read and processed here
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from Bio import SeqIO
@@ -20,7 +23,7 @@ blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl
     "tmt6-plex"] # isotopic labels
 MIN_MOD_PEP = 1
 MIN_TOT_PEP = 5
-fucci = FucciCellCycle.FucciCellCycle()
+fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
 def analyze_ptms(filename, ccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, genes_analyzed):
     '''Load MetaMorpheus protein results and store information regarding protein PTMs'''

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 19:28:05 2020
+The variance of protein expression in the cell populations was evaluated using:
+    - variance
+    - coefficient of variation (CV)
+    - Gini index
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: devinsullivan
 """
 
 from SingleCellProteogenomics.utils import *

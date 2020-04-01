@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 22:52:09 2020
+Evaluates the delay between peak protein and RNA expression over the cell cycle:
+    - Creates a heatmap of time of peak expression for protein and for RNA
+    - Evaluates correlation of temporal expression for known and novel cell cycle dependent (CCD) proteins
+    - Illustrates the transitions between phases of peak expression for protein and RNA of the each gene that is CCD for both
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *
@@ -10,7 +13,7 @@ from SingleCellProteogenomics import utils, FucciCellCycle, MovingAverages, RNAD
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import SingleCellProteogenomics.alluvial
 
-fucci = FucciCellCycle.FucciCellCycle()
+fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
 def fix_nans(binned_values):
     '''Custom fix for nan values during binning.'''
@@ -51,6 +54,7 @@ def fix_nans(binned_values):
     return binned_values
 
 def bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto):
+    '''Compute protein expression values, binned over pseudotime into `nbins` number of bins.'''
     xvals = np.linspace(0,1,num=nbins)
     wp_max_pol = []
     wp_binned_values = []
@@ -230,6 +234,7 @@ def peak_expression_correlation_analysis(wp_binned_values, wp_max_pol, wp_ensg, 
     plt.rcParams['figure.figsize'] = prevfigsize
 
 def binned_median(yvals, nbins):
+    '''Compute RNA expression values, binned over pseudotime in `nbins` number of bins'''
     binned_medians = []
     for xval in range(nbins):
         startidx = len(yvals) // nbins * xval
@@ -238,10 +243,11 @@ def binned_median(yvals, nbins):
     return binned_medians
 
 def rna_heatmap(highlight_names, highlight_ensg, ccdtranscript, xvals):
+    '''Make heatmap of the time of peak expression for CCD transcripts. Highlight examples on the y-axis if given.'''
     # Read in RNA-Seq data again and the CCD gene lists; use TPMs so that the gene-specific results scales match for cross-gene comparisons
     print("reading scRNA-Seq data") 
-    plate, valuetype, use_spikeins, biotype_to_use = "All", "Tpms", False, "protein_coding"
-    adata, phases = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+    valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+    adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize=True, do_remove_blob=True)
     print("finished reading scRNA-Seq data")
 

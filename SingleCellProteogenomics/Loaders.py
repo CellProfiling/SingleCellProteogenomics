@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 30 12:41:32 2020
+Methods for loading results of previous analysis files. 
 
-@author: antho
+Separating analysis files improved the speed of testing and rerunning analyses.
+
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 import numpy as np
@@ -10,6 +12,7 @@ import pandas as pd
 from SingleCellProteogenomics import utils
 
 def load_protein_fucci_pseudotime():
+    '''Loads results of previous analysis files for Protein FUCCI pseudotime analysis'''
     return {
         "u_plate" :  np.load("output/pickles/u_plate.npy", allow_pickle=True),
         "well_plate" : np.load("output/pickles/well_plate.npy", allow_pickle=True),
@@ -40,6 +43,7 @@ def load_protein_fucci_pseudotime():
         "wp_iscyto" :  np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)}
 
 def load_temporal_delay():
+    '''Loads results of previous analysis files for temporal delay analysis'''
     return_dict = load_protein_fucci_pseudotime()
     add_dict = {"ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
         "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
@@ -64,6 +68,7 @@ def load_temporal_delay():
     return return_dict
 
 def load_ptm_and_stability(adata):
+    '''Loads results of previous analysis files for PTM and protein stability analyses'''
     return_dict = load_temporal_delay()
 
     # Get the labels in terms of ENSG

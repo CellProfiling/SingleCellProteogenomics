@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 27 14:27:22 2020
+Loading the raw immunofluorescence data for single-cell protein expression.
+Filtering the data for:
+    - Sample with low cell count
+    - Out of focus images removed
+    - Antibodies that failed validation are removed
+    - Small nuclei ar removed (mitotic cells) prior to this analylsis
+    - Large nuclei are removed (segmentation artificats)
+    - Only proteins displaying variability are kept for single-cell variability analysis (using manual annotations)
 
-@author: antho
+@author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
+
 EMPTYWELLS = set(["B11_6745","C11_6745","D11_6745","E11_6745","F11_6745","G11_6745","H11_6745",
-    "A12_6745","B12_6745","C12_6745","D12_6745","E12_6745","F12_6745","G12_6745"])
-MIN_CELL_COUNT = 60
+    "A12_6745","B12_6745","C12_6745","D12_6745","E12_6745","F12_6745","G12_6745"]) 
+# EMPTYWELLS: These wells on the last plate didn't have cells; the segmentation algorithm still annotated some, so remove them
+MIN_CELL_COUNT = 60 # Minimum number of cells per sample required for cell cycle analysis with pseudotime
 
 # 0: use mean, (testing intensity that's already normalized for cell size)
 # 1: use integrated, (testing integrated because it reflects that small cells are often brighter because they have rounded up and are thicker)
@@ -142,7 +151,7 @@ def apply_manual_filtering(my_df, result_dict, ab_dict):
     return my_df_filtered
     
 def plot_areas(areas, title):
-    '''histogram for areas of cell/nuc/cytoplasm'''
+    '''Histogram for areas of cell/nuc/cytoplasm'''
     bins = plt.hist(areas, bins=100, alpha=0.5)
     plt.vlines(np.mean(areas), 0, np.max(bins[0]))
     plt.vlines(np.mean(areas) - 2 * np.std(areas), 0, np.max(bins[0]))
@@ -155,7 +164,7 @@ def plot_areas(areas, title):
     plt.close()
 
 def apply_big_nucleus_filter(my_df):
-    '''filter the super big nuclei'''
+    '''Filter the super big nuclei'''
     area_cell, area_nuc, area_cyto = my_df.Area_cell, my_df.AreaShape_Area, my_df.Area_cyto
     plot_areas(area_cell, "area_cell")
     plot_areas(area_nuc, "area_nuc")
@@ -178,7 +187,7 @@ def apply_big_nucleus_filter(my_df):
     return my_df_filtered
 
 def apply_cell_count_filter(my_df):
-    '''filter low cell counts per sample'''
+    '''Filter low cell counts per sample'''
     my_df_filtered = my_df
     well_plate = np.asarray(my_df_filtered.well_plate)
     u_well_plates = np.unique(my_df_filtered.well_plate)
@@ -227,6 +236,7 @@ def metacompartments(u_well_plates, compartment_dict, my_df_filtered_variation):
     return wp_iscell, wp_isnuc, wp_iscyto, my_df_filtered_compartmentvariation
 
 def read_sample_data(df):
+    '''Read antibody intensity data for each sample and save it to a file for later use.'''
     # Antibody data (mean intensity)
     ab_nuc = np.asarray([df.Intensity_MeanIntensity_ResizedAb, 
                          df.Intensity_IntegratedIntensity_ResizedAb, 
