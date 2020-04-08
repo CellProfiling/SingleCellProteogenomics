@@ -55,27 +55,18 @@ ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
 adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
 
 # Generate plots with expression of genes overlayed
-do_make_gene_expression_plots = False
 expression_data = adata.X
 normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
-if do_make_gene_expression_plots:
-    # UMAPs with RNA expression overlayed
-    RNACellCycleDependence.plot_expression_umap(adata, ccd_regev_filtered, "figures/RegevGeneExpressionUmap") # curated CCD genes from a different scRNA-Seq analysis
-    RNACellCycleDependence.plot_expression_umap(adata, ccd_filtered, "figures/CcdGeneExpressionUmap") # CCD proteins from the present immunofluorescense work
-    RNACellCycleDependence.plot_expression_umap(adata, nonccd_filtered, "figures/NonCcdGeneExpressionUmap") # non-CCD proteins from the present immunofluorescense work
 
-    # Log-log FUCCI plot with RNA expression overlayed
-    RNACellCycleDependence.plot_expression_facs(ccd_regev_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/RegevGeneFucci")
-    RNACellCycleDependence.plot_expression_facs(ccd_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/CcdGeneFucci")
-    RNACellCycleDependence.plot_expression_facs(nonccd_filtered, normalized_exp_data, phasesfilt, adata.var_names, "figures/NonCcdGeneFucci")
+# Log-log FUCCI plot with RNA expression overlayed
+RNACellCycleDependence.plot_expression_facs(wp_ensg[np.isin(wp_ensg, adata.var_names)], normalized_exp_data, phasesfilt, adata.var_names, "figures/GeneExpressionFucci")
+
+# UMAPs with RNA expression overlayed
+RNACellCycleDependence.plot_expression_umap(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], "figures/GeneExpressionUmap")
 
 # Cluster the expression into phases and analyze it that way
 bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use)
-if do_make_gene_expression_plots:
-     # Remove?
-    RNACellCycleDependence.plot_expression_boxplots(adata, ccd_regev_filtered, bulk_phase_tests, "figures/RegevGeneBoxplots")
-    RNACellCycleDependence.plot_expression_boxplots(adata, ccd_filtered, bulk_phase_tests, "figures/CcdGeneBoxplots")
-    RNACellCycleDependence.plot_expression_boxplots(adata, nonccd_filtered, bulk_phase_tests, "figures/NonCcdGeneBoxplots")
+RNACellCycleDependence.plot_expression_boxplots(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], bulk_phase_tests, "figures/GeneExpressionBoxplots")
 
 #%% Moving average calculations and randomization analysis for RNA
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)

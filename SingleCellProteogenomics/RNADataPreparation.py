@@ -39,6 +39,7 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use):
     phases = pd.read_csv("input/processed/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
     
     # Assign phases and log intensities; require log intensity
+    adata.obs["Well_Plate"] = np.array(phases["Well_Plate"])
     adata.obs["phase"] = np.array(phases["Stage"])
     adata.obs["Green530"] = np.array(phases["Green530"])
     adata.obs["Red585"] = np.array(phases["Red585"])
@@ -66,7 +67,7 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     adata.obs["louvain"] = louvain
     if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
     phases = pd.read_csv("input/processed/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
-    phases_filt = phases[phases["Well_Plate"].isin(adata.obs_names)]
+    phases_filt = phases[phases["Well_Plate"].isin(adata.obs["Well_Plate"])]
     phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
     return adata, phases_filt
@@ -85,7 +86,7 @@ def general_plots():
 
     # QC plots before filtering
     sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
-    shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_{plate}Cells.pdf")
+    shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_AllCells.pdf")
 
     # Post filtering QC
     do_log_normalization = True
@@ -93,7 +94,7 @@ def general_plots():
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
     sc.pl.highly_variable_genes(adata, show=True, save=True)
-    shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersion{plate}Cells.pdf")
+    shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersionAllCells.pdf")
 
     # UMAP plots
     # Idea: based on the expression of all genes, do the cell cycle phases cluster together?
@@ -103,7 +104,7 @@ def general_plots():
     sc.tl.umap(adata)
     plt.rcParams['figure.figsize'] = (10, 10)
     sc.pl.umap(adata, color=["phase"], show=True, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umap{plate}CellsSeqCenterPhase.pdf")
+    shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqCenterPhase.pdf")
 
     # General display of RNA abundances in TPMs
     sbn.distplot(np.concatenate(adata.X), color="tab:orange", hist=False)
@@ -134,7 +135,7 @@ def analyze_noncycling_cells():
 
     # Remove the blob
     do_remove_blob = True
-    adata, phases = read_counts_and_phases(plate, valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata)
