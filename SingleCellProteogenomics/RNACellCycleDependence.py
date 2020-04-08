@@ -57,7 +57,7 @@ def plot_expression_facs(genelist, normalized_exp_data, phases, var_names, outfo
     if not os.path.exists(outfolder): os.mkdir(outfolder)
     for gene in genelist:
         nexp = normalized_exp_data[:,list(var_names).index(gene)]
-        plt.scatter(phases_validInt["Green530"], phases_validInt["Red585"], nexp)
+        plt.scatter(phases_validInt["Green530"], phases_validInt["Red585"], c=nexp)
         plt.tight_layout()
         cbar = plt.colorbar()
         cbar.ax.get_yaxis().labelpad = 15
