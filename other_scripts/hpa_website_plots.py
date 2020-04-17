@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 16 12:21:33 2020
+Examples (using anilin) of the code required to make the plots displayed on the HPA website.
 
-@author: antho
+@author: Anthony J. Cesnik
 """
 
 import pandas as pd
