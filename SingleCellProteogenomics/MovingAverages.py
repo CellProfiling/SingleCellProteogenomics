@@ -33,7 +33,7 @@ def mvmed_perc_var(yvals, windows):
     return np.var(yval_avg) / np.var(yvals), yval_avg
 
 def remove_outliers_idx(values):
-    '''Returns indices of outliers to remove'''
+    '''Returns indices of outliers to keep'''
     max_cutoff = np.mean(values) + 5 * np.std(values)
     min_cutoff = np.mean(values) - 5 * np.std(values)
     return (values < max_cutoff) & (values > min_cutoff)
@@ -44,7 +44,7 @@ def remove_outliers(values, return_values):
 
 ## MOVING AVERAGE PLOTS
 
-def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, clusters, folder, fileprefix):
+def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, mvperc, clusters, folder, fileprefix):
     '''
     Generates a moving average plot for one protein
     Input: Antibody intensity measurements for the current protein
@@ -54,7 +54,6 @@ def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, w
     outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return
     plt.figure(figsize=(5,5))
-    mvperc = mvpercentiles(curr_ab_norm[windows])
     plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[0], mvperc[-1], color="lightsteelblue", label="10th & 90th Percentiles")
     plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[1], mvperc[-2], color="steelblue", label="25th & 75th Percentiles")
     plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals, color="blue", label="Mean Intensity")
@@ -71,7 +70,7 @@ def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, w
     plt.savefig(outfile)
     plt.close()
         
-def temporal_mov_avg_rna(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
+def temporal_mov_avg_rna(fucci_time, curr_rna_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
     '''
     Generates a moving average plot for one transcript
     Input: Antibody intensity measurements for the current gene
@@ -81,12 +80,11 @@ def temporal_mov_avg_rna(fucci_time, curr_ab_norm, mvavg_xvals, mvavg_yvals, win
     outfile = os.path.join(folder,fileprefix+'_mvavg.pdf')
     if os.path.exists(outfile): return
     plt.figure(figsize=(5,5))
-    mvperc = mvpercentiles(curr_ab_norm[windows])
     plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[0], mvperc[-1], color="bisque", label="10th & 90th Percentiles")
     plt.fill_between(mvavg_xvals * TOT_LEN, mvperc[1], mvperc[-2], color="orange", alpha=0.7, label="25th & 75th Percentiles")
     plt.plot(mvavg_xvals * TOT_LEN, mvavg_yvals, color="tab:orange", label="Mean Intensity")
-    filteridx = remove_outliers_idx(curr_ab_norm)
-    plt.scatter(fucci_time[filteridx] * TOT_LEN, curr_ab_norm[filteridx], c='darkorange', alpha=0.2)
+    filteridx = remove_outliers_idx(curr_rna_norm)
+    plt.scatter(fucci_time[filteridx] * TOT_LEN, curr_rna_norm[filteridx], c='darkorange', alpha=0.2)
     plt.xlabel('Cell Cycle Time, hrs')
     plt.ylabel(fileprefix + ' RNA Expression')
     plt.xticks(size=14)

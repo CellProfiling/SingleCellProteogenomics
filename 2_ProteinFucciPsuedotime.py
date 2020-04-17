@@ -25,6 +25,7 @@ log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale = import_dict["log_gr
 wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp = import_dict["wp_comp_kruskal_gaussccd_adj"], import_dict["wp_pass_kruskal_gaussccd_bh_comp"]
 fucci_data = import_dict["fucci_data"]
 wp_iscell, wp_isnuc, wp_iscyto = import_dict["wp_iscell"], import_dict["wp_isnuc"], import_dict["wp_iscyto"]
+curr_wp_phases = import_dict["curr_wp_phases"]
         
 #%% 
 # Idea: Calculate the polar coordinates and other stuff
@@ -69,19 +70,26 @@ alphaa = 0.05
 ccd_results = ProteinCellCycleDependence.cell_cycle_dependence_protein(
         u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
         pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+        pol_sort_fred, pol_sort_fgreen,
         pol_sort_area_cell, pol_sort_area_nuc,
         wp_iscell, wp_isnuc, wp_iscyto,
         wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj)
-wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, folder = ccd_results
+wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, folder = ccd_results
 
 # Move the temporal average plots to more informative places
 ProteinCellCycleDependence.copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss)
 ProteinCellCycleDependence.global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj)
-ProteinCellCycleDependence.analyze_ccd_variation_protein(
+
+# Analyze the CCD results and save them
+ccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
     folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
     wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
     var_comp, gini_comp, 
     mean_diff_from_rng, wp_comp_kruskal_gaussccd_adj, wp_comp_eq_percvar_adj, 
     mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
     wp_isbimodal_fcpadj_pass, wp_isbimodal_generally, wp_ccd_unibimodal, wp_bimodal_fcmaxmin, wp_comp_ccd_gauss)
+
+# Make a dataframe for plotting on the HPA website
+ProteinCellCycleDependence.make_plotting_dataframe(wp_ensg, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
+            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, mvavgs_x, mvavgs_comp, mvperc_comps, curr_wp_phases)
 

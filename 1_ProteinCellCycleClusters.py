@@ -73,7 +73,7 @@ cluster_labels = ProteinGaussianClustering.gaussian_clustering(log_green_fucci_z
 
 # NB! The cluster labels can change if any prior analysis changes. Inspect the plots so that top-left FUCCI cluster is G1, top-right is S, bottom-right is G2.
 g1, sph, g2 = cluster_labels == 2, cluster_labels == 1, cluster_labels == 0
-alpha_gauss, doGenerateBoxplotsPerGene = 0.05, True
+alpha_gauss, doGenerateBoxplotsPerGene = 0.05, False
 wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp, wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt =  ProteinGaussianClustering.gaussian_clustering_analysis(alpha_gauss, doGenerateBoxplotsPerGene, g1, sph, g2, wp_ensg, well_plate, u_well_plates, ab_cell, ab_nuc, ab_cyto, mt_cell, wp_iscell, wp_isnuc, wp_iscyto)
 
 # General look at replicates in mock-bulk analysis

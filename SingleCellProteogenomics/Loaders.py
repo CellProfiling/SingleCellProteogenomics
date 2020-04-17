@@ -40,7 +40,9 @@ def load_protein_fucci_pseudotime():
        
         "wp_iscell" :  np.load("output/pickles/wp_iscell.npy", allow_pickle=True),
         "wp_isnuc" :  np.load("output/pickles/wp_isnuc.npy", allow_pickle=True),
-        "wp_iscyto" :  np.load("output/pickles/wp_iscyto.npy", allow_pickle=True)}
+        "wp_iscyto" :  np.load("output/pickles/wp_iscyto.npy", allow_pickle=True),
+        
+        "curr_wp_phases" : np.load("output/pickles/curr_wp_phases.npy", allow_pickle=True)}
 
 def load_temporal_delay():
     '''Loads results of previous analysis files for temporal delay analysis'''
