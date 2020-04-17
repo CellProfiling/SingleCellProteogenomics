@@ -105,34 +105,26 @@ def melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcrip
     # Load melting points for each protein across 3 cell lines
     all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
     atp, ant, att, trp, ntp, nnp = [],[], [], [], [],[]
-    ccd_groups = [ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein]
-    temp_groups = [allccdtranscript, allnonccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps]
-    name_groups = [att, ant, trp, ntp, nnp]
-    files = [("input/raw/ProteinStability/A549_R1.tsv", "A549_R1", True), 
-         ("input/raw/ProteinStability/A549_R2.tsv", "A549_R2", True),
-         ("input/raw/ProteinStability/HEK293_R1.tsv", "HEK293_R1", True),
-         ("input/raw/ProteinStability/HEK293_R2.tsv", "HEK293_R2", True),
-         ("input/raw/ProteinStability/HepG2_R1.tsv", "HepG2_R1", False),
-         ("input/raw/ProteinStability/HepG2_R2.tsv", "HepG2_R2", False),
-         ("input/raw/ProteinStability/HepG2_R3.tsv", "HepG2_R3", False)]
-    for file in files:
-        '''Adds melting temperature measurements from supp info files to lists'''
-        filename, title, splitname = file
-        df = pd.read_csv(filename, delimiter="\t")
-        df["ProteinName"] = df["Protein ID"].str.extract("[A-Z0-9]+_(.+)") if splitname else df["Protein ID"]
-        notna = pd.notna(df["Melting point [°C]"])
-        
-        ccd_at_stab = df[df["ProteinName"].isin(ccdtranscript)]
-        all_temps.extend(df[notna]["Melting point [°C]"])
-        atp.extend(df[notna]["ProteinName"])
-        for iii, group in enumerate(ccd_groups):
-            ccd_stab = df[df["ProteinName"].isin(group)]    
-            temp_groups[iii].extend(ccd_stab[notna]["Melting point [°C]"])
-            name_groups[iii].extend(ccd_stab[notna]["ProteinName"])
+    ccd_groups = [[True] * len(ccdtranscript), ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein]
+    temp_groups = [all_temps, allccdtranscript, allnonccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps]
+    name_groups = [atp, att, ant, trp, ntp, nnp]
+    
+    meltingDf = pd.read_csv("input/raw/ProteinStability/human.csv.gz")
+    print(f"{','.join(np.unique(meltingDf['cell_line_or_type']))}: unique human cell samples\n")
+    
+    notna = pd.notna(meltingDf["quan_norm_meltPoint"])
+    meltingDfNotNa = meltingDf[notna]
+    med = meltingDfNotNa.groupby("gene_name")["quan_norm_meltPoint"].median()
+    all_temps, atp = np.asarray(med), np.asarray(med.index)
+    allccdtranscript_temps, att = np.asarray(med[np.isin(med.index, list(ccdtranscript))]), np.asarray(med.index[np.isin(med.index, list(ccdtranscript))])
+    allnonccdtranscript_temps, ant = np.asarray(med[np.isin(med.index, list(nonccdtranscript))]), np.asarray(med.index[np.isin(med.index, list(nonccdtranscript))])
+    ccdprotein_transcript_regulated_temps, trp = np.asarray(med[np.isin(med.index, list(ccdprotein_transcript_regulated))]), np.asarray(med.index[np.isin(med.index, list(ccdprotein_transcript_regulated))])
+    ccdprotein_nontranscript_regulated_temps, ntp = np.asarray(med[np.isin(med.index, list(ccdprotein_nontranscript_regulated))]), np.asarray(med.index[np.isin(med.index, list(ccdprotein_nontranscript_regulated))])
+    nonccdprotein_temps, nnp = np.asarray(med[np.isin(med.index, list(nonccdprotein))]), np.asarray(med.index[np.isin(med.index, list(nonccdprotein))])
     
     # Aggregate measurements per protein
-    all_temps, transcript_reg, nontranscr_reg, nonccd_temps, atp, trp, ntp, nnp = avg_prot_temps([all_temps, transcript_reg, nontranscr_reg, nonccd_temps], [atp, trp, ntp, nnp])
-    statsresults = temp_hist("Aggregated Melting Points", all_temps, transcript_reg, nontranscr_reg, nonccd_temps, allccdtranscript)
+    statsresults = temp_hist("Aggregated Melting Points", 
+         all_temps, ccdprotein_transcript_regulated_temps, ccdprotein_nontranscript_regulated_temps, nonccdprotein_temps, allccdtranscript_temps)
     plt.savefig("figures/ProteinMeltingPointsMedianed.png")
     plt.show()
     plt.close()
@@ -143,12 +135,13 @@ def melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcrip
         "nontranscr_reg":np.isin(atp, ntp)}).to_csv("output/MedianMeltingPoints.csv",index=False)
 
     # Boxplots
-    utils.general_boxplot((all_temps, transcript_reg, nontranscr_reg, nonccd_temps), ("All Proteins", "Transcript's\nReg\nCCD", "Non-Transcript\nReg\nCCD", "Non-CCD"), 
+    utils.general_boxplot((all_temps, ccdprotein_transcript_regulated_temps, ccdprotein_nontranscript_regulated_temps, nonccdprotein_temps),
+          ("All Proteins", "Transcript's\nReg\nCCD", "Non-Transcript\nReg\nCCD", "Non-CCD"), 
         "Protein Set", "Melting Point (°C)", "", True, "figures/ProteinMeltingPointBox.pdf")
-    utils.boxplot_with_stripplot((all_temps, allccdtranscript, allnonccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps), 
+    utils.boxplot_with_stripplot((all_temps, allccdtranscript_temps, ccdprotein_nontranscript_regulated_temps, ccdprotein_transcript_regulated_temps, ccdprotein_nontranscript_regulated_temps, nonccdprotein_temps), 
         ("All Proteins", "All\nTranscript\nCCD", "All\nTranscript\nNon-CCD", "Transcript\nReg\nCCD", "Non-Transcript\nReg\nCCD", "Non-CCD"), 
         "", "Melting Point (°C)", "", True, "figures/ProteinMeltingPointBoxSelect.pdf")
-    utils.general_boxplot((all_temps, transcript_reg, nontranscr_reg), ("All Proteins", "Transcript\nRegulated\nCCD Proteins", "Non-Transcript\nRegulated\nCCD Proteins"), 
+    utils.general_boxplot((all_temps, ccdprotein_transcript_regulated_temps, ccdprotein_nontranscript_regulated_temps), ("All Proteins", "Transcript\nRegulated\nCCD Proteins", "Non-Transcript\nRegulated\nCCD Proteins"), 
         "", "Melting Point (°C)", "", False, "figures/ProteinMeltingPointBoxSelect2.pdf")
 
     print(statsresults)

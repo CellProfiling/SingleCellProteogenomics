@@ -550,7 +550,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     
     return ccd_comp, bioccd
 
-def make_plotting_dataframe(wp_ensg, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
+def make_plotting_dataframe(wp_ensg, wp_ab, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
             curr_pols, curr_ab_norms, curr_freds, curr_fgreens, mvavgs_x, mvavgs_comp, mvperc_comps,
             curr_wp_phases):
     '''Make a single table for HPA website figures on protein pseudotime, boxplots, and fucci plots'''
@@ -560,6 +560,7 @@ def make_plotting_dataframe(wp_ensg, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, b
     mvperc_75p = [x[-2] for x in mvperc_comps]
     pd.DataFrame({
         "ENSG" : wp_ensg,
+        "Antibody" : wp_ab,
         "Compartment" : get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc),
         "CCD" : get_ccd_strings(ccd_comp, wp_ensg, bioccd),
         "cell_pseudotime" : [",".join([str(ppp) for ppp in pp]) for pp in curr_pols],

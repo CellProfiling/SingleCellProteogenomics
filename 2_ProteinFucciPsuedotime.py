@@ -90,6 +90,6 @@ ccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
     wp_isbimodal_fcpadj_pass, wp_isbimodal_generally, wp_ccd_unibimodal, wp_bimodal_fcmaxmin, wp_comp_ccd_gauss)
 
 # Make a dataframe for plotting on the HPA website
-ProteinCellCycleDependence.make_plotting_dataframe(wp_ensg, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
+ProteinCellCycleDependence.make_plotting_dataframe(wp_ensg, wp_ab, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
             curr_pols, curr_ab_norms, curr_freds, curr_fgreens, mvavgs_x, mvavgs_comp, mvperc_comps, curr_wp_phases)
 
