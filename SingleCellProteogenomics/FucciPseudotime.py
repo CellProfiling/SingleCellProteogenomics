@@ -184,8 +184,8 @@ def fucci_polar_coords(x, y, analysis_title):
     return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, 
         more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
-def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,well_plate,well_plate_imgnb,
-                        log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale):
+def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb,
+                        log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
     pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
@@ -215,7 +215,7 @@ def pseudotime_protein(fucci_data, ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, are
     
     return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, 
         pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 
-        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen)
+        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_centered_data1, pol_sort_centered_data0)
 
 def get_phase_colormap():
     '''Get colormap used for cell cycle phase illustrations'''

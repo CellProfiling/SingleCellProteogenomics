@@ -66,16 +66,16 @@ RNACellCycleDependence.plot_expression_umap(adata, wp_ensg[np.isin(wp_ensg, adat
 
 # Cluster the expression into phases and analyze it that way
 bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use)
-RNACellCycleDependence.plot_expression_boxplots(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], bulk_phase_tests, "figures/GeneExpressionBoxplots")
+# RNACellCycleDependence.plot_expression_boxplots(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], bulk_phase_tests, "figures/GeneExpressionBoxplots")
 
 #%% Moving average calculations and randomization analysis for RNA
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)
-percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms = rna_ccd_analysis_results
+percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript = rna_ccd_analysis_results
 
 RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered)
-RNACellCycleDependence.mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals)
+mvpercs = RNACellCycleDependence.mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
-
+RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls
 adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spike_ins=True, biotype_to_use="")

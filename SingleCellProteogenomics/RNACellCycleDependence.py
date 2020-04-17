@@ -10,6 +10,7 @@ Methods for assessing cell cycle dependence of RNA abundances in single cells.
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages, FucciCellCycle, FucciPseudotime, RNADataPreparation
 
+np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
@@ -252,7 +253,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         print(fom)
         file.write(fom)
     
-    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms
+    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript
 
 def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered):
     '''Print some figures of merit for the RNA CCD analysis'''
@@ -282,11 +283,15 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.close()
 
 def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals):
+    mvpercs = []
     for iii, ensg in enumerate(adata.var_names):
         plt.close('all')
         if iii % 500 == 0: print(f"well {iii} of {len(adata.var_names)}")  
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(adata.obs["fucci_time"][fucci_time_inds]) - WINDOW + 1)])
-        MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], windows, f"figures/RNAPseudotimes", f"{ensg}")
+        mvperc = MovingAverages.mvpercentiles(norm_exp_sort[:,iii][windows])
+        mvpercs.append(mvperc)
+        MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], mvperc, f"figures/RNAPseudotimes", f"{ensg}")
+    return np.array(mvpercs)
 
 def ccd_analysis_of_spikeins(adata_spikeins, perms):
     '''ERCC spikeins were used as an internal control. We can use them to get an idea of the noise for this analysis.'''
@@ -319,3 +324,30 @@ def ccd_analysis_of_spikeins(adata_spikeins, perms):
     print(f"median of spike-in addtional variance explained by cell cycle than random: {np.median(mean_diff_from_rng_spike)}")
 
     utils.general_boxplot((percent_ccd_variance_spike, mean_diff_from_rng_spike), ("Percent Variance\nCCD Spike-In", "Percent Additional\nCCD Variance Spike-In"), "", "Percent Variance CCD", "", True, "figures/RNASpikeinVarianceBoxplot.png")
+    
+def cell_data_string(adata, idx):
+    '''Make a string representing the data for each cell'''
+    cell_data = [adata.obs['fucci_time'][idx], 
+                 adata.obs['phase'][idx], 
+                 adata.obs['Red585'][idx],
+                 adata.obs['Green530'][idx]]
+    return "|".join([str(xx) for xx in cell_data])
+    
+def make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavgs_x, moving_averages, mvpercs):
+    '''Make a single table for HPA website figures on RNA pseudotime, boxplots, and fucci plots'''
+    filteridx = np.apply_along_axis(MovingAverages.remove_outliers_idx, 0, norm_exp_sort) # indices to keep
+    pd.DataFrame({
+        "ENSG" : adata.var_names,
+        "CCD" : ccdtranscript,
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filteridx[:,ii]]]) for ii,yy in enumerate(norm_exp_sort.T)],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
+        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names],
+        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T],
+        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,0,:]],
+        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-1,:]],
+        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,1,:]],
+        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-2,:]],
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)]
+        }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")

@@ -11,6 +11,7 @@ Methods for assessing cell cycle dependence of protein abundance in single cells
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
 
+np.random.seed(0) # Get the same results each time
 WINDOW = 10 # Number of points for moving average window for protein analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
@@ -57,8 +58,24 @@ def get_fileprefixes(wp_ensg):
     '''Generate the file prefixes for given genes'''
     return np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
 
+def get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc):
+    '''Make strings to represent the metacompartment'''
+    compartmentstring = np.array(["Cell"] * len(wp_iscell))
+    compartmentstring[wp_iscyto] = "Cyto" 
+    compartmentstring[wp_isnuc] = "Nuc"
+    return compartmentstring
+
+def get_ccd_strings(ccd_comp, wp_ensg, bioccd):
+    '''Make strings to represent the CCD conclusion'''
+    ccdstring = np.array(["No                 "] * len(ccd_comp))
+    ccdstring[ccd_comp] = "Pseudotime"
+    ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
+    ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+    return ccdstring
+
 def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
         pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+        pol_sort_fred, pol_sort_fgreen,
         pol_sort_area_cell, pol_sort_area_nuc,
         wp_iscell, wp_isnuc, wp_iscyto,
         wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj):
@@ -69,7 +86,8 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = [],[],[],[] # percent variance attributed to cell cycle (mean POI intensities)
     perc_var_comp_rng, perc_var_mt_rng = [],[] # randomized in pseudotime; percent variances
     perc_var_comp_clust1, perc_var_comp_clust2, mvavgs_comp_clust1, mvavgs_comp_clust2, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng, mvavgs_x_clust1, mvavgs_x_clust2 = [],[],[],[],[],[],[],[] # percent variances for bimodal
-    mvavgs_cell, mvavgs_nuc, mvavgs_cyto, mvavgs_mt, mvavgs_x = [],[],[],[],[] # moving average y values & x value
+    mvavgs_comp, mvavgs_mt, mvavgs_x = [],[],[] # moving average y values & x value
+    curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens = [],[],[],[],[] # for plotting dataframe
     cell_counts = []
     
     analysis = "MeanRng"
@@ -92,13 +110,15 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         curr_ab_nuc = pol_sort_ab_nuc[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_nuc[curr_well_inds])
         curr_ab_cyto = pol_sort_ab_cyto[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_ab_cyto[curr_well_inds])
         curr_mt_cell = pol_sort_mt_cell[curr_well_inds] if not use_log_ccd else np.log10(pol_sort_mt_cell[curr_well_inds])
+        curr_fred = pol_sort_fred[curr_well_inds]
+        curr_fgreen = pol_sort_fgreen[curr_well_inds]
         if do_remove_outliers:
             curr_comp = curr_ab_cell if wp_iscell[i] else curr_ab_nuc if wp_isnuc[i] else curr_ab_cyto
             curr_pol = MovingAverages.remove_outliers(curr_comp, curr_pol)
-            curr_ab_cell = MovingAverages.remove_outliers(curr_comp,curr_ab_cell)
-            curr_ab_nuc = MovingAverages.remove_outliers(curr_comp,curr_ab_nuc)
-            curr_ab_cyto = MovingAverages.remove_outliers(curr_comp,curr_ab_cyto)
-            curr_mt_cell = MovingAverages.remove_outliers(curr_comp,curr_mt_cell)
+            curr_ab_cell = MovingAverages.remove_outliers(curr_comp, curr_ab_cell)
+            curr_ab_nuc = MovingAverages.remove_outliers(curr_comp, curr_ab_nuc)
+            curr_ab_cyto = MovingAverages.remove_outliers(curr_comp, curr_ab_cyto)
+            curr_mt_cell = MovingAverages.remove_outliers(curr_comp, curr_mt_cell)
     
         # Normalize mean intensities, normalized for display
         curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
@@ -171,28 +191,31 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         perc_var_cyto.append(perc_var_cyto_val)
         perc_var_mt.append(perc_var_mt_val)
         
-        mvavgs_cell.append(mvavg_cell)
-        mvavgs_nuc.append(mvavg_nuc)
-        mvavgs_cyto.append(mvavg_cyto)
-        mvavgs_mt.append(mvavg_mt)
+        curr_ab_norm = curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm
+        mvavg_comp = mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto
+        mvavgs_comp.append(mvavg_comp)
         mvavgs_x.append(mvavg_xvals)
-        
+        curr_pols.append(curr_pol)
+        curr_ab_norms.append(curr_ab_norm)
+        curr_freds.append(curr_fred)
+        curr_fgreens.append(curr_fgreen)
         cell_counts.append(len(curr_pol))
-        percvar = perc_var_cell_val if wp_iscell[i] else perc_var_nuc_val if wp_isnuc[i] else perc_var_cyto_val
         
-        # Uncomment to make the plots (takes 10 mins)
+        # Make the plots for each protein (takes 10 mins)
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
-        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
-             mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
-             windows, None, folder, fileprefixes[i])
+        mvperc_comp = MovingAverages.mvpercentiles(curr_ab_norm[windows])
+        mvperc_comps.append(mvperc_comp)
+        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_comp,
+            mvperc_comp, None, folder, fileprefixes[i])
         
-        # Uncomment to make the plots for microtubules (takes 10 mins)
+        # Make the plots for microtubules (takes 10 mins)
+        mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
         MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
         
+        # Make the plots for each bimodal protein
         if clusters is not None:
-            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm, mvavg_xvals,
-                 mvavg_cell if wp_iscell[i] else mvavg_nuc if wp_isnuc[i] else mvavg_cyto,
-                 windows, clusters, folder, fileprefixes[i] + "_clust1&2")
+            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_comp, 
+                mvperc_comp, clusters, folder, fileprefixes[i] + "_clust1&2")
         
     alpha_ccd = 0.01
     perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
@@ -275,11 +298,12 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     plt.savefig("figures/MedianDiffFromRandomVolcano.png")
     plt.savefig("figures/MedianDiffFromRandomVolcano.pdf")
     plt.show()
-    plt.close()
+    plt.close()    
     
     return (wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, 
         wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, 
-        mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, 
+        mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
+        mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens,
         folder)
 
 def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss):
@@ -491,24 +515,13 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
             for ab in ablist:
                 if ab in wp_ab:
                     ab_scores[wp_ab_list.index(ab)] = score
-
-    # Make strings to represent the metacompartment
-    compartmentstring = np.array(["Cell"] * len(wp_iscell))
-    compartmentstring[wp_iscyto] = "Cyto" 
-    compartmentstring[wp_isnuc] = "Nuc" 
-    
-    # Make strings to represent the CCD conclusion
-    ccdstring = np.array(["No                 "] * len(ccd_comp))
-    ccdstring[ccd_comp] = "Pseudotime"
-    ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
-    ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
     
     pd.DataFrame({
         "well_plate" : u_well_plates, 
         "ENSG": wp_ensg,
         "antibody": wp_ab,
         "antibody_hpa_scores" : ab_scores,
-        "compartment" : compartmentstring,
+        "compartment" : get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc),
         "variance_comp":var_comp,
         "gini_comp":gini_comp,
         "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
@@ -518,7 +531,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
         "pass_median_diff":wp_comp_ccd_difffromrng,
         "pass_gauss":wp_comp_ccd_gauss,
         "CCD_COMP":ccd_comp,
-        "ccd_reason":ccdstring,
+        "ccd_reason": get_ccd_strings(ccd_comp, wp_ensg, bioccd),
         "nonccd_comp":nonccd_comp,
         
         # bimodal significance testing
@@ -535,3 +548,29 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     utils.np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
     utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
     
+    return ccd_comp, bioccd
+
+def make_plotting_dataframe(wp_ensg, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
+            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, mvavgs_x, mvavgs_comp, mvperc_comps,
+            curr_wp_phases):
+    '''Make a single table for HPA website figures on protein pseudotime, boxplots, and fucci plots'''
+    mvperc_10p = [x[0] for x in mvperc_comps]
+    mvperc_90p = [x[-1] for x in mvperc_comps]
+    mvperc_25p = [x[1] for x in mvperc_comps]
+    mvperc_75p = [x[-2] for x in mvperc_comps]
+    pd.DataFrame({
+        "ENSG" : wp_ensg,
+        "Compartment" : get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc),
+        "CCD" : get_ccd_strings(ccd_comp, wp_ensg, bioccd),
+        "cell_pseudotime" : [",".join([str(ppp) for ppp in pp]) for pp in curr_pols],
+        "cell_intensity" : [",".join([str(yyy) for yyy in yy]) for yy in curr_ab_norms],
+        "cell_fred" : [",".join([str(rrr) for rrr in rr]) for rr in curr_freds],
+        "cell_fgreen" : [",".join([str(ggg) for ggg in gg]) for gg in curr_fgreens],
+        "mvavg_x" : [",".join([str(xxx) for xxx in xx]) for xx in mvavgs_x],
+        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in mvavgs_comp],
+        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_10p],
+        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_90p],
+        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_25p],
+        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_75p],
+        "phase" : [",".join(pp) for pp in curr_wp_phases]
+        }).to_csv("output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")

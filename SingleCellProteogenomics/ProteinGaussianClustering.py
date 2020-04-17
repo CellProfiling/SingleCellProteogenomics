@@ -76,16 +76,25 @@ def gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_resca
         plt.close()
     return cluster_labels
 
+def get_phase_strings(is_g1, is_sph, is_g2):
+    '''Make strings to represent the metacompartment'''
+    phasestring = np.array(["G1"] * len(is_g1))
+    phasestring[is_sph] = "S" 
+    phasestring[is_g2] = "G2"
+    return phasestring
+
 def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2, 
              wp_ensg, well_plate, u_well_plates, ab_cell, ab_nuc, ab_cyto, mt_cell, wp_iscell, wp_isnuc, wp_iscyto):
     '''Analyze the results of Gaussian clustering of FUCCI data for each protein antibody staining'''
     wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_mt_kruskal = [],[],[],[]
+    curr_wp_phases = []
     fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
     for iii, wp in enumerate(u_well_plates):
         curr_well_inds = well_plate==wp
         curr_wp_g1 = curr_well_inds & g1
         curr_wp_sph = curr_well_inds & sph
         curr_wp_g2 = curr_well_inds & g2
+        curr_wp_phases.append(get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds]))
         wp_cell_kruskal.append(scipy.stats.kruskal(ab_cell[curr_wp_g1], ab_cell[curr_wp_sph], ab_cell[curr_wp_g2])[1])
         wp_nuc_kruskal.append(scipy.stats.kruskal(ab_nuc[curr_wp_g1], ab_nuc[curr_wp_sph], ab_nuc[curr_wp_g2])[1])
         wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])
@@ -114,6 +123,9 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
     wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt = utils.benji_hoch(alpha_gauss, wp_mt_kruskal) 
     utils.np_save_overwriting("output/pickles/wp_mt_kruskal_gaussccd_adj.npy", wp_mt_kruskal_gaussccd_adj)
     utils.np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_mt.npy", wp_pass_gaussccd_bh_mt)
+    
+    # save the phase information
+    utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases))
 
     print(f"{len(wp_pass_kruskal_gaussccd_bh_comp)}: number of genes tested")
     print(f"{sum(wp_pass_kruskal_gaussccd_bh_comp)}: number of passing genes at {alpha_gauss*100}% FDR in compartment")
