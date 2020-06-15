@@ -88,12 +88,14 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
     '''Analyze the results of Gaussian clustering of FUCCI data for each protein antibody staining'''
     wp_cell_kruskal, wp_nuc_kruskal, wp_cyto_kruskal, wp_mt_kruskal = [],[],[],[]
     curr_wp_phases = []
+    mockbulk_phases = np.array(["  "] * len(ab_cell))
     fileprefixes = np.array([f"{ensg}_{sum(wp_ensg[:ei] == ensg)}" for ei, ensg in enumerate(wp_ensg)])
     for iii, wp in enumerate(u_well_plates):
         curr_well_inds = well_plate==wp
         curr_wp_g1 = curr_well_inds & g1
         curr_wp_sph = curr_well_inds & sph
         curr_wp_g2 = curr_well_inds & g2
+        mockbulk_phases[np.arange(len(ab_cell))[curr_well_inds]] = get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds])
         curr_wp_phases.append(get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds]))
         wp_cell_kruskal.append(scipy.stats.kruskal(ab_cell[curr_wp_g1], ab_cell[curr_wp_sph], ab_cell[curr_wp_g2])[1])
         wp_nuc_kruskal.append(scipy.stats.kruskal(ab_nuc[curr_wp_g1], ab_nuc[curr_wp_sph], ab_nuc[curr_wp_g2])[1])
@@ -126,6 +128,7 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
     
     # save the phase information
     utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases))
+    utils.np_save_overwriting("output/pickles/mockbulk_phases.npy", np.array(mockbulk_phases))
 
     print(f"{len(wp_pass_kruskal_gaussccd_bh_comp)}: number of genes tested")
     print(f"{sum(wp_pass_kruskal_gaussccd_bh_comp)}: number of passing genes at {alpha_gauss*100}% FDR in compartment")

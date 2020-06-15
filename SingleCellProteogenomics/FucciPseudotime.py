@@ -185,7 +185,7 @@ def fucci_polar_coords(x, y, analysis_title):
         more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
 def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb,
-                        log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale):
+                        log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
     pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
@@ -197,7 +197,8 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort, more_than_start, less_than_start), pol_reord(ab_cyto_sort, more_than_start, less_than_start), pol_reord(ab_cell_sort, more_than_start, less_than_start), pol_reord(mt_cell_sort, more_than_start, less_than_start)
     pol_sort_area_cell, pol_sort_area_nuc = pol_reord(area_cell, more_than_start, less_than_start), pol_reord(area_nuc, more_than_start, less_than_start)
     pol_sort_fred, pol_sort_fgreen = pol_reord(log_red_fucci_zeroc_rescale, more_than_start, less_than_start), pol_reord(log_green_fucci_zeroc_rescale, more_than_start, less_than_start)
- 
+    pol_sort_mockbulk_phases = pol_reord(mockbulk_phases, more_than_start, less_than_start)
+    
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, "Protein", R_2, start_phi, 200, True, pol_sort_well_plate, pol_sort_ab_nuc, pol_sort_centered_data0, pol_sort_centered_data1)
     plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_data1, pol_sort_centered_data0)
     
@@ -215,7 +216,7 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     
     return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, 
         pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 
-        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_centered_data1, pol_sort_centered_data0)
+        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_centered_data1, pol_sort_centered_data0, pol_sort_mockbulk_phases)
 
 def get_phase_colormap():
     '''Get colormap used for cell cycle phase illustrations'''
@@ -275,7 +276,12 @@ def pseudotime_umap(adata):
     Input: RNA-Seq data
     Output: UMAP diagram
     '''
+    nneighbors = [5, 10, 15, 30, 100] # used nn=10 in the paper
+    mindists = [0, 0.01, 0.05, 0.1, 0.5, 1] # used 0.5 (default) in the paper
+    for nn in nneighbors:
+        for md in mindists:
+            sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
+            sc.tl.umap(adata, min_dist=md)
+            sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+            shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime_nn{nn}_md{md}.pdf")
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-    sc.tl.umap(adata)
-    sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime.pdf")
