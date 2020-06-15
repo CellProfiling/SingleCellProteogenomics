@@ -101,7 +101,7 @@ def temp_hist(title, all_temps, transcript_reg, nontranscr_reg, nonccd_temps, al
     return stat_tests(title, all_temps, transcript_reg, nontranscr_reg, nonccd_temps, allccdtranscript)
 
 def melting_point_analysis(ccdtranscript, nonccdtranscript, ccdprotein_transcript_regulated, ccdprotein_nontranscript_regulated, nonccdprotein):
-    '''Gather measurements of melting points for each protein across 3 cell lines; get the median per protein and evaluate for differences between CCD groups'''
+    '''Gather measurements of melting points for each protein across 10 cell lines; get the median per protein and evaluate for differences between CCD groups'''
     # Load melting points for each protein across 3 cell lines
     all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
     atp, ant, att, trp, ntp, nnp = [],[], [], [], [],[]

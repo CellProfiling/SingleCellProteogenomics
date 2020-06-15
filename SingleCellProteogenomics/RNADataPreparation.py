@@ -123,10 +123,14 @@ def analyze_noncycling_cells():
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob) 
 
     # Unsupervised clustering and generate the gene list for the uncycling cells, aka the unknown blob
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-    sc.tl.umap(adata)
-    sc.pl.umap(adata, color="louvain", show=True, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_before.pdf")
+    nneighbors = [5, 10, 15, 30, 100] # used nn=10 in the paper
+    mindists = [0, 0.01, 0.05, 0.1, 0.5, 1] # used 0.5 (default) in the paper
+    for nn in nneighbors:
+        for md in mindists:
+            sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
+            sc.tl.umap(adata, min_dist=md)
+            sc.pl.umap(adata, color="louvain", show=True, save=True)
+            shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_before_nn{nn}_md{md}.pdf")
     sc.tl.rank_genes_groups(adata, groupby="louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
     p_blob_sig = np.array(p_blob) < 0.01
@@ -137,10 +141,12 @@ def analyze_noncycling_cells():
     do_remove_blob = True
     adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-    sc.tl.umap(adata)
-    sc.pl.umap(adata, color="louvain", show=True, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after.pdf")
+    for nn in nneighbors:
+        for md in mindists:
+            sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
+            sc.tl.umap(adata, min_dist=md)
+            sc.pl.umap(adata, color="louvain", show=True, save=True)
+            shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
     '''
