@@ -1273,11 +1273,11 @@ D05,D05_55395990,HPA069947,AFF1,ENSG00000172493,19.86,"AF4/FMR2 family, member 1
 E05,E05_55395990,HPA069981,MESP1,ENSG00000166823,0.24,mesoderm posterior bHLH transcription factor 1,no variation,not found in excel lookup
 F05,F05_55395990,HPA070112,DDR2,ENSG00000162733,18.82,discoidin domain receptor tyrosine kinase 2,notccd,Cell
 G05,G05_55395990,HPA070225,PSMG1,ENSG00000183527,17.1,"proteasome (prosome, macropain) assembly chaperone 1",notccd,Cell
-H05,H05_55395990,HPA070248,SC5D,ENSG00000109929,29.67,sterol-C5-desaturase,notccd,Cytosol
-A06,A06_55395990,HPA070252,PLPP7,ENSG00000160539,0.87,phospholipid phosphatase 7 (inactive),notccd,Nucleus
+H05,H05_55395990,HPA070248,SC5D,ENSG00000109929,29.67,sterol-C5-desaturase,notccd,Cell
+A06,A06_55395990,HPA070252,PLPP7,ENSG00000160539,0.87,phospholipid phosphatase 7 (inactive),notccd,Cell
 B06,B06_55395990,HPA070350,PRR19,ENSG00000188368,3.58,proline rich 19,ccd,nucleus
 C06,C06_55395990,HPA070550,INCENP,ENSG00000149503,52.85,inner centromere protein antigens 135/155kDa,ccd,not found in excel lookup
-D06,D06_55395990,HPA070604,SSU72,ENSG00000160075,93.16,"SSU72 homolog, RNA polymerase II CTD phosphatase",notccd,cytosol
+D06,D06_55395990,HPA070604,SSU72,ENSG00000160075,93.16,"SSU72 homolog, RNA polymerase II CTD phosphatase",notccd,Cell
 E06,E06_55395990,HPA070706,WIPF1,ENSG00000115935,12.19,"WAS/WASL interacting protein family, member 1",notccd,Cytosol
 F06,F06_55395990,HPA070756,ATXN1,ENSG00000124788,5.17,ataxin 1,ccd,Nucleus
 G06,G06_55395990,HPA070819,ZBTB14,ENSG00000198081,13.6,zinc finger and BTB domain containing 14,notccd,Nucleus
@@ -1488,7 +1488,7 @@ E08,E08_75836284,HPA040636,NUDT13,ENSG00000166321,7.48,nudix hydrolase 13,ccd,nu
 F08,F08_75836284,HPA040865,CCDC68,ENSG00000166510,0.08,coiled-coil domain containing 68,notccd,Cell
 G08,G08_75836284,HPA041069,CFAP53,ENSG00000172361,0.56,cilia and flagella associated protein 53,novariation;ccd_biologically defined,not found in excel lookup
 H08,H08_75836284,HPA041270,KPNA2,ENSG00000182481,494.06,karyopherin subunit alpha 2,ccd,nucleus
-A09,A09_75836284,HPA041370,FAH,ENSG00000103876,32.5,fumarylacetoacetate hydrolase,ccd,cytosol
+A09,A09_75836284,HPA041370,FAH,ENSG00000103876,32.5,fumarylacetoacetate hydrolase,ccd,nucleus
 B09,B09_75836284,HPA041434,THAP11,ENSG00000168286,26.28,THAP domain containing 11,ccd,not found in excel lookup
 C09,C09_75836284,HPA042256,CNR1,ENSG00000118432,0,cannabinoid receptor 1,no variation,not found in excel lookup
 D09,D09_75836284,HPA042297,TGFA,ENSG00000163235,4.92,transforming growth factor alpha,notccd,Cell
@@ -1567,5 +1567,5 @@ E06,E06_75846286,HPA075215,CDC25B,ENSG00000101224,72.64,cell division cycle 25B,
 F06,F06_75846286,HPA077316,ZNF880,ENSG00000221923,0.48,zinc finger protein 880,no variation,not found in excel lookup
 G06,G06_75846286,HPA010738,ADAM17,ENSG00000151694,19.41,ADAM metallopeptidase domain 17,no variation,not found in excel lookup
 H06,H06_75846286,HPA012105,C3orf18,ENSG00000088543,8.21,chromosome 3 open reading frame 18,notccd,Cytosol
-A07,A07_75846286,HPA037845,STOX1,ENSG00000165730,0.24,storkhead box 1,notccd,Cytosol
+A07,A07_75846286,HPA037845,STOX1,ENSG00000165730,0.24,storkhead box 1,notccd,Nucleus
 B07,B07_75846286,HPA038316,EIF3A,ENSG00000107581,133.86,eukaryotic translation initiation factor 3 subunit A,ccd,Cell
