@@ -562,6 +562,7 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
     mvperc_90p = [x[-1] for x in mvperc_comps]
     mvperc_25p = [x[1] for x in mvperc_comps]
     mvperc_75p = [x[-2] for x in mvperc_comps]
+    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
     pd.DataFrame({
         "ENSG" : wp_ensg,
         "Antibody" : wp_ab,
@@ -579,4 +580,4 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_75p],
         "phase" : [",".join(pp) for pp in curr_mockbulk_phases],
         "WellPlate" : u_well_plates
-        }).to_csv("output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")
+        })[~np.isin(u_well_plates, removeThese)].to_csv("output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")
