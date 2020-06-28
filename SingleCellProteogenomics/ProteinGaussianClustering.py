@@ -61,11 +61,10 @@ def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
     plt.savefig(f"{outfolder}_pdf/GaussianClusteringProtein_{ensg}.pdf")
     plt.close()
     
-def gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale):
+def gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale, clusternames):
     '''Perform gaussian clustering of FUCCI data into 3 phases: G1, S, G2'''
     gaussian = sklearn.mixture.GaussianMixture(n_components=3, random_state=1, max_iter=500)
     cluster_labels = gaussian.fit_predict(np.array([log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale]).T)
-    clusternames = ["G2","S-ph","G1"]
     for cluster in range(3):
         plt.hist2d(log_green_fucci_zeroc_rescale[cluster_labels == cluster],log_red_fucci_zeroc_rescale[cluster_labels == cluster],bins=200)
         plt.title(f"Gaussian clustered data, {clusternames[cluster]}")
