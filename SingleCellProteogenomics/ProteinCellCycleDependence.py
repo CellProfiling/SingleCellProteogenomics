@@ -580,4 +580,4 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_75p],
         "phase" : [",".join(pp) for pp in curr_mockbulk_phases],
         "WellPlate" : u_well_plates
-        })[~np.isin(wp_ensg, removeThese)].to_csv("output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")
+        })[~np.isin(u_well_plates, removeThese)].to_csv("output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")

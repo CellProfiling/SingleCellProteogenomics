@@ -69,10 +69,14 @@ plt.close()
 #%% Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
 # Exec: sklearn.mixture.GaussianMixture & scipy.stats.kruskal
 # Output: FDR for cell cycle variation per well per compartment
-cluster_labels = ProteinGaussianClustering.gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale)
 
 # NB! The cluster labels can change if any prior analysis changes. Inspect the plots so that top-left FUCCI cluster is G1, top-right is S, bottom-right is G2.
-g1, sph, g2 = cluster_labels == 2, cluster_labels == 1, cluster_labels == 0
+g1_idx, sph_idx, g2_idx = 1, 2, 0
+clusternames = ["G2" if g2_idx == 0 else "G1" if g1_idx == 0 else "S-ph",
+                "G2" if g2_idx == 1 else "G1" if g1_idx == 1 else "S-ph",
+                "G2" if g2_idx == 2 else "G1" if g1_idx == 2 else "S-ph"]
+cluster_labels = ProteinGaussianClustering.gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale, clusternames)
+g1, sph, g2 = cluster_labels == g1_idx, cluster_labels == sph_idx, cluster_labels == g2_idx
 alpha_gauss, doGenerateBoxplotsPerGene = 0.05, False
 wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp, wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt =  ProteinGaussianClustering.gaussian_clustering_analysis(alpha_gauss, doGenerateBoxplotsPerGene, g1, sph, g2, wp_ensg, well_plate, u_well_plates, ab_cell, ab_nuc, ab_cyto, mt_cell, wp_iscell, wp_isnuc, wp_iscyto)
 
