@@ -1,0 +1,27 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - snakemake-minimal =5.2.4
+  - python =3.6
+  - samtools
+  - numpy # velocyto
+  - pandas
+  - scipy
+  - cython
+  - numba
+  - matplotlib
+  - scikit-learn
+  - h5py
+  - click
+  - R=3.5.1
+  - rpy2=2.9.4
+  - r-devtools=2.0.1
+  - pytables # scvelo
+  - louvain # sccvelo
+  - pip
+  - pip:
+    - pysam==0.15.2
+    - loompy==2.0.17
+    - velocyto==0.17.17 # see https://hub.docker.com/r/jsschrepping/velocyto-docker/dockerfile for aptitude installs
+    - scvelo

@@ -28,6 +28,8 @@ FucciPseudotime.pseudotime_rna(adata, phases_filt)
 #%% Single cell RNA-Seq data preparation and general analysis
 RNADataPreparation.general_plots()
 RNADataPreparation.analyze_noncycling_cells()
+adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize=True, do_remove_blob=False)
+RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "BeforeRemovingNoncycling")
 
 #%% Idea: Similar to mock-bulk analysis for proteins, we can evaluate each gene bundled by phase across cells
 # Execution: Make boxplots of RNA expression by phase
@@ -35,6 +37,8 @@ RNADataPreparation.analyze_noncycling_cells()
 valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
 adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize=True, do_remove_blob=True)
+RNADataPreparation.plot_markers_vs_reads(adata)
+RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "AfterRemovingNoncycling")
 g1, s, g2 = adata.obs["phase"] == "G1", adata.obs["phase"] == "S-ph", adata.obs["phase"] == "G2M"
 do_make_boxplots = False
 if do_make_boxplots:
@@ -72,14 +76,17 @@ bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(ada
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)
 percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript = rna_ccd_analysis_results
 
+RNACellCycleDependence.plot_umap_ccd_cutoffs(adata, mean_diff_from_rng)
 RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered)
 mvpercs = RNACellCycleDependence.mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
 RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls
-adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(plate, valuetype, use_spike_ins=True, biotype_to_use="")
+adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(valuetype, use_spike_ins=True, biotype_to_use="")
 sc.pp.filter_genes(adata_spikeins, min_cells=100)
 print(f"data shape after filtering: {adata_spikeins.X.shape}")
 
 RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
+
+#%% Plots of 
