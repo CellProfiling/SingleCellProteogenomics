@@ -40,6 +40,7 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use):
     
     # Assign phases and log intensities; require log intensity
     adata.obs["Well_Plate"] = np.array(phases["Well_Plate"])
+    adata.obs["plate"] = np.array([wp.split("_")[1] for wp in adata.obs["Well_Plate"]])
     adata.obs["phase"] = np.array(phases["Stage"])
     adata.obs["Green530"] = np.array(phases["Green530"])
     adata.obs["Red585"] = np.array(phases["Red585"])
@@ -113,7 +114,21 @@ def general_plots():
     plt.savefig("figures/rna_abundance_density.pdf")
     plt.show()
     plt.close()
+    
+def plot_markers_vs_reads(adata):
+    utils.general_scatter(adata.obs["fucci_time"], adata.X[:,list(adata.var_names).index("ENSG00000112312")], "Fucci Pseudotime", "GMNN log10 TPM", "figures/GMNN_timeVsReadsScatter.png", False)
+    utils.general_scatter(adata.obs["Green530"], adata.X[:,list(adata.var_names).index("ENSG00000112312")], "GMNN FUCCI Marker Intensity", "GMNN log10 TPM", "figures/GMNN_markerVsReadsScatter.png", False)
+    utils.general_scatter(adata.obs["fucci_time"], adata.X[:,list(adata.var_names).index("ENSG00000167513")], "Fucci Pseudotime", "GMNN log10 TPM", "figures/CDT1_timeVsReadsScatter.png", False)
+    utils.general_scatter(adata.obs["Red585"], adata.X[:,list(adata.var_names).index("ENSG00000167513")], "CDT1 FUCCI Marker Intensity", "CDT1 log10 TPM", "figures/CDT1_markerVsReadsScatter.png", False)
 
+def plot_pca_for_batch_effect_analysis(adata, suffix):
+    '''Make PCA plots to show batch effects if they exits'''
+    sc.tl.pca(adata)
+    sc.pl.pca(adata, color="plate", palette=['b','tab:orange','g','grey'], save=True)
+    shutil.move("figures/pca.pdf", f"figures/pcaByPlate_{suffix}.pdf")
+    sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], save=True)
+    shutil.move("figures/pca.pdf", f"figures/pcaByPhase_{suffix}.pdf")
+    
 def analyze_noncycling_cells():
     '''The raw UMAP shows a group of cells that appear sequestered from cycling; investigate those'''
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
