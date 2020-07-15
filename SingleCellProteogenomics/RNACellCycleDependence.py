@@ -283,7 +283,9 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.close()
 
 def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals):
+    '''Generate moving average plots for all the genes'''
     mvpercs = []
+    examples = ["ENSG00000011426", "ENSG00000006747", "ENSG00000072756", "ENSG00000102908", "ENSG00000258947", "ENSG00000091651", "ENSG00000169740", "ENSG00000105173", "ENSG00000162999", "ENSG00000134057", "ENSG00000178999", "ENSG00000156970", "ENSG00000167065", "ENSG00000132768", "ENSG00000138801", "ENSG00000156239", "ENSG00000019144", "ENSG00000151702", "ENSG00000123607", "ENSG00000173599", "ENSG00000109814"]
     for iii, ensg in enumerate(adata.var_names):
         plt.close('all')
         if iii % 500 == 0: print(f"well {iii} of {len(adata.var_names)}")  
@@ -291,7 +293,28 @@ def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, 
         mvperc = MovingAverages.mvpercentiles(norm_exp_sort[:,iii][windows])
         mvpercs.append(mvperc)
         MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], mvperc, f"figures/RNAPseudotimes", f"{ensg}")
+        if ensg in examples:
+            print(ensg)
+            for plate in np.unique(adata.obs["plate"]):
+                isFromPlate = adata.obs["plate"] == plate
+                windowPlate = int(WINDOW / len(adata.obs["plate"]) * sum(isFromPlate))
+                mvavgPlate = MovingAverages.mvavg(norm_exp_sort[isFromPlate, iii], windowPlate)
+                mvavgXPlate = MovingAverages.mvavg(adata.obs["fucci_time"][fucci_time_inds][isFromPlate], windowPlate)
+                windowsPlate = np.asarray([np.arange(start, start + windowPlate) for start in np.arange(sum(isFromPlate) - windowPlate + 1)])
+                mvpercPlate = MovingAverages.mvpercentiles(norm_exp_sort[isFromPlate, iii][windowsPlate])
+                MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds][isFromPlate], norm_exp_sort[adata.obs["plate"] == plate,iii], mvavgXPlate, mvavgPlate, mvpercPlate, f"figures/RNAPseudotimesExamples", f"{ensg}{plate}")
     return np.array(mvpercs)
+
+def plot_umap_ccd_cutoffs(adata, mean_diff_from_rng):
+    '''Make UMAPs with CCD transcripts eliminated at various cutoffs between meandiff > 0.01 and meandiff > 0.1'''
+    if not os.path.exists("figures/RNACcdUmapCutoffs"): 
+        os.mkdir("figures/RNACcdUmapCutoffs")
+    for cutoff in (np.arange(10) + 1) / 100:
+        adata_withoutCCd = adata[:,mean_diff_from_rng < cutoff]
+        sc.pp.neighbors(adata_withoutCCd, n_neighbors=10, n_pcs=40)
+        sc.tl.umap(adata_withoutCCd)
+        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=True, save=True)
+        shutil.move("figures/umap.pdf", f"figures/RNACcdUmapCutoffs/umap{cutoff}cutoff.pdf")
 
 def ccd_analysis_of_spikeins(adata_spikeins, perms):
     '''ERCC spikeins were used as an internal control. We can use them to get an idea of the noise for this analysis.'''

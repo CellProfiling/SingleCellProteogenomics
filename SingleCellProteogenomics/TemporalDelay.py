@@ -451,3 +451,4 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         fom += f"" + "\n\n"
         print(fom)
         file.write(fom)
+        

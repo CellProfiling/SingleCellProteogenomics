@@ -63,6 +63,7 @@ def read_sample_info(df):
     compartment = np.asarray([compartment_dict[wp] if wp in compartment_dict else "" for wp in well_plate])
     
     # Pickle the results
+    utils.np_save_overwriting("output/pickles/plate.npy", plate)
     utils.np_save_overwriting("output/pickles/u_plate.npy", u_plate)
     utils.np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
     utils.np_save_overwriting("output/pickles/area_cell.npy", area_cell)

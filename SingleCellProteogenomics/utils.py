@@ -134,13 +134,14 @@ def boxplot_with_stripplot(group_values, group_labels, xlabel, ylabel, title, sh
     plt.show()
     plt.close()
 
-def general_scatter(x, y, xlabel, ylabel, outfile):
+def general_scatter(x, y, xlabel, ylabel, outfile, showLegend=True):
     '''Make a general scatterplot with matplotlib'''
     plt.figure(figsize=(10,10))
     plt.scatter(x, y, label="all")
     plt.ylabel(xlabel)
     plt.xlabel(ylabel)
-    plt.legend()
+    if showLegend: 
+        plt.legend()
     plt.savefig(outfile)
     plt.show()
     plt.close()

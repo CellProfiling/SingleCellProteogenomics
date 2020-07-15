@@ -70,7 +70,7 @@ def temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_yvals, m
     plt.savefig(outfile)
     plt.close()
         
-def temporal_mov_avg_rna(fucci_time, curr_rna_norm, mvavg_xvals, mvavg_yvals, windows, folder, fileprefix):
+def temporal_mov_avg_rna(fucci_time, curr_rna_norm, mvavg_xvals, mvavg_yvals, mvperc, folder, fileprefix):
     '''
     Generates a moving average plot for one transcript
     Input: Antibody intensity measurements for the current gene
