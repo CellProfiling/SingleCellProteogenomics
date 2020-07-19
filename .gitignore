@@ -11,6 +11,8 @@ input/processed/python/nuc_predicted*
 output/ProteinMod*
 output_devin/*
 input/raw/nuc*
+input/raw/counts*
+input/raw/tpms*
 output/pickles*
 .ipynb_checkpoints
 output/

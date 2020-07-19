@@ -128,6 +128,8 @@ def plot_pca_for_batch_effect_analysis(adata, suffix):
     shutil.move("figures/pca.pdf", f"figures/pcaByPlate_{suffix}.pdf")
     sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], save=True)
     shutil.move("figures/pca.pdf", f"figures/pcaByPhase_{suffix}.pdf")
+    pca_var = np.var(adata.obsm['X_pca'], axis=0)
+    pd.DataFrame({"pca_var" : pca_var / sum(pca_var)}).to_csv(f"output/pca{suffix}_var.txt", sep="\t")
     
 def analyze_noncycling_cells():
     '''The raw UMAP shows a group of cells that appear sequestered from cycling; investigate those'''

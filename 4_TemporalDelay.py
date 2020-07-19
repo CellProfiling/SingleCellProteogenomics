@@ -28,7 +28,8 @@ var_cell_prot, gini_cell_prot, cv_cell_prot = import_dict["var_cell"], import_di
 highlights = []#'ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
 highlights_ensg = []#'ORC6','DUSP19','BUB1B','DPH2', 'FLI1']
 
-protein_heatmap_results = TemporalDelay.protein_heatmap(highlights, highlights_ensg, 
+nbins=100
+protein_heatmap_results = TemporalDelay.protein_heatmap(nbins, highlights, highlights_ensg, 
     ccd_comp, u_well_plates, wp_ensg, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto)
 sorted_maxpol_array, wp_binned_values, wp_max_pol, wp_max_pol_ccd, xvals = protein_heatmap_results
 

@@ -93,3 +93,9 @@ ccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
 ProteinCellCycleDependence.make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
             curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps)
 
+# Perform comparison to LASSO for finding CCD proteins
+ProteinCellCycleDependence.compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 
+     pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, wp_ensg, ccd_comp)
+
+# Generate UMAPs to illustrate cutoffs and stability
+ProteinCellCycleDependence.generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, mean_diff_from_rng)

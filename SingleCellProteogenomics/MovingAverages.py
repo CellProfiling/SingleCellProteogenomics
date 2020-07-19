@@ -125,4 +125,86 @@ def temporal_mov_avg_randomization_example_protein(curr_pol, curr_ab_norm, curr_
     plt.savefig(outfile)
     plt.close()
 
+def fix_nans(binned_values):
+    '''Custom fix for nan values during binning.'''
+    for i,val in enumerate(binned_values):
+        do_fix = np.isnan(val)
+        if do_fix:
+            is_end = i == len(binned_values)-1
+            if is_end:
+                prevval = i-1
+                nextval = i+1
+            else:
+                prevval = binned_values[i-1]
+                nextval = binned_values[i+1]
+            prevval = np.nan
+            jind = i
+            count = 1
+            while np.isnan(prevval) and count<len(binned_values):
+                if jind>0:
+                    jind = jind-1
+                    prevval = binned_values[jind]
+                elif jind==0:
+                    jind = len(binned_values)-1
+                    prevval = binned_values[jind]
+                count = count+1
+            nextval = np.nan
+            jind = i
+            count = 1
+            while np.isnan(nextval) and count<len(binned_values):
+                if jind<(len(binned_values)-1):
+                    jind = jind+1
+                    nextval = binned_values[jind]
+                elif jind==(len(binned_values)-1):
+                    # print('doing the end of list')
+                    jind = 0
+                    nextval = binned_values[jind]
+                count = count+1
+            binned_values[i] = np.mean([prevval,nextval])
+    return binned_values
+
+def bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, 
+               pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=True):
+    '''Compute protein expression values, binned over pseudotime into `nbins` number of bins.'''
+    xvals = np.linspace(0,1,num=nbins)
+    wp_max_pol = []
+    wp_binned_values = []
+    for i, well in enumerate(u_well_plates):
+        curr_well_inds = pol_sort_well_plate==well
+        curr_pol = pol_sort_norm_rev[curr_well_inds]
+    #    curr_fred = pol_sort_fred[curr_well_inds]
+    #    curr_fgreen = pol_sort_fgreen[curr_well_inds]
+        curr_ab_cell, curr_ab_nuc, curr_ab_cyto, curr_mt_cell = pol_sort_ab_cell[curr_well_inds], pol_sort_ab_nuc[curr_well_inds],pol_sort_ab_cyto[curr_well_inds], pol_sort_mt_cell[curr_well_inds]
     
+        # Normalize FUCCI colors & mean intensities, normalized for display
+        if do_normalize:
+        #    curr_fred_norm = curr_fred / np.max(curr_fred)
+        #    curr_fgreen_norm = curr_fgreen / np.max(curr_fgreen)
+            curr_ab_cell_norm = curr_ab_cell / np.max(curr_ab_cell) 
+            curr_ab_nuc_norm = curr_ab_nuc / np.max(curr_ab_nuc)
+            curr_ab_cyto_norm = curr_ab_cyto / np.max(curr_ab_cyto) 
+            curr_mt_cell_norm  = curr_mt_cell / np.max(curr_mt_cell)
+        else:
+            # curr_fred_norm, curr_fgreen_norm = curr_fred, curr_fgreen
+            curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm = curr_ab_cell, curr_ab_nuc, curr_ab_cyto, curr_mt_cell
+        
+        # Compute binned values
+        binned_values = []
+        prev_xval = 0
+        for xval in xvals:
+            if xval==0:
+                prev_xval = xval
+                continue
+            curr_ab_norm = curr_ab_cell_norm if wp_iscell[i] else curr_ab_nuc_norm if wp_isnuc[i] else curr_ab_cyto_norm
+            binned_values.append(np.median(curr_ab_norm[(curr_pol < xval) & (curr_pol >= prev_xval)]))
+            prev_xval = xval
+            
+        if do_normalize:
+            binned_values = binned_values/np.nanmax(binned_values)
+        binned_values = fix_nans(binned_values)
+        max_loc = np.nanargmax(binned_values)
+        if np.isnan(xvals[max_loc]): print('what')
+        
+        wp_max_pol.append(xvals[max_loc])
+        wp_binned_values.append(binned_values)
+    return wp_max_pol, wp_binned_values, xvals
