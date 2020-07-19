@@ -213,6 +213,8 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     utils.np_save_overwriting("output/pickles/pol_sort_area_nuc.npy", pol_sort_area_nuc)
     utils.np_save_overwriting("output/pickles/pol_sort_fred.npy", pol_sort_fred)
     utils.np_save_overwriting("output/pickles/pol_sort_fgreen.npy", pol_sort_fgreen)
+    utils.np_save_overwriting("output/pickles/pol_sort_centered_data0.npy", pol_sort_centered_data0)
+    utils.np_save_overwriting("output/pickles/pol_sort_centered_data1.npy", pol_sort_centered_data1)
     
     return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, 
         pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 

@@ -81,6 +81,7 @@ RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mea
 mvpercs = RNACellCycleDependence.mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
 RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
+RNACellCycleDependence.compare_to_lasso_analysis(adata, ccdtranscript)
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls
 adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(valuetype, use_spike_ins=True, biotype_to_use="")
@@ -88,5 +89,3 @@ sc.pp.filter_genes(adata_spikeins, min_cells=100)
 print(f"data shape after filtering: {adata_spikeins.X.shape}")
 
 RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
-
-#%% Plots of 

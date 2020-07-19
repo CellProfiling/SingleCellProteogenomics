@@ -9,11 +9,13 @@ Methods for assessing cell cycle dependence of RNA abundances in single cells.
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages, FucciCellCycle, FucciPseudotime, RNADataPreparation
+from sklearn.linear_model import MultiTaskLassoCV
+from sklearn.impute import KNNImputer
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05 # Cutoff used for percent additional variance explained by the cell cycle than random
 
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
@@ -347,7 +349,43 @@ def ccd_analysis_of_spikeins(adata_spikeins, perms):
     print(f"median of spike-in addtional variance explained by cell cycle than random: {np.median(mean_diff_from_rng_spike)}")
 
     utils.general_boxplot((percent_ccd_variance_spike, mean_diff_from_rng_spike), ("Percent Variance\nCCD Spike-In", "Percent Additional\nCCD Variance Spike-In"), "", "Percent Variance CCD", "", True, "figures/RNASpikeinVarianceBoxplot.png")
+ 
+def compare_to_lasso_analysis(adata, ccdtranscript):
+    '''Perform a comparison of pseudotime analysis to LASSO analysis for finding CCD proteins'''
+    prevPlotSize = plt.rcParams['figure.figsize']
+    plt.rcParams['figure.figsize'] = (6, 5)
+
+    print("ANALYZING SC-RNA-SEQ WITH LASSO")
+    fucci_rna_data = [(adata.obs["Red585"][ii], adata.obs["Green530"][ii]) for ii in np.arange(len(adata.obs))]
+    imputer = KNNImputer(missing_values=0)
+    expression = imputer.fit_transform(adata.X)
+    fucci_rna_path = "output/pickles/fucci_rna_imputed_lasso.pkl"
+    if os.path.exists(fucci_rna_path):
+        fucci_rna = np.load(open(fucci_rna_path, 'rb'), allow_pickle=True)
+    else:
+        fucci_rna = MultiTaskLassoCV()
+        fucci_rna.fit(expression, fucci_rna_data)
+        pickle.dump(fucci_rna, open(fucci_rna_path, 'wb'))
+    nz_coef = np.sum(fucci_rna.coef_, axis=0) != 0
+    print(f"{sum(nz_coef)}: number of nonzero lasso coefficients")
+    print(f"{adata.var_names[nz_coef]}: genes with nonzero lasso coeff")
+    print(f"{ccdtranscript[nz_coef]}: CCD transcript for nonzero lasso coeff")
+    print(f"{np.sum(fucci_rna.coef_, axis=0)[nz_coef]}: coefficients for nonzero lasso coeff")
     
+    # Generate UMAP for CCD and nonCCD for the LASSO model
+    adataCCd = adata[:,nz_coef]
+    sc.pp.neighbors(adataCCd, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adataCCd)
+    sc.pl.umap(adataCCd, color="fucci_time", show=True, save=True)
+    shutil.move("figures/umap.pdf", f"figures/umapRNALassoCCD.pdf")
+    adataNonCCd = adata[:,~nz_coef]
+    sc.pp.neighbors(adataNonCCd, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adataNonCCd)
+    sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
+    shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
+    plt.rcParams['figure.figsize'] = prevPlotSize
+    
+
 def cell_data_string(adata, idx):
     '''Make a string representing the data for each cell'''
     cell_data = [adata.obs['fucci_time'][idx], 

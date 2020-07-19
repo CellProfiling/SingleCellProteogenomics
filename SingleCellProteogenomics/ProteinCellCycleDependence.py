@@ -10,11 +10,17 @@ Methods for assessing cell cycle dependence of protein abundance in single cells
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
+import umap
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 10 # Number of points for moving average window for protein analysis
+WINDOW_FUCCI_MARKERS = 100 # Used for getting median FUCCI marker intensity for LASSO analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05 # Cutoff used for percent additional variance explained by the cell cycle than random
+BINS_FOR_UMAP_AND_LASSO = 400 # Number of bins for creating UMAPs/LASSO model. Chosen for the best stability.
+chosen_nn = 5
+chosen_md = 0.2
+chosen_cutoff = MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
 
 def clust_to_wp(clust, clust_idx):
     '''
@@ -554,6 +560,155 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
     
     return ccd_comp, bioccd
+
+def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 
+                              pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+                              pol_sort_fred, pol_sort_fgreen,
+                              wp_iscell, wp_isnuc, wp_iscyto, wp_ensg, ccd_comp):
+    '''Comparison of pseudotime alignment to LASSO for finding CCD proteins'''
+    proteins = pd.read_csv("output/ProteinPseudotimePlotting.csv.gz", sep="\t")
+    numCells=np.array([len(x.split(',')) for x in proteins["cell_fred"]])
+    do_normalize=False
+    wp_max_pol, wp_binned_values, xvals = MovingAverages.bin_values(BINS_FOR_UMAP_AND_LASSO, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 
+                           pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
+    wp_binned_values = np.array(wp_binned_values)
+    
+    # Bin the FUCCI coordinates
+    mvavg_red = MovingAverages.mvavg(pol_sort_fred, WINDOW_FUCCI_MARKERS)
+    mvavg_green = MovingAverages.mvavg(pol_sort_fgreen, WINDOW_FUCCI_MARKERS)
+    mvavg_xvals = MovingAverages.mvavg(pol_sort_norm_rev, WINDOW_FUCCI_MARKERS)
+    
+    # plot fucci coordinate averages
+    plt.scatter(mvavg_red, mvavg_green, c=mvavg_xvals)
+    plt.xlabel("Centered CDT1 log10 Intensity")
+    plt.ylabel("Centered GMNN log10 Intensity")
+    cb = plt.colorbar()
+    cb.set_label('Pseudotime')
+    plt.savefig("figures/FucciCoordinateAverages.png")
+    plt.show(); plt.close()
+    
+    xvals = np.linspace(0,1,num=BINS_FOR_UMAP_AND_LASSO)
+    wp_max_pol = []
+    binned_values_fred, binned_values_fgreen = [], []
+    for xval in xvals:
+        if xval==0:
+            prev_xval = xval
+            continue
+        binned_values_fred.append(np.median(mvavg_red[(mvavg_xvals < xval) & (mvavg_xvals >= prev_xval)]))
+        binned_values_fgreen.append(np.median(mvavg_green[(mvavg_xvals < xval) & (mvavg_xvals >= prev_xval)]))
+        prev_xval = xval
+    binned_values_fred, binned_values_fgreen = np.array(binned_values_fred), np.array(binned_values_fgreen)
+    
+    # plot binned fucci coordinate averages
+    plt.scatter(binned_values_fred, binned_values_fgreen, c=xvals[1:])
+    plt.xlabel("Binned Centered CDT1 log10 Intensity")
+    plt.ylabel("Binned Centered GMNN log10 Intensity")
+    cb = plt.colorbar()
+    cb.set_label('Pseudotime')
+    plt.savefig("figures/FucciCoordinateBinnedAverages.png")
+    plt.show(); plt.close()
+    
+    protein_fucci = np.vstack((binned_values_fred, binned_values_fgreen))
+    fucci_protein_path = f"output/pickles/fucci_protein_lasso_binned{BINS_FOR_UMAP_AND_LASSO}{'Norm' if do_normalize else 'NoNorm'}.pkl"
+    if os.path.exists(fucci_protein_path):
+        fucci_protein = np.load(open(fucci_protein_path, 'rb'), allow_pickle=True)
+    else:
+        fucci_protein = MultiTaskLassoCV()
+        fucci_protein.fit(np.array(wp_binned_values).T, protein_fucci.T)
+        pickle.dump(fucci_protein, open(fucci_protein_path, 'wb'))
+    plt.scatter(fucci_protein.alphas_, np.mean(fucci_protein.mse_path_, axis=1))
+    plt.xlim((np.min(fucci_protein.alphas_), np.max(fucci_protein.alphas_)))
+    print(f"{sum(np.sum(fucci_protein.coef_, axis=0) != 0)}: number of nonzero lasso coefficients")
+    print(f"{wp_ensg[np.sum(fucci_protein.coef_, axis=0) != 0]}: genes with nonzero lasso coeff")
+    print(f"{ccd_comp[np.sum(fucci_protein.coef_, axis=0) != 0]}: CCD transcript for nonzero lasso coeff")
+    print(f"{np.sum(fucci_protein.coef_, axis=0)[np.sum(fucci_protein.coef_, axis=0) != 0]}")
+    
+    # Make a UMAPs for the LASSO analysis to demonstrate higher false negative rate
+    nz_coef_protein = np.sum(fucci_protein.coef_, axis=0) != 0
+    reducer=umap.UMAP(n_neighbors=chosen_nn, min_dist=chosen_md, random_state=0)
+    
+    embeddingCcd=reducer.fit_transform(wp_binned_values[nz_coef_protein,:].T)
+    plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
+    plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+    cb = plt.colorbar()
+    cb.set_label("Pseudotime")
+    plt.savefig(f"figures/umapProteinLassoCCD.pdf")
+    plt.close()
+    
+    embeddingNonCcd=reducer.fit_transform(wp_binned_values[~nz_coef_protein,:].T)
+    plt.scatter(embeddingNonCcd[:,0],embeddingNonCcd[:,1], c=xvals[1:])
+    plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+    cb = plt.colorbar()
+    cb.set_label("Pseudotime")
+    plt.savefig(f"figures/umapProteinLassoNonCCD.pdf")
+    plt.close()
+    
+def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
+                   wp_iscell, wp_isnuc, wp_iscyto, mean_diff_from_rng):
+    if not os.path.exists("figures/ProteinUmaps"): os.mkdir("figures/ProteinUmaps")
+    if not os.path.exists("figures/ProteinUmapStability"): os.mkdir("figures/ProteinUmapStability")
+    
+    nneighbors = [5, 10, 15, 20, 50] # used nn=10 in the paper
+    mindists = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1] # used 0.5 (default) in the paper
+    nbinses = [50, 100, 200, 300, 400, 500]
+    do_normalize = False
+    plt.close()
+    for nbins in nbinses:
+        wp_max_pol, wp_binned_values, xvals = MovingAverages.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
+        wp_binned_values = np.array(wp_binned_values)
+        for nn in nneighbors:
+            for md in mindists:
+                cutoff=0.05 
+                reducer=umap.UMAP(n_neighbors=nn, min_dist=md, random_state=0)
+                embeddingCcd=reducer.fit_transform(wp_binned_values[mean_diff_from_rng > cutoff,:].T)
+                plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
+                plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+                cb = plt.colorbar()
+                cb.set_label("Pseudotime")
+                plt.savefig(f"figures/ProteinUmapStability/proteinUmap_nbins{nbins}_nn{nn}_md{md}_{cutoff}CCD.pdf")
+                plt.close()
+                embeddingNonCcd=reducer.fit_transform(wp_binned_values[mean_diff_from_rng <= cutoff,:].T)
+                plt.scatter(embeddingNonCcd[:,0],embeddingNonCcd[:,1], c=xvals[1:])
+                plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+                cb = plt.colorbar()
+                cb.set_label("Pseudotime")
+                plt.savefig(f"figures/ProteinUmapStability/proteinUmap_nbins{nbins}_nn{nn}_md{md}_{cutoff}NonCCD.pdf")
+                plt.close()
+    
+    chosen_nb = BINS_FOR_UMAP_AND_LASSO
+    if not os.path.exists("figures/ProteinUmapNumBins"): os.mkdir("figures/ProteinUmapNumBins")
+    for nbins in nbinses:
+        orig = f"figures/ProteinUmapStability/proteinUmap_nbins{nbins}_nn{chosen_nn}_md{chosen_md}_{chosen_cutoff}CCD.pdf"
+        new = f"figures/ProteinUmapNumBins/proteinUmap_nbins{nbins}_nn{chosen_nn}_md{chosen_md}_{chosen_cutoff}CCD.pdf"
+        shutil.copy(orig, new)
+    if not os.path.exists("figures/ProteinUmapStabilityChoice"): os.mkdir("figures/ProteinUmapStabilityChoice")
+    for nn in nneighbors:
+        for md in mindists:
+            orig = f"figures/ProteinUmapStability/proteinUmap_nbins{chosen_nb}_nn{nn}_md{md}_{chosen_cutoff}CCD.pdf"
+            new = f"figures/ProteinUmapStabilityChoice/proteinUmap_nbins{chosen_nb}_nn{nn}_md{md}_{chosen_cutoff}CCD.pdf"
+            shutil.copy(orig, new)
+    
+    nbins=BINS_FOR_UMAP_AND_LASSO # Seems to be the most stable given all genes. When the subsets get small, though, it'll fall apart.
+    wp_max_pol, wp_binned_values, xvals = MovingAverages.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
+    wp_binned_values = np.array(wp_binned_values)
+    reducer=umap.UMAP(n_neighbors=chosen_nn, min_dist=chosen_md, random_state=0)
+    for cutoff in (np.arange(20) + 1) / 100:
+        embeddingCcd=reducer.fit_transform(wp_binned_values[mean_diff_from_rng > cutoff,:].T)
+        
+        plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
+        plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+        cb = plt.colorbar()
+        cb.set_label("Pseudotime")
+        plt.savefig(f"figures/ProteinUmaps/proteinUmap{round(cutoff, 2)}CCD.pdf")
+        plt.close()
+        
+        embeddingNonCcd=reducer.fit_transform(wp_binned_values[mean_diff_from_rng <= cutoff,:].T)
+        plt.scatter(embeddingNonCcd[:,0],embeddingNonCcd[:,1], c=xvals[1:])
+        plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+        cb = plt.colorbar()
+        cb.set_label("Pseudotime")
+        plt.savefig(f"figures/ProteinUmaps/proteinUmap{round(cutoff, 2)}NonCCD.pdf")
+        plt.close()
 
 def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
             curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps):
