@@ -361,7 +361,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     expression = imputer.fit_transform(adata.X)
     fucci_rna_path = "output/pickles/fucci_rna_imputed_lasso.pkl"
     if os.path.exists(fucci_rna_path):
-        fucci_rna = pickle.load(open(fucci_rna_path, 'rb'))
+        fucci_rna = np.load(open(fucci_rna_path, 'rb'), allow_pickle=True)
     else:
         fucci_rna = MultiTaskLassoCV()
         fucci_rna.fit(expression, fucci_rna_data)

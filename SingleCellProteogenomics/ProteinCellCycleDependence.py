@@ -18,6 +18,9 @@ WINDOW_FUCCI_MARKERS = 100 # Used for getting median FUCCI marker intensity for 
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05 # Cutoff used for percent additional variance explained by the cell cycle than random
 BINS_FOR_UMAP_AND_LASSO = 400 # Number of bins for creating UMAPs/LASSO model. Chosen for the best stability.
+chosen_nn = 5
+chosen_md = 0.2
+chosen_cutoff = MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM
 
 def clust_to_wp(clust, clust_idx):
     '''
@@ -559,7 +562,8 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     return ccd_comp, bioccd
 
 def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 
-                              pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
+                              pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
+                              pol_sort_fred, pol_sort_fgreen,
                               wp_iscell, wp_isnuc, wp_iscyto, wp_ensg, ccd_comp):
     '''Comparison of pseudotime alignment to LASSO for finding CCD proteins'''
     proteins = pd.read_csv("output/ProteinPseudotimePlotting.csv.gz", sep="\t")
@@ -607,7 +611,7 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
     protein_fucci = np.vstack((binned_values_fred, binned_values_fgreen))
     fucci_protein_path = f"output/pickles/fucci_protein_lasso_binned{BINS_FOR_UMAP_AND_LASSO}{'Norm' if do_normalize else 'NoNorm'}.pkl"
     if os.path.exists(fucci_protein_path):
-        fucci_protein = pickle.load(open(fucci_protein_path, 'rb'))
+        fucci_protein = np.load(open(fucci_protein_path, 'rb'), allow_pickle=True)
     else:
         fucci_protein = MultiTaskLassoCV()
         fucci_protein.fit(np.array(wp_binned_values).T, protein_fucci.T)
@@ -650,7 +654,7 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
     do_normalize = False
     plt.close()
     for nbins in nbinses:
-        wp_max_pol, wp_binned_values, xvals = TemporalDelay.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
+        wp_max_pol, wp_binned_values, xvals = MovingAverages.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
         wp_binned_values = np.array(wp_binned_values)
         for nn in nneighbors:
             for md in mindists:
@@ -671,10 +675,7 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
                 plt.savefig(f"figures/ProteinUmapStability/proteinUmap_nbins{nbins}_nn{nn}_md{md}_{cutoff}NonCCD.pdf")
                 plt.close()
     
-    chosen_nn = 5
-    chosen_md = 0.2
     chosen_nb = BINS_FOR_UMAP_AND_LASSO
-    chosen_cutoff = 0.05
     if not os.path.exists("figures/ProteinUmapNumBins"): os.mkdir("figures/ProteinUmapNumBins")
     for nbins in nbinses:
         orig = f"figures/ProteinUmapStability/proteinUmap_nbins{nbins}_nn{chosen_nn}_md{chosen_md}_{chosen_cutoff}CCD.pdf"
@@ -688,7 +689,7 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
             shutil.copy(orig, new)
     
     nbins=BINS_FOR_UMAP_AND_LASSO # Seems to be the most stable given all genes. When the subsets get small, though, it'll fall apart.
-    wp_max_pol, wp_binned_values, xvals = TemporalDelay.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
+    wp_max_pol, wp_binned_values, xvals = MovingAverages.bin_values(nbins, u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto, do_normalize=do_normalize)
     wp_binned_values = np.array(wp_binned_values)
     reducer=umap.UMAP(n_neighbors=chosen_nn, min_dist=chosen_md, random_state=0)
     for cutoff in (np.arange(20) + 1) / 100:
