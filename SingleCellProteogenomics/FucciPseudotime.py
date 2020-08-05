@@ -36,12 +36,9 @@ def cart2pol(x, y):
     rho = np.sqrt(x**2 + y**2)
     phi = np.arctan2(y, x)
     return(rho, phi)
-def pol_sort(inds, nuc, cyto, cell, mt):
-    '''Sort data by polar coordinates'''
-    return nuc[inds], cyto[inds], cell[inds], mt[inds]
-def pol_reord(arr, more_than_start, less_than_start):
-    '''Reorder an array based on the start position of the polar coordinate model'''
-    return np.concatenate((arr[more_than_start],arr[less_than_start]))
+def pol_sort(inds, more_than_start, less_than_start, *args):
+    '''Sort data by polar coordinates and reorder based on the start position of the polar coordinate model'''
+    return [np.concatenate((arr[inds][more_than_start], arr[inds][less_than_start])) for arr in args]
 def pol2cart(rho, phi):
     '''Apply uniform radius (rho) and convert back'''
     x = rho * np.cos(phi)
@@ -187,18 +184,15 @@ def fucci_polar_coords(x, y, analysis_title):
 def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb,
                         log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
+    # Generate model
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
     pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
-    well_plate_sort, well_plate_imgnb_sort = well_plate[pol_sort_inds], well_plate_imgnb[pol_sort_inds]
-    ab_nuc_sort, ab_cyto_sort, ab_cell_sort, mt_cell_sort = pol_sort(pol_sort_inds,ab_nuc,ab_cyto,ab_cell,mt_cell)
-
-    pol_sort_well_plate, pol_sort_well_plate_imgnb = pol_reord(well_plate_sort, more_than_start, less_than_start), pol_reord(well_plate_imgnb_sort, more_than_start, less_than_start)
-    pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell = pol_reord(ab_nuc_sort, more_than_start, less_than_start), pol_reord(ab_cyto_sort, more_than_start, less_than_start), pol_reord(ab_cell_sort, more_than_start, less_than_start), pol_reord(mt_cell_sort, more_than_start, less_than_start)
-    pol_sort_area_cell, pol_sort_area_nuc = pol_reord(area_cell, more_than_start, less_than_start), pol_reord(area_nuc, more_than_start, less_than_start)
-    pol_sort_fred, pol_sort_fgreen = pol_reord(log_red_fucci_zeroc_rescale, more_than_start, less_than_start), pol_reord(log_green_fucci_zeroc_rescale, more_than_start, less_than_start)
-    pol_sort_mockbulk_phases = pol_reord(mockbulk_phases, more_than_start, less_than_start)
-    
+    # Sort results by pseudotime
+    sort_results = pol_sort(pol_sort_inds, more_than_start, less_than_start, well_plate, well_plate_imgnb, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases)
+    pol_sort_well_plate, pol_sort_well_plate_imgnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = sort_results
+        
+    # Generate some plots
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, "Protein", R_2, start_phi, 200, True, pol_sort_well_plate, pol_sort_ab_nuc, pol_sort_centered_data0, pol_sort_centered_data1)
     plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_data1, pol_sort_centered_data0)
     
@@ -272,7 +266,7 @@ def pseudotime_rna(adata, phases_filt):
     cell_time_sort.to_csv("output/CellPseudotimes.csv")
     pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
 
-def pseudotime_umap(adata):
+def pseudotime_umap(adata, isIsoform=False):
     '''
     Display FUCCI pseudotime on the UMAP created from the gene expression.
     Input: RNA-Seq data
@@ -285,5 +279,5 @@ def pseudotime_umap(adata):
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
             sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
-            shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime_nn{nn}_md{md}.pdf")
+            shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime_nn{nn}_md{md}{'_Isoform' if isIsoform else ''}.pdf")
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)

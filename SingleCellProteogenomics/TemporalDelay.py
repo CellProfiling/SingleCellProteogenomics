@@ -12,10 +12,9 @@ from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, FucciCellCycle, MovingAverages, RNADataPreparation, alluvial
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import SingleCellProteogenomics.alluvial
+import itertools
 
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
-
-
 
 def protein_heatmap(nbins, highlight_names, highlight_ensg, ccd_comp, u_well_plates, wp_ensg, pol_sort_norm_rev, pol_sort_well_plate, 
                     pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, wp_iscell, wp_isnuc, wp_iscyto):
@@ -167,15 +166,8 @@ def binned_median(yvals, nbins):
         binned_medians.append(np.median(yvals[startidx:endidx]))
     return binned_medians
 
-def rna_heatmap(highlight_names, highlight_ensg, ccdtranscript, xvals):
+def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, isIsoformData=False):
     '''Make heatmap of the time of peak expression for CCD transcripts. Highlight examples on the y-axis if given.'''
-    # Read in RNA-Seq data again and the CCD gene lists; use TPMs so that the gene-specific results scales match for cross-gene comparisons
-    print("reading scRNA-Seq data") 
-    valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
-    adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
-    adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize=True, do_remove_blob=True)
-    print("finished reading scRNA-Seq data")
-
     # Get the peak RNA expression polar locations
     expression_data = adata.X # log normalized
     normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
@@ -228,11 +220,11 @@ def rna_heatmap(highlight_names, highlight_ensg, ccdtranscript, xvals):
     cbar.ax.tick_params(labelsize=18)
 
     plt.tight_layout()
-    plt.savefig(os.path.join("figures",'sorted_rna_heatmap.pdf'), transparent=True)
-    plt.savefig(os.path.join("figures",'sorted_rna_heatmap.png'), transparent=True)
+    plt.savefig(os.path.join("figures",f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.pdf"), transparent=True)
+    plt.savefig(os.path.join("figures",f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.png"), transparent=True)
     plt.show()
 
-    return adata, sorted_max_moving_avg_pol_ccd, norm_exp_sort, max_moving_avg_pol
+    return sorted_max_moving_avg_pol_ccd, norm_exp_sort, max_moving_avg_pol, sorted_rna_binned_norm
 
 def compare_variances_prot_v_rna(adata, norm_exp_sort, wp_ensg, var_comp_prot, gini_comp_prot, cv_comp_prot, var_cell_prot, gini_cell_prot, cv_cell_prot):
     '''Compare the measures of variance for RNA and protein and make scatterplots'''
@@ -377,3 +369,37 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         print(fom)
         file.write(fom)
         
+def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals):
+    '''Evaluate the pearson correlations for CCD isoforms from genes with multiple CCD isoforms'''
+    gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
+    isoformToGene = pd.read_csv("input/processed/python/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformIdList = list(isoformToGene["transcript_id"])
+    isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
+    ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])
+    numIsoformsPerGene = isoformToGene.groupby("gene_id")["gene_id"].value_counts()
+    perGene_geneIds = np.array([x[0] for x in numIsoformsPerGene.index])
+    useGene = np.isin(perGene_geneIds, gene_varnames)
+    numIsoformsPerGene = np.array(numIsoformsPerGene[useGene])
+    ccdIsoformsPerGene = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in perGene_geneIds[useGene]])
+    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] for ii, gene_id in enumerate(numIsoformsPerGene)])
+    
+    isoformsFromGenesWithMultipleCCD = [adata_isoform.var_names[(isoform_varnames_geneids == gene_id) & ccdtranscript_isoform] for gene_id in perGene_geneIds[useGene][ccdIsoformsPerGene > 1]]
+    # isoformsFromGenesWithMultipleCCD_maxpol = [max_moving_avg_pol_isoform[(isoform_varnames_geneids == gene_id) & ccdtranscript_isoform] for gene_id in perGene_geneIds[useGene][ccdIsoformsPerGene > 1]]
+   
+    expression_data = adata_isoform.X # log normalized
+    normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
+    fucci_time_inds = np.argsort(adata_isoform.obs["fucci_time"])
+    fucci_time_sort = np.take(np.array(adata_isoform.obs["fucci_time"]), fucci_time_inds)
+    norm_exp_sort = np.take(normalized_exp_data, fucci_time_inds, axis=0)
+    moving_averages = np.apply_along_axis(MovingAverages.mvavg, 0, norm_exp_sort, 100)
+    binned=np.apply_along_axis(binned_median, 1, moving_averages.T, len(xvals))
+    binned_norm = binned / np.max(binned, axis=1)[:,None]
+    
+    isoformsFromGenesWithMultipleCCD_binned = [binned_norm[(isoform_varnames_geneids == gene_id) & ccdtranscript_isoform] for gene_id in perGene_geneIds[useGene][ccdIsoformsPerGene > 1]]
+    pearsonCorrelations = [[scipy.stats.pearsonr(combo[0], combo[1])[0] for combo in itertools.combinations(a, 2)] for a in isoformsFromGenesWithMultipleCCD_binned]
+    adata_isoform_raw, phases_isoform_raw = RNADataPreparation.read_counts_and_phases("Tpms", False, "protein_coding", use_isoforms=True)
+    print("ISOFORM PEARSON CORRELATIONS FOR CCD GENES WITH MULTIPLE CCD ISOFORMS")
+    for ii, arr in enumerate(pearsonCorrelations):
+        if sum(np.array(arr) < 0.5) == 0: continue
+        print(f"{','.join(isoformsFromGenesWithMultipleCCD[ii])}\tPearson R's:{arr}\tTPM values:{' '.join([str(np.mean(adata_isoform_raw.X[:, list(adata_isoform_raw.var_names).index(t)])) for t in isoformsFromGenesWithMultipleCCD[ii]])}")
+    return pearsonCorrelations

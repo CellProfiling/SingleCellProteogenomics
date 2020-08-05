@@ -16,3 +16,5 @@ input/raw/tpms*
 output/pickles*
 .ipynb_checkpoints
 output/
+data/
+iupred2a/

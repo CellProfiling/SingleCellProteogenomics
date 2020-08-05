@@ -17,17 +17,17 @@ import os, shutil
 import seaborn as sbn
 from SingleCellProteogenomics import utils
 
-def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use):
+def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, use_isoforms=False):
     '''
     Read data into scanpy; Read phases and FACS intensities
         - count_or_rpkm: Must be "Counts" or "Tpms"
     '''
-    read_file = f"input/processed/scanpy/{count_or_rpkm}.csv" + (".ercc.csv" if use_spike_ins else "")
+    read_file = f"input/processed/scanpy/{count_or_rpkm}{'_Isoforms' if use_isoforms else ''}.csv" + (".ercc.csv" if use_spike_ins else "")
     if biotype_to_use != None and len(biotype_to_use) > 0:
         print(f"filtering for biotype: {biotype_to_use}")
         biotype_file = f"{read_file}.{biotype_to_use}.csv"
         if not os.path.exists(biotype_file):
-            gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+            gene_info = pd.read_csv(f"input/processed/python/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
             biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
             pd.read_csv(read_file)[biotyped ].to_csv(biotype_file, index=False)
         read_file = biotype_file
@@ -51,7 +51,7 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use):
         adata.obs["fucci_time"] = np.array(pd.read_csv("output/fucci_time.csv")["fucci_time"])
 
     # Get info about the genes
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", header=None, names=["name", "biotype", "description"], index_col=0)
+    gene_info = pd.read_csv(f"input/processed/python/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv", header=None, names=["name", "biotype", "description"], index_col=0)
     adata.var["name"] = gene_info["name"]
     adata.var["biotype"] = gene_info["biotype"]
     adata.var["description"] = gene_info["description"]

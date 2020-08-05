@@ -30,8 +30,8 @@ INTENSITY_SWITCH = 0 # cell size does increase into G2 and that has a substantia
 def read_raw_data():
     '''Read in the raw protein IF data'''
     print("reading raw protein IF data")
-    my_df1 = pd.read_csv("input/raw/nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv")
-    my_df2 = pd.read_csv("input/raw/nuc_predicted_prob_phases_190909.csv")
+    my_df1 = pd.read_csv("input/raw/nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv.gz")
+    my_df2 = pd.read_csv("input/raw/nuc_predicted_prob_phases_190909.csv.gz")
     my_df = pd.concat((my_df1, my_df2), sort=True)
     print("loaded raw data")
     return my_df

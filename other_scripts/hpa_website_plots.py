@@ -97,7 +97,7 @@ rna = pd.read_csv("output/RNAPseudotimePlotting.csv.gz", sep="\t")
 
 #%% Make an example of the protein plots
 protein_idx = list(proteins["ENSG"]).index("ENSG00000011426") # anilin as an example
-ensg_fileprefixes = get_fileprefixes(df["ENSG"]) # there are some replicates with the same ENSG, so make each file unique
+ensg_fileprefixes = get_fileprefixes(proteins["ENSG"]) # there are some replicates with the same ENSG, so make each file unique
 
 # Pseudotime plot, protein
 print(f"{proteins['ENSG'][protein_idx]}: Gene information")

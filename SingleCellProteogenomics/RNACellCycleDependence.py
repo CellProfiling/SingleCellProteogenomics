@@ -15,7 +15,7 @@ from sklearn.impute import KNNImputer
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
-MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.05 # Cutoff used for percent additional variance explained by the cell cycle than random
+MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
@@ -147,7 +147,8 @@ def analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_us
     bulk_phase_tests.to_csv(f"output/phase_clustered_transcript_CCD_analysis_{biotype_to_use}.csv")
     return bulk_phase_tests
 
-def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdproteins, adata_regevccdgenes, biotype_to_use):
+def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdproteins, adata_regevccdgenes, 
+               biotype_to_use, use_isoforms=False, make_mvavg_plots_isoforms=False):
     expression_data = adata.X # log normalized
     normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
@@ -162,22 +163,22 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 
     # randomize and calculate the mean difference in percent variances from random
     percent_ccd_variance_rng, mean_diff_from_rng = [],[]
-    perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(PERMUTATIONS)])
-    if not os.path.exists("output/pickles/percent_ccd_variance_rng.npy") or not os.path.exists("output/pickles/mean_diff_from_rng.npy"):
-        norm_exp_sort_perm = np.asarray([np.take(normalized_exp_data, perm, axis=0) for perm in perms])
-        moving_averages_perm = np.apply_along_axis(MovingAverages.mvavg, 1, norm_exp_sort_perm, WINDOW)
-        percent_ccd_variance_rng = np.var(moving_averages_perm, axis=1) / np.var(norm_exp_sort_perm, axis=1)
+    perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(100)])
+    picklePath = f"output/pickles/percent_ccd_variance_rng{'' if not use_isoforms else 'Isoforms'}.npy"
+    meandiffPath = f"output/pickles/mean_diff_from_rng{'' if not use_isoforms else 'Isoforms'}.npy"
+    if not os.path.exists(picklePath):
+        # norm_exp_sort_perm = np.asarray([np.take(normalized_exp_data, perm, axis=0) for perm in perms])
+        # moving_averages_perm = np.apply_along_axis(MovingAverages.mvavg, 1, norm_exp_sort_perm, WINDOW)
+        # percent_ccd_variance_rng = np.var(moving_averages_perm, axis=1) / np.var(norm_exp_sort_perm, axis=1)
         for iii, perm in enumerate(perms):
             if iii % 50 == 0: print(f"permutation {iii}")
             norm_exp_sort_perm = np.take(normalized_exp_data, perm, axis=0)
             moving_averages_perm = np.apply_along_axis(MovingAverages.mvavg, 0, norm_exp_sort_perm, WINDOW)
             percent_ccd_variance_rng.append(
                     np.var(moving_averages_perm, axis=0) / np.var(norm_exp_sort_perm, axis=0))
-        utils.np_save_overwriting("output/pickles/percent_ccd_variance_rng.npy", percent_ccd_variance_rng)
-        utils.np_save_overwriting("output/pickles/mean_diff_from_rng.npy", mean_diff_from_rng)
+        utils.np_save_overwriting(picklePath, percent_ccd_variance_rng)
     else: 
-        percent_ccd_variance_rng = np.load("output/pickles/percent_ccd_variance_rng.npy", allow_pickle=True)
-        mean_diff_from_rng = np.load("output/pickles/mean_diff_from_rng.npy", allow_pickle=True)
+        percent_ccd_variance_rng = np.load(picklePath, allow_pickle=True)
     percent_ccd_variance_rng = np.asarray(percent_ccd_variance_rng)
     mean_diff_from_rng = np.mean((percent_ccd_variance - percent_ccd_variance_rng).T, 1)
 
@@ -206,7 +207,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         "nonccd_protein" : adata_nonccdproteins,
         "mean_diff_from_rng":mean_diff_from_rng,
         "-log10 CCD FDR":-np.log10(eq_percvar_adj)})
-    percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}.csv", index=False)
+    percent_variance_tests.to_csv(f"output/transcript_regulation{biotype_to_use}{'' if not use_isoforms else 'Isoforms'}.csv", index=False)
 
     # And keep track of the ccd genes with and without transcript regulation
     ccdtranscript = pass_meandiff
@@ -215,35 +216,37 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     ccdtranscript_names = np.array(adata.var_names)[ccdtranscript]
     proteinccd_transcript_regulated_names = np.array(adata.var_names)[ccdprotein_transcript_regulated]
     proteinccd_nontranscript_regulated_names = np.array(adata.var_names)[ccdprotein_nontranscript_regulated]
-    utils.np_save_overwriting("output/pickles/ccdprotein.npy", ccdprotein) # pseudotime/mitotic ccd, might not have all the proteins, since this only has proteins not filtered in RNA-Seq analysis
-    utils.np_save_overwriting("output/pickles/ccdtranscript.npy", ccdtranscript)
-    utils.np_save_overwriting("output/pickles/ccdprotein_transcript_regulated.npy", ccdprotein_transcript_regulated)
-    utils.np_save_overwriting("output/pickles/ccdprotein_nontranscript_regulated.npy", ccdprotein_nontranscript_regulated)
-    pd.DataFrame({"gene" : ccdtranscript_names}).to_csv("output/all_ccdtranscript_names.csv")
-    pd.DataFrame({"gene" : proteinccd_transcript_regulated_names}).to_csv("output/proteinccd_transcript_regulated_names.csv")
-    pd.DataFrame({"gene" : proteinccd_nontranscript_regulated_names}).to_csv("output/proteinccd_nontranscript_regulated_names.csv")
-    pd.DataFrame({"gene" : adata.var_names}).to_csv("output/gene_names.csv")
+    utils.np_save_overwriting(f"output/pickles/ccdprotein{'' if not use_isoforms else 'Isoforms'}.npy", ccdprotein) # pseudotime/mitotic ccd, might not have all the proteins, since this only has proteins not filtered in RNA-Seq analysis
+    utils.np_save_overwriting(f"output/pickles/ccdtranscript{'' if not use_isoforms else 'Isoforms'}.npy", ccdtranscript)
+    utils.np_save_overwriting(f"output/pickles/ccdprotein_transcript_regulated{'' if not use_isoforms else 'Isoforms'}.npy", ccdprotein_transcript_regulated)
+    utils.np_save_overwriting(f"output/pickles/ccdprotein_nontranscript_regulated{'' if not use_isoforms else 'Isoforms'}.npy", ccdprotein_nontranscript_regulated)
+    pd.DataFrame({"gene" : ccdtranscript_names}).to_csv(f"output/all_ccdtranscript_names{'' if not use_isoforms else 'Isoforms'}.csv")
+    pd.DataFrame({"gene" : proteinccd_transcript_regulated_names}).to_csv(f"output/proteinccd_transcript_regulated_names{'' if not use_isoforms else 'Isoforms'}.csv")
+    pd.DataFrame({"gene" : proteinccd_nontranscript_regulated_names}).to_csv(f"output/proteinccd_nontranscript_regulated_names{'' if not use_isoforms else 'Isoforms'}.csv")
+    pd.DataFrame({"gene" : adata.var_names}).to_csv(f"output/gene_names{'' if not use_isoforms else 'Isoforms'}.csv")
     
     # make folders
-    folder = f"figures/RNAPseudotimes"
-    ccdtransccdprotfolder = f"figures/RNA_CCDTranscriptCCDProtein"
-    ccdtransnonccdprotfolder = f"figures/RNA_CCDTranscriptNonCCDProtein"
-    nonccdtransccdprotfolder = f"figures/RNA_NonCCDTranscriptCCDProtein"
-    nonccdfolder = f"figures/RNA_NonCCD"
-    for f in [ccdtransccdprotfolder,ccdtransnonccdprotfolder,nonccdtransccdprotfolder,nonccdfolder]:
-        if not os.path.exists(f): os.mkdir(f)
-    # CCD transcript & not CCD protein
-    for ensg in adata.var_names[ccdtranscript & ~ccdprotein]:
-        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdtransnonccdprotfolder, ensg +'_mvavg.pdf'))
-    # CCD transcript & CCD Protein
-    for ensg in adata.var_names[ccdprotein_transcript_regulated]:
-        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdtransccdprotfolder, ensg +'_mvavg.pdf'))
-    # Not CCD transcript & CCD Protein
-    for ensg in adata.var_names[ccdprotein_nontranscript_regulated]:
-        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nonccdtransccdprotfolder, ensg +'_mvavg.pdf'))
-    # Non-CCD 
-    for ensg in adata.var_names[~ccdtranscript & ~ccdprotein]:
-        shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nonccdfolder, ensg+'_mvavg.pdf'))
+    mvpercs = [] if use_isoforms and not make_mvavg_plots_isoforms else mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, use_isoforms)
+    if not use_isoforms or make_mvavg_plots_isoforms:
+        folder = f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNAPseudotimes{'' if not use_isoforms else 'Isoforms'}"
+        ccdtransccdprotfolder = f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNA_CCDTranscriptCCDProtein{'' if not use_isoforms else 'Isoforms'}"
+        ccdtransnonccdprotfolder = f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNA_CCDTranscriptNonCCDProtein{'' if not use_isoforms else 'Isoforms'}"
+        nonccdtransccdprotfolder = f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNA_NonCCDTranscriptCCDProtein{'' if not use_isoforms else 'Isoforms'}"
+        nonccdfolder = f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNA_NonCCD"
+        for f in [ccdtransccdprotfolder,ccdtransnonccdprotfolder,nonccdtransccdprotfolder,nonccdfolder]:
+            if not os.path.exists(f): os.mkdir(f)
+        # CCD transcript & not CCD protein
+        for ensg in adata.var_names[ccdtranscript & ~ccdprotein]:
+            shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdtransnonccdprotfolder, ensg +'_mvavg.pdf'))
+        # CCD transcript & CCD Protein
+        for ensg in adata.var_names[ccdprotein_transcript_regulated]:
+            shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(ccdtransccdprotfolder, ensg +'_mvavg.pdf'))
+        # Not CCD transcript & CCD Protein
+        for ensg in adata.var_names[ccdprotein_nontranscript_regulated]:
+            shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nonccdtransccdprotfolder, ensg +'_mvavg.pdf'))
+        # Non-CCD 
+        for ensg in adata.var_names[~ccdtranscript & ~ccdprotein]:
+            shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nonccdfolder, ensg+'_mvavg.pdf'))
 
     # Figures of merit
     with open("output/figuresofmerit.txt", "a") as file:
@@ -255,7 +258,42 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         print(fom)
         file.write(fom)
     
-    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript
+    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, mvpercs
+
+def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform):
+    '''Check out the isoform results at the gene level'''
+    gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
+    isoformToGene = pd.read_csv("input/processed/python/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformIdList = list(isoformToGene["transcript_id"])
+    isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
+    ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])
+    numIsoformsPerGene = isoformToGene.groupby("gene_id")["gene_id"].value_counts()
+    perGene_geneIds = np.array([x[0] for x in numIsoformsPerGene.index])
+    useGene = np.isin(perGene_geneIds, gene_varnames)
+    numIsoformsPerGene = np.array(numIsoformsPerGene[useGene])
+    ccdIsoformsPerGene = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in perGene_geneIds[useGene]])
+    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] for ii, gene_id in enumerate(numIsoformsPerGene)])
+    print(f"{sum(ccdtranscript_isoform)} CCD transcripts, of which {sum(ccdIsoformWithCcdGene)} ({sum(ccdIsoformWithCcdGene) / sum(ccdtranscript_isoform) * 100}%) correspond to genes that were also found to be CCD.")
+    print(f"of the {sum(ccdtranscript)} CCD genes, {sum(ccdAndNonCcdIsoformsPerGene)} were found to have both CCD and non-CCD transcript isoforms.")
+    print(f"for the {sum(ccdIsoformsPerGene > 1)} genes with multiple CCD transcripts, the time of peak expression...")
+    
+def analyze_isoforms(adata, ccdtranscript):
+    '''Analyze the isoform-level results over the cell cycle'''
+    # Read in the data & QC analysis
+    valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+    adata_isoform, phases_isoform = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, use_isoforms=True)
+    # RNADataPreparation.plot_pca_for_batch_effect_analysis(adata_isoform, "BeforeRemovingNoncycling_Isoform")
+    adata_isoform, phasesfilt_isoform = RNADataPreparation.qc_filtering(adata_isoform, do_log_normalize=True, do_remove_blob=True)
+    # RNADataPreparation.plot_pca_for_batch_effect_analysis(adata_isoform, "AfterRemovingNoncycling_Isoform")
+    # FucciPseudotime.pseudotime_umap(adata_isoform, isIsoform=True)
+   
+    # Cell cycle analysis    
+    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
+    ccd_regev_filtered_isoform, ccd_filtered_isoform, nonccd_filtered_isoform = utils.ccd_gene_lists(adata_isoform)
+    adata_ccdprotein_isoform, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform = RNADataPreparation.is_ccd(adata_isoform, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered_isoform)
+    rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, True)
+    percent_ccd_variance_isoform, total_gini_isoform, mean_diff_from_rng_isoform, pass_meandiff_isoform, eq_percvar_adj_isoform, fucci_time_inds_isoform, norm_exp_sort_isoform, moving_averages_isoform, mvavg_xvals_isoform, perms_isoform, ccdtranscript_isoform, mvpercs_isoform = rna_ccd_analysis_results    
+    return adata_isoform, ccdtranscript_isoform
 
 def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered):
     '''Print some figures of merit for the RNA CCD analysis'''
@@ -284,7 +322,7 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.show()
     plt.close()
 
-def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals):
+def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, use_isoforms=False):
     '''Generate moving average plots for all the genes'''
     mvpercs = []
     examples = ["ENSG00000011426", "ENSG00000006747", "ENSG00000072756", "ENSG00000102908", "ENSG00000258947", "ENSG00000091651", "ENSG00000169740", "ENSG00000105173", "ENSG00000162999", "ENSG00000134057", "ENSG00000178999", "ENSG00000156970", "ENSG00000167065", "ENSG00000132768", "ENSG00000138801", "ENSG00000156239", "ENSG00000019144", "ENSG00000151702", "ENSG00000123607", "ENSG00000173599", "ENSG00000109814"]
@@ -293,8 +331,8 @@ def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, 
         if iii % 500 == 0: print(f"well {iii} of {len(adata.var_names)}")  
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(adata.obs["fucci_time"][fucci_time_inds]) - WINDOW + 1)])
         mvperc = MovingAverages.mvpercentiles(norm_exp_sort[:,iii][windows])
-        mvpercs.append(mvperc)
-        MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], mvperc, f"figures/RNAPseudotimes", f"{ensg}")
+        mvpercs.append(mvperc if not use_isoforms else [])
+        MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds], norm_exp_sort[:,iii], mvavg_xvals, moving_averages[:,iii], mvperc, f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNAPseudotimes{'' if not use_isoforms else 'Isoforms'}", f"{ensg}")
         if ensg in examples:
             print(ensg)
             for plate in np.unique(adata.obs["plate"]):
@@ -304,7 +342,7 @@ def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, 
                 mvavgXPlate = MovingAverages.mvavg(adata.obs["fucci_time"][fucci_time_inds][isFromPlate], windowPlate)
                 windowsPlate = np.asarray([np.arange(start, start + windowPlate) for start in np.arange(sum(isFromPlate) - windowPlate + 1)])
                 mvpercPlate = MovingAverages.mvpercentiles(norm_exp_sort[isFromPlate, iii][windowsPlate])
-                MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds][isFromPlate], norm_exp_sort[adata.obs["plate"] == plate,iii], mvavgXPlate, mvavgPlate, mvpercPlate, f"figures/RNAPseudotimesExamples", f"{ensg}{plate}")
+                MovingAverages.temporal_mov_avg_rna(adata.obs["fucci_time"][fucci_time_inds][isFromPlate], norm_exp_sort[adata.obs["plate"] == plate,iii], mvavgXPlate, mvavgPlate, mvpercPlate, f"{'f:/CellCycle/' if use_isoforms else ''}figures/RNAPseudotimesExamples", f"{ensg}{plate}")
     return np.array(mvpercs)
 
 def plot_umap_ccd_cutoffs(adata, mean_diff_from_rng):
@@ -384,7 +422,98 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
     plt.rcParams['figure.figsize'] = prevPlotSize
+
+def analyze_cnv_calls(adata, ccdtranscript):
+    '''Take results from cnvkit calls to analyze effects of copy number variation'''
+    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
+    cnsresults_gene = cnsresults["gene"]
+    cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript]))
+    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns), np.arange(len(ccdtranscript))[ccdtranscript][np.isin(adata_names, cnsresults_allgenes)]]
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
+    geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
+    adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
+    cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
     
+    # evaluate consistency of CNVs
+    heatmap = np.zeros(cnsResultsCellData.T.shape)
+    heatmap[cnsResultsCellData.T == -5] = -1
+    heatmap[(cnsResultsCellData.T > -5) & (cnsResultsCellData.T < 1)] = 0
+    heatmap[cnsResultsCellData.T == 1] = 1
+    heatmap[cnsResultsCellData.T == 2] = 2
+    heatmap[cnsResultsCellData.T > 2] = 3
+    clustergrid = sbn.clustermap(heatmap[:,:-8], col_cluster=False)
+    plt.savefig("figures/CnvConsistency.pdf"); plt.show(); plt.close()
+    
+    # heatmaps for phases
+    adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]])
+    sbn.heatmap([adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G1",
+                 adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "S-ph",
+                 adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G2M"],
+                yticklabels=["G1", "S", "G2"])
+    plt.savefig("figures/CnvConsistencyPhases.pdf"); plt.show(); plt.close()
+    
+    # is there enrichment for phase in the highly amplified genes?
+    # print(adata_ccd_isInCns.obs["phase"][clustergrid.dendrogram_row.reordered_ind[:100]].value_counts())
+    
+    # yes, so is there correlation?
+    x = adata_ccd_isInCns.obs["fucci_time"]
+    y = np.mean(cnsResultsCellData, axis=0)
+    linearModel = scipy.stats.linregress(np.asarray(x).astype(float), np.asarray(y).astype(float))
+    plt.scatter(x * fucci.TOT_LEN, y)
+    plt.scatter(x * fucci.TOT_LEN, linearModel.intercept + x * linearModel.slope)
+    plt.xlabel("Cell Division Time, hrs")
+    plt.ylabel("Mean CNV of All Chromosome Arms")
+    plt.savefig("figures/CnvCorrelation.pdf"); plt.show(); plt.close()
+    print(f"{linearModel[3]}: p-value for nonzero slope by two-sided t test")
+    residualLinearModel = scipy.stats.linregress(np.asarray(x).astype(float), np.asarray(y - (linearModel.intercept + x * linearModel.slope)).astype(float))
+    residualNormality = scipy.stats.normaltest(np.asarray(y - (linearModel.intercept + x * linearModel.slope)))
+    print(f"{residualLinearModel[3]}: p-value for nonzero slope of residuals by two-sided t-test")
+    print(f"{residualNormality[1]}: p-value for normality of residuals")
+    
+    # what if we only look at one phase? G1 before doubling? for all genes?
+    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
+    cnsresults_gene = cnsresults["gene"]
+    cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names))
+    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns) & (adata.obs["phase"] == "G1"), np.arange(len(adata_names))[np.isin(adata_names, cnsresults_allgenes)]]
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
+    geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
+    adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
+    cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
+    cnvAmplified, cnvPvalOneSided = [],[]
+    cnvDeleted, cnvPvalOneSidedDeleted = [],[]
+    amplifiedTpmsAll, neutralTpmsAll, deletionTpmsAll = [],[],[]
+    for ii, tpm in enumerate(adata_ccd_isInCns.X.T[geneInJustOneList]):
+        cnv = np.concatenate(cnsResultsCellData[cnsresultIdx_inJustOneList[ii],:])
+        missingData = cnv == -5
+        amplified, amplifiedTpms = cnv[~missingData & (cnv > 1)], tpm[~missingData & (cnv > 1)]
+        neutral, neutralTpms = cnv[~missingData & (cnv == 1)], tpm[~missingData & (cnv == 1)]
+        deletion, deletionTpms = cnv[~missingData & (cnv < 1)], tpm[~missingData & (cnv < 1)]
+        cnvAmplified.append(np.median(amplifiedTpms) > np.median(tpm[~missingData]))
+        cnvPvalOneSided.append(scipy.stats.kruskal(amplifiedTpms, neutralTpms)[1] * 2)
+        cnvDeleted.append(np.median(deletionTpms) < np.median(tpm[~missingData]))
+        cnvPvalOneSidedDeleted.append(scipy.stats.kruskal(deletionTpms, neutralTpms)[1] * 2)
+        amplifiedTpmsAll.extend(amplifiedTpms)
+        neutralTpmsAll.extend(neutralTpms)
+        deletionTpmsAll.extend(deletionTpms)
+    cnvAmplified = np.asarray(cnvAmplified)
+    cnvTestPvals_BH, cnvTestPvals_rejectBH = utils.benji_hoch(0.01, cnvPvalOneSided)
+    cnvTestPvalsDel_BH, cnvTestPvalsDel_rejectBH = utils.benji_hoch(0.01, cnvPvalOneSidedDeleted)
+    print(f"{sum(cnvAmplified & cnvTestPvals_rejectBH)}: number of novel CCD with significantly higher expression with amplified CNVs than neutral")
+    print(f"{sum(cnvDeleted & cnvTestPvalsDel_rejectBH)}: number of novel CCD with significantly higher expression with amplified CNVs than neutral")
+    utils.general_boxplot([amplifiedTpmsAll, neutralTpmsAll, deletionTpmsAll], 
+                          ["amplified", "neutral", "deletion"], "", "logTPMs", "", False, "figures/CNVStateBoxplot.pdf")
+    print(f"Of {len(cnvAmplified)} genes:")
+    print(f"{scipy.stats.kruskal(amplifiedTpmsAll, neutralTpmsAll, deletionTpmsAll)[1]}: kruskal two sided pval that there's a difference between the three")
+    print(f"{scipy.stats.kruskal(amplifiedTpmsAll, neutralTpmsAll)[1]}: kruskal two sided pval that there's a difference between amplified/neutral")
+
 
 def cell_data_string(adata, idx):
     '''Make a string representing the data for each cell'''

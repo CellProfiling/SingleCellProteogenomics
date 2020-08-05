@@ -40,7 +40,7 @@ def zero_center_fucci(green_fucci, red_fucci, u_plate, well_plate, plate):
     utils.np_save_overwriting("output/pickles/log_green_fucci_zeroc_rescale.npy", log_green_fucci_zeroc_rescale)
     utils.np_save_overwriting("output/pickles/log_red_fucci_zeroc_rescale.npy", log_red_fucci_zeroc_rescale)
     utils.np_save_overwriting("output/pickles/fucci_data.npy", fucci_data)
-
+    
     return result
 
 def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
@@ -94,8 +94,9 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
         curr_wp_g1 = curr_well_inds & g1
         curr_wp_sph = curr_well_inds & sph
         curr_wp_g2 = curr_well_inds & g2
-        mockbulk_phases[np.arange(len(ab_cell))[curr_well_inds]] = get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds])
-        curr_wp_phases.append(get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds]))
+        curr_wp_phase_list = get_phase_strings(g1[curr_well_inds], sph[curr_well_inds], g2[curr_well_inds])
+        mockbulk_phases[curr_well_inds] = np.asarray(curr_wp_phase_list)
+        curr_wp_phases.append(curr_wp_phase_list)
         wp_cell_kruskal.append(scipy.stats.kruskal(ab_cell[curr_wp_g1], ab_cell[curr_wp_sph], ab_cell[curr_wp_g2])[1])
         wp_nuc_kruskal.append(scipy.stats.kruskal(ab_nuc[curr_wp_g1], ab_nuc[curr_wp_sph], ab_nuc[curr_wp_g2])[1])
         wp_cyto_kruskal.append(scipy.stats.kruskal(ab_cyto[curr_wp_g1], ab_cyto[curr_wp_sph], ab_cyto[curr_wp_g2])[1])

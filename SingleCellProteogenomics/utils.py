@@ -181,6 +181,12 @@ def ccd_gene_names(id_list_like):
     gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
 
+def ccd_gene_names_gapped(id_list_like):
+    '''Convert gene ID list to gene name list'''
+    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    geneIdList = list(gene_info["gene_id"])
+    return [gene_info["name"][geneIdList.index(idd)] if idd in geneIdList else "" for idd in id_list_like]
+
 def geneIdToHngc(id_list_like):
     '''Convert gene ID list to HNGC symbol if it exists'''
     gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
@@ -209,33 +215,75 @@ def ccd_gene_lists(adata):
     nonccd_filtered = list(nonccd[np.isin(nonccd, adata.var_names)])
     return ccd_regev_filtered, ccd_filtered, nonccd_filtered
 
-def save_gene_names_by_category(adata):
-    '''Save files containing the gene names for each category of CCD proteins/transcripts'''
-    wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
-    ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
-    nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
-    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+def save_category(genelist, filename):
+    pd.DataFrame({"gene" : genelist}).to_csv(filename, index=False, header=False)
 
+def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
+    '''Save files containing the gene names for each category of CCD proteins/transcripts'''
+    ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
+    genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
+    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+    knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
+    knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
+    knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", dtype='str') # from GO proliferation
+    knownccd = np.concatenate((knownccd1, knownccd2, knownccd3))
+
+    # Get the ENSG symbols for lists for GO analysis
+    ensg_ccdtranscript = np.unique(adata.var_names[ccdtranscript])
+    ensg_nonccdtranscript = np.unique(adata.var_names[~ccdtranscript])
+    ensg_ccdprotein = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
+    ensg_noccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
+    ensg_ccdprotein_treg = np.unique(ensg_ccdprotein[np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
+    ensg_ccdprotein_nontreg = np.unique(ensg_ccdprotein[~np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
+    ensg_knownccdprotein = ensg_ccdprotein[np.isin(ensg_ccdprotein, knownccd)]
+    ensg_novelccdprotein = ensg_ccdprotein[~np.isin(ensg_ccdprotein, knownccd)]
+    
     # Get the HGNC symbols for lists for GO analysis
-    pd.DataFrame({"gene" : list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)])))
-        }).to_csv("output/hgnc_ccdtranscript.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)])))
-        }).to_csv("output/hgnc_ccdprotein_transcript_regulated.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(geneIdToHngc(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)])))
-        }).to_csv("output/hgnc_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(geneIdToHngc(wp_ensg[nonccd_comp])))
-        }).to_csv("output/hgnc_nonccdprotein.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(geneIdToHngc(np.concatenate((wp_ensg[ccd_comp], bioccd)))))
-        }).to_csv("output/hgnc_ccdprotein.csv", index=False, header=False)
+    hgnc_ccdtranscript = list(set(geneIdToHngc(ensg_ccdtranscript)))
+    hgnc_ccdprotein_transcript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_treg)))
+    hgnc_ccdprotein_nontranscript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_nontreg)))
+    hgnc_nonccdprotein = list(set(geneIdToHngc(ensg_noccdprotein)))
+    hgnc_ccdprotein = list(set(geneIdToHngc(ensg_ccdprotein)))
+    
+    # Convert to gene names and store them as such
+    names_ccdtranscript = set(ccd_gene_names(ensg_ccdtranscript))
+    names_nonccdtranscript = set(ccd_gene_names(ensg_nonccdtranscript))
+    names_ccdprotein = set(ccd_gene_names(ensg_ccdprotein))
+    names_nonccdprotein = set(ccd_gene_names(ensg_noccdprotein))
+    names_ccdprotein_transcript_regulated = set(ccd_gene_names(ensg_ccdprotein_treg))
+    names_ccdprotein_nontranscript_regulated = set(ccd_gene_names(ensg_ccdprotein_nontreg))
+    names_genes_analyzed = set(ccd_gene_names(genes_analyzed))
+    names_ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
+    names_ccd_filtered = set(ccd_gene_names(ccd_filtered))
+    
+    # Save the HGNC gene names for each category
+    save_category(hgnc_ccdtranscript, "output/hgnc_ccdtranscript.csv")
+    save_category(hgnc_ccdprotein_transcript_regulated, "output/hgnc_ccdprotein_transcript_regulated.csv")
+    save_category(hgnc_ccdprotein_nontranscript_regulated, "output/hgnc_ccdprotein_nontranscript_regulated.csv")
+    save_category(hgnc_nonccdprotein, "output/hgnc_nonccdprotein.csv")
+    save_category(hgnc_ccdprotein, "output/hgnc_ccdprotein.csv")
 
     # Save the geneIds for each category
-    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdtranscript.npy", allow_pickle=True)]))
-        }).to_csv("output/ensg_ccdtranscript.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdprotein_transcript_regulated.npy", allow_pickle=True)]))
-        }).to_csv("output/ensg_ccdprotein_transcript_regulated.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(adata.var_names[np.load("output/pickles/ccdprotein_nontranscript_regulated.npy", allow_pickle=True)]))
-        }).to_csv("output/ensg_ccdprotein_nontranscript_regulated.csv", index=False, header=False)
-    pd.DataFrame({"gene":list(set(wp_ensg[nonccd_comp]))
-        }).to_csv("output/ensg_nonccdprotein.csv", index=False, header=False)
-    pd.DataFrame({"gene": wp_ensg[ccd_comp]
-        }).to_csv("output/ensg_ccdprotein.csv", index=False, header=False)
+    save_category(ensg_ccdtranscript, "output/ensg_ccdtranscript.csv")
+    save_category(ensg_nonccdtranscript, "output/ensg_nonccdtranscript.csv")
+    save_category(ensg_ccdprotein_treg, "output/ensg_ccdprotein_transcript_regulated.csv")
+    save_category(ensg_ccdprotein_nontreg, "output/ensg_ccdprotein_nontranscript_regulated.csv")
+    save_category(ensg_noccdprotein, "output/ensg_nonccdprotein.csv")
+    save_category(ensg_ccdprotein, "output/ensg_ccdprotein.csv")
+    save_category(ensg_knownccdprotein, "output/ensg_knownccdprotein.csv")
+    save_category(ensg_novelccdprotein, "output/ensg_novelccdprotein.csv")
+
+    # Save the gene names for each category
+    save_category(names_ccdtranscript, "output/names_ccdtranscript.csv")
+    save_category(names_nonccdtranscript, "output/names_nonccdtranscript.csv")
+    save_category(names_ccdprotein, "output/names_ccdprotein.csv")
+    save_category(names_nonccdprotein, "output/names_nonccdprotein.csv")
+    save_category(names_ccdprotein_transcript_regulated, "output/names_ccdprotein_transcript_regulated.csv")
+    save_category(names_ccdprotein_nontranscript_regulated, "output/names_ccdprotein_nontranscript_regulated.csv")
+    save_category(names_genes_analyzed, "output/names_genes_analyzed.csv")
+    save_category(names_ccd_regev_filtered, "output/names_ccd_regev_filtered.csv")
+    save_category(names_genes_analyzed, "output/names_genes_analyzed.csv")
+    save_category(names_ccd_filtered, "output/names_ccd_filtered.csv")
+    
+    return names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_genes_analyzed, names_ccd_regev_filtered, names_genes_analyzed, names_ccd_filtered
+    
