@@ -169,3 +169,26 @@ plot_expression_facs([float(xx) for xx in rna["cell_intensity"][rna_idx].split("
                      [float(xx) for xx in rna["cell_fgreen"][rna_idx].split(",")],
                      [],[],
                      "figures/HpaWebsite", rna["ENSG"][rna_idx], False)
+
+#%% Make the percent variance plot
+def general_scatter_color(x, y, xlabel, ylabel, c, clabel, show_color_bar, title, outfile, cmap="viridis", alpha=1):
+    '''Make a general scatterplot with color using matplotlib'''
+    plt.figure(figsize=(10,10))
+    plt.scatter(x, y, c=c, cmap=cmap, alpha=alpha)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    if show_color_bar:
+        cb = plt.colorbar()
+        cb.set_label(clabel)
+    plt.title(title)
+    plt.savefig(outfile)
+    plt.show()
+    plt.close()
+
+gini_index = proteins["gini"]
+percent_variance = proteins["percent_variance"]
+isCcd = ["Pseudotime" in ccdString for ccdString in proteins["CCD"]]
+general_scatter_color(gini_index, percent_variance, 
+      "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
+      isCcd, "", False, "", "figures/HpaWebsite/PercentVariancePlot.png",
+      "bwr_r", 0.5)
