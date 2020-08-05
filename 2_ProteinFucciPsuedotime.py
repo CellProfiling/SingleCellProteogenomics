@@ -91,7 +91,8 @@ ccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
 
 # Make a dataframe for plotting on the HPA website
 ProteinCellCycleDependence.make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
-            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps)
+            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps, 
+            gini_comp, perc_var_comp)
 
 # Perform comparison to LASSO for finding CCD proteins
 ProteinCellCycleDependence.compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 

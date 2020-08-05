@@ -53,7 +53,7 @@ FucciPseudotime.pseudotime_umap(adata) # Generate a UMAP with the pseudotime ove
 # demonstrating that there's still valuable information about cell cycling beyond what was called CCD
 RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
 
-# Read in the currated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
+# Read in the curated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
 adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
 
@@ -73,12 +73,12 @@ bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(ada
 
 #%% Moving average calculations and randomization analysis for RNA
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)
-percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, mvpercs = rna_ccd_analysis_results
+percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, ccdprotein, mvpercs = rna_ccd_analysis_results
 
 RNACellCycleDependence.plot_umap_ccd_cutoffs(adata, mean_diff_from_rng)
 RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
-RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
+RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
 RNACellCycleDependence.compare_to_lasso_analysis(adata, ccdtranscript)
 RNACellCycleDependence.analyze_cnv_calls(adata, ccdtranscript)
 

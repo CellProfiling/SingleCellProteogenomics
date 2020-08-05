@@ -204,3 +204,32 @@ analyze(abundanceCcd, abundanceNonccd, "ccd", "nonccd", "Abundance", False, "fig
 analyze(abundanceCcd, abundanceAll, "ccd", "all", "Abundance", False, "figures/fractDisorderedCcdVsAll.png")
 
 # variants
+import re, gzip
+anncomma = re.compile(b',(?!\()')
+transcript_variant = {}
+with gzip.open(filepath, 'rb') as file:
+    for line in file:
+        if line.startswith(b"#"): continue
+        infos = line.split(b'\t')[7].split(b';')
+        annotation = [info for info in infos if info.startswith(b"ANN=")]
+        if len(annotation) != 1: continue
+        annotations = anncomma.split(annotation[0].split(b'ANN=')[1])
+        for ann in annotations:
+            allele, efftypes, putative_impact, geneName, geneId, featureType, featureId, biotype, exonIntronRank, hgvsDna, hgvsProtein, cdnaPosition, cdsPosition, protPos, distToFeature, warnings = ann.split(b'|')
+            if putative_impact in [b"MODERATE", b"HIGH"] and featureId.startswith(b'transcript:ENST') and hgvsProtein: # skip splice acceptor/donator variations by requiring hgvsProtein
+                transcriptId = featureId.strip(b'transcript:')
+                if transcriptId in transcript_variant: transcript_variant[transcriptId].append(ann)
+                else: transcript_variant[transcriptId] = [ann]
+                
+gene_info = pd.read_csv(f"input/processed/transcriptId_geneName.txt", sep="\t", index_col=False)
+transcriptId_proteinName = dict((info[1]["Transcript stable ID"], info[1]["Gene name"]) for info in gene_info.iterrows())
+proteinName_variant = {}
+for item in transcript_variant.items():
+    baseProteinName = transcriptId_proteinName[item[0].decode('ascii')]#.split('-')[0]
+    if baseProteinName not in proteinName_variant: proteinName_variant[baseProteinName] = item[1]
+    else: proteinName_variant[baseProteinName].extend(item[1])
+    
+fractWithVariant_nonTransReg = sum([nn in proteinName_variant for nn in names_ccdprotein_nontranscript_regulated]) / len(names_ccdprotein_nontranscript_regulated)
+fractWithVariant_transReg = sum([nn in proteinName_variant for nn in names_ccdprotein_transcript_regulated]) / len(names_ccdprotein_transcript_regulated)
+print(f"{fractWithVariant_nonTransReg}: fraction of nontranscript regulated genes with variant")
+print(f"{fractWithVariant_transReg}: fraction of transcript regulated genes with variant")

@@ -381,7 +381,8 @@ def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimo
     for ensg in fileprefixes[~wp_comp_ccd_gauss & wp_ccd_unibimodal]:
         shutil.copy(os.path.join(folder, ensg+'_mvavg.pdf'), os.path.join(nongaussccdfolder, ensg+'_mvavg.pdf'))
 
-def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj):
+def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, 
+                         gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj):
     '''Illustrate the CCD variances of all proteins'''
     utils.general_scatter(perc_var_comp, mean_mean_comp, "percent variance", "mean mean intensity", f"figures/PercVarVsMeanMeanIntensity_comp.png")
     utils.general_scatter(mean_mean_comp, mean_diff_from_rng, "Mean Mean Intensity", "Mean Additional Percent Variance Explained than Random", f"figures/IntensityVsMeanDiff.png")
@@ -712,7 +713,8 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
         plt.close()
 
 def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
-            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps):
+            curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps, 
+            gini_comp, percvar_comp):
     '''Make a single table for HPA website figures on protein pseudotime, boxplots, and fucci plots'''
     mvperc_10p = [x[0] for x in mvperc_comps]
     mvperc_90p = [x[-1] for x in mvperc_comps]
@@ -736,6 +738,8 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
         "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_25p],
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvperc_75p],
         "phase" : [",".join(pp) for pp in curr_mockbulk_phases],
+        "gini" : gini_comp,
+        "percent_variance" : percvar_comp,
         "WellPlate" : u_well_plates
         })[~np.isin(u_well_plates, removeThese) & np.array([not xx.startswith("Mitotic") for xx in ccdStrings])].to_csv(
             "output/ProteinPseudotimePlotting.csv.gz", index=False, sep="\t")

@@ -258,7 +258,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         print(fom)
         file.write(fom)
     
-    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, mvpercs
+    return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, ccdprotein, mvpercs
 
 def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
@@ -523,21 +523,23 @@ def cell_data_string(adata, idx):
                  adata.obs['Green530'][idx]]
     return "|".join([str(xx) for xx in cell_data])
     
-def make_plotting_dataframe(adata, ccdtranscript, norm_exp_sort, mvavgs_x, moving_averages, mvpercs):
+def make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort, mvavgs_x, moving_averages, mvpercs):
     '''Make a single table for HPA website figures on RNA pseudotime, boxplots, and fucci plots'''
-    filteridx = np.apply_along_axis(MovingAverages.remove_outliers_idx, 0, norm_exp_sort) # indices to keep
+    filteridx = np.apply_along_axis(MovingAverages.remove_outliers_idx, 0, np.asarray(norm_exp_sort.T)).T # indices to keep
+    hasProteinData = np.isin(adata.var_names, np.concatenate((wp_ensg, bioccd)))
+    filterccd = ccdtranscript | hasProteinData
     pd.DataFrame({
-        "ENSG" : adata.var_names,
-        "CCD" : ccdtranscript,
-        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
-        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filteridx[:,ii]]]) for ii,yy in enumerate(norm_exp_sort.T)],
-        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
-        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)],
-        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names],
-        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T],
-        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,0,:]],
-        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-1,:]],
-        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,1,:]],
-        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-2,:]],
-        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filteridx[:,ii]]]) for ii,ensg in enumerate(adata.var_names)]
+        "ENSG" : adata.var_names[filterccd],
+        "CCD" : ccdtranscript[filterccd],
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filteridx[:,filterccd][:,ii]]]) for ii,yy in enumerate(norm_exp_sort.T[filterccd])],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names[filterccd]],
+        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T[filterccd]],
+        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,0,:]],
+        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-1,:]],
+        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,1,:]],
+        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-2,:]],
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])]
         }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")

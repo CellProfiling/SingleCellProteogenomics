@@ -18,3 +18,5 @@ output/pickles*
 output/
 data/
 iupred2a/
+input/processed/combined.snpeff.vcf.gz
+input/raw/uniprot*.fasta.gz
