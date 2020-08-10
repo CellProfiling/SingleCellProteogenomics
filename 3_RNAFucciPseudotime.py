@@ -78,7 +78,7 @@ percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_
 RNACellCycleDependence.plot_umap_ccd_cutoffs(adata, mean_diff_from_rng)
 RNACellCycleDependence.figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered)
 RNACellCycleDependence.plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes)
-RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort, mvavg_xvals, moving_averages, mvpercs)
+RNACellCycleDependence.make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort[np.argsort(fucci_time_inds),:], mvavg_xvals, moving_averages, mvpercs)
 RNACellCycleDependence.compare_to_lasso_analysis(adata, ccdtranscript)
 RNACellCycleDependence.analyze_cnv_calls(adata, ccdtranscript)
 
@@ -90,6 +90,6 @@ print(f"data shape after filtering: {adata_spikeins.X.shape}")
 RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
 
 #%% Analyze isoforms
-adata_isoform, ccdtranscript_isoform = RNACellCycleDependence.analyze_isoforms(adata, ccdtranscript)
+adata_isoform, ccdtranscript_isoform = RNACellCycleDependence.analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp)
 RNACellCycleDependence.compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform)
 

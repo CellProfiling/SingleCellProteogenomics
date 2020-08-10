@@ -27,6 +27,15 @@ def protein_heatmap(nbins, highlight_names, highlight_ensg, ccd_comp, u_well_pla
     sorted_gene_array = np.take(wp_binned_values_ccd, wp_max_sort_inds, axis=0) # these are the expression values (binned_values), sorted by the binned value at max location (can do in the temporal part)
     sorted_maxpol_array = np.take(wp_max_pol_ccd, wp_max_sort_inds)
 
+    # save the results
+    g1 = wp_max_pol_ccd < fucci.G1_PROP
+    s = (wp_max_pol_ccd >= fucci.G1_PROP) & (wp_max_pol_ccd < fucci.G1_S_PROP)
+    g2 = wp_max_pol_ccd >= fucci.G1_S_PROP
+    pd.DataFrame({"gene" : wp_ensg[ccd_comp], "wp_max_pol_ccd": wp_max_pol_ccd}).to_csv("output/prot_max_moving_avg_pol_ccd.csv", index=None)
+    pd.DataFrame({"gene" : wp_ensg[ccd_comp][g1], "wp_max_pol_ccd": wp_max_pol_ccd[g1]}).to_csv("output/prot_max_moving_avg_pol_ccd_g1.csv", index=None)
+    pd.DataFrame({"gene" : wp_ensg[ccd_comp][s], "wp_max_pol_ccd": wp_max_pol_ccd[s]}).to_csv("output/prot_max_moving_avg_pol_ccd_s.csv", index=None)
+    pd.DataFrame({"gene" : wp_ensg[ccd_comp][g2], "wp_max_pol_ccd": wp_max_pol_ccd[g2]}).to_csv("output/prot_max_moving_avg_pol_ccd_g2.csv", index=None)
+    
     # Actually making the figure
     fig, ax = plt.subplots(figsize=(10, 10))
     sc = ax.imshow(sorted_gene_array, interpolation='nearest')
@@ -184,6 +193,15 @@ def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, is
     sorted_rna_array = np.take(moving_averages_ccd, max_moving_avg_pol_sortinds, axis=1).T
     sorted_rna_binned = np.apply_along_axis(binned_median, 1, sorted_rna_array, len(xvals))
     sorted_rna_binned_norm = sorted_rna_binned / np.max(sorted_rna_binned, axis=1)[:,None]
+
+    # save the results
+    g1 = max_moving_avg_pol_ccd < fucci.G1_PROP
+    s = (max_moving_avg_pol_ccd >= fucci.G1_PROP) & (max_moving_avg_pol_ccd < fucci.G1_S_PROP)
+    g2 = max_moving_avg_pol_ccd >= fucci.G1_S_PROP
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd}).to_csv("output/rna_max_moving_avg_pol_ccd.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g1], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g1]}).to_csv("output/rna_max_moving_avg_pol_ccd_g1.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][s], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[s]}).to_csv("output/rna_max_moving_avg_pol_ccd_s.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g2], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g2]}).to_csv("output/rna_max_moving_avg_pol_ccd_g2.csv", index=None)
 
     fig, ax = plt.subplots(figsize=(10, 10))
     sc = ax.imshow(sorted_rna_binned_norm, interpolation='nearest')

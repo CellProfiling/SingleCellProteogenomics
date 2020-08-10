@@ -232,7 +232,7 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     ensg_ccdtranscript = np.unique(adata.var_names[ccdtranscript])
     ensg_nonccdtranscript = np.unique(adata.var_names[~ccdtranscript])
     ensg_ccdprotein = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    ensg_noccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
+    ensg_nonccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
     ensg_ccdprotein_treg = np.unique(ensg_ccdprotein[np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_ccdprotein_nontreg = np.unique(ensg_ccdprotein[~np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_knownccdprotein = ensg_ccdprotein[np.isin(ensg_ccdprotein, knownccd)]
@@ -242,14 +242,14 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     hgnc_ccdtranscript = list(set(geneIdToHngc(ensg_ccdtranscript)))
     hgnc_ccdprotein_transcript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_treg)))
     hgnc_ccdprotein_nontranscript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_nontreg)))
-    hgnc_nonccdprotein = list(set(geneIdToHngc(ensg_noccdprotein)))
+    hgnc_nonccdprotein = list(set(geneIdToHngc(ensg_nonccdprotein)))
     hgnc_ccdprotein = list(set(geneIdToHngc(ensg_ccdprotein)))
     
     # Convert to gene names and store them as such
     names_ccdtranscript = set(ccd_gene_names(ensg_ccdtranscript))
     names_nonccdtranscript = set(ccd_gene_names(ensg_nonccdtranscript))
     names_ccdprotein = set(ccd_gene_names(ensg_ccdprotein))
-    names_nonccdprotein = set(ccd_gene_names(ensg_noccdprotein))
+    names_nonccdprotein = set(ccd_gene_names(ensg_nonccdprotein))
     names_ccdprotein_transcript_regulated = set(ccd_gene_names(ensg_ccdprotein_treg))
     names_ccdprotein_nontranscript_regulated = set(ccd_gene_names(ensg_ccdprotein_nontreg))
     names_genes_analyzed = set(ccd_gene_names(genes_analyzed))
@@ -268,7 +268,7 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     save_category(ensg_nonccdtranscript, "output/ensg_nonccdtranscript.csv")
     save_category(ensg_ccdprotein_treg, "output/ensg_ccdprotein_transcript_regulated.csv")
     save_category(ensg_ccdprotein_nontreg, "output/ensg_ccdprotein_nontranscript_regulated.csv")
-    save_category(ensg_noccdprotein, "output/ensg_nonccdprotein.csv")
+    save_category(ensg_nonccdprotein, "output/ensg_nonccdprotein.csv")
     save_category(ensg_ccdprotein, "output/ensg_ccdprotein.csv")
     save_category(ensg_knownccdprotein, "output/ensg_knownccdprotein.csv")
     save_category(ensg_novelccdprotein, "output/ensg_novelccdprotein.csv")
@@ -285,5 +285,10 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     save_category(names_genes_analyzed, "output/names_genes_analyzed.csv")
     save_category(names_ccd_filtered, "output/names_ccd_filtered.csv")
     
-    return names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_genes_analyzed, names_ccd_regev_filtered, names_genes_analyzed, names_ccd_filtered
+    return ((ensg_ccdtranscript, ensg_nonccdtranscript, ensg_ccdprotein, ensg_nonccdprotein, 
+            ensg_ccdprotein_treg, ensg_ccdprotein_nontreg, 
+            genes_analyzed, ccd_regev_filtered, ccd_filtered),
+        (names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, 
+            names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, 
+            names_genes_analyzed, names_ccd_regev_filtered, names_ccd_filtered))
     
