@@ -21,3 +21,4 @@ iupred2a/
 input/processed/combined.snpeff.vcf.gz
 input/raw/uniprot*.fasta.gz
 input/raw/v305ProteinResults/
+input/processed/ProteinDisorderProperties.csv.gz

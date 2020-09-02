@@ -17,10 +17,11 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from SingleCellProteogenomics import utils, FucciCellCycle
 
-blacklist = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
+MM_BLACKLIST = ["oxidation", "deamidation", "ammonia loss", "water loss", "carbamyl", "carbamidomethyl", # artifacts
     "fe[i", "zinc", "cu[i" , # metals
     "sodium", "potassium", "calcium", "magnesium", # counterions
     "tmt6-plex"] # isotopic labels
+MQ_BLACKLIST = ["ox","de", "gl","hy","ac"]
 MIN_MOD_PEP = 1
 MIN_TOT_PEP = 5
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
@@ -41,7 +42,7 @@ class PTMAnalysis:
         '''Load MetaMorpheus protein results and store information regarding protein PTMs'''
         print(f"Loading {filename} ...")
         file = pd.read_csv(filename, sep="\t", index_col=False)
-        targets=file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
+        targets = file[(file["Protein Decoy/Contaminant/Target"] == "T") & (file["Protein QValue"] <= 0.01)]
         modifiedProteins = targets[targets["Sequence Coverage with Mods"].str.replace("[","") != targets["Sequence Coverage with Mods"]]
         modifications = [re.findall('\[.*?\]',s) for s in modifiedProteins["Sequence Coverage with Mods"]]
         unique_mods = set([item for sublist in modifications for item in sublist])
@@ -316,6 +317,5 @@ class PTMAnalysis:
             "nonccd_modocc":nonccd_modocc,
             "nonccd_modocc_genes":nonccd_modctsoccdf["gene"],
         }).to_pickle(f"output/modocc_{analysisTitle}.pkl")
+   
         
-
-
