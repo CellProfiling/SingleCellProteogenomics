@@ -6,7 +6,7 @@ Created on Tue Sep  1 23:50:33 2020
 """
 
 from Bio import SeqIO
-import sys, re, math, itertools, os
+import sys, re, math, itertools, os, json
 import seaborn as sbn
 import pandas as pd
 import numpy as np
@@ -22,10 +22,11 @@ MQ_BLACKLIST = ["ox","de", "gl","hy","ac"]
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
 
 class PeptideModifications:
-    def __init__(self, modifications, clearedMods, peptideString, protAcc, protGeneName):
+    def __init__(self, modifications, clearedMods, peptideString, modifiedPeptideSeq, protAcc, protGeneName):
         self.modifications = modifications
         self.clearedMods = set(clearedMods)
         self.peptideString = peptideString
+        self.modifiedPeptideSeq = modifiedPeptideSeq
         self.proteinAccession = protAcc
         self.proteinGeneName = protGeneName
         
@@ -74,7 +75,7 @@ def get_mod_starts(seq, start, protAcc, protGeneName, blacklist, modBeginChar, m
             modStr = []
         elif c != modBeginChar and isMod: 
             modStr.append(c)
-    return PeptideModifications(modifications, clearedMods, "".join(peptideStr), protAcc, protGeneName)
+    return PeptideModifications(modifications, clearedMods, "".join(peptideStr), seq, protAcc, protGeneName)
 
 def mmToMqSequence(seq, modBeginChar="[", modEndChar="]"):
     modifications = []
@@ -101,7 +102,7 @@ def mmToMqSequence(seq, modBeginChar="[", modEndChar="]"):
             elif "acetyl" in "".join(modStr).lower(): modPeptideStr.extend(list("(ac)"))
             elif "hydroxylation" in "".join(modStr).lower(): modPeptideStr.extend(list("(hy)"))
             elif "phospho"  in "".join(modStr).lower(): modPeptideStr.extend(list("(ph)"))
-            else: modPeptideStr.extend(modStr) # makes sure peptides not in MQ search space don't match
+            # else: modPeptideStr.extend(modStr) # makes sure peptides not in MQ search space don't match
             modStr = []
         elif c != modBeginChar and isMod: 
             modStr.append(c)
@@ -109,9 +110,9 @@ def mmToMqSequence(seq, modBeginChar="[", modEndChar="]"):
 
 def get_mod_ratios(modificationsPerPeptide, pepSumIntensities, useIntensityCutoff=False):
     modRatios = {}
-    modRatioPeptides = {}
-    peptidesWithModLists = []
-    peptidesWithoutModLists = []
+    modRatioPeptideToKey = {}
+    peptidesWithModCounts = []
+    peptidesWithoutModCounts = []
     for iii, modPep in enumerate(modificationsPerPeptide):
         if iii % 1000 == 0: print(f"{iii} of {len(modificationsPerPeptide)}")
         if not modPep: continue
@@ -126,10 +127,20 @@ def get_mod_ratios(modificationsPerPeptide, pepSumIntensities, useIntensityCutof
             if sum(peptidesWithoutMod) > 0 and (not useIntensityCutoff or intensityWithMod > 0.001 and intensityWithoutMod > 0.001):
                 if intensityWithMod + intensityWithoutMod > 0:
                     modRatios[key] = intensityWithMod / (intensityWithMod + intensityWithoutMod)
-                    modRatioPeptides[key] = modPep.peptideString
-            peptidesWithModLists.append(peptidesWithMod)
-            peptidesWithoutModLists.append(peptidesWithoutMod)
-    return modRatios, modRatioPeptides, peptidesWithModLists, peptidesWithoutModLists    
+                    modRatioPeptideToKey[modPep.modifiedPeptideSeq] = key
+            peptidesWithModCounts.append(sum(peptidesWithMod))
+            peptidesWithoutModCounts.append(sum(peptidesWithoutMod))
+            
+    # How many peptides had the mod and didn't have the mod
+    plt.hist([peptidesWithModCounts, peptidesWithoutModCounts], label=["Peptides With Mod", "Peptides Without Mod"])
+    plt.legend()
+    plt.xlabel("Peptide Count Per Modification Site")
+    plt.ylabel("Count")
+    plt.savefig(f"figures/PeptideCountPerModSite{experiment}.png")
+    plt.show()
+    plt.close()
+    
+    return modRatios, modRatioPeptideToKey
 
 def getTmtIntensities(ionString):
     ions = ionString.replace('[','').replace(']','').replace(';',', ').split(', ')
@@ -241,22 +252,13 @@ def getTmtIntensities(ionString):
 #             plt.scatter(np.arange(sum(hasStoich & olsen_nonccdprotein)) / sum(hasStoich & olsen_nonccdprotein), sorted(stoich[hasStoich & olsen_nonccdprotein]))
 #             plt.title(f"All, ccd, nonccd: {label}"); plt.xlabel("Phosphosite fraction"); plt.ylabel("Phosphosite stoichiometry"); plt.show(); plt.close()
 
-def analyze_mod_ratios(modRatios, peptidesWithModLists, peptidesWithoutModLists, experiment):
+def analyze_mod_ratios(modRatios, experiment):
     '''Analyze modification ratios for an experiment'''
     # What is the distribution of mod ratios
     plt.hist(modRatios.values())
     plt.xlabel("Modification Occupancy")
     plt.ylabel("Modification Site Count")
     plt.savefig(f"figures/ModRatioHist{experiment}.png"); plt.show(); plt.close()
-    
-    # How many peptides had the mod and didn't have the mod
-    plt.hist(([sum(x) for x in peptidesWithModLists], [sum(x) for x in peptidesWithoutModLists]), 
-             label=["Peptides With Mod", "Peptides Without Mod"])
-    plt.legend()
-    plt.xlabel("Peptide Count Per Modification Site")
-    plt.ylabel("Count")
-    plt.savefig(f"figures/PeptideCountPerModSite{experiment}.png")
-    plt.show(); plt.close()
             
     # CCD vs Non-CCD
     ccdVsNonccdKruskal = stats.kruskal([x[1] for x in modRatios.items() if x[0][1] in names_ccdprotein],
@@ -336,15 +338,15 @@ def analyze_mm_ms1_ratios(filename):
     pepSumIntensities = np.sum(intensitiesNorm, 1)
 
     # compare sum of intensity for peptides with the mod to those without the mod
-    modRatios_mm_ms1, modRatioPeptides_mm_ms1, peptidesWithModLists, peptidesWithoutModLists = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
-    return modRatios_mm_ms1, modRatioPeptides_mm_ms1, peptidesWithModLists, peptidesWithoutModLists, targetsPep, unambigTargetPeps, unambigStarts
+    modRatios_mm_ms1, modRatioPeptides_mm_ms1 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
+    return modRatios_mm_ms1, modRatioPeptides_mm_ms1, targetsPep, unambigTargetPeps, unambigStarts
 
 def analyze_mm_ms1_ratios_bulk():
     '''Uses MetaMorpheus MS1 intensities to look at modification ratios for bulk PTMs'''
     experiment = "MM_MS1_Bulk"
     result = analyze_mm_ms1_ratios("input/raw/v305ProteinResults/Bulk/search/AllPeptides.psmtsv.gz")
-    modRatios_mm_ms1, peptidesWithModLists, peptidesWithoutModLists, modificationsPerPeptide, targetsPep, unambigTargetPeps, unambigStarts = result
-    analyze_mod_ratios(modRatios_mm_ms1, peptidesWithModLists, peptidesWithoutModLists, experiment)
+    modRatios_mm_ms1, modificationsPerPeptide, targetsPep, unambigTargetPeps, unambigStarts = result
+    analyze_mod_ratios(modRatios_mm_ms1, experiment)
     return result
 
 def analyze_mm_ms2_ratios(targetsPep, unambigTargetPeps, unambigStarts):
@@ -363,28 +365,27 @@ def analyze_mm_ms2_ratios(targetsPep, unambigTargetPeps, unambigStarts):
     pepSumIntensities = np.sum(intensitiesNorm, 1)
 
     # compare sum of intensity for peptides with the mod to those without the mod
-    modRatios_mm_ms2, modRatioPeptides_mm_ms2, peptidesWithModLists, peptidesWithoutModLists = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
+    modRatios_mm_ms2, modRatioPeptides_mm_ms2 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
     
-    # get MQ sequence strings
-
-    return modRatios_mm_ms2, modRatioPeptides_mm_ms2, peptidesWithModLists, peptidesWithoutModLists, targetUnambigPeps
+    # prepare for comparison with MaxQuant
+    mqSeqStrings = np.array([mmToMqSequence(pep[seqCol]) for pep in targetUnambigPeps])
+    seqToIntensities_mqMs2 = dict((mqSeqStrings[iii], intensitiesNorm[iii]) for iii in np.arange(len(mqSeqStrings)))
+    return modRatios_mm_ms2, modRatioPeptides_mm_ms2, seqToIntensities_mqMs2
 
 def get_mm_ratios_phospho():
     '''gets dictionary of (protein, mod, aa#) : MM MS1 intensity ratio'''
     experiment = "MM_MS1_Phospho"
     result_ms1 = analyze_mm_ms1_ratios("input/raw/v305ProteinResults/phospho/search/AllPeptides.psmtsv.gz")
-    modRatios_mm_ms1_phospho, peptidesWithModLists_mm_ms1_phospho, peptidesWithoutModLists_mm_ms1_phospho, modPeptides_mm_ms1_phospho, targetsPep_mm_ms1_phospho, unambigTargetPeps_mm_ms1_phospho, unambigStarts_mm_ms1_phospho = result_ms1
-    analyze_mod_ratios(modRatios_mm_ms1_phospho, peptidesWithModLists_mm_ms1_phospho, peptidesWithoutModLists_mm_ms1_phospho, experiment)
+    modRatios_mm_ms1_phospho, modPeptides_mm_ms1_phospho, targetsPep_mm_ms1_phospho, unambigTargetPeps_mm_ms1_phospho, unambigStarts_mm_ms1_phospho = result_ms1
+    analyze_mod_ratios(modRatios_mm_ms1_phospho,  experiment)
     
+    experiment = "MM_MS2_Phospho"
     result_ms2 = analyze_mm_ms2_ratios(targetsPep_mm_ms1_phospho, unambigTargetPeps_mm_ms1_phospho, unambigStarts_mm_ms1_phospho)
-    modRatios_mm_ms2_phospho, peptidesWithModLists_mm_ms2_phospho, peptidesWithoutModLists_mm_ms2_phospho, modificationsPerPeptide_mm_ms2_phospho, targetUnambigPeps_mm_ms2_phospho = result_ms2
-    analyze_mod_ratios(modRatios_mm_ms2_phospho, peptidesWithModLists_mm_ms2_phospho, peptidesWithoutModLists_mm_ms2_phospho, "MM_MS2")
-    mqSeqStrings = np.array([mmToMqSequence(pep[seqCol]) for pep in targetUnambigPeps])
-    seqToIntensities_mqMs2 = dict((mqSeqStrings[iii], intensitiesNorm[iii]) for iii in np.arange(len(mqSeqStrings)))
-    modRatios_mm_ms2_phospho, modificationsPerPeptide_mm_ms2_phospho, seqToIntensities_mmToMqMs2 = result_ms2
+    modRatios_mm_ms2_phospho, modPeptides_mm_ms2_phospho, seqToIntensities_mqMs2 = result_ms2
+    analyze_mod_ratios(modRatios_mm_ms2_phospho, experiment)
     
-    return (modRatios_mm_ms1_phospho, modPeptides_ms1_phospho, targetsPep, unambigTargetPeps, unambigStarts,
-            modRatios_mm_ms2, modificationsPerPeptide_mm_ms2, seqToIntensities_mqMs2)
+    return (modRatios_mm_ms1_phospho, modPeptides_mm_ms1_phospho, 
+            modRatios_mm_ms2_phospho, modPeptides_mm_ms2_phospho, seqToIntensities_mqMs2)
 
 def get_mq_ratios_phospho():
     # gets dictionary of (protein, aa#) : MQ MS1 intensity ratio
@@ -403,41 +404,64 @@ def get_mq_ratios_phospho():
                MQ_BLACKLIST, "(", ")") for xx in evidenceAllPep])
     
     # with ms1 intensities
+    experiment = "MQ_MS1_Phospho"
     intensities = evidenceAllPep[:, ["Intensity" in col and not "not corrected" in col and not "count" in col for col in evidenceAllPepRaw.columns]]
     columnSums = np.sum(intensities, axis=0)
     intensitiesNorm = intensities / columnSums
     pepSumIntensities = np.sum(intensitiesNorm, 1)
-    modRatios_mq_ms1, peptidesWithModLists, peptidesWithoutModLists = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
-    analyze_mod_ratios(modRatios_mq_ms1, peptidesWithModLists, peptidesWithoutModLists, "MQ_MS1")
+    result_mq_ms1 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
+    modRatios_mq_ms1, modPeptides_mq_ms1 = result_mq_ms1
+    analyze_mod_ratios(modRatios_mq_ms1, experiment)
     
     # normalize the ms2 intensities
+    experiment = "MQ_MS2_Phospho"
     intensities = evidenceAllPep[:, ["Reporter intensity" in col and not "not corrected" in col and not "count" in col for col in evidenceAllPepRaw.columns]]
     columnSums = np.sum(intensities, axis=0)
     intensitiesNorm = intensities / columnSums
     pepSumIntensities = np.sum(intensitiesNorm, 1)        
-    modRatios_mq_ms2, peptidesWithModLists, peptidesWithoutModLists = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
-    analyze_mod_ratios(modRatios_mq_ms2, peptidesWithModLists, peptidesWithoutModLists, "MQ_MS2")
-
-    return modRatios_mq_ms1, modRatios_mq_ms2, modificationsPerPeptide_mq, evidenceAllPep
+    result_mq_ms2 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
+    modRatios_mq_ms2, modPeptides_mq_ms2 = result_mq_ms2
+    analyze_mod_ratios(modRatios_mq_ms2, experiment)
+    return modRatios_mq_ms1, modPeptides_mq_ms1, modRatios_mq_ms2, modPeptides_mq_ms2, evidenceAllPep
 
 def compare_ms1_to_ms2_quant():
     '''Use the MaxQuant results to compare MS1 to MS2 quantification for each site'''
     # 1. Get the intensities for each TMT channel from the 6-plex experiment and get the ratio between the peptide with and without the site
     # 2. Get the intensities for each MS1 peak and get the ratio for each site with and without the phospho
     # 3. compare the ratios observed for each.
-    return []
+    plt.scatter(modRatios_mq_ms2.values(), modRatios_mq_ms1.values())
+    plt.xlabel("Modification site occupancy, MQ MS2 Phospho")
+    plt.ylabel("Modification site occupancy, MQ MS1 Phospho")
+    plt.savefig("figures/Ms2Ms1Comparison_MQ.png"); plt.show(); plt.close()
+    
+    mmkeys = set(modRatios_mm_ms1_phospho.keys()).intersection(modRatios_mm_ms2_phospho.keys())
+    modRatio_mm_ms1_ph_vals = [modRatios_mm_ms1_phospho[xx] for xx in mmkeys]
+    modRatio_mm_ms2_ph_vals = [modRatios_mm_ms2_phospho[xx] for xx in mmkeys]
+    plt.scatter(modRatio_mm_ms2_ph_vals, modRatio_mm_ms1_ph_vals)
+    plt.xlabel("Modification site occupancy, MM MS2 Phospho")
+    plt.ylabel("Modification site occupancy, MM MS1 Phospho")
+    plt.savefig("figures/Ms2Ms1Comparison_MM.png"); plt.show(); plt.close()
 
 def compare_psm_to_ms1_quant():
     '''Compare the PSM level quantificaiton to MS1 quantification in MetaMorheus for each site'''
     # 1. read in the MM quantified peptides
     # 2. take the peak intensity ratio for the peptides with the site and those without
     # 3. compare to the ratios observed for the same site on PSM level
-    return []
+    
 
-def compare_mqMs1_to_mmMs1_quant():
+def compare_mqMs1_to_mmMs1_quant(modPeptides_mm_ms1_phospho, modPeptides_mq_ms1, bfrr):
     '''Compare the MS1 quantification from MaxQuant to the MS1 quantification from MetaMorpheus for each site'''
     # 1. Compare the ratios quantified for MS1 from MM and MQ for the same peptides. Should have high correlation.
-    mmSum
+    mqSeqStrings = np.array([mmToMqSequence(pep) for pep in modPeptides_mm_ms1_phospho.keys()])
+    mqSeqs = np.array([x.strip('_') for x in modPeptides_mq_ms1.keys()])
+    phosphoPepKeys = set(mqSeqStrings).intersection(mqSeqs)
+    mmMqOrdering = [list(mqSeqStrings).index(x) for x in phosphoPepKeys if x in phosphoPepKeys]
+
+    plt.scatter([modRatios_mm_ms1_phospho[list(modPeptides_mm_ms1_phospho.items())[idx][1]] for idx in mmMqOrdering], 
+                [modRatios_mq_ms1[modPeptides_mq_ms1[f"_{key}_"]] for key in phosphoPepKeys])
+    plt.xlabel("Modification site occupancy, MM MS1")
+    plt.ylabel("Modification site occupancy, MQ MS1")
+    plt.savefig("figures/MmMqMs1Comparison.png"); plt.show(); plt.close()
 
 def compare_mqMs2_to_mmMs2_quant(modRatios_mm_ms2, modRatios_mq_ms2):
     '''Compare the MS1 quantification from MaxQuant to the MS1 quantification from MetaMorpheus for each site'''
@@ -448,3 +472,13 @@ def compare_mqMs2_to_mmMs2_quant(modRatios_mm_ms2, modRatios_mq_ms2):
     plt.scatter(mmSumControl[aboveCutoff], mqSumControl[aboveCutoff])
     
     # Compare the MS2 modification ratios
+    mqSeqStrings = np.array([mmToMqSequence(pep) for pep in modPeptides_mm_ms2_phospho.keys()])
+    mqSeqs = np.array([x.strip('_') for x in modPeptides_mq_ms2.keys()])
+    phosphoPepKeys = set(mqSeqStrings).intersection(mqSeqs)
+    mmMqOrdering = [list(mqSeqStrings).index(x) for x in phosphoPepKeys if x in phosphoPepKeys]
+
+    plt.scatter([modRatios_mm_ms2_phospho[list(modPeptides_mm_ms2_phospho.items())[idx][1]] for idx in mmMqOrdering], 
+                [modRatios_mq_ms2[modPeptides_mq_ms2[f"_{key}_"]] for key in phosphoPepKeys])
+    plt.xlabel("Modification site occupancy, MM MS2")
+    plt.ylabel("Modification site occupancy, MQ MS2")
+    plt.savefig("figures/MmMqMs2Comparison.png"); plt.show(); plt.close()
