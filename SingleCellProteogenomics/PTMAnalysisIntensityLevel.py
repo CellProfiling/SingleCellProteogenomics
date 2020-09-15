@@ -108,26 +108,50 @@ def mmToMqSequence(seq, modBeginChar="[", modEndChar="]"):
             modStr.append(c)
     return "".join(modPeptideStr)
 
-def get_mod_ratios(modificationsPerPeptide, pepSumIntensities, useIntensityCutoff=False):
+MOD_PEPTIDE_METHOD = "justmod"
+MOD_RATIO_METHOD = "ratioratio"
+def get_mod_ratios(modificationsPerPeptide, pepSumIntensities, intensitiesNorm, proteinIds, proteinIntensitiesNorm):
+    '''
+    Gets the occupancy given intensities for each peptide
+    
+    Methods:
+    anymod method: compare the intensities with mod to those without (default)
+    justmod method: compare the intensities with mod to those without; only consider modified-unmodified comparisons and nothing more complicated (similar to Olsen 2010)
+    
+    Methods:
+    sum: use raw sum intensities to calculate modification ratios
+    ratioratio: use the differences of ratios from protein ratios
+    '''
     modRatios = {}
     modRatioPeptideToKey = {}
     peptidesWithModCounts = []
     peptidesWithoutModCounts = []
     for iii, modPep in enumerate(modificationsPerPeptide):
         if iii % 1000 == 0: print(f"{iii} of {len(modificationsPerPeptide)}")
-        if not modPep: continue
+        if not modPep or MOD_PEPTIDE_METHOD == "justmod" and len(modPep.modifications) > 1: continue
+        # currProteinIntensities = proteinIntensities[[modPep.proteinAccession in pp.split(';') for pp in proteinIds],:][0]
         for jjj, clearedMod in enumerate(modPep.clearedMods):
             key=(modPep.proteinAccession, modPep.proteinGeneName, clearedMod)
             if key in modRatios: continue
             intensity = pepSumIntensities[iii]
             peptidesWithMod = [False if not modmod else modPep.isSamePep(modmod) and clearedMod in modmod.clearedMods for modmod in modificationsPerPeptide]
             peptidesWithoutMod = [False if not modmod else modPep.isSamePep(modmod) and not clearedMod in modmod.clearedMods for modmod in modificationsPerPeptide]
-            intensityWithMod = np.sum(pepSumIntensities[peptidesWithMod])
-            intensityWithoutMod = np.sum(pepSumIntensities[peptidesWithoutMod])
-            if sum(peptidesWithoutMod) > 0 and (not useIntensityCutoff or intensityWithMod > 0.001 and intensityWithoutMod > 0.001):
-                if intensityWithMod + intensityWithoutMod > 0:
-                    modRatios[key] = intensityWithMod / (intensityWithMod + intensityWithoutMod)
-                    modRatioPeptideToKey[modPep.modifiedPeptideSeq] = key
+            # if MOD_RATIO_METHOD == "sum":
+            #     intensityWithMod = np.sum(pepSumIntensities[peptidesWithMod])
+            #     intensityWithoutMod = np.sum(pepSumIntensities[peptidesWithoutMod])
+            #     if sum(peptidesWithoutMod) > 0:
+            #         if intensityWithMod + intensityWithoutMod > 0:
+            #             modRatios[key] = intensityWithMod / (intensityWithMod + intensityWithoutMod)
+            #             modRatioPeptideToKey[modPep.modifiedPeptideSeq] = key
+            # elif all(currProteinIntensities == 0):
+            #     continue
+            # else:
+            #     ratiosWithMod = intensitiesNorm[peptidesWithMod][:,:3] / intensitiesNorm[peptidesWithMod][:,3:]
+            #     ratiosWithoutMod = intensitiesNorm[peptidesWithoutMod][:,:3] / intensitiesNorm[peptidesWithoutMod][:,3:]
+            #     protRatio = currProteinIntensities[:3] / currProteinIntensities[3:]
+            #     lProportion = (protRatio - ratiosWithoutMod) / (ratiosWithMod - protRatio)
+            #     modRatios[key] = lProportion / (1 + lProportion)
+            #     modRatioPeptideToKey[modPep.modifiedPeptideSeq] = key
             peptidesWithModCounts.append(sum(peptidesWithMod))
             peptidesWithoutModCounts.append(sum(peptidesWithoutMod))
             
@@ -392,6 +416,7 @@ def get_mq_ratios_phospho():
     MIN_PIF, MIN_PEP = 0.75, 0.01
     evidenceAllPepRaw = pd.read_csv("input/raw/v305ProteinResults/Phospho/Maxquant_Search_CDKL5_TMT_phosphoproteomic/evidence.txt.gz", sep="\t")
     peptides = pd.read_csv("input/raw/v305ProteinResults/Phospho/Maxquant_Search_CDKL5_TMT_phosphoproteomic/peptides.txt.gz", sep="\t")
+    proteins = pd.read_csv("input/raw/v305ProteinResults/Phospho/Maxquant_Search_CDKL5_TMT_phosphoproteomic/proteinGroups.txt.gz", sep="\t")
     isReversed = np.array([xx.startswith("REV_") for xx in evidenceAllPepRaw["Leading Proteins"]])
     evidenceAllPep = np.array(evidenceAllPepRaw[~isReversed & ~pd.isna(evidenceAllPepRaw["Score"]) & ~pd.isna(evidenceAllPepRaw["PIF"]) & (evidenceAllPepRaw["PIF"] > MIN_PIF) & (evidenceAllPepRaw["PEP"] < MIN_PEP)])
     pepCols = list(peptides.columns)
@@ -416,10 +441,14 @@ def get_mq_ratios_phospho():
     # normalize the ms2 intensities
     experiment = "MQ_MS2_Phospho"
     intensities = evidenceAllPep[:, ["Reporter intensity" in col and not "not corrected" in col and not "count" in col for col in evidenceAllPepRaw.columns]]
+    proteinIds = np.array(proteins["Protein IDs"])
+    proteinIntensities = np.array(proteins)[:, ["Reporter intensity" in col and not "not corrected" in col and not "count" in col and not "ppTMT_CDK5L" in col for col in proteins.columns]]
     columnSums = np.sum(intensities, axis=0)
     intensitiesNorm = intensities / columnSums
+    columnSumsProt = np.sum(proteinIntensities)
+    proteinIntensitiesNorm = proteinIntensities / columnSumsProt
     pepSumIntensities = np.sum(intensitiesNorm, 1)        
-    result_mq_ms2 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities)
+    result_mq_ms2 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities, intensitiesNorm, proteinIds, proteinIntensitiesNorm)
     modRatios_mq_ms2, modPeptides_mq_ms2 = result_mq_ms2
     analyze_mod_ratios(modRatios_mq_ms2, experiment)
     return modRatios_mq_ms1, modPeptides_mq_ms1, modRatios_mq_ms2, modPeptides_mq_ms2, evidenceAllPep
