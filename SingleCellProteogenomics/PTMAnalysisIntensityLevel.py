@@ -29,9 +29,27 @@ class PeptideModifications:
         self.modifiedPeptideSeq = modifiedPeptideSeq
         self.proteinAccession = protAcc
         self.proteinGeneName = protGeneName
-        
+        self.modCountSet = False
     def isSamePep(self, modPep):
         return self.peptideString == modPep.peptideString and self.proteinAccession == modPep.proteinAccession and self.proteinGeneName == modPep.proteinGeneName
+    def setModCountsMQ(self):
+        if self.modCountSet: return
+        self.modCountSet = True
+        self.phCount = sum([x[1] == 'ph' for x in self.modifications])
+        self.oxCount = sum([x[1] == 'ox' for x in self.modifications])
+        self.deCount = sum([x[1] == 'de' for x in self.modifications])
+        self.glCount = sum([x[1] == 'gl' for x in self.modifications])
+        self.hyCount = sum([x[1] == 'hy' for x in self.modifications])
+        self.acCount = sum([x[1] == 'ac' for x in self.modifications])
+    def isSameWithoutPhosphoMQ(self, modPep):
+        self.setModCountsMQ()
+        modPep.setModCountsMQ()
+        sameOtherMods = self.oxCount == modPep.oxCount \
+            and self.deCount == modPep.deCount \
+            and self.glCount == modPep.glCount \
+            and self.hyCount == modPep.hyCount \
+            and self.acCount == modPep.acCount
+        return self.isSamePep(modPep) and sameOtherMods
 
 def get_seq_without_mods(seq):
     returnseq = []
@@ -428,6 +446,26 @@ def get_mq_ratios_phospho():
                accToGn[peptidesProtStartDict[xx[0]][1]] if peptidesProtStartDict[xx[0]][1] in accToGn else "", 
                MQ_BLACKLIST, "(", ")") for xx in evidenceAllPep])
     
+    modsGenenameSite = {}
+    for m in modificationsPerPeptide:
+        if m.proteinGeneName not in modsGenenameSite: modsGenenameSite[m.proteinGeneName] = set()
+        for mod in m.modifications:
+            if mod[1] == "ph":
+                modsGenenameSite[m.proteinGeneName].add(mod)
+    phoscount = [len(x) for x in modsGenenameSite.values()]
+    
+    phoscount_ccdprotein = [phoscount[idx] for idx in np.arange(len(phoscount)) if list(modsGenenameSite.keys())[idx] in names_ccdprotein and list(modsGenenameSite.keys())[idx] not in names_bioccd]
+    phoscount_nonccdprotein = [phoscount[idx] for idx in np.arange(len(phoscount)) if list(modsGenenameSite.keys())[idx] in names_nonccdprotein and list(modsGenenameSite.keys())[idx] not in names_bioccd]
+    phoscount_ccdprotein_transcript_regulated = [phoscount[idx] for idx in np.arange(len(phoscount)) if list(modsGenenameSite.keys())[idx] in names_ccdprotein_transcript_regulated and list(modsGenenameSite.keys())[idx] not in names_bioccd]
+    phoscount_ccdprotein_nontranscript_regulated = [phoscount[idx] for idx in np.arange(len(phoscount)) if list(modsGenenameSite.keys())[idx] in names_ccdprotein_nontranscript_regulated and list(modsGenenameSite.keys())[idx] not in names_bioccd]
+    phoscount_allgenes = [phoscount[idx] for idx in np.arange(len(phoscount)) if list(modsGenenameSite.keys())[idx] in names_genes_analyzed and list(modsGenenameSite.keys())[idx] not in names_bioccd]
+    utils.general_boxplot([phoscount_ccdprotein, phoscount_nonccdprotein, phoscount_ccdprotein_transcript_regulated, phoscount_ccdprotein_nontranscript_regulated, phoscount_allgenes],
+                          ["ccd", "nonccd", "ccdtransreg", "ccdnontransreg", "all"],
+                          "", "Number of phosphosites\nper protein in U2OS", "", False, "figures/phosphositeCounts.png")
+    utils.boxplot_with_stripplot([phoscount_ccdprotein_transcript_regulated, phoscount_ccdprotein_nontranscript_regulated],
+                      ["ccdtransreg", "ccdnontransreg"],
+                      "", "Number of phosphosites in U2OS", "", False, "figures/phosphositeCounts.png")
+    
     # with ms1 intensities
     experiment = "MQ_MS1_Phospho"
     intensities = evidenceAllPep[:, ["Intensity" in col and not "not corrected" in col and not "count" in col for col in evidenceAllPepRaw.columns]]
@@ -445,12 +483,80 @@ def get_mq_ratios_phospho():
     proteinIntensities = np.array(proteins)[:, ["Reporter intensity" in col and not "not corrected" in col and not "count" in col and not "ppTMT_CDK5L" in col for col in proteins.columns]]
     columnSums = np.sum(intensities, axis=0)
     intensitiesNorm = intensities / columnSums
-    columnSumsProt = np.sum(proteinIntensities)
-    proteinIntensitiesNorm = proteinIntensities / columnSumsProt
     pepSumIntensities = np.sum(intensitiesNorm, 1)        
     result_mq_ms2 = get_mod_ratios(modificationsPerPeptide, pepSumIntensities, intensitiesNorm, proteinIds, proteinIntensitiesNorm)
+    
+    # get the ratios based on the MS2 intensities
+    columnSumsProt = np.sum(proteinIntensities)
+    proteinIntensitiesNorm = proteinIntensities / columnSumsProt
+    proteinCtrlIntNorm = np.sum(proteinIntensitiesNorm[:,:3], axis=1)
+    proteinConditionIntNorm = np.sum(proteinIntensitiesNorm[:,3:], axis=1)
+    proteinNonzeroIntensity = (proteinCtrlIntNorm != 0) & (proteinConditionIntNorm != 0)
+    proteinRatios = proteinCtrlIntNorm[proteinNonzeroIntensity] / proteinConditionIntNorm[proteinNonzeroIntensity]
+    proteinRatioIds = proteinIds[proteinNonzeroIntensity]
+    proteinRatioIdSet = set(np.unique(np.concatenate([p.split(';') for p in proteinRatioIds])))
+    peptideCtrlIntNorm = np.sum(intensitiesNorm[:,:3], axis=1)
+    peptideConditionIntNorm = np.sum(intensitiesNorm[:,3:], axis=1)
+    peptideNonzeroIntensity = (peptideCtrlIntNorm != 0) & (peptideConditionIntNorm != 0)
+    peptideRatios = peptideCtrlIntNorm[peptideNonzeroIntensity] / peptideConditionIntNorm[peptideNonzeroIntensity]
+
+    modRatios = {}
+    modRatioPeptideToKey = {}
+    peptidesWithModCounts = []
+    peptidesWithoutModCounts = []
+    for modPep in modificationsPerPeptide:
+        modPep.setModCountsMQ()
+    isMod = np.array([not mod == False for mod in modificationsPerPeptide])
+    phCounts = np.array([modPep.phCount for modPep in modificationsPerPeptide])
+    otherCounts = np.array([(modPep.oxCount, modPep.oxCount, modPep.deCount, modPep.glCount, modPep.hyCount, modPep.acCount) for modPep in modificationsPerPeptide])
+    sameOtherCounts = np.array([np.sum(otherCounts[iii] - otherCounts, axis=1) == 0 for iii in np.arange(len(otherCounts))])
+    pepInfo = np.array([modPep.peptideString for modPep in modificationsPerPeptide])
+    samePhDict = dict((phct, phCounts == phct) for phct in np.unique(phCounts))
+    withoutPh = dict((phct, phCounts == 0) for phct in np.unique(phCounts))
+    indices = np.arange(len(isMod))
+    indicesIsMod = set(indices[isMod])
+    samePepInfo = np.array([set(indices[pepInfo == pepInfo[iii]]) for iii in indices])
+    
+    # checking that I'm getting the right number of sites
+    evidenceCols = list(evidenceAllPepRaw.columns)
+    evidenceAllPepRaw["prottag"] = [f"{e[1][evidenceCols.index('Sequence')]}_O{e[1][evidenceCols.index('Oxidation (M)')]}_" + \
+                                    f"A{e[1][evidenceCols.index('Acetyl (Protein N-term)')]}_" + 
+                                    f"D{e[1][evidenceCols.index('Deamidation (NQ)')]}_G{e[1][evidenceCols.index('Gln->pyro-Glu')]}_" + 
+                                    f"H{e[1][evidenceCols.index('Hydroxyproline')]}" \
+                                        for e in evidenceAllPepRaw.iterrows()]
+    evidenceAllPepPass = evidenceAllPepRaw[~isReversed & ~pd.isna(evidenceAllPepRaw["Score"]) & ~pd.isna(evidenceAllPepRaw["PIF"]) & (evidenceAllPepRaw["PIF"] > MIN_PIF) & (evidenceAllPepRaw["PEP"] < MIN_PEP)]
+    numberOfSitesWithAndWithoutPhospho = len([p[1] for p in evidenceAllPepPass.groupby("prottag") if np.array([len(p[1]) > 1]) and 0 in set(p[1]["Phospho (STY)"]) and any(p[1]["Phospho (STY)"] > 0)])
+    print(f"{numberOfSitesWithAndWithoutPhospho}: num sites with and without phospho")
+
+    for iii, modPep in enumerate(modificationsPerPeptide):
+        if iii % 1000 == 0: print(f"{iii} of {len(modificationsPerPeptide)}")
+        if not modPep or modPep.phCount != 1 or modPep.proteinAccession not in proteinRatioIdSet: continue
+        sameOthers = indicesIsMod.intersection(samePepInfo[iii]).intersection(indices[sameOtherCounts[iii]])
+        peptidesWithmod = sameOthers.intersection(indices[samePhDict[modPep.phCount]])
+        peptidesWithoutmod = sameOthers.intersection(indices[withoutPh[modPep.phCount]])
+        peptidesWithModCounts.append(len(peptidesWithmod))
+        peptidesWithoutModCounts.append(len(peptidesWithoutmod))
+        if (len(peptidesWithmod) > 0 and len(peptidesWithoutmod) > 0):
+            key=(modPep.proteinAccession, modPep.proteinGeneName, tuple(np.array(modPep.modifications)[[m[1]=='ph' for m in modPep.modifications]][0]))
+            phosPepRatio = np.median(peptideRatios[list(peptidesWithmod.intersection(indices[peptideNonzeroIntensity]))])
+            unmodPepRatio = np.median(peptideRatios[list(peptidesWithoutmod.intersection(indices[peptideNonzeroIntensity]))]) #sum(peptideCtrlIntNorm[np.array(list(peptidesWithoutmod), dtype=int)]) / sum(peptideConditionIntNorm[np.array(list(peptidesWithoutmod), dtype=int)])
+            prots = [modPep.proteinAccession in acc.split(';') for acc in proteinRatioIds]
+            protRatio = proteinRatios[prots][0]
+            a = (1-unmodPepRatio/protRatio)/(phosPepRatio/protRatio-1)
+            modRatios[key] = a / (1+a)
+        
+    # How many peptides had the mod and didn't have the mod
+    plt.hist([peptidesWithModCounts, peptidesWithoutModCounts], label=["Peptides With Mod", "Peptides Without Mod"])
+    plt.legend()
+    plt.xlabel("Peptide Count Per Modification Site")
+    plt.ylabel("Count")
+    plt.savefig(f"figures/PeptideCountPerModSite{experiment}.png")
+    plt.show()
+    plt.close()
+    
     modRatios_mq_ms2, modPeptides_mq_ms2 = result_mq_ms2
     analyze_mod_ratios(modRatios_mq_ms2, experiment)
+    
     return modRatios_mq_ms1, modPeptides_mq_ms1, modRatios_mq_ms2, modPeptides_mq_ms2, evidenceAllPep
 
 def compare_ms1_to_ms2_quant():
