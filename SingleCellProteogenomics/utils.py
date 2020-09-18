@@ -176,30 +176,33 @@ def format_p(p):
 
 ## GENE NAME - ENSG CONVERSIONS
 
-def ccd_gene_names(id_list_like):
-    '''Convert gene ID list to gene name list'''
+def getGeneNameDict():
+    '''Make dictionary of IDs to names'''
     gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["name"]
-
-def ccd_gene_names_gapped(id_list_like):
+    geneIdNameDict = dict([(ggg[0], ggg[1]) for idx, ggg in gene_info.iterrows()])
+    return geneIdNameDict
+    
+def ccd_gene_names(id_list_like, geneIdNameDict):
     '''Convert gene ID list to gene name list'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    geneIdList = list(gene_info["gene_id"])
-    return [gene_info["name"][geneIdList.index(idd)] if idd in geneIdList else "" for idd in id_list_like]
+    return np.unique([geneIdNameDict[ggg] for ggg in id_list_like if ggg in geneIdNameDict])
 
-def geneIdToHngc(id_list_like):
-    '''Convert gene ID list to HNGC symbol if it exists'''
-    gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
-    gene_info = gene_info[gene_info["hgnc_symbol"] != ""]
-    return gene_info[(gene_info["gene_id"].isin(id_list_like))]["hgnc_symbol"]
+def ccd_gene_names_gapped(id_list_like, geneIdNameDict):
+    '''Convert gene ID list to gene name list'''
+    return [geneIdNameDict[idd] if idd in geneIdNameDict else "" for idd in id_list_like]
 
-def geneIdToHngc_withgaps(id_list_like):
+def getHgncDict():
+    '''Make dictionary of IDs to HGNC symbols'''
+    geneIdToHgncTable = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
+    geneIdToHgncDict = dict([(ggg[1], ggg[0]) for idx, ggg in geneIdToHgncTable.iterrows()])
+    return geneIdToHgncDict
+
+def geneIdToHngc(id_list_like, geneDict):
     '''Convert gene ID list to HNGC symbol if it exists'''
-    gene_info = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
-    with_hgnc = list(gene_info["hgnc_symbol"])
-    gene_id_with_hgnc = list(gene_info["gene_id"])
-    hgnc_symbols = [with_hgnc[gene_id_with_hgnc.index(ensg)] for ensg in id_list_like]
-    return hgnc_symbols
+    return np.unique([geneDict[ggg] for ggg in id_list_like if ggg])
+
+def geneIdToHngc_withgaps(id_list_like, geneDict):
+    '''Convert gene ID list to HNGC symbol if it exists'''
+    return [geneDict[ggg] for ggg in id_list_like]
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
@@ -232,29 +235,31 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     ensg_ccdtranscript = np.unique(adata.var_names[ccdtranscript])
     ensg_nonccdtranscript = np.unique(adata.var_names[~ccdtranscript])
     ensg_ccdprotein = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    ensg_noccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
+    ensg_nonccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
     ensg_ccdprotein_treg = np.unique(ensg_ccdprotein[np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_ccdprotein_nontreg = np.unique(ensg_ccdprotein[~np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_knownccdprotein = ensg_ccdprotein[np.isin(ensg_ccdprotein, knownccd)]
     ensg_novelccdprotein = ensg_ccdprotein[~np.isin(ensg_ccdprotein, knownccd)]
     
     # Get the HGNC symbols for lists for GO analysis
-    hgnc_ccdtranscript = list(set(geneIdToHngc(ensg_ccdtranscript)))
-    hgnc_ccdprotein_transcript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_treg)))
-    hgnc_ccdprotein_nontranscript_regulated = list(set(geneIdToHngc(ensg_ccdprotein_nontreg)))
-    hgnc_nonccdprotein = list(set(geneIdToHngc(ensg_noccdprotein)))
-    hgnc_ccdprotein = list(set(geneIdToHngc(ensg_ccdprotein)))
+    geneIdToHgncDict = getHgncDict()
+    hgnc_ccdtranscript = geneIdToHngc(ensg_ccdtranscript, geneIdToHgncDict)
+    hgnc_ccdprotein_transcript_regulated = geneIdToHngc(ensg_ccdprotein_treg, geneIdToHgncDict)
+    hgnc_ccdprotein_nontranscript_regulated = geneIdToHngc(ensg_ccdprotein_nontreg, geneIdToHgncDict)
+    hgnc_nonccdprotein = geneIdToHngc(ensg_nonccdprotein, geneIdToHgncDict)
+    hgnc_ccdprotein = geneIdToHngc(ensg_ccdprotein, geneIdToHgncDict)
     
     # Convert to gene names and store them as such
-    names_ccdtranscript = set(ccd_gene_names(ensg_ccdtranscript))
-    names_nonccdtranscript = set(ccd_gene_names(ensg_nonccdtranscript))
-    names_ccdprotein = set(ccd_gene_names(ensg_ccdprotein))
-    names_nonccdprotein = set(ccd_gene_names(ensg_noccdprotein))
-    names_ccdprotein_transcript_regulated = set(ccd_gene_names(ensg_ccdprotein_treg))
-    names_ccdprotein_nontranscript_regulated = set(ccd_gene_names(ensg_ccdprotein_nontreg))
-    names_genes_analyzed = set(ccd_gene_names(genes_analyzed))
-    names_ccd_regev_filtered = set(ccd_gene_names(ccd_regev_filtered))
-    names_ccd_filtered = set(ccd_gene_names(ccd_filtered))
+    geneIdNameDict = getGeneNameDict()
+    names_ccdtranscript = ccd_gene_names(ensg_ccdtranscript, geneIdNameDict)
+    names_nonccdtranscript = ccd_gene_names(ensg_nonccdtranscript, geneIdNameDict)
+    names_ccdprotein = ccd_gene_names(ensg_ccdprotein, geneIdNameDict)
+    names_nonccdprotein = ccd_gene_names(ensg_nonccdprotein, geneIdNameDict)
+    names_ccdprotein_transcript_regulated = ccd_gene_names(ensg_ccdprotein_treg, geneIdNameDict)
+    names_ccdprotein_nontranscript_regulated = ccd_gene_names(ensg_ccdprotein_nontreg, geneIdNameDict)
+    names_genes_analyzed = ccd_gene_names(genes_analyzed, geneIdNameDict)
+    names_ccd_regev_filtered = ccd_gene_names(ccd_regev_filtered, geneIdNameDict)
+    names_ccd_filtered = ccd_gene_names(ccd_filtered, geneIdNameDict)
     
     # Save the HGNC gene names for each category
     save_category(hgnc_ccdtranscript, "output/hgnc_ccdtranscript.csv")
@@ -268,7 +273,7 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     save_category(ensg_nonccdtranscript, "output/ensg_nonccdtranscript.csv")
     save_category(ensg_ccdprotein_treg, "output/ensg_ccdprotein_transcript_regulated.csv")
     save_category(ensg_ccdprotein_nontreg, "output/ensg_ccdprotein_nontranscript_regulated.csv")
-    save_category(ensg_noccdprotein, "output/ensg_nonccdprotein.csv")
+    save_category(ensg_nonccdprotein, "output/ensg_nonccdprotein.csv")
     save_category(ensg_ccdprotein, "output/ensg_ccdprotein.csv")
     save_category(ensg_knownccdprotein, "output/ensg_knownccdprotein.csv")
     save_category(ensg_novelccdprotein, "output/ensg_novelccdprotein.csv")
@@ -285,5 +290,10 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     save_category(names_genes_analyzed, "output/names_genes_analyzed.csv")
     save_category(names_ccd_filtered, "output/names_ccd_filtered.csv")
     
-    return names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_genes_analyzed, names_ccd_regev_filtered, names_genes_analyzed, names_ccd_filtered
+    return ((ensg_ccdtranscript, ensg_nonccdtranscript, ensg_ccdprotein, ensg_nonccdprotein, 
+            ensg_ccdprotein_treg, ensg_ccdprotein_nontreg, 
+            genes_analyzed, ccd_regev_filtered, ccd_filtered),
+        (names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, 
+            names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, 
+            names_genes_analyzed, names_ccd_regev_filtered, names_ccd_filtered))
     
