@@ -15,6 +15,7 @@ from sklearn.impute import KNNImputer
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
 PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+PERMUTATIONS_ISOFORMS = 100
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
@@ -163,7 +164,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 
     # randomize and calculate the mean difference in percent variances from random
     percent_ccd_variance_rng, mean_diff_from_rng = [],[]
-    perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(100)])
+    perms = np.asarray([np.random.permutation(len(adata.obs)) for nnn in np.arange(PERMUTATIONS if not use_isoforms else PERMUTATIONS_ISOFORMS)])
     picklePath = f"output/pickles/percent_ccd_variance_rng{'' if not use_isoforms else 'Isoforms'}.npy"
     meandiffPath = f"output/pickles/mean_diff_from_rng{'' if not use_isoforms else 'Isoforms'}.npy"
     if not os.path.exists(picklePath):
@@ -325,7 +326,11 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
 def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, use_isoforms=False):
     '''Generate moving average plots for all the genes'''
     mvpercs = []
-    examples = ["ENSG00000011426", "ENSG00000006747", "ENSG00000072756", "ENSG00000102908", "ENSG00000258947", "ENSG00000091651", "ENSG00000169740", "ENSG00000105173", "ENSG00000162999", "ENSG00000134057", "ENSG00000178999", "ENSG00000156970", "ENSG00000167065", "ENSG00000132768", "ENSG00000138801", "ENSG00000156239", "ENSG00000019144", "ENSG00000151702", "ENSG00000123607", "ENSG00000173599", "ENSG00000109814"]
+    examples = ["ENSG00000011426", "ENSG00000006747", "ENSG00000072756", "ENSG00000102908", 
+                "ENSG00000258947", "ENSG00000091651", "ENSG00000169740", "ENSG00000105173", 
+                "ENSG00000162999", "ENSG00000134057", "ENSG00000178999", "ENSG00000156970", 
+                "ENSG00000167065", "ENSG00000132768", "ENSG00000138801", "ENSG00000156239", 
+                "ENSG00000019144", "ENSG00000151702", "ENSG00000123607", "ENSG00000173599", "ENSG00000109814"]
     for iii, ensg in enumerate(adata.var_names):
         plt.close('all')
         if iii % 500 == 0: print(f"well {iii} of {len(adata.var_names)}")  
