@@ -46,6 +46,11 @@ ptmAnalysis = PTMAnalysisPSMLevel.PTMAnalysis(names_ccdtranscript,
 genemodsBulk = ptmAnalysis.analyze_ptms("input/raw/v305ProteinResults/bulk/search/AllProteinGroups.tsv.gz")
 genemodsPhospho = ptmAnalysis.analyze_ptms("input/raw/v305ProteinResults/phospho/search/AllProteinGroups.tsv.gz")
 
+utils.general_boxplot([[len(p[1][4]) * p[1][1][0] * p[1][1][1] for p in genemodsBulk.items() if p[0] in names_ccdprotein if len(p[1][4]) > 0],
+                     [len(p[1][4]) * p[1][1][0] * p[1][1][1] for p in genemodsBulk.items() if p[0] in names_genes_analyzed if len(p[1][4]) > 0],
+                     [len(p[1][4]) * p[1][1][0] * p[1][1][1] for p in genemodsBulk.items() if p[0] in names_ccdtranscript if len(p[1][4]) > 0]],
+                    ["ccd", "all", "ccdtranscript"],"","","",False,"figures/bulkmodcounts.png")
+
 # Analyze the modification occupancy for each PTM site
 dfBulk, occdfBulk = ptmAnalysis.process_genemods(genemodsBulk)
 dfPhospho, occdfPhospho = ptmAnalysis.process_genemods(genemodsPhospho)

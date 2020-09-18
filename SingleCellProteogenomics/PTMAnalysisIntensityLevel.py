@@ -446,6 +446,11 @@ def get_mq_ratios_phospho():
                accToGn[peptidesProtStartDict[xx[0]][1]] if peptidesProtStartDict[xx[0]][1] in accToGn else "", 
                MQ_BLACKLIST, "(", ")") for xx in evidenceAllPep])
     
+    lengths = {}
+    for pp in proteins.iterrows():
+        genes = 
+        lengths = pp[list(proteins.columns).index("Sequence lengths")].split(';')
+    
     modsGenenameSite = {}
     for m in modificationsPerPeptide:
         if m.proteinGeneName not in modsGenenameSite: modsGenenameSite[m.proteinGeneName] = set()
@@ -528,6 +533,7 @@ def get_mq_ratios_phospho():
     numberOfSitesWithAndWithoutPhospho = len([p[1] for p in evidenceAllPepPass.groupby("prottag") if np.array([len(p[1]) > 1]) and 0 in set(p[1]["Phospho (STY)"]) and any(p[1]["Phospho (STY)"] > 0)])
     print(f"{numberOfSitesWithAndWithoutPhospho}: num sites with and without phospho")
 
+    # This is the method used by Olsen 2010
     for iii, modPep in enumerate(modificationsPerPeptide):
         if iii % 1000 == 0: print(f"{iii} of {len(modificationsPerPeptide)}")
         if not modPep or modPep.phCount != 1 or modPep.proteinAccession not in proteinRatioIdSet: continue
@@ -545,6 +551,15 @@ def get_mq_ratios_phospho():
             a = (1-unmodPepRatio/protRatio)/(phosPepRatio/protRatio-1)
             modRatios[key] = a / (1+a)
         
+    utils.general_boxplot([[m[1] for m in modRatios.items() if m[0][1] in names_ccdprotein and m[1] >= 0 and m[1] <=1], 
+                           [m[1] for m in modRatios.items() if m[0][1] in names_genes_analyzed and m[1] >= 0 and m[1] <=1], 
+                           [m[1] for m in modRatios.items() if m[0][1] in names_ccdtranscript and m[1] >= 0 and m[1] <=1]], 
+                          ["CCD","All Proteins","CCD Transcript"],"","Phospho Site Occupancy","",True,"figures/asdf.png")
+    scipy.stats.kruskal([m[1] for m in modRatios.items() if m[0][1] in names_ccdprotein and m[1] >= 0 and m[1] <=1], 
+                        [m[1] for m in modRatios.items() if m[0][1] in names_genes_analyzed and m[1] >= 0 and m[1] <=1])
+    scipy.stats.kruskal([m[1] for m in modRatios.items() if m[0][1] in names_genes_analyzed and m[1] >= 0 and m[1] <=1], 
+                        [m[1] for m in modRatios.items() if m[0][1] in names_ccdtranscript and m[1] >= 0 and m[1] <=1])
+
     # How many peptides had the mod and didn't have the mod
     plt.hist([peptidesWithModCounts, peptidesWithoutModCounts], label=["Peptides With Mod", "Peptides Without Mod"])
     plt.legend()

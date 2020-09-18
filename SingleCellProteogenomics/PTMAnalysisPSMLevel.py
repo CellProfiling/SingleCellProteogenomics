@@ -73,14 +73,14 @@ class PTMAnalysis:
                     totpepts = [m[(m.index("/", m.index("occupancy=")) + 1):(m.index(")", m.index("occupancy=")))] for m in modis]
                 else: continue
         
-                # mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in blacklist)]
+                # mods = [m for m in re.findall('\[.*?\]', seqmod[idxx]) if not any(mod in m.lower() for mod in MM_BLACKLIST)]
                 covered_fraction = float(sum([1 for c in seq[idxx] if c.isupper()])) / float(len(seq[idxx]))
                 effective_length = float(len(seq[idxx])) * covered_fraction
                 # mods_per_eff_base = math.log10(float(len(modstemp) + 1) / float(effective_length))
                 modstempfiltered = []
                 aanums, mods, occupancies, modpeptsss, totpeptsss = [],[],[],[],[]
                 for oidx, occcc in enumerate(occupancytemp):
-                    isblacklisted = any(mod in modstemp[oidx].lower() for mod in blacklist)
+                    isblacklisted = any(mod in modstemp[oidx].lower() for mod in MM_BLACKLIST)
                     isonehitwonder = int(modpepts[oidx]) < MIN_MOD_PEP or int(totpepts[oidx]) < MIN_TOT_PEP
                     if not isblacklisted:
                         modstempfiltered.append(modstemp[oidx])
