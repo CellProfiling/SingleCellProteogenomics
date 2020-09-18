@@ -272,12 +272,12 @@ def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript
     useGene = np.isin(perGene_geneIds, gene_varnames)
     numIsoformsPerGene = np.array(numIsoformsPerGene[useGene])
     ccdIsoformsPerGene = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in perGene_geneIds[useGene]])
-    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] for ii, gene_id in enumerate(numIsoformsPerGene)])
+    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] and ccdIsoformsPerGene[ii] > 0 for ii, gene_id in enumerate(numIsoformsPerGene)])
     print(f"{sum(ccdtranscript_isoform)} CCD transcripts, of which {sum(ccdIsoformWithCcdGene)} ({sum(ccdIsoformWithCcdGene) / sum(ccdtranscript_isoform) * 100}%) correspond to genes that were also found to be CCD.")
     print(f"of the {sum(ccdtranscript)} CCD genes, {sum(ccdAndNonCcdIsoformsPerGene)} were found to have both CCD and non-CCD transcript isoforms.")
     print(f"for the {sum(ccdIsoformsPerGene > 1)} genes with multiple CCD transcripts, the time of peak expression...")
     
-def analyze_isoforms(adata, ccdtranscript):
+def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp):
     '''Analyze the isoform-level results over the cell cycle'''
     # Read in the data & QC analysis
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
@@ -292,7 +292,7 @@ def analyze_isoforms(adata, ccdtranscript):
     ccd_regev_filtered_isoform, ccd_filtered_isoform, nonccd_filtered_isoform = utils.ccd_gene_lists(adata_isoform)
     adata_ccdprotein_isoform, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform = RNADataPreparation.is_ccd(adata_isoform, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered_isoform)
     rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, True)
-    percent_ccd_variance_isoform, total_gini_isoform, mean_diff_from_rng_isoform, pass_meandiff_isoform, eq_percvar_adj_isoform, fucci_time_inds_isoform, norm_exp_sort_isoform, moving_averages_isoform, mvavg_xvals_isoform, perms_isoform, ccdtranscript_isoform, mvpercs_isoform = rna_ccd_analysis_results    
+    percent_ccd_variance_isoform, total_gini_isoform, mean_diff_from_rng_isoform, pass_meandiff_isoform, eq_percvar_adj_isoform, fucci_time_inds_isoform, norm_exp_sort_isoform, moving_averages_isoform, mvavg_xvals_isoform, perms_isoform, ccdtranscript_isoform, ccdprotein_isoform, mvpercs_isoform = rna_ccd_analysis_results    
     return adata_isoform, ccdtranscript_isoform
 
 def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, wp_ensg, ccd_comp, ccd_regev_filtered):
@@ -525,21 +525,20 @@ def cell_data_string(adata, idx):
     
 def make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort, mvavgs_x, moving_averages, mvpercs):
     '''Make a single table for HPA website figures on RNA pseudotime, boxplots, and fucci plots'''
-    filteridx = np.apply_along_axis(MovingAverages.remove_outliers_idx, 0, np.asarray(norm_exp_sort.T)).T # indices to keep
     hasProteinData = np.isin(adata.var_names, np.concatenate((wp_ensg, bioccd)))
     filterccd = ccdtranscript | hasProteinData
     pd.DataFrame({
         "ENSG" : adata.var_names[filterccd],
         "CCD" : ccdtranscript[filterccd],
-        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filteridx[:,filterccd][:,ii]]]) for ii,yy in enumerate(norm_exp_sort.T[filterccd])],
-        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filterccd][:,ii]]) for ii,yy in enumerate(norm_exp_sort.T[filterccd])],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
         "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names[filterccd]],
         "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T[filterccd]],
         "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,0,:]],
         "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-1,:]],
         "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,1,:]],
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-2,:]],
-        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filteridx[:,filterccd][:,ii]]]) for ii,ensg in enumerate(adata.var_names[filterccd])]
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])]
         }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")

@@ -1,22 +1,27 @@
-figures/
-*ForScanpy.csv
+# IDE and Checkpoint Files
 .vscode/
+.ipynb_checkpoints
 __pycache__/
 .pybiomart.sqlite
-input/processed/scanpy/Counts*.csv
-input/processed/scanpy/Tpms*.csv
-input/processed/python/nuc_predicted*
 ~$*
 */~$*
-output/ProteinMod*
-output_devin/*
+
+# Large Inputs
 input/raw/nuc*
 input/raw/counts*
 input/raw/tpms*
-output/pickles*
-.ipynb_checkpoints
+input/raw/uniprot*.fasta.gz
+input/processed/scanpy/Counts*.csv
+input/processed/scanpy/Tpms*.csv
+input/processed/python/nuc_predicted*
+input/processed/combined.snpeff.vcf.gz
+input/processed/ProteinDisorderProperties.csv.gz
+*ForScanpy.csv
+
+# Output Folders
+figures/
 output/
 data/
+
+# External Software
 iupred2a/
-input/processed/combined.snpeff.vcf.gz
-input/raw/uniprot*.fasta.gz
