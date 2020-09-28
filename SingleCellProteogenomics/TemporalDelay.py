@@ -328,7 +328,8 @@ def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd,
     plt.show()
     plt.close()
 
-def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, wp_max_pol, wp_max_pol_ccd, sorted_maxpol_array, max_moving_avg_pol, sorted_max_moving_avg_pol_ccd):
+def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, wp_max_pol, wp_max_pol_ccd, 
+                                       sorted_maxpol_array, max_moving_avg_pol, sorted_max_moving_avg_pol_ccd):
     '''Compare the time of peak expression of protein and RNA'''
     prot_ccd_ensg = list(wp_ensg[ccd_comp])
     rna_ccd_ensg = list(adata.var_names[ccdtranscript])

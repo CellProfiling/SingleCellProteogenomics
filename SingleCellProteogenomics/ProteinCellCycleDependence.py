@@ -435,28 +435,8 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     ### address gene redundancy
     wp_ccd_bimodalonecluster = wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2
     wp_ccd_bimodaltwocluster = wp_comp_ccd_clust1 & wp_comp_ccd_clust2
-    wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
-    ensg_is_duplicated = wp_ensg_counts > 1
-    duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
-    duplicated_ensg_pairs = [u_well_plates[wp_ensg == ensg] for ensg in duplicated_ensg]
-    print(f"{sum(wp_ccd_unibimodal[~ensg_is_duplicated])}: number of CCD proteins (no replicate, unimodal and bimodal)")
-    print(f"{sum(~wp_ccd_unibimodal[~ensg_is_duplicated])}: number of non-CCD proteins (no replicate, unimodal and bimodal)")
-    print(f"{sum(wp_ccd_bimodalonecluster[~ensg_is_duplicated])}: bimodal samples with one CCD cluster ({sum((wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)[~ensg_is_duplicated])}: also CCD unimodally), no replicate")
-    print(f"{sum(wp_ccd_bimodaltwocluster[~ensg_is_duplicated])}: bimodal samples with two CCD clusters ({sum((wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)[~ensg_is_duplicated])}: also CCD unimodally), no replicate")
-    duplicated_ensg_ccd = np.array([sum(wp_ccd_unibimodal[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    print(f"{sum(duplicated_ensg_ccd == 2)}: number of replicated stainings shown to be CCD in both replicates, unimodal and bimodal")
-    print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate, unimodal and bimodal")
-    print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate, unimodal and bimodal")
-    duplicated_ensg_ccd_bi1 = np.array([sum(wp_ccd_bimodalonecluster[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    duplicated_ensg_ccd_plusunimodal = np.array([sum((wp_comp_ccd_difffromrng & wp_ccd_bimodalonecluster)[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    print(f"{sum(duplicated_ensg_ccd_bi1 == 2)}: number of replicated stainings shown to be CCD in both replicates, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 2)} also unimodally)")
-    print(f"{sum(duplicated_ensg_ccd_bi1 == 1)}: number of replicated stainings shown to be CCD in just one replicate, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 1)} also unimodally)")
-    print(f"{sum(duplicated_ensg_ccd_bi1 == 0)}: number of replicated stainings shown to be non-CCD in both replicate, bimodal in one cluster ({sum(duplicated_ensg_ccd_plusunimodal == 0)} also unimodally)")
-    duplicated_ensg_ccd_bi2 = np.array([sum(wp_ccd_bimodaltwocluster[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    duplicated_ensg_ccd_plusunimodal = np.array([sum((wp_comp_ccd_difffromrng & wp_ccd_bimodaltwocluster)[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    print(f"{sum(duplicated_ensg_ccd_bi2 == 2)}: number of replicated stainings shown to be CCD in both replicates, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 2)} also unimodally)")
-    print(f"{sum(duplicated_ensg_ccd_bi2 == 1)}: number of replicated stainings shown to be CCD in just one replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 1)} also unimodally)")
-    print(f"{sum(duplicated_ensg_ccd_bi2 == 0)}: number of replicated stainings shown to be non-CCD in both replicate, bimodal in both clusters ({sum(duplicated_ensg_ccd_plusunimodal == 0)} also unimodally)")
+    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
+    wp_removeReplicate = np.isin(u_well_plates, removeThese)
     
     bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
     protein_ct = len(np.unique(np.concatenate((wp_ensg, bioccd))))
@@ -467,30 +447,9 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     bimodal_generally_protein_ct = sum(wp_isbimodal_generally[~ensg_is_duplicated]) + sum(duplicated_ensg_bimodal_generally == 2)
     print(f"{ccd_protein_ct}: number of ccd proteins; addressed replicates; not including mitotic structures")
     
-    # Decision: remove proteins that didn't pass CCD in both replicates
-    ccd_comp[np.isin(wp_ensg, duplicated_ensg[duplicated_ensg_ccd == 1])] = False
-    nonccd_comp[np.isin(wp_ensg, duplicated_ensg[duplicated_ensg_ccd == 1])] = False
-    
-    # Analyze replicates for CCD proteins (both mock-bulk and pseudotime analysis)
-    analyze_replicates(wp_comp_ccd_gauss, wp_ensg, "gauss")
-    analyze_replicates(wp_comp_ccd_gauss & wp_comp_ccd_difffromrng, wp_ensg, "CCD and gaussian")
-    analyze_replicates(wp_comp_ccd_gauss & ~wp_comp_ccd_difffromrng, wp_ensg, "not CCD and gaussian")
-    analyze_replicates(~wp_comp_ccd_gauss & wp_comp_ccd_difffromrng, wp_ensg, "CCD and not gaussian")
-    
-    pd.DataFrame({
-            "ENSG":duplicated_ensg,
-            "well_plate_pair":[",".join(pair) for pair in duplicated_ensg_pairs],
-            "sum(ccd)":duplicated_ensg_ccd,
-            "sum(bulk_ccd)":np.array([sum(wp_comp_ccd_gauss[wp_ensg == ensg]) for ensg in duplicated_ensg]),
-            "ccd_pair":[",".join([str(wp_ccd_unibimodal[u_well_plates == wp][0]) for wp in pair]) for pair in duplicated_ensg_pairs]
-        }).to_csv("output/ReplicatedCellCycleDependentProteins.csv")
-    
-    # Replicates
-    replicatefolder = "figures/Replicates"
-    if not os.path.exists(replicatefolder): os.mkdir(replicatefolder)
-    for ensg in get_fileprefixes(wp_ensg)[ensg_is_duplicated]:
-        for file in glob.glob(os.path.join(folder, f"{ensg}*_mvavg.png")):
-            shutil.copy(file, os.path.join(replicatefolder, os.path.basename(file)))
+    # Decision: remove replicate antibodies manually
+    ccd_comp[wp_removeReplicate] = False
+    nonccd_comp[wp_removeReplicate] = False
             
     # Accounting for biologically CCD ones
     knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
@@ -507,7 +466,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     with open("output/figuresofmerit.txt", "w") as file:
         fom = "--- protein pseudotime\n\n"
         fom += f"{len(np.unique(wp_ensg))} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
-        fom += f"present the first evidence of cell cycle association for {overlapping_knownccd1} proteins" + "\n\n"
+        fom += f"present the first evidence of cell cycle association for {len(ccd_prots_withmitotic)-overlapping_knownccd1} proteins" + "\n\n"
         fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {len(np.unique(wp_ensg))} proteins ({100 * ccd_protein_ct / len(np.unique(wp_ensg))}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained {chosen_cutoff}% or more variance in expression than random." + "\n\n"
         fom += f"majority of the proteins analyzed ({100 * total_nonccd_proteins_minusmitotic / len(np.unique(wp_ensg))}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
         fom += f"Of the {total_ccd_proteins_withmitotic} proteins ({ccd_protein_ct} in interphase, {len(bioccd)} in mitotic structures, and {-(total_ccd_proteins_withmitotic - ccd_protein_ct - len(bioccd))} in both sets) identified to correlate to cell cycle progression, {overlapping_knownccd1} ({100 * overlapping_knownccd1 / total_ccd_proteins_withmitotic}%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining {total_ccd_proteins_withmitotic - overlapping_knownccd1} proteins ({100* (total_ccd_proteins_withmitotic - overlapping_knownccd1) / total_ccd_proteins_withmitotic}%)," + "\n\n"
@@ -516,7 +475,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
         fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters."
         print(fom)
         file.write(fom)
-       
+
     # read in reliability scores
     wp_ab_list = list(wp_ab)
     ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
@@ -748,5 +707,6 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
         "Antibody" : wp_ab,
         "Compartment" : get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc),
         "CCD" : ccdStrings,
-        "WellPlate" : u_well_plates})[~np.isin(u_well_plates, removeThese) & np.array([xx.startswith("Mitotic") for xx in ccdStrings])].to_csv(
+        "WellPlate" : u_well_plates
+        })[~np.isin(u_well_plates, removeThese) & np.array([xx.startswith("Mitotic") for xx in ccdStrings])].to_csv(
             "output/ProteinMitoticOnly.csv.gz", index=False, sep="\t")

@@ -33,8 +33,10 @@ curr_wp_phases, mockbulk_phases = import_dict["curr_wp_phases"], import_dict["mo
 # Output: fucci plot with polar coordinates
 
 pseudotime_result = FucciPseudotime.pseudotime_protein(fucci_data, 
-                           ab_nuc,ab_cyto,ab_cell,mt_cell,area_cell, area_nuc,
-                           well_plate,well_plate_imgnb, log_red_fucci_zeroc_rescale,log_green_fucci_zeroc_rescale, mockbulk_phases)
+                           ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc,
+                           well_plate, well_plate_imgnb, 
+                           log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, 
+                           mockbulk_phases)
 pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = pseudotime_result
 
 #%% Calculate measures of variance of protein abundance in single cells
@@ -43,8 +45,10 @@ pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_ab_n
 # Output: scatters of antibody vs microtubule variances by different measures of variaibility
 
 use_log = False # toggle for using log-transformed intensities; we decided to use natural intensities
-calculate_variaton_result = ProteinVariability.calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto, 
-                                                pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, pol_sort_well_plate_imgnb)
+calculate_variaton_result = ProteinVariability.calculate_variation(use_log, 
+                                   u_well_plates, wp_iscell, wp_isnuc, wp_iscyto, 
+                                   pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
+                                   pol_sort_well_plate_imgnb)
 mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell, var_mt, gini_mt, cv_mt = calculate_variaton_result
 
 # Compare variances for protein and microtubules, the internal control for each image

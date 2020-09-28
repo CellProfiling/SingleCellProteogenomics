@@ -50,6 +50,7 @@ def load_temporal_delay():
     return_dict = load_protein_fucci_pseudotime()
     add_dict = {"ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
         "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
+        "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
         "ccdtranscript_isoform" : np.load("output/pickles/ccdtranscriptIsoforms.npy", allow_pickle=True),
         "var_comp" : np.load("output/pickles/var_comp.npy", allow_pickle=True),
         "gini_comp" : np.load("output/pickles/gini_comp.npy", allow_pickle=True),
