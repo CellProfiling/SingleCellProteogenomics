@@ -221,7 +221,7 @@ def ccd_gene_lists(adata):
 def save_category(genelist, filename):
     pd.DataFrame({"gene" : genelist}).to_csv(filename, index=False, header=False)
 
-def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
+def save_gene_names_by_category(adata, wp_ensg, ccd_comp, nonccd_comp, ccdtranscript):
     '''Save files containing the gene names for each category of CCD proteins/transcripts'''
     ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
     genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
@@ -235,7 +235,7 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript):
     ensg_ccdtranscript = np.unique(adata.var_names[ccdtranscript])
     ensg_nonccdtranscript = np.unique(adata.var_names[~ccdtranscript])
     ensg_ccdprotein = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    ensg_nonccdprotein = np.unique(wp_ensg[~ccd_comp & ~np.isin(wp_ensg, bioccd)])
+    ensg_nonccdprotein = np.unique(wp_ensg[nonccd_comp])
     ensg_ccdprotein_treg = np.unique(ensg_ccdprotein[np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_ccdprotein_nontreg = np.unique(ensg_ccdprotein[~np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_knownccdprotein = ensg_ccdprotein[np.isin(ensg_ccdprotein, knownccd)]

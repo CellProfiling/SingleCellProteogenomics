@@ -198,10 +198,10 @@ def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, is
     g1 = max_moving_avg_pol_ccd < fucci.G1_PROP
     s = (max_moving_avg_pol_ccd >= fucci.G1_PROP) & (max_moving_avg_pol_ccd < fucci.G1_S_PROP)
     g2 = max_moving_avg_pol_ccd >= fucci.G1_S_PROP
-    pd.DataFrame({"gene" : adata.var_names[ccdtranscript], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd}).to_csv("output/rna_max_moving_avg_pol_ccd.csv", index=None)
-    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g1], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g1]}).to_csv("output/rna_max_moving_avg_pol_ccd_g1.csv", index=None)
-    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][s], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[s]}).to_csv("output/rna_max_moving_avg_pol_ccd_s.csv", index=None)
-    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g2], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g2]}).to_csv("output/rna_max_moving_avg_pol_ccd_g2.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd}).to_csv(f"output/rna_{'isoform_' if isIsoformData else ''}max_moving_avg_pol_ccd.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g1], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g1]}).to_csv(f"output/rna_{'isoform_' if isIsoformData else ''}max_moving_avg_pol_ccd_g1.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][s], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[s]}).to_csv(f"output/rna_{'isoform_' if isIsoformData else ''}max_moving_avg_pol_ccd_s.csv", index=None)
+    pd.DataFrame({"gene" : adata.var_names[ccdtranscript][g2], "max_moving_avg_pol_ccd": max_moving_avg_pol_ccd[g2]}).to_csv(f"output/rna_{'isoform_' if isIsoformData else ''}max_moving_avg_pol_ccd_g2.csv", index=None)
 
     fig, ax = plt.subplots(figsize=(10, 10))
     sc = ax.imshow(sorted_rna_binned_norm, interpolation='nearest')
@@ -238,8 +238,8 @@ def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, is
     cbar.ax.tick_params(labelsize=18)
 
     plt.tight_layout()
-    plt.savefig(os.path.join("figures",f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.pdf"), transparent=True)
-    plt.savefig(os.path.join("figures",f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.png"), transparent=True)
+    plt.savefig(os.path.join("figures", f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.pdf"), transparent=True)
+    plt.savefig(os.path.join("figures", f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.png"), transparent=True)
     plt.show()
 
     return sorted_max_moving_avg_pol_ccd, norm_exp_sort, max_moving_avg_pol, sorted_rna_binned_norm
@@ -367,19 +367,32 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
     print(f"One-sided, one-sample t-test for mean delay in protein expression larger than zero: {2*p}")
 
     #% Output tables
-    pd.DataFrame({"gene" : wp_ensg, "max_pol_protein": wp_max_pol, "max_time_protein": wp_max_pol * fucci.TOT_LEN}).to_csv("output/max_pol_protein.csv", index=False)
-    pd.DataFrame({"gene" : adata.var_names, "max_pol_rna": max_moving_avg_pol, "max_time_rna": max_moving_avg_pol * fucci.TOT_LEN}).to_csv("output/max_pol_rna.csv", index=False)
+    pd.DataFrame({
+        "gene" : wp_ensg, 
+        "max_pol_protein": wp_max_pol, 
+        "max_time_protein": wp_max_pol * fucci.TOT_LEN
+        }).to_csv("output/max_pol_protein.csv", index=False)
+    pd.DataFrame({
+        "gene" : adata.var_names, 
+        "max_pol_rna": max_moving_avg_pol, 
+        "max_time_rna": max_moving_avg_pol * fucci.TOT_LEN
+        }).to_csv("output/max_pol_rna.csv", index=False)
+    pd.DataFrame({
+        "gene" : both_ccd_ensg,
+        "insct_prot_max_pol_ccd" : insct_prot_max_pol_ccd,
+        "insct_rna_max_pol_ccd" : insct_rna_max_pol_ccd,
+        "diff_max_pol" : diff_max_pol
+        }).to_csv("output/diff_max_pol.csv", index=False)
+
 
     #% Figures of merit
     peaked_after_g1_prot = sorted_maxpol_array * fucci.TOT_LEN > fucci.G1_LEN
     wp_ensg_counts_ccd = np.array([sum([eeee == ensg for eeee in wp_ensg[ccd_comp]]) for ensg in wp_ensg[ccd_comp]])
-    duplicated_ensg_ccd = wp_ensg_counts_ccd > 1
-    duplicated_ensg_peaked_after_g1 = np.array([sum(peaked_after_g1_prot[wp_ensg[ccd_comp] == ensg]) for ensg in duplicated_ensg_ccd])
     with open("output/figuresofmerit.txt", "a") as file:
         fom = "--- temporal delay\n\n"
         fom += f"significant delay in peak protein expression compared to transcript expression, {fucci.TOT_LEN * np.median(diff_max_pol)} hours on average" + "\n\n"
         fom += f"G1 is the longest period of the cell cycle, in which the majority of RNAs ({100 * sum(sorted_max_moving_avg_pol_ccd * fucci.TOT_LEN <=fucci. G1_LEN) / len(sorted_max_moving_avg_pol_ccd)}%) peak in expression" + "\n\n"
-        fom += f"However, the majority ({100 * (sum(peaked_after_g1_prot[~duplicated_ensg_ccd]) + sum(duplicated_ensg_peaked_after_g1 == 2)) / len(np.unique(wp_ensg[ccd_comp]))}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
+        fom += f"However, the majority ({100 * sum(peaked_after_g1_prot) / len(np.unique(wp_ensg[ccd_comp]))}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
         fom += f"The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was {fucci.TOT_LEN * np.median(diff_max_pol)} hrs on average " + "\n\n"
         fom += f"this delay indicates that it may take a little less than the same amount of time ({12 - fucci.TOT_LEN * np.median(diff_max_pol)} hrs) to produce a target metabolite after peak expression of an enzyme." + "\n\n"
         fom += f"" + "\n\n"
@@ -387,6 +400,7 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         fom += f"" + "\n\n"
         print(fom)
         file.write(fom)
+        
         
 def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals):
     '''Evaluate the pearson correlations for CCD isoforms from genes with multiple CCD isoforms'''

@@ -23,8 +23,8 @@ adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikein
 adata, phasesfilt = RNADataPreparation.qc_filtering(adata, do_log_normalize= True, do_remove_blob=True)
 
 import_dict = Loaders.load_ptm_and_stability(adata)
-wp_ensg, ccd_comp, ccdtranscript, wp_max_pol = import_dict["wp_ensg"], import_dict["ccd_comp"], import_dict["ccdtranscript"], import_dict["wp_max_pol"]
-name_results = utils.save_gene_names_by_category(adata, wp_ensg, ccd_comp, ccdtranscript)
+wp_ensg, ccd_comp, nonccd_comp, ccdtranscript, wp_max_pol = import_dict["wp_ensg"], import_dict["ccd_comp"], import_dict["nonccd_comp"], import_dict["ccdtranscript"], import_dict["wp_max_pol"]
+name_results = utils.save_gene_names_by_category(adata, wp_ensg, ccd_comp, nonccd_comp, ccdtranscript)
 ensg_ccdtranscript, ensg_nonccdtranscript, ensg_ccdprotein, ensg_nonccdprotein, ensg_ccdprotein_transcript_regulated, ensg_ccdprotein_nontranscript_regulated, genes_analyzed, ccd_regev_filtered, ccd_filtered = name_results[0]
 names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprotein, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_genes_analyzed, names_ccd_regev_filtered, names_ccd_filtered = name_results[1]
 bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures

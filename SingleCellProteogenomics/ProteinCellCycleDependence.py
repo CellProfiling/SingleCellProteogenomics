@@ -406,18 +406,6 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
     plt.show()
     plt.close()
     
-def analyze_replicates(wp_ccd_with_replicates, wp_ensg, analysis_tag):
-    '''Some antibodies were replicated in a second batch; analyze the replication results'''
-    wp_ensg_counts = np.array([sum([eeee == ensg for eeee in wp_ensg]) for ensg in wp_ensg])
-    ensg_is_duplicated = wp_ensg_counts > 1
-    duplicated_ensg = np.unique(wp_ensg[ensg_is_duplicated])
-    duplicated_ensg_ccd = np.array([sum(wp_ccd_with_replicates[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    print(f"{sum(wp_ccd_with_replicates[~ensg_is_duplicated])}: number of CCD proteins (no replicate, {analysis_tag})")
-    print(f"{sum(~wp_ccd_with_replicates[~ensg_is_duplicated])}: number of non-CCD proteins (no replicate, {analysis_tag})")
-    print(f"{sum(duplicated_ensg_ccd == 2)}: number of replicated stainings shown to be CCD in both replicates, {analysis_tag}")
-    print(f"{sum(duplicated_ensg_ccd == 1)}: number of replicated stainings shown to be CCD in just one replicate, {analysis_tag}")
-    print(f"{sum(duplicated_ensg_ccd == 0)}: number of replicated stainings shown to be non-CCD in both replicate,  {analysis_tag}")
-    
 def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
             wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
             var_comp, gini_comp, 
@@ -428,7 +416,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     n_tot_variable = len(u_well_plates)
     ccd_comp = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
     nonccd_comp = ~ccd_comp
-    print(f"{n_tot_variable}: # total proteins showing variation")
+    print(f"{n_tot_variable}: # total samples")
     print(f"{sum(ccd_comp)}: CCD variable proteins (before addressing redundancy and mitotic structures)")
     print(f"{sum(nonccd_comp)}: non-CCD variable proteins")
     
@@ -440,17 +428,16 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     
     bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
     protein_ct = len(np.unique(np.concatenate((wp_ensg, bioccd))))
-    ccd_protein_ct = sum(wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 2)
-    nonccd_protein_ct = sum(~wp_ccd_unibimodal[~ensg_is_duplicated]) + sum(duplicated_ensg_ccd == 0)
-    duplicated_ensg_bimodal_generally = np.array([sum(wp_isbimodal_generally[wp_ensg == ensg]) for ensg in duplicated_ensg])
-    unimodal_generally_protein_ct = sum(~wp_isbimodal_generally[~ensg_is_duplicated]) + sum(duplicated_ensg_bimodal_generally < 2)
-    bimodal_generally_protein_ct = sum(wp_isbimodal_generally[~ensg_is_duplicated]) + sum(duplicated_ensg_bimodal_generally == 2)
+    ccd_protein_ct = sum(wp_ccd_unibimodal[~wp_removeReplicate])
+    nonccd_protein_ct = sum(~wp_ccd_unibimodal[~wp_removeReplicate])
+    unimodal_generally_protein_ct = sum(~wp_isbimodal_generally[~wp_removeReplicate])
+    bimodal_generally_protein_ct = sum(wp_isbimodal_generally[~wp_removeReplicate])
     print(f"{ccd_protein_ct}: number of ccd proteins; addressed replicates; not including mitotic structures")
     
     # Decision: remove replicate antibodies manually
     ccd_comp[wp_removeReplicate] = False
     nonccd_comp[wp_removeReplicate] = False
-            
+           
     # Accounting for biologically CCD ones
     knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
     knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
@@ -465,14 +452,24 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
 
     with open("output/figuresofmerit.txt", "w") as file:
         fom = "--- protein pseudotime\n\n"
-        fom += f"{len(np.unique(wp_ensg))} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
-        fom += f"present the first evidence of cell cycle association for {len(ccd_prots_withmitotic)-overlapping_knownccd1} proteins" + "\n\n"
-        fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {len(np.unique(wp_ensg))} proteins ({100 * ccd_protein_ct / len(np.unique(wp_ensg))}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained {chosen_cutoff}% or more variance in expression than random." + "\n\n"
-        fom += f"majority of the proteins analyzed ({100 * total_nonccd_proteins_minusmitotic / len(np.unique(wp_ensg))}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
-        fom += f"Of the {total_ccd_proteins_withmitotic} proteins ({ccd_protein_ct} in interphase, {len(bioccd)} in mitotic structures, and {-(total_ccd_proteins_withmitotic - ccd_protein_ct - len(bioccd))} in both sets) identified to correlate to cell cycle progression, {overlapping_knownccd1} ({100 * overlapping_knownccd1 / total_ccd_proteins_withmitotic}%) had a known association to the cell cycle as determined either by a GO BP term ... The remaining {total_ccd_proteins_withmitotic - overlapping_knownccd1} proteins ({100* (total_ccd_proteins_withmitotic - overlapping_knownccd1) / total_ccd_proteins_withmitotic}%)," + "\n\n"
-        fom += f"The patterns of variability were investigated for these {len(wp_ensg)} proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was {np.mean(wp_bimodal_fcmaxmin)}." + "\n\n"
+        protCount = len(np.unique(wp_ensg))
+        fom += f"{protCount} proteins that were expressed and exhibited variations in the U-2 OS cell line were selected" + "\n\n"
+        novelCount = len(ccd_prots_withmitotic)-overlapping_knownccd1
+        fom += f"present the first evidence of cell cycle association for {novelCount} proteins" + "\n\n"
+        ccdPercent = 100 * ccd_protein_ct / len(np.unique(wp_ensg))
+        fom += f"Based on this analysis, we identified {ccd_protein_ct} out of {protCount} proteins ({ccdPercent}%) to have variance in expression levels temporally correlated to cell cycle progression, and for which the cell-cycle explained {chosen_cutoff}% or more variance in expression than random." + "\n\n"
+        nonCcdPercent = 100 * total_nonccd_proteins_minusmitotic / len(np.unique(wp_ensg))
+        fom += f"majority of the proteins analyzed ({total_nonccd_proteins_minusmitotic}, {nonCcdPercent}%) showed cell-to-cell variations that were largely unexplained by cell cycle progression" + "\n\n"
+        bothPseudotimeMitoticCount = -(total_ccd_proteins_withmitotic - ccd_protein_ct - len(bioccd))
+        knownCcdPercent = 100 * overlapping_knownccd1 / total_ccd_proteins_withmitotic
+        novelCcdPercent = 100 * (total_ccd_proteins_withmitotic - overlapping_knownccd1) / total_ccd_proteins_withmitotic
+        fom += f"Of the {total_ccd_proteins_withmitotic} proteins ({ccd_protein_ct} in interphase, {len(bioccd)} in mitotic structures, and {bothPseudotimeMitoticCount} in both sets) identified to correlate to cell cycle progression, {overlapping_knownccd1} ({knownCcdPercent}%) had a known association to the cell cycle as determined either by a GO BP term ... "
+        fom += f"The remaining {total_ccd_proteins_withmitotic - overlapping_knownccd1} proteins ({novelCcdPercent}%)," + "\n\n"
+        fom += f"The patterns of variability were investigated for these {sum(~wp_removeReplicate)} proteins for the population of cells measured for each protein. The mean fold change between the highest and lowest expressing cells per protein was {np.mean(np.array(wp_bimodal_fcmaxmin)[~wp_removeReplicate])}." + "\n\n"
         fom += f"We determined that {unimodal_generally_protein_ct} proteins ({100 * unimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) had unimodal intensity distributions, and {bimodal_generally_protein_ct} proteins ({100 * bimodal_generally_protein_ct / len(np.unique(wp_ensg))}%) were found to display bimodality" + "\n\n"
-        fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters."
+        fom += f"Of {sum(wp_isbimodal_fcpadj_pass)} bimodal samples that were analyzed for cell cycle dependence, {sum(wp_ccd_bimodalonecluster)} were CCD in one cluster ({sum(wp_ccd_bimodalonecluster & wp_comp_ccd_difffromrng)} of these were CCD when analyzed unimodally), and {sum(wp_ccd_bimodaltwocluster)} were CCD in both clusters ({sum(wp_ccd_bimodaltwocluster & wp_comp_ccd_difffromrng)} were also CCD when analyzed unimodally), and the remaining {sum(wp_isbimodal_fcpadj_pass & ~wp_ccd_bimodalonecluster & ~wp_ccd_bimodaltwocluster)} were non-CCD in both clusters." + "\n\n"
+        ccdPseudotimeNotGauss = sum(ccd_comp & ~wp_comp_ccd_gauss)
+        fom += f"We aggregated single-cell measurements by cell cycle phase to simulate a bulk experiment, and {ccdPseudotimeNotGauss} CCD proteins detected at the single-cell level were not detectable in bulk phases, such as TRNT1"
         print(fom)
         file.write(fom)
 
