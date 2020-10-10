@@ -329,6 +329,8 @@ class ProteinProperties:
         return labels_comb, counts_comb_subset, values_comb_subset, counts_comb_mappedminus, values_comb_mappedminus, fisher_comb_subset
         
     def kinase_families(self):
+        '''Investigate whether there are differences in upstream kinases from mapped proteins'''
+        print("Running kinase family analysis")
         kinaseFams = pd.read_csv("C:\\Users\\antho\\Dropbox\\ProjectData\\PhosphositePlus\\KinHubKinaseFamilies.csv")
         kinFamDict = dict([(row[7], row[4]) for idx, row in kinaseFams.iterrows()])
         phosphositeplus = pd.read_csv("C:\\Users\\antho\\Dropbox\\ProjectData\\PhosphositePlus\\Kinase_Substrate_Dataset_NoHeader.gz", sep="\t")
@@ -341,118 +343,26 @@ class ProteinProperties:
         labels_comb_transreg, counts_comb_transreg, values_comb_transreg, counts_comb_mappedminus_transreg, values_comb_mappedminus_transreg, fisher_comb_transreg = self.proportion_test(phosHuman, self.names_ccdprotein_transcript_regulated)
         labels_comb_nontransreg, counts_comb_nontransreg, values_comb_nontransreg, counts_comb_mappedminus_nontransreg, values_comb_mappedminus_nontransreg, fisher_comb_nontransreg = self.proportion_test(phosHuman, self.names_ccdprotein_nontranscript_regulated)
         
-        # labels_comb_ccdvsnonccd, counts_comb_ccdvsnonccd, values_comb_ccdvsnonccd, counts_comb_mappedminus_ccdvsnonccd, values_comb_mappedminus_ccdvsnonccd, fisher_comb_ccdvsnonccd = self.proportion_test(phosHuman, self.names_ccdprotein, self.names_nonccdprotein)
-        # labels_comb_transregvsnontransreg, counts_comb_transregvsnontransreg, values_comb_transregvsnontransreg, counts_comb_mappedminus_transregvsnontransreg, values_comb_mappedminus_transregvsnontransreg, fisher_comb_transregvsnontransreg = self.proportion_test(phosHuman, self.names_ccdprotein_transcript_regulated, self.names_ccdprotein_nontranscript_regulated)
-
         allfisher = np.array(np.concatenate((fisher_comb_ccd[:,1], fisher_comb_nonccd[:,1], 
                                             fisher_comb_transreg[:,1], fisher_comb_nontransreg[:,1])), dtype=float)
-                                            # fisher_comb_ccdvsnonccd[:,1], fisher_comb_transregvsnontransreg[:,1])), dtype=float)
         pvals_corrected_BH, reject_BH = utils.benji_hoch(0.05, allfisher)
         pd.DataFrame({
             "group" : np.concatenate((["ccd"] * len(labels_comb_ccd), 
                                       ["nonccd"] * len(labels_comb_nonccd),
                                       ["transregCCD"] * len(labels_comb_nonccd),
                                       ["nontransregCCD"] * len(labels_comb_nontransreg))),
-                                      # ["ccd_vs_nonccd"] * len(labels_comb_ccdvsnonccd),
-                                      # ["transregCCD_vs_nontransregCCD"] * len(labels_comb_transregvsnontransreg))),
             "kinase_family" : np.concatenate((labels_comb_ccd, labels_comb_nonccd, 
                                               labels_comb_transreg, labels_comb_nontransreg)),
-                                              # labels_comb_ccdvsnonccd, labels_comb_transregvsnontransreg)),
             "mapped_count_of_phosphosites" : np.concatenate((counts_comb_mappedminus_ccd, counts_comb_mappedminus_nonccd, 
                                                  counts_comb_mappedminus_transreg, counts_comb_mappedminus_nontransreg)),
-                                                 # counts_comb_mappedminus_ccdvsnonccd, counts_comb_mappedminus_transregvsnontransreg)),
             "mapped_proportion_of_phosphosites_downstream_of_kinase" : np.concatenate((values_comb_mappedminus_ccd, values_comb_mappedminus_nonccd, 
                                                values_comb_mappedminus_transreg, values_comb_mappedminus_nontransreg)),
-                                               # values_comb_mappedminus_ccdvsnonccd, values_comb_mappedminus_transregvsnontransreg)),
             "count_of_phosphosites" : np.concatenate((counts_comb_ccd, counts_comb_nonccd, 
                                                       counts_comb_transreg, counts_comb_nontransreg)),
-                                                      # counts_comb_ccdvsnonccd, counts_comb_transregvsnontransreg)),
             "proportion_of_phosphosites_downstream_of_kinase" : np.concatenate((values_comb_ccd, values_comb_nonccd, 
                                                 values_comb_transreg, values_comb_nontransreg)),
-                                                # values_comb_ccdvsnonccd, counts_comb_transregvsnontransreg)),
             "fisher_pvalue" : np.concatenate((fisher_comb_ccd[:,1], fisher_comb_nonccd[:,1], 
                                             fisher_comb_transreg[:,1], fisher_comb_nontransreg[:,1])),
-                                            # fisher_comb_ccdvsnonccd[:,1], fisher_comb_transregvsnontransreg[:,1])),
             "fisher_pvalue_BHcorrected" : pvals_corrected_BH,
             "fisher_alpha0.01_BHpass" : reject_BH,
             }).to_csv("output/upstreamKinaseResults.csv", index = False)
-        
-        # phosHumanFamilyProportions = dict([(x, phosHuman["KINASE_FAMILY"].value_counts()[idx] / sum(phosHuman["KINASE_FAMILY"].value_counts())) for idx, x in enumerate(phosHuman["KINASE_FAMILY"].value_counts().index)])
-        
-        # # All proteins
-        # plt.figure(figsize=(10,10))
-        # plt.bar(phosHuman["KINASE_FAMILY"].value_counts().index, 
-        #         [phosHumanFamilyProportions[x] for idx, x in enumerate(phosHuman["KINASE_FAMILY"].value_counts().index)])
-        # plt.xticks(rotation=90)
-        # # plt.xlabel("Family of upstream kinase")
-        # plt.ylabel("Proportion of sites relative to all proteins")
-        # plt.show(); plt.close()
-        
-        # # CCD nontranscript regulated
-        # labels_nontransreg = phosHuman["KINASE_FAMILY"][nontransreg].value_counts().index
-        # values_nontransreg = np.array([phosHuman["KINASE_FAMILY"][nontransreg].value_counts()[idx] / sum(phosHuman["KINASE_FAMILY"][nontransreg].value_counts()) /  phosHumanFamilyProportions[x] for idx, x in enumerate(phosHuman["KINASE_FAMILY"][nontransreg].value_counts().index)])
-        # sortidx = np.flip(np.argsort(values))
-        # plt.figure(figsize=(10,10))
-        # plt.bar(labels[sortidx], values[sortidx])
-        # plt.xticks(rotation=90)
-        # # plt.xlabel("Family of upstream kinase")
-        # plt.ylabel("Proportion of sites relative to all proteins")
-        # plt.show(); plt.close()
-        
-        # # CCD transcript regulated
-        # labels_transreg = phosHuman["KINASE_FAMILY"][transreg].value_counts().index
-        # values_transreg = np.array([phosHuman["KINASE_FAMILY"][transreg].value_counts()[idx] / sum(phosHuman["KINASE_FAMILY"][transreg].value_counts()) /  phosHumanFamilyProportions[x] for idx, x in enumerate(phosHuman["KINASE_FAMILY"][transreg].value_counts().index)])
-        # sortidx = np.flip(np.argsort(values))
-        # plt.figure(figsize=(10,10))
-        # plt.bar(labels[sortidx], values[sortidx])
-        # plt.xticks(rotation=90)
-        # # plt.xlabel("Family of upstream kinase")
-        # plt.ylabel("Proportion of sites relative to all proteins")
-        # plt.show(); plt.close()
-        
-        # # Make a scatter (transreg vs nontransreg)
-        # labels_comb = np.unique(np.concatenate((labels_nontransreg, labels_transreg)))
-        # values_comb_transreg = np.array([values_transreg[np.array(labels_transreg) == x][0] if x in labels_transreg else 0 for x in labels_comb])
-        # values_comb_nontransreg = np.array([values_nontransreg[np.array(labels_nontransreg) == x][0] if x in labels_nontransreg else 0 for x in labels_comb])
-        # plt.scatter(values_comb_transreg, values_comb_nontransreg, c=values_comb_transreg+values_comb_nontransreg)
-        # # plt.plot([0, 1.75], [0,1.75])
-        # for idx,lab in enumerate(labels_comb):
-        #     plt.annotate(lab, (values_comb_transreg[idx], values_comb_nontransreg[idx]))
-        # plt.xlim((-0.1, 2.6))# np.max(values_comb_transreg) + 0.2))
-        # plt.ylim((-0.1, 2.6))# np.max(values_comb_nontransreg) + 0.2))
-        # plt.xlabel("Proportion of sites on transreg\nproteins relative to all proteins")
-        # plt.ylabel("Proportion of sites on non-transreg\nproteins relative to all proteins")
-        # plt.show()
-        # plt.savefig("figures/kinasefamily_transreg.png")
-        # plt.close()
-        
-        # # Make a scatter (ccd vs nonccd)
-        # labels_nonccd = phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts().index
-        # values_nonccd = np.array([phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts()[idx] / sum(phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts()) /  phosHumanFamilyProportions[x] for idx, x in enumerate(phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts().index)])
-        # ccdProteinPhosHuman = np.isin(phosHuman["SUBSTRATE"], names_ccdprotein)
-        # labels_ccd = phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts().index
-        # values_ccd = np.array([phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts()[idx] / sum(phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts()) /  phosHumanFamilyProportions[x] for idx, x in enumerate(phosHuman["KINASE_FAMILY"][ccdProteinPhosHuman].value_counts().index)])
-        # labels_comb = np.unique(np.concatenate((labels_nonccd, labels_ccd)))
-        # values_comb_ccd = np.array([values_ccd[np.array(labels_ccd) == x][0] if x in labels_ccd else 0 for x in labels_comb])
-        # values_comb_nonccd = np.array([values_nonccd[np.array(labels_nonccd) == x][0] if x in labels_nonccd else 0 for x in labels_comb])
-        # plt.scatter(values_comb_ccd, values_comb_nonccd, c=values_comb_ccd+values_comb_nonccd)
-        # # plt.plot([0, 1.75], [0,1.75])
-        # for idx,lab in enumerate(labels_comb):
-        #     plt.annotate(lab, (values_comb_ccd[idx], values_comb_nonccd[idx]))
-        # plt.xlim((-0.1, 2.6))# np.max(values_comb_ccd) + 0.2))
-        # plt.ylim((-0.1, 2.6))# np.max(values_comb_nonccd) + 0.2))
-        # plt.xlabel("Proportion of sites on ccd\nproteins relative to all proteins")
-        # plt.ylabel("Proportion of sites on non-ccd\nproteins relative to all proteins")
-        # plt.show()
-        # plt.close()
-        # plt.savefig("figures/kinasefamily_ccd.png")
-        
-        # #%%
-        # sortidx = np.flip(np.argsort(values_comb_ccd+values_comb_nonccd))
-        # fig, ax = plt.subplots()
-        # width = 0.35  # the width of the bars
-        # ind = np.arange(len(labels_comb))  # the x locations for the groups
-        # rects1 = ax.bar(ind - width/2, values_comb_ccd[sortidx], width, label='CCD')
-        # rects2 = ax.bar(ind + width/2, values_comb_nonccd[sortidx], width, label='Non-CCD')
-        # ax.set_xticks(ind)
-        # ax.set_xticklabels(labels_comb[sortidx])
