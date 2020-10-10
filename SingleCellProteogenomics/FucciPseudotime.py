@@ -181,7 +181,7 @@ def fucci_polar_coords(x, y, analysis_title):
     return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, 
         more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
-def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb,
+def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb, well_plate_imgnb_objnb,
                         log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases):
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     # Generate model
@@ -189,8 +189,8 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Sort results by pseudotime
-    sort_results = pol_sort(pol_sort_inds, more_than_start, less_than_start, well_plate, well_plate_imgnb, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases)
-    pol_sort_well_plate, pol_sort_well_plate_imgnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = sort_results
+    sort_results = pol_sort(pol_sort_inds, more_than_start, less_than_start, well_plate, well_plate_imgnb, well_plate_imgnb_objnb, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases)
+    pol_sort_well_plate, pol_sort_well_plate_imgnb, pol_sort_well_plate_imgnb_objnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = sort_results
         
     # Generate some plots
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, "Protein", R_2, start_phi, 200, True, pol_sort_well_plate, pol_sort_ab_nuc, pol_sort_centered_data0, pol_sort_centered_data1)
@@ -198,6 +198,8 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     
     # pickle the results
     utils.np_save_overwriting("output/pickles/pol_sort_well_plate.npy", pol_sort_well_plate)
+    utils.np_save_overwriting("output/pickles/pol_sort_well_plate_imgnb.npy", pol_sort_well_plate_imgnb)
+    utils.np_save_overwriting("output/pickles/pol_sort_well_plate_imgnb_objnb.npy", pol_sort_well_plate_imgnb_objnb)
     utils.np_save_overwriting("output/pickles/pol_sort_norm_rev.npy", pol_sort_norm_rev)
     utils.np_save_overwriting("output/pickles/pol_sort_ab_nuc.npy", pol_sort_ab_nuc)
     utils.np_save_overwriting("output/pickles/pol_sort_ab_cyto.npy", pol_sort_ab_cyto)
@@ -210,7 +212,7 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     utils.np_save_overwriting("output/pickles/pol_sort_centered_data0.npy", pol_sort_centered_data0)
     utils.np_save_overwriting("output/pickles/pol_sort_centered_data1.npy", pol_sort_centered_data1)
     
-    return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, 
+    return (pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_well_plate_imgnb_objnb,
         pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, 
         pol_sort_area_cell, pol_sort_area_nuc, pol_sort_centered_data1, pol_sort_centered_data0, pol_sort_mockbulk_phases)
 

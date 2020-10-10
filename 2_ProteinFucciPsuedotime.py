@@ -15,7 +15,7 @@ plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig
 
 #%% Read in the protein data
 import_dict = Loaders.load_protein_fucci_pseudotime()
-u_plate, well_plate, well_plate_imgnb, u_well_plates = import_dict["u_plate"], import_dict["well_plate"], import_dict["well_plate_imgnb"], import_dict["u_well_plates"]
+u_plate, well_plate, well_plate_imgnb, well_plate_imgnb_objnb, u_well_plates = import_dict["u_plate"], import_dict["well_plate"], import_dict["well_plate_imgnb"], import_dict["well_plate_imgnb_objnb"], import_dict["u_well_plates"]
 ab_nuc, ab_cyto, ab_cell, mt_cell = import_dict["ab_nuc"], import_dict["ab_cyto"], import_dict["ab_cell"], import_dict["mt_cell"]
 area_cell, area_nuc =  import_dict["area_cell"], import_dict["area_nuc"]
 wp_ensg, wp_ab = import_dict["wp_ensg"], import_dict["wp_ab"]
@@ -31,13 +31,12 @@ curr_wp_phases, mockbulk_phases = import_dict["curr_wp_phases"], import_dict["mo
 # Idea: Calculate the polar coordinates and other stuff
 # Exec: Devin's calculations
 # Output: fucci plot with polar coordinates
-
 pseudotime_result = FucciPseudotime.pseudotime_protein(fucci_data, 
                            ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc,
-                           well_plate, well_plate_imgnb, 
+                           well_plate, well_plate_imgnb, well_plate_imgnb_objnb,
                            log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, 
                            mockbulk_phases)
-pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = pseudotime_result
+pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_well_plate_imgnb_objnb, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_ab_cell, pol_sort_mt_cell, pol_sort_area_cell, pol_sort_area_nuc, pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases = pseudotime_result
 
 #%% Calculate measures of variance of protein abundance in single cells
 # Idea: Calculate measures of variance, and show them in plots
@@ -75,17 +74,17 @@ ccd_results = ProteinCellCycleDependence.cell_cycle_dependence_protein(
         u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
         pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
         pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases,
-        pol_sort_area_cell, pol_sort_area_nuc,
+        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_well_plate_imgnb,
         wp_iscell, wp_isnuc, wp_iscyto,
         wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj)
-wp_comp_ccd_difffromrng, mean_diff_from_rng_mt, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, curr_mockbulk_phases, folder = ccd_results
+wp_comp_ccd_difffromrng, mean_diff_from_rng_mt, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, curr_mockbulk_phases, curr_area_cell, curr_ab_nuc, curr_well_plate_imgnb, folder = ccd_results
 
 # Move the temporal average plots to more informative places
 ProteinCellCycleDependence.copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss)
 ProteinCellCycleDependence.global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj)
 
 # Analyze the CCD results and save them
-ccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
+ccd_comp, nonccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
     folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
     wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
     var_comp, gini_comp, 

@@ -82,7 +82,7 @@ def get_ccd_strings(ccd_comp, wp_ensg, bioccd):
 def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
         pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
         pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases,
-        pol_sort_area_cell, pol_sort_area_nuc,
+        pol_sort_area_cell, pol_sort_area_nuc, pol_sort_well_plate_imgnb,
         wp_iscell, wp_isnuc, wp_iscyto,
         wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj):
     '''
@@ -94,6 +94,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     perc_var_comp_clust1, perc_var_comp_clust2, mvavgs_comp_clust1, mvavgs_comp_clust2, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng, mvavgs_x_clust1, mvavgs_x_clust2 = [],[],[],[],[],[],[],[] # percent variances for bimodal
     mvavgs_comp, mvavgs_mt, mvavgs_x = [],[],[] # moving average y values & x value
     curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, curr_mockbulk_phases = [],[],[],[],[],[] # for plotting dataframe
+    curr_area_cell, curr_area_nuc, curr_well_plate_imgnb = [],[],[]
     cell_counts = []
     
     analysis = "MeanRng"
@@ -135,8 +136,6 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         curr_ab_nuc_norm = curr_ab_nuc / np.max(curr_ab_nuc)
         curr_ab_cyto_norm = curr_ab_cyto / np.max(curr_ab_cyto) 
         curr_mt_cell_norm  = curr_mt_cell / np.max(curr_mt_cell)
-        curr_area_cell_norm = pol_sort_area_cell[curr_well_inds] / np.max(pol_sort_area_cell[curr_well_inds])
-        curr_area_nuc_norm = pol_sort_area_nuc[curr_well_inds] / np.max(pol_sort_area_nuc[curr_well_inds])
             
         # Original method from Devin's work
         perc_var_cell_val, mvavg_cell = MovingAverages.mvavg_perc_var(curr_ab_cell_norm, WINDOW)
@@ -146,8 +145,11 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         mvavg_xvals = MovingAverages.mvavg(curr_pol, WINDOW)
         
         # Permutation analysis
-        permutation_result = permutation_analysis_protein(i, curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
-                                 perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val, wp_iscell, wp_isnuc, wp_iscyto, mvavg_cell, mvavg_nuc, mvavg_cyto)
+        permutation_result = permutation_analysis_protein(i, 
+                                 curr_pol, curr_ab_cell_norm, curr_ab_nuc_norm, curr_ab_cyto_norm, curr_mt_cell_norm,
+                                 perc_var_cell_val, perc_var_nuc_val, perc_var_cyto_val, 
+                                 wp_iscell, wp_isnuc, wp_iscyto, 
+                                 mvavg_cell, mvavg_nuc, mvavg_cyto)
         curr_comp_norm, curr_comp_percvar, curr_comp_mvavg, curr_comp_perm, curr_mt_perm, curr_mvavg_rng_comp, curr_mvavg_rng_mt, curr_percvar_rng_comp, curr_percvar_rng_mt = permutation_result
         perc_var_comp_rng.append(curr_percvar_rng_comp)
         perc_var_mt_rng.append(curr_percvar_rng_mt)
@@ -210,6 +212,9 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         curr_freds.append(curr_fred)
         curr_fgreens.append(curr_fgreen)
         curr_mockbulk_phases.append(curr_mockbulk_phase)
+        curr_area_cell.append(pol_sort_area_cell[curr_well_inds])
+        curr_area_cell.append(pol_sort_area_nuc[curr_well_inds])
+        curr_well_plate_imgnb.append(pol_sort_well_plate_imgnb[curr_well_inds])
         cell_counts.append(len(curr_pol))
         
         # Make the plots for each protein (takes 10 mins)
@@ -316,6 +321,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, 
         mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
         mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, curr_mockbulk_phases,
+        curr_area_cell, curr_ab_nuc, curr_well_plate_imgnb,
         folder)
 
 def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimodal_fcpadj_pass, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss):
@@ -517,7 +523,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     utils.np_save_overwriting("output/pickles/ccd_comp.npy", ccd_comp) # removed ones passing in only one replicate
     utils.np_save_overwriting("output/pickles/nonccd_comp.npy", nonccd_comp) # removed ones passing in only one replicate
     
-    return ccd_comp, bioccd
+    return ccd_comp, nonccd_comp, bioccd
 
 def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, 
                               pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,

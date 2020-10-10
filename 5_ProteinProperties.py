@@ -39,7 +39,7 @@ all_temps, all_protnames = ProteinStabilityAnalysis.melting_point_analysis(names
 #%% Analyze properties of the different groups relative to melting points
 proteinProperties = ProteinStabilityAnalysis.ProteinProperties(all_temps, all_protnames,
                             wp_ensg, ensg_ccdprotein_transcript_regulated, ensg_ccdprotein_nontranscript_regulated,
-                            names_bioccd, names_ccdprotein,  names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein, )
+                            names_bioccd, names_ccdprotein,  names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
 proteinProperties.analyze_disorder()
 proteinProperties.analyze_cysteines()
 proteinProperties.analyze_hydrophilic()
@@ -47,3 +47,4 @@ proteinProperties.analyze_hydrophobic()
 proteinProperties.analyze_abundances()
 proteinProperties.analyze_variants()
 proteinProperties.temp_scatters()
+proteinProperties.kinase_families()

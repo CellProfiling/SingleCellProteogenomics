@@ -44,6 +44,7 @@ def read_sample_info(df):
     well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
     u_well_plates = np.unique(well_plate)
     ab_objnum = np.asarray(df.ObjectNumber)
+    well_plate_imgnb_objnb = np.asarray([f"{wp}_{imgnb[i]}_{ab_objnum[i]}" for i,wp in enumerate(well_plate)])
     area_cell = np.asarray(df.Area_cell)
     area_nuc = np.asarray(df.AreaShape_Area)
     area_cyto = np.asarray(df.Area_cyto)
@@ -70,6 +71,7 @@ def read_sample_info(df):
     utils.np_save_overwriting("output/pickles/area_cyto.npy", area_cyto)
     utils.np_save_overwriting("output/pickles/well_plate.npy", well_plate)
     utils.np_save_overwriting("output/pickles/well_plate_imgnb.npy", well_plate_imgnb)
+    utils.np_save_overwriting("output/pickles/well_plate_imgnb_objnb.npy", well_plate_imgnb_objnb)
     
     return plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment
 

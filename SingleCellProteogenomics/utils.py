@@ -235,7 +235,7 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, nonccd_comp, ccdtransc
     ensg_ccdtranscript = np.unique(adata.var_names[ccdtranscript])
     ensg_nonccdtranscript = np.unique(adata.var_names[~ccdtranscript])
     ensg_ccdprotein = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    ensg_nonccdprotein = np.unique(wp_ensg[nonccd_comp])
+    ensg_nonccdprotein = np.unique(wp_ensg[nonccd_comp & ~np.isin(wp_ensg, bioccd)])
     ensg_ccdprotein_treg = np.unique(ensg_ccdprotein[np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_ccdprotein_nontreg = np.unique(ensg_ccdprotein[~np.isin(ensg_ccdprotein, ensg_ccdtranscript)])
     ensg_knownccdprotein = ensg_ccdprotein[np.isin(ensg_ccdprotein, knownccd)]

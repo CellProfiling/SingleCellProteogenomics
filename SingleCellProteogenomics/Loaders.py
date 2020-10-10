@@ -17,6 +17,7 @@ def load_protein_fucci_pseudotime():
         "u_plate" :  np.load("output/pickles/u_plate.npy", allow_pickle=True),
         "well_plate" : np.load("output/pickles/well_plate.npy", allow_pickle=True),
         "well_plate_imgnb" : np.load("output/pickles/well_plate_imgnb.npy", allow_pickle=True),
+        "well_plate_imgnb_objnb" : np.load("output/pickles/well_plate_imgnb_objnb.npy", allow_pickle=True),
         "u_well_plates" : np.load("output/pickles/u_well_plates.npy", allow_pickle=True),
         "ab_nuc" : np.load("output/pickles/ab_nuc.npy", allow_pickle=True),
         "ab_cyto" : np.load("output/pickles/ab_cyto.npy", allow_pickle=True),
