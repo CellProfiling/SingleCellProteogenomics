@@ -11,7 +11,7 @@ Investigation of the properties of proteins with different cell cycle regulation
 
 #%% Imports
 from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils, Loaders, FucciCellCycle, RNADataPreparation, ProteinStabilityAnalysis
+from SingleCellProteogenomics import utils, Loaders, FucciCellCycle, RNADataPreparation, ProteinPropertyAnalysis
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 fucci = FucciCellCycle.FucciCellCycle()
@@ -34,10 +34,10 @@ names_bioccd = utils.ccd_gene_names(bioccd, utils.getGeneNameDict())
 # Idea: A lower melting point for a protein indicates a higher propensity to unfold, 
 #    and so the melting points measured by MS proteomics serve as a useful way to study the protein stability of CCD proteins
 # Output: Boxplots illustrating differences in stability for different classes of CCD proteins
-all_temps, all_protnames = ProteinStabilityAnalysis.melting_point_analysis(names_ccdtranscript, names_nonccdtranscript, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
+all_temps, all_protnames = ProteinPropertyAnalysis.melting_point_analysis(names_ccdtranscript, names_nonccdtranscript, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
 
 #%% Analyze properties of the different groups relative to melting points
-proteinProperties = ProteinStabilityAnalysis.ProteinProperties(all_temps, all_protnames,
+proteinProperties = ProteinPropertyAnalysis.ProteinProperties(all_temps, all_protnames,
                             wp_ensg, ensg_ccdprotein_transcript_regulated, ensg_ccdprotein_nontranscript_regulated,
                             names_bioccd, names_ccdprotein,  names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
 proteinProperties.analyze_disorder()
