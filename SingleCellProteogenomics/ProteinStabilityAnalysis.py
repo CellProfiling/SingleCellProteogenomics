@@ -213,17 +213,17 @@ class ProteinProperties:
         print(f"{stats.kruskal(a, c)[1]}: {a_lab} vs {c_lab}, {lab_lab} kruskal p-value")
         print(f"{stats.kruskal(a, b, c)[1]}: {a_lab}, {b_lab}, {c_lab}, {lab_lab} kruskal p-value")
 
-    def analyze_property(self, idx, property_label):
+    def analyze_fractionOfLength(self, idx, property_label, isLength=False):
         protLen_idx = 6
-        fractPropertyAll = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.proteinDisorder.keys()]
-        fractPropertyTransreg = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein_transcript_regulated if nn in self.proteinDisorder]
-        fractPropertyNontransreg = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein_nontranscript_regulated if nn in self.proteinDisorder]
+        fractPropertyAll = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.proteinDisorder.keys()]
+        fractPropertyTransreg = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein_transcript_regulated if nn in self.proteinDisorder]
+        fractPropertyNontransreg = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein_nontranscript_regulated if nn in self.proteinDisorder]
         self.analyze(fractPropertyTransreg, fractPropertyNontransreg, fractPropertyAll, "transreg", "nontransreg", "all", f"Fraction {property_label}", True, f"figures/Fract{property_label}.png")
         
-        fractPropertyBioccd = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_bioccd if nn in self.proteinDisorder]
-        fractPropertyCcdPseudotime = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein if nn in self.proteinDisorder and nn not in self.names_bioccd]
-        fractPropertyNonCcd = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_nonccdprotein if nn in self.proteinDisorder]
-        fractPropertyCcd = [self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein if nn in self.proteinDisorder]
+        fractPropertyBioccd = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_bioccd if nn in self.proteinDisorder]
+        fractPropertyCcdPseudotime = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein if nn in self.proteinDisorder and nn not in self.names_bioccd]
+        fractPropertyNonCcd = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_nonccdprotein if nn in self.proteinDisorder]
+        fractPropertyCcd = [self.proteinDisorder[nn][idx] if isLength else self.proteinDisorder[nn][idx] / self.proteinDisorder[nn][protLen_idx] for nn in self.names_ccdprotein if nn in self.proteinDisorder]
         self.analyze(fractPropertyBioccd, fractPropertyCcdPseudotime, fractPropertyAll, "mitotic", "interphase", "all", f"Fraction {property_label}", True, f"figures/Fract{property_label}Mitotic.png")
         self.analyze(fractPropertyCcd, fractPropertyNonCcd, fractPropertyAll, "ccd", "nonccd", "all", f"Fraction {property_label}", True, f"figures/Fract{property_label}Ccd.png")
         self.analyze(fractPropertyCcdPseudotime, fractPropertyNonCcd, fractPropertyAll, "ccdInterphase", "nonccd", "all", f"Fraction {property_label}", True, f"figures/Fract{property_label}CcdInterphase.png")
@@ -237,35 +237,40 @@ class ProteinProperties:
         disorderedCcdProtein = sum([self.proteinDisorder[nn][0] for nn in self.names_ccdprotein if nn in self.proteinDisorder and not nn in self.names_bioccd])
         totalCcdProtein = sum([nn in self.proteinDisorder for nn in self.names_ccdprotein if not nn in self.names_bioccd])
         print(f"{disorderedCcdProtein / totalCcdProtein}: fraction of disordered CCD pseuduotime-only proteins")
-        results = self.analyze_property(2, "Disorder")
+        results = self.analyze_fractionOfLength(2, "Disorder")
         self.fractDisorderAll, self.fractDisorderTransreg, self.fractDisorderNontransreg, self.fractDisorderBioccd, self.fractDisorderCcdPseudotime, self.fractDisorderNonCcd, self.fractDisorderCcd = results
         
+    
     def analyze_cysteines(self):
-        results = self.analyze_property(3, "Cysteines")
+        results = self.analyze_fractionOfLength(3, "Cysteines")
         self.fractCysteinesAll, self.fractCysteinesTransreg, self.fractCysteinesNontransreg, self.fractCysteinesBioccd, self.fractCysteinesCcdPseudotime, self.fractCysteinesNonCcd, self.fractCysteinesCcd = results
 
     def analyze_hydrophilic(self):
-        results = self.analyze_property(4, "Hydrophilic")
+        results = self.analyze_fractionOfLength(4, "Hydrophilic")
         self.fractHydrophilicAll, self.fractHydrophilicTransreg, self.fractHydrophilicNontransreg, self.fractHydrophilicBioccd, self.fractHydrophilicCcdPseudotime, self.fractHydrophilicNonCcd, self.fractHydrophilicCcd = results
 
     def analyze_hydrophobic(self):
-        results = self.analyze_property(5, "Hydrophobic")
+        results = self.analyze_fractionOfLength(5, "Hydrophobic")
         self.fractHydrophobicAll, self.fractHydrophobicTransreg, self.fractHydrophobicNontransreg, self.fractHydrophobicBioccd, self.fractHydrophobicCcdPseudotime, self.fractHydrophobicNonCcd, self.fractHydrophobicCcd = results
+
+    def analyze_length(self):
+        results = self.analyze_fractionOfLength(6, "Length", True)
+        self.lengthAll, self.lengthTransreg, self.lengthNontransreg, self.lengthBioccd, self.lengthCcdPseudotime, self.lengthNonCcd, self.lengthCcd = results
 
     def analyze_abundances(self):
         all_intensities = self.aebersoldNumbers["Copies Per Cell"]
-        aebGenes = list(self.aebersoldNumbers["GeneName"])
-        aebGenesSet = set(aebGenes)
-        abundanceTransreg = [all_intensities[aebGenes.index(nn)] for nn in self.names_ccdprotein_transcript_regulated if nn in aebGenesSet]
-        abundanceNontransreg = [all_intensities[aebGenes.index(nn)] for nn in self.names_ccdprotein_nontranscript_regulated if nn in aebGenesSet]
-        abundanceBioccd = [all_intensities[aebGenes.index(nn)] for nn in self.names_bioccd if nn in aebGenesSet]
-        abundanceCcdPseudotime = [all_intensities[aebGenes.index(nn)] for nn in self.names_ccdprotein if nn in aebGenesSet]
-        abundanceNonccd = [all_intensities[aebGenes.index(nn)] for nn in self.names_nonccdprotein if nn in aebGenesSet]
-        abundanceCcd = [all_intensities[aebGenes.index(nn)] for nn in self.names_ccdprotein if nn in aebGenesSet]
-        abundanceAll = all_intensities
-        self.analyze(abundanceTransreg, abundanceNontransreg, abundanceAll, "transreg", "nontransreg", "all", "Abundance", False, "figures/fractDisordered.png")
-        self.analyze(abundanceBioccd, abundanceCcdPseudotime, abundanceAll, "mitotic", "interphase", "all", "Abundance", False, "figures/fractDisorderedMitotic.png")
-        self.analyze(abundanceCcd, abundanceNonccd, abundanceAll, "ccd", "nonccd", "all",  "Abundance", False, "figures/fractDisorderedCcd.png")
+        self.aebGenes = list(self.aebersoldNumbers["GeneName"])
+        self.aebGenesSet = set(self.aebGenes)
+        self.abundanceTransreg = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_ccdprotein_transcript_regulated if nn in self.aebGenesSet]
+        self.abundanceNontransreg = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_ccdprotein_nontranscript_regulated if nn in self.aebGenesSet]
+        self.abundanceBioccd = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_bioccd if nn in self.aebGenesSet]
+        self.abundanceCcdPseudotime = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_ccdprotein if nn in self.aebGenesSet]
+        self.abundanceNonccd = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_nonccdprotein if nn in self.aebGenesSet]
+        self.abundanceCcd = [all_intensities[self.aebGenes.index(nn)] for nn in self.names_ccdprotein if nn in self.aebGenesSet]
+        self.abundanceAll = all_intensities
+        self.analyze(self.abundanceTransreg, self.abundanceNontransreg, self.abundanceAll, "transreg", "nontransreg", "all", "Abundance", False, "figures/fractDisordered.png")
+        self.analyze(self.abundanceBioccd, self.abundanceCcdPseudotime, self.abundanceAll, "mitotic", "interphase", "all", "Abundance", False, "figures/fractDisorderedMitotic.png")
+        self.analyze(self.abundanceCcd, self.abundanceNonccd, self.abundanceAll, "ccd", "nonccd", "all",  "Abundance", False, "figures/fractDisorderedCcd.png")
 
     def analyze_variants(self):
         fractWithVariant_all = sum([ensg in self.geneId_variant for ensg in self.wp_ensg]) / len(self.wp_ensg)
@@ -275,15 +280,27 @@ class ProteinProperties:
         print(f"{fractWithVariant_nonTransReg}: fraction of nontranscript regulated genes with variant")
         print(f"{fractWithVariant_transReg}: fraction of transcript regulated genes with variant")
     
-    def get_property_and_temps(self, propertyValues, names_filter):
+    def get_property_and_temps(self, propertyValues, names_filter, isAbundance=False):
         '''Filters temperatures given a list of names'''
         all_protnames_set, all_protnames_list = set(self.all_protnames), list(self.all_protnames)
-        filterNames = [nn in all_protnames_set for nn in names_filter if nn in self.proteinDisorder]
-        filteredPropertyValues = np.asarray(propertyValues)[filterNames]
-        filteredTempValues = [self.all_temps[all_protnames_list.index(nn)] for nn in names_filter if nn in all_protnames_set and nn in self.proteinDisorder]
+        if isAbundance:
+            filterNames = [nn in all_protnames_set and nn in self.proteinDisorder for nn in self.aebGenes] 
+            filteredPropertyValues = np.log10(propertyValues)[filterNames]
+            filteredTempValues = [self.all_temps[all_protnames_list.index(nn)] for nn in self.aebGenes if nn in all_protnames_set  and nn in self.proteinDisorder]
+        else:
+            filterNames = [nn in all_protnames_set for nn in names_filter if nn in self.proteinDisorder] 
+            filteredPropertyValues = np.asarray(propertyValues)[filterNames]
+            filteredTempValues = [self.all_temps[all_protnames_list.index(nn)] for nn in names_filter if nn in all_protnames_set and nn in self.proteinDisorder]
         return filteredPropertyValues, filteredTempValues
         
     def temp_property_scatter(self, transregProperty, nontransregProperty, nonccdProperty, propertyLabel):
+        # plt.scatter(*self.get_property_and_temps(allProperty, self.proteinDisorder.keys()), label="Non-CCD")
+        # plt.xlabel(f"Fraction {propertyLabel} Residues")
+        # plt.ylabel("Melting Point (°C)")
+        # plt.legend()
+        # plt.savefig(f"figures/{propertyLabel}VsTm_all.png")
+        # plt.show(); plt.close()
+        
         plt.scatter(*self.get_property_and_temps(transregProperty, self.names_ccdprotein_transcript_regulated), label="Trans Reg")
         plt.scatter(*self.get_property_and_temps(nontransregProperty, self.names_ccdprotein_nontranscript_regulated), label="Non-Trans Reg")
         plt.scatter(*self.get_property_and_temps(nonccdProperty, self.names_nonccdprotein), label="Non-CCD")
@@ -293,20 +310,29 @@ class ProteinProperties:
         plt.savefig(f"figures/{propertyLabel}VsTm.png")
         plt.show(); plt.close()
     
+    def apply_linregress(self, allProperty, propertyLabel, isAbundance = False):
+        names = self.proteinDisorder.keys() if not isAbundance else self.aebGenes
+        propertyValues, propertyTemps = self.get_property_and_temps(allProperty, names, isAbundance)
+        linModel = stats.linregress(propertyValues, propertyTemps)
+        plt.scatter(propertyValues, propertyTemps, alpha=0.1)
+        xfit = np.min(propertyValues) + np.arange(100) / 100 * (np.max(propertyValues) - np.min(propertyValues))
+        yfit = linModel.intercept + xfit * linModel.slope
+        plt.scatter(xfit, yfit)
+        plt.xlabel(f"Fraction {propertyLabel} Residues")
+        plt.ylabel("Melting Point (°C)")
+        plt.savefig(f"figures/All{propertyLabel}VsTm.png")
+        plt.show(); plt.close()
+        print(f"{linModel.slope}: slope for all melting temperatures vs fract {propertyLabel} residues")
+        print(f"{linModel.rvalue**2}: r-squared for all melting temperatures vs fract {propertyLabel} residues")
+        print(f"{linModel.pvalue}: p-value for nonzero slope for all melting temperatures vs fract {propertyLabel} residues")
+    
     def temp_scatters(self):
         self.temp_property_scatter(self.fractHydrophilicTransreg, self.fractHydrophilicNontransreg, self.fractHydrophilicNonCcd, "Hydrophilic")
         self.temp_property_scatter(self.fractDisorderTransreg, self.fractDisorderNontransreg, self.fractDisorderNonCcd, "Disorder")
-        
-        linModel = stats.linregress(*self.get_property_and_temps(self.fractHydrophilicAll, self.proteinDisorder.keys()))
-        plt.scatter(*self.get_property_and_temps(self.fractHydrophilicAll, self.proteinDisorder.keys()), alpha=0.1)
-        xfit = 0.3 + np.arange(100) / 100 * (0.8 - 0.3)
-        yfit = linModel.intercept + xfit * linModel.slope
-        plt.scatter(xfit, yfit)
-        plt.xlabel("Fraction Hydrophilic Residues")
-        plt.ylabel("Melting Point (°C)")
-        plt.savefig("figures/AllHydryophilicVsTm.png")
-        plt.show(); plt.close()
-        print(f"{linModel.rvalue**2}: r-squared for all melting temperatures vs fract hydrophilic residues")
+        self.apply_linregress(self.fractHydrophilicAll, "Hydrophilic")
+        self.apply_linregress(self.fractDisorderAll, "Disorder")
+        self.apply_linregress(self.lengthAll, "Length")
+        self.apply_linregress(self.abundanceAll, "Log10 Abundance", True)
         
     def proportion_test(self, phosHuman, names_subset, names_alt=[]):
         subset = np.isin(phosHuman["SUBSTRATE"], names_subset)
