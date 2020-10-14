@@ -12,7 +12,7 @@ from scipy import stats
 import re
 proteome = {}
 header = ""
-with gzip.open("input/raw/uniprot-proteome_UP000005640.fasta.gz", mode="rt") as file_handler:
+with gzip.open("iupred2a/data/uniprot-proteome_UP000005640.fasta.gz", mode="rt") as file_handler:
     for line in file_handler:
         if line.startswith(">"):
             header = line
@@ -40,7 +40,8 @@ print(f"{sum(np.array(protein_names) == '')}: number of empty protein names")
 print(f"{sum([gene_names[ii] == protein_names[ii] for ii in np.arange(len(protein_names))])}: number of gene/protein name matches")
 
 hydrophilic = ['D','E','K','R','H','S','C','Y','T','Q','N','U']
-hydrophobic = ['G','A','V','L','I','F','W','M','P']
+hydrophobic = ['A','V','L','I','F','W','M']  # 'G' and 'P' weren't included in this set in the meltome atlas paper 
+polar = ['S','T','Y','N','Q']
 protein_disorder = {} # prot_name, (isDisordered, maxDisorderedLen, currDisorderedResidues, currCysteines, currHydrophilic, currHydrophobic, len(seq))
 totalDisorderedResidues = 0
 disordered_proteins = 0
@@ -69,8 +70,9 @@ for ii, xx in enumerate(proteome.items()):
     currCysteines = sum(np.isin(seq_list, ['C','U']))
     currHydrophilic = sum(np.isin(seq_list, hydrophilic))
     currHydrophobic = sum(np.isin(seq_list, hydrophobic))
+    currPolar = sum(np.isin(seq_list, polar))
     if pn in protein_disorder: print(f"{pn} already in dictionary")
-    protein_disorder[pn] = (isDisordered, maxDisorderedLen, currDisorderedResidues, currCysteines, currHydrophilic, currHydrophobic, len(seq))
+    protein_disorder[pn] = (isDisordered, maxDisorderedLen, currDisorderedResidues, currCysteines, currHydrophilic, currHydrophobic, currPolar, len(seq))
 
 print("Fraction of disordered residues: {:.2f}".format(totalDisorderedResidues/totalResidues))
 print("Fraction of disordered proteins: {:.2f}".format(disordered_proteins/len(proteome)))
@@ -85,4 +87,6 @@ pd.DataFrame({
     "CysteineCount" : [x[3] for x in protein_properties],
     "HydrophilicResidueCount" : [x[4] for x in protein_properties],
     "HydrophobicResidueCount" : [x[5] for x in protein_properties],
-    "Length" : [x[6] for x in protein_properties]}).to_csv("input/processed/ProteinDisorderProperties.csv.gz")
+    "PolarResidueCount" : [x[6] for x in protein_properties],
+    "Length" : [x[7] for x in protein_properties]
+    }).to_csv("input/processed/ProteinDisorderProperties.csv.gz")

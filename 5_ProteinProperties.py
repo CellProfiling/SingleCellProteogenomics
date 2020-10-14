@@ -13,7 +13,6 @@ Investigation of the properties of proteins with different cell cycle regulation
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, Loaders, FucciCellCycle, RNADataPreparation, ProteinPropertyAnalysis
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
-
 fucci = FucciCellCycle.FucciCellCycle()
 
 #%% Import the genes names we're analyzing
@@ -30,22 +29,23 @@ names_ccdtranscript, names_nonccdtranscript, names_ccdprotein, names_nonccdprote
 bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
 names_bioccd = utils.ccd_gene_names(bioccd, utils.getGeneNameDict())
 
-#%% Perform melting point analysis
-# Idea: A lower melting point for a protein indicates a higher propensity to unfold, 
-#    and so the melting points measured by MS proteomics serve as a useful way to study the protein stability of CCD proteins
-# Output: Boxplots illustrating differences in stability for different classes of CCD proteins
-all_temps, all_protnames = ProteinPropertyAnalysis.melting_point_analysis(names_ccdtranscript, names_nonccdtranscript, names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
-
 #%% Analyze properties of the different groups relative to melting points
-proteinProperties = ProteinPropertyAnalysis.ProteinProperties(all_temps, all_protnames,
-                            wp_ensg, ensg_ccdprotein_transcript_regulated, ensg_ccdprotein_nontranscript_regulated,
-                            names_bioccd, names_ccdprotein,  names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, names_nonccdprotein)
+proteinProperties = ProteinPropertyAnalysis.ProteinProperties(wp_ensg, ensg_ccdprotein, 
+            ensg_ccdprotein_transcript_regulated, ensg_ccdprotein_nontranscript_regulated, 
+            bioccd, ensg_nonccdprotein, ensg_ccdtranscript,
+            names_bioccd, names_ccdprotein, 
+            names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, 
+            names_nonccdprotein, names_ccdtranscript)
+proteinProperties.analyze_melting_points()
 proteinProperties.analyze_disorder()
 proteinProperties.analyze_cysteines()
-proteinProperties.analyze_hydrophilic()
 proteinProperties.analyze_hydrophobic()
+proteinProperties.analyze_polar()
 proteinProperties.analyze_length()
 proteinProperties.analyze_abundances()
 proteinProperties.analyze_variants()
-proteinProperties.temp_scatters()
+proteinProperties.statistical_properties_table()
+proteinProperties.generate_properties_table()
+proteinProperties.generate_statistical_boxplots()
+proteinProperties.tm_scatters()
 proteinProperties.kinase_families()

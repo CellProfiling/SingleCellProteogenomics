@@ -104,7 +104,7 @@ def weights(vals):
     '''normalizes all histogram bins to sum to 1'''
     return np.ones_like(vals)/float(len(vals))
 
-def general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim=()):
+def general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, ylim=()):
     '''Set up a boxplot given equal length group_values and group_labels'''
     if len(group_values) != len(group_labels): 
         print("Error: general_boxplot() requires equal length group_values and group_labels.")
@@ -117,18 +117,18 @@ def general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, sho
     boxplot.tick_params(axis="both", which="major", labelsize=14)
     if len(ylim) > 0: boxplot.set(ylim=ylim)
     plt.title(title)
-    return cccc, mmmm
+    return cccc, mmmm, boxplot
 
 def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim=()):
     '''Make a boxplot given equal length group_values and group_labels'''
-    general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim)
+    general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, ylim)
     plt.savefig(outfile)
     plt.show()
     plt.close()
 
 def boxplot_with_stripplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, alpha=0.3, size=5, jitter=0.25, ylim=()):
     plt.figure(figsize=(10,10))
-    cccc, mmmm = general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, ylim)
+    cccc, mmmm, ax = general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, ylim)
     boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=alpha, color=".3", size=size, jitter=jitter)
     plt.savefig(outfile)
     plt.show()
@@ -173,6 +173,68 @@ def general_histogram(x, xlabel, ylabel, alpha, outfile):
 def format_p(p):
     '''3 decimal places, scientific notation'''
     return '{:0.3e}'.format(p)
+
+def barplot_annotate_brackets(num1, num2, data, center, height, yerr=None, dh=.05, barh=.05, fs=None, maxasterix=None):
+    """ 
+    Annotate barplot with p-values. 
+    https://stackoverflow.com/questions/11517986/indicating-the-statistically-significant-difference-in-bar-graph
+
+    :param num1: number of left bar to put bracket over
+    :param num2: number of right bar to put bracket over
+    :param data: string to write or number for generating asterixes
+    :param center: centers of all bars (like plt.bar() input)
+    :param height: heights of all bars (like plt.bar() input)
+    :param yerr: yerrs of all bars (like plt.bar() input)
+    :param dh: height offset over bar / bar + yerr in axes coordinates (0 to 1)
+    :param barh: bar height in axes coordinates (0 to 1)
+    :param fs: font size
+    :param maxasterix: maximum number of asterixes to write (for very small p-values)
+    """
+
+    if type(data) is str:
+        text = data
+    else:
+        # * is p < 0.05
+        # ** is p < 0.005
+        # *** is p < 0.0005
+        # etc.
+        text = ''
+        p = .05
+
+        while data < p:
+            text += '*'
+            p /= 10.
+
+            if maxasterix and len(text) == maxasterix:
+                break
+
+        if len(text) == 0:
+            text = 'n. s.'
+
+    lx, ly = center[num1], height[num1]
+    rx, ry = center[num2], height[num2]
+
+    if yerr:
+        ly += yerr[num1]
+        ry += yerr[num2]
+
+    ax_y0, ax_y1 = plt.gca().get_ylim()
+    dh *= (ax_y1 - ax_y0)
+    barh *= (ax_y1 - ax_y0)
+
+    y = max(ly, ry) + dh
+
+    barx = [lx, lx, rx, rx]
+    bary = [y, y+barh, y+barh, y]
+    mid = ((lx+rx)/2, y+barh)
+
+    plt.plot(barx, bary, c='black')
+
+    kwargs = dict(ha='center', va='bottom')
+    if fs is not None:
+        kwargs['fontsize'] = fs
+
+    plt.text(*mid, text, **kwargs)
 
 ## GENE NAME - ENSG CONVERSIONS
 
