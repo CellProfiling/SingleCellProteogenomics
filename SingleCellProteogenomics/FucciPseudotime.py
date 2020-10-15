@@ -64,10 +64,10 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
     If `show_gmnn` is true, generate an overlay of the GMNN antibody staining intensities.
     '''
     fig, ax1 = plt.subplots(figsize=(10,10))
-    mycmap = plt.cm.gray_r
+    mycmap = copy.copy(mpl.cm.get_cmap("gray_r"))
     mycmap.set_under(color='w',alpha=None)
     ax1.hist2d(centered_data[:,0],centered_data[:,1],bins=nbins,alpha=1,cmap=mycmap)
-    hist, xbins, ybins = np.histogram2d(cart_data_ur[0], cart_data_ur[1], bins=nbins, normed=True)
+    hist, xbins, ybins = np.histogram2d(cart_data_ur[0], cart_data_ur[1], bins=nbins, density=True)
     extent = [xbins.min(),xbins.max(),ybins.min(),ybins.max()]
     im = ax1.imshow(
             np.ma.masked_where(hist == 0, hist).T,
