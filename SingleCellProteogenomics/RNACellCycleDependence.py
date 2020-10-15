@@ -261,7 +261,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     
     return percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_adj, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, perms, ccdtranscript, ccdprotein, mvpercs
 
-def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform):
+def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprotein, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
     gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
     isoformToGene = pd.read_csv("input/processed/python/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
@@ -273,10 +273,14 @@ def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript
     useGene = np.isin(perGene_geneIds, gene_varnames)
     numIsoformsPerGene = np.array(numIsoformsPerGene[useGene])
     ccdIsoformsPerGene = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in perGene_geneIds[useGene]])
-    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] and ccdIsoformsPerGene[ii] > 0 for ii, gene_id in enumerate(numIsoformsPerGene)])
+    ccdIsoformsPerCcdProtein = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in adata.var_names[ccdprotein]])
+    ccdIsoformsPerNonCcdProtein = np.array([sum(ccdtranscript_isoform[isoform_varnames_geneids == gene_id]) for gene_id in adata.var_names[adata_nonccdprotein]])
+    ccdAndNonCcdIsoformsPerGene = np.array([numIsoformsPerGene[ii] != ccdIsoformsPerGene[ii] and ccdIsoformsPerGene[ii] > 0 for ii in np.arange(len(numIsoformsPerGene))])
     print(f"{sum(ccdtranscript_isoform)} CCD transcripts, of which {sum(ccdIsoformWithCcdGene)} ({sum(ccdIsoformWithCcdGene) / sum(ccdtranscript_isoform) * 100}%) correspond to genes that were also found to be CCD.")
     print(f"of the {sum(ccdtranscript)} CCD genes, {sum(ccdAndNonCcdIsoformsPerGene)} were found to have both CCD and non-CCD transcript isoforms.")
     print(f"for the {sum(ccdIsoformsPerGene > 1)} genes with multiple CCD transcripts, the time of peak expression...")
+    print(f"{sum(ccdIsoformsPerCcdProtein > 0) / sum(ccdprotein)}% of CCD proteins had at least one CCD transcript isoform")
+    print(f"{sum(ccdIsoformsPerNonCcdProtein > 0) / sum(adata_nonccdprotein)}% of non-CCD proteins had at least one CCD transcript isoform")
     
 def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp):
     '''Analyze the isoform-level results over the cell cycle'''
@@ -412,7 +416,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     nz_coef = np.sum(fucci_rna.coef_, axis=0) != 0
     print(f"{sum(nz_coef)}: number of nonzero lasso coefficients")
     print(f"{adata.var_names[nz_coef]}: genes with nonzero lasso coeff")
-    print(f"{ccdtranscript[nz_coef]}: CCD transcript for nonzero lasso coeff")
+    print(f"{sum(ccdtranscript[nz_coef]) / sum(nz_coef)}: % nonzero lasso found as CCD transcripts")
     print(f"{np.sum(fucci_rna.coef_, axis=0)[nz_coef]}: coefficients for nonzero lasso coeff")
     
     # Generate UMAP for CCD and nonCCD for the LASSO model

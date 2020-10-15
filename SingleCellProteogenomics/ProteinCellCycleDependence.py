@@ -584,7 +584,7 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
     plt.xlim((np.min(fucci_protein.alphas_), np.max(fucci_protein.alphas_)))
     print(f"{sum(np.sum(fucci_protein.coef_, axis=0) != 0)}: number of nonzero lasso coefficients")
     print(f"{wp_ensg[np.sum(fucci_protein.coef_, axis=0) != 0]}: genes with nonzero lasso coeff")
-    print(f"{ccd_comp[np.sum(fucci_protein.coef_, axis=0) != 0]}: CCD transcript for nonzero lasso coeff")
+    print(f"{sum(ccd_comp[np.sum(fucci_protein.coef_, axis=0) != 0])}: CCD protein with nonzero lasso coeff")
     print(f"{np.sum(fucci_protein.coef_, axis=0)[np.sum(fucci_protein.coef_, axis=0) != 0]}")
     
     # Make a UMAPs for the LASSO analysis to demonstrate higher false negative rate

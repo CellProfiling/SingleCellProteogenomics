@@ -91,5 +91,5 @@ RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
 
 #%% Analyze isoforms
 adata_isoform, ccdtranscript_isoform = RNACellCycleDependence.analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp)
-RNACellCycleDependence.compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform)
+RNACellCycleDependence.compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprotein, adata_isoform, ccdtranscript_isoform)
 
