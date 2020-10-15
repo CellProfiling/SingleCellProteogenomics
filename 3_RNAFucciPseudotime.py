@@ -13,7 +13,7 @@ from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, stretch_time, FucciCellCycle, FucciPseudotime, RNADataPreparation, RNACellCycleDependence
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
-bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures
 wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
 ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
@@ -44,7 +44,8 @@ do_make_boxplots = False
 if do_make_boxplots:
     for iii, ensg in enumerate(adata.var_names):
         maxtpm = np.max(np.concatenate((adata.X[g1,iii], adata.X[s,iii], adata.X[g2,iii])))
-        RNACellCycleDependence.boxplot_result(adata.X[g1,iii] / maxtpm, adata.X[s,iii] / maxtpm, adata.X[g2,iii] / maxtpm, "figures/RNABoxplotByPhase", ensg)
+        RNACellCycleDependence.boxplot_result(adata.X[g1,iii] / maxtpm, adata.X[s,iii] / maxtpm, adata.X[g2,iii] / maxtpm, 
+                                              "figures/RNABoxplotByPhase", ensg)
 
 #%% Idea: Display general RNA expression patterns in single cells using UMAP dimensionality reduction, and display with FUCCI pseudotime overlayed
 FucciPseudotime.pseudotime_umap(adata) # Generate a UMAP with the pseudotime overlayed
@@ -55,14 +56,16 @@ RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
 
 # Read in the curated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
-adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
+adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.is_ccd(adata, 
+                           wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered)
 
 # Generate plots with expression of genes overlayed
 expression_data = adata.X
 normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,None]).T
 
 # Log-log FUCCI plot with RNA expression overlayed
-RNACellCycleDependence.plot_expression_facs(wp_ensg[np.isin(wp_ensg, adata.var_names)], normalized_exp_data, phasesfilt, adata.var_names, "figures/GeneExpressionFucci")
+RNACellCycleDependence.plot_expression_facs(wp_ensg[np.isin(wp_ensg, adata.var_names)], normalized_exp_data, phasesfilt, adata.var_names, 
+                                            "figures/GeneExpressionFucci")
 
 # UMAPs with RNA expression overlayed
 RNACellCycleDependence.plot_expression_umap(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], "figures/GeneExpressionUmap")

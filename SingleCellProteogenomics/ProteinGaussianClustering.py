@@ -127,7 +127,7 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
     utils.np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_mt.npy", wp_pass_gaussccd_bh_mt)
     
     # save the phase information
-    utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases))
+    utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases, dtype=object))
     utils.np_save_overwriting("output/pickles/mockbulk_phases.npy", np.array(mockbulk_phases))
 
     print(f"{len(wp_pass_kruskal_gaussccd_bh_comp)}: number of genes tested")

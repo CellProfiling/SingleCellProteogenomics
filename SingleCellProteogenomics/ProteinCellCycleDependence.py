@@ -429,10 +429,10 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     ### address gene redundancy
     wp_ccd_bimodalonecluster = wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2
     wp_ccd_bimodaltwocluster = wp_comp_ccd_clust1 & wp_comp_ccd_clust2
-    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReliabilityScores.txt", header=None)[0]
     wp_removeReplicate = np.isin(u_well_plates, removeThese)
     
-    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
+    bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures
     protein_ct = len(np.unique(np.concatenate((wp_ensg, bioccd))))
     ccd_protein_ct = sum(wp_ccd_unibimodal[~wp_removeReplicate])
     nonccd_protein_ct = sum(~wp_ccd_unibimodal[~wp_removeReplicate])
@@ -482,7 +482,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     # read in reliability scores
     wp_ab_list = list(wp_ab)
     ab_scores = list(np.zeros(wp_ab.shape, dtype=str))
-    with open("input/processed/manual/reliabilityscores.txt") as file:
+    with open("input/ProteinData/ReliabilityScores.txt") as file:
         for line in file:
             if line.startswith("Antibody RRID"): continue
             score = line.split('\t')[1].strip()
@@ -682,7 +682,7 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
     mvperc_90p = [x[-1] for x in mvperc_comps]
     mvperc_25p = [x[1] for x in mvperc_comps]
     mvperc_75p = [x[-2] for x in mvperc_comps]
-    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReliabilityScores.txt", header=None)[0]
     ccdStrings = get_ccd_strings(ccd_comp, wp_ensg, bioccd)
     pd.DataFrame({
         "ENSG" : wp_ensg,

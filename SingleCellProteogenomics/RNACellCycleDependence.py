@@ -191,7 +191,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     gtpass_eq_percvar_adj = pass_eq_percvar_adj & (percent_ccd_variance > np.median(percent_ccd_variance_rng, axis=0))
 
     ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     gene_ids = list(gene_info["gene_id"])
     gene_names = list(gene_info["name"])
     gene_id_name = dict([(gene_ids[idxx], gene_names[idxx]) for idxx in range(len(gene_info))])
@@ -264,7 +264,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
     gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
-    isoformToGene = pd.read_csv("input/processed/python/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
     ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])
@@ -289,7 +289,7 @@ def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp):
     # FucciPseudotime.pseudotime_umap(adata_isoform, isIsoform=True)
    
     # Cell cycle analysis    
-    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
+    bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures in the protein work
     ccd_regev_filtered_isoform, ccd_filtered_isoform, nonccd_filtered_isoform = utils.ccd_gene_lists(adata_isoform)
     adata_ccdprotein_isoform, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform = RNADataPreparation.is_ccd(adata_isoform, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered_isoform)
     rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, True)
@@ -430,7 +430,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
 
 def analyze_cnv_calls(adata, ccdtranscript):
     '''Take results from cnvkit calls to analyze effects of copy number variation'''
-    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
+    cnsresults = pd.read_csv("input/RNAData/CnsCallSummary.tsv", sep="\t")
     cnsresults_gene = cnsresults["gene"]
     cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
     adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript]))
@@ -480,7 +480,7 @@ def analyze_cnv_calls(adata, ccdtranscript):
     print(f"{residualNormality[1]}: p-value for normality of residuals")
     
     # what if we only look at one phase? G1 before doubling? for all genes?
-    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
+    cnsresults = pd.read_csv("input/ProteinData/CnsCallSummary.tsv", sep="\t")
     cnsresults_gene = cnsresults["gene"]
     cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
     adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names))

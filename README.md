@@ -1,18 +1,18 @@
 # SingleCellProteogenomics
 
-This repository contains the code (see [SpatiotemporalProteogenomics.ipynb](https://github.com/CellProfiling/SingleCellProteogenomics/blob/master/SpatiotemporalProteogenomics.ipynb)) used to perform the single-cell proteogenomic analysis of the human cell cycle. This study was based on immunofluorescence staining of ~200k cells for single-cell analysis of proteomic heterogeneity and ~1k cells for analysis of single-cell RNA variability. These analyses were integrated with mass spectrometry (MS) proteomic studies to investigate the functional importance of transcript-regulated and non-transcript regulated variability.
+This repository contains the code used to perform the single-cell proteogenomic analysis of the human cell cycle. This study was based on immunofluorescence staining of ~200k cells for single-cell analysis of proteomic heterogeneity and ~1k cells for analysis of single-cell RNA variability. These analyses were integrated with other proteomic studies and databases to investigate the functional importance of transcript-regulated and non-transcript regulated variability.
 
 ## Preprint
 Please find the preprint manuscript here: https://www.biorxiv.org/content/10.1101/543231v2
 
 ## Structure of repository
-The [SpatiotemporalProteogenomics.ipynb](https://github.com/CellProfiling/SingleCellProteogenomics/blob/master/SpatiotemporalProteogenomics.ipynb) file contains all code and output from the analysis files, which are listed in order of execution, e.g. "1_", "2_" etc. The output of each script is used in the subsequent script to speed up reanalysis if necessary.
+The code is listed in order of execution, e.g. "1_", "2_" etc. The output of each script is used in the subsequent script.
 
 The logic for these analyses is contained in the SingleCellProteogenomics folder.
 
 The input files are contained in the "input" folder. Output files are added to a folder "output" during the analysis, and figures are added to a folder "figures."
 
-An R-script used to analyze skewness and kurtosis (noted in the Methods of the manuscript) is contained in the other_scripts folder.
+An R-script used to analyze skewness and kurtosis (noted in the Methods of the manuscript) is contained in the other_scripts folder. The other_scripts/ProteinDisorder.py script utilizes [IUPRED2A](https://iupred2a.elte.hu/) and a [human UniProt](https://www.uniprot.org/proteomes/UP000005640) database.
 
 ## Prerequisites
 
