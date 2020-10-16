@@ -10,7 +10,9 @@ The code is listed in order of execution, e.g. "1_", "2_" etc. The output of eac
 
 The logic for these analyses is contained in the SingleCellProteogenomics folder.
 
-The input files are contained in the "input" folder. Output files are added to a folder "output" during the analysis, and figures are added to a folder "figures."
+The input files are contained in the "input" folder. This folder is linked to the review responses as a zip file, input.zip. Expand this folder within the SingleCellProteogenomics folder.
+
+The output files are added to a folder "output" during the analysis, and figures are added to a folder "figures."
 
 An R-script used to analyze skewness and kurtosis (noted in the Methods of the manuscript) is contained in the other_scripts folder. The other_scripts/ProteinDisorder.py script utilizes [IUPRED2A](https://iupred2a.elte.hu/) and a [human UniProt](https://www.uniprot.org/proteomes/UP000005640) database.
 
@@ -24,4 +26,4 @@ Prerequisites are listed in enviro.yaml file. They can be installed using conda:
 
 ## Single cell RNA-Seq analysis
 
-For the `snakemake` workflow used to analyze the scRNA-Seq dataset, including RNA velocity calculations and louvain unsupervised clustering, please see this repository: ...
+For the `snakemake` workflow used to analyze the scRNA-Seq dataset, including RNA velocity calculations and louvain unsupervised clustering, please see this repository: https://github.com/CellProfiling/FucciSingleCellSeqPipeline.
