@@ -264,7 +264,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 def compare_genes_to_isoforms(adata, ccdtranscript, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
     gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
-    isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
     ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])
@@ -433,13 +433,15 @@ def analyze_cnv_calls(adata, ccdtranscript):
     cnsresults = pd.read_csv("input/RNAData/CnsCallSummary.tsv", sep="\t")
     cnsresults_gene = cnsresults["gene"]
     cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
-    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript]))
-    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns), np.arange(len(ccdtranscript))[ccdtranscript][np.isin(adata_names, cnsresults_allgenes)]]
-    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    genenamedict = utils.getGeneNameDict()
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript], genenamedict))
+    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns), 
+                              np.arange(len(ccdtranscript))[ccdtranscript][np.isin(adata_names, cnsresults_allgenes)]]
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names, genenamedict)
     cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
     geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
     adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
-    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names, genenamedict)
     cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
     cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
     
@@ -454,7 +456,8 @@ def analyze_cnv_calls(adata, ccdtranscript):
     plt.savefig("figures/CnvConsistency.pdf"); plt.show(); plt.close()
     
     # heatmaps for phases
-    adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]])
+    adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, 
+                                               adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]])
     sbn.heatmap([adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G1",
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "S-ph",
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G2M"],
@@ -473,6 +476,7 @@ def analyze_cnv_calls(adata, ccdtranscript):
     plt.xlabel("Cell Division Time, hrs")
     plt.ylabel("Mean CNV of All Chromosome Arms")
     plt.savefig("figures/CnvCorrelation.pdf"); plt.show(); plt.close()
+    
     print(f"{linearModel[3]}: p-value for nonzero slope by two-sided t test")
     residualLinearModel = scipy.stats.linregress(np.asarray(x).astype(float), np.asarray(y - (linearModel.intercept + x * linearModel.slope)).astype(float))
     residualNormality = scipy.stats.normaltest(np.asarray(y - (linearModel.intercept + x * linearModel.slope)))
@@ -480,16 +484,13 @@ def analyze_cnv_calls(adata, ccdtranscript):
     print(f"{residualNormality[1]}: p-value for normality of residuals")
     
     # what if we only look at one phase? G1 before doubling? for all genes?
-    cnsresults = pd.read_csv("input/ProteinData/CnsCallSummary.tsv", sep="\t")
-    cnsresults_gene = cnsresults["gene"]
-    cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
-    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names))
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names, genenamedict))
     adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns) & (adata.obs["phase"] == "G1"), np.arange(len(adata_names))[np.isin(adata_names, cnsresults_allgenes)]]
-    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names, genenamedict)
     cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
     geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
     adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
-    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names, genenamedict)
     cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
     cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
     cnvAmplified, cnvPvalOneSided = [],[]
@@ -535,15 +536,15 @@ def make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort
     pd.DataFrame({
         "ENSG" : adata.var_names[filterccd],
         "CCD" : ccdtranscript[filterccd],
-        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filterccd][:,ii]]) for ii,yy in enumerate(norm_exp_sort.T[filterccd])],
-        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names[filterccd]],
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time']]) for ii in np.arange(sum(filterccd))],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy]) for ii, yy in enumerate(norm_exp_sort.T[filterccd])],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585']]) for ii in np.arange(sum(filterccd))],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530']]) for ii in np.arange(sum(filterccd))],
+        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ii in np.arange(sum(filterccd))],
         "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T[filterccd]],
         "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,0,:]],
         "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-1,:]],
         "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,1,:]],
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-2,:]],
-        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])]
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase']]) for ii in np.arange(sum(filterccd))]
         }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")

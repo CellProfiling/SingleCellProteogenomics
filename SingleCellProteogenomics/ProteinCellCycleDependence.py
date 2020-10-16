@@ -16,7 +16,7 @@ from sklearn.linear_model import MultiTaskLassoCV
 np.random.seed(0) # Get the same results each time
 WINDOW = 10 # Number of points for moving average window for protein analysis
 WINDOW_FUCCI_MARKERS = 100 # Used for getting median FUCCI marker intensity for LASSO analysis
-PERMUTATIONS = 100#10000 # Number of permutations used for randomization analysis
+PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 BINS_FOR_UMAP_AND_LASSO = 400 # Number of bins for creating UMAPs/LASSO model. Chosen for the best stability.
 chosen_nn = 5
