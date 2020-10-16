@@ -30,7 +30,7 @@ def histedges_equalA(x, nbin):
 
 def stretch_time(time_data,nbins=1000):
     '''This function is supposed to create uniform density space'''
-    n, bins, patches = plt.hist(time_data, histedges_equalN(time_data, nbins), normed=True)
+    n, bins, patches = plt.hist(time_data, histedges_equalN(time_data, nbins), density=True)
     tmp_time_data = deepcopy(time_data)
     trans_time = np.zeros([len(time_data)])
     # Get bin indexes

@@ -17,6 +17,7 @@ import matplotlib.colors as mpcolors
 import matplotlib.patches as mpatches
 import scanpy as sc
 import os
+import pickle
 import glob
 import shutil
 import scipy
@@ -26,9 +27,9 @@ import seaborn as sbn
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
     '''Get the values for the annotated compartment'''
     values_comp = np.empty_like(values_cell)
-    values_comp[wp_iscell] = np.array(values_cell)[wp_iscell]
-    values_comp[wp_isnuc] = np.array(values_nuc)[wp_isnuc]
-    values_comp[wp_iscyto] = np.array(values_cyto)[wp_iscyto]
+    values_comp[wp_iscell] = np.array(values_cell, dtype=object)[wp_iscell]
+    values_comp[wp_isnuc] = np.array(values_nuc, dtype=object)[wp_isnuc]
+    values_comp[wp_iscyto] = np.array(values_cyto, dtype=object)[wp_iscyto]
     return np.array(values_comp) 
 
 def np_save_overwriting(fn, arr):
@@ -240,7 +241,7 @@ def barplot_annotate_brackets(num1, num2, data, center, height, yerr=None, dh=.0
 
 def getGeneNameDict():
     '''Make dictionary of IDs to names'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     geneIdNameDict = dict([(ggg[0], ggg[1]) for idx, ggg in gene_info.iterrows()])
     return geneIdNameDict
     
@@ -254,7 +255,7 @@ def ccd_gene_names_gapped(id_list_like, geneIdNameDict):
 
 def getHgncDict():
     '''Make dictionary of IDs to HGNC symbols'''
-    geneIdToHgncTable = pd.read_csv("input/processed/python/ENSGToHGNC.csv", index_col=False, header=0)
+    geneIdToHgncTable = pd.read_csv("input/ProteinProperties/ENSGToHGNC.csv", index_col=False, header=0)
     geneIdToHgncDict = dict([(ggg[1], ggg[0]) for idx, ggg in geneIdToHgncTable.iterrows()])
     return geneIdToHgncDict
 
@@ -268,8 +269,8 @@ def geneIdToHngc_withgaps(id_list_like, geneDict):
 
 def ccd_gene_lists(adata):
     '''Read in the published CCD genes / Diana's CCD / Non-CCD genes'''
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
-    ccd_regev=pd.read_csv("input/processed/manual/ccd_regev.txt")   
+    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    ccd_regev=pd.read_csv("input/RNAData/ccd_regev.txt")   
     wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
     ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
     nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
@@ -287,10 +288,10 @@ def save_gene_names_by_category(adata, wp_ensg, ccd_comp, nonccd_comp, ccdtransc
     '''Save files containing the gene names for each category of CCD proteins/transcripts'''
     ccd_regev_filtered, ccd_filtered, nonccd_filtered = ccd_gene_lists(adata)
     genes_analyzed = np.array(pd.read_csv("output/gene_names.csv")["gene"])
-    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures
-    knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
-    knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
-    knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", dtype='str') # from GO proliferation
+    bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures
+    knownccd1 = np.genfromtxt("input/ProteinData/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
+    knownccd2 = np.genfromtxt("input/ProteinData/known_go_ccd.txt", dtype='str') # from GO cell cycle
+    knownccd3 = np.genfromtxt("input/ProteinData/known_go_proliferation.txt", dtype='str') # from GO proliferation
     knownccd = np.concatenate((knownccd1, knownccd2, knownccd3))
 
     # Get the ENSG symbols for lists for GO analysis

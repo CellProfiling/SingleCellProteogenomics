@@ -23,7 +23,7 @@ wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, pr
 my_df_filtered = ProteinDataPreparation.apply_manual_filtering(my_df, result_dict, ab_dict)
 my_df_filtered = ProteinDataPreparation.apply_big_nucleus_filter(my_df_filtered)
 my_df_filtered = ProteinDataPreparation.apply_cell_count_filter(my_df_filtered)
-my_df_filtered.to_csv("input/processed/python/nuc_predicted_prob_phases_filtered.csv")
+# my_df_filtered.to_csv("input/ProteinData/FucciData.csv")
 plate, u_plate, well_plate, well_plate_imgnb, u_well_plates, ab_objnum, area_cell, area_nuc, area_cyto, ensg_dict, ab_dict, result_dict, compartment_dict, ENSG, antibody, result, compartment = ProteinDataPreparation.read_sample_info(my_df_filtered)
 wp_ensg, wp_ab, wp_prev_ccd, wp_prev_notccd, wp_prev_negative, prev_ccd_ensg, prev_notccd_ensg, prev_negative_ensg = ProteinDataPreparation.previous_results(u_well_plates, result_dict, ensg_dict, ab_dict)
 
@@ -59,7 +59,7 @@ plt.show()
 plt.close()
 
 # General picture of antibody intensity density
-sbn.distplot(ab_cell, hist=False)
+sbn.displot(ab_cell, kind="hist")
 plt.xlabel("Mean Intensity")
 plt.ylabel("Density")
 plt.savefig("figures/antibody_cell_intensity.pdf")

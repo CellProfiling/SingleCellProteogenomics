@@ -97,15 +97,15 @@ def temporal_mov_avg_rna(fucci_time, curr_rna_norm, mvavg_xvals, mvavg_yvals, mv
     plt.savefig(outfile)
     plt.close()
     
-def temporal_mov_avg_randomization_example_protein(curr_pol, curr_ab_norm, curr_ab_norm_rng, mvavg_xvals, mvavg_yvals, mvavg_yvals_rng, folder, fileprefix, rna_or_protein = "Protein"):
+def temporal_mov_avg_randomization_example_protein(curr_pol, curr_ab_norm, curr_ab_norm_rng, 
+                   mvavg_xvals, mvavg_yvals, mvavg_yvals_rng, folder, fileprefix, rna_or_protein = "Protein"):
     '''
     Generates a moving average plot for one protein illustrating the protein measurements (blue) and randomization of those measurements (red)
     Input: Antibody intensity measurements for the current gene; results from randomization of the cell order
     Output: Moving average plot with original measurements and results of randomization
     '''
     outfile = os.path.join(folder,fileprefix+'_mvavg.png')
-    if os.path.exists(outfile): 
-        return
+    if os.path.exists(outfile):  return
     plt.figure(figsize=(5,5))
     sample_color = "blue" if rna_or_protein == "Protein" else "tab:orange"
     randomization_color = "red" if rna_or_protein == "Protein" else "purple"

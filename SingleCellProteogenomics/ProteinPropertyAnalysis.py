@@ -32,7 +32,7 @@ def read_variants(vcffilepath):
                     if transcriptId in transcript_variant: transcript_variant[transcriptId].append(ann)
                     else: transcript_variant[transcriptId] = [ann]
     # maybe check that it's the same geneId too?
-    gene_info = pd.read_csv(f"input/processed/transcriptId_geneName.txt", sep="\t", index_col=False)
+    gene_info = pd.read_csv(f"input/RNAData/TranscriptId_GeneName.txt.gz", sep="\t", index_col=False)
     transcriptId_proteinName = dict((info[1]["Transcript stable ID"], info[1]["Gene stable ID"]) for info in gene_info.iterrows())
     geneId_variant = {}
     for item in transcript_variant.items():
@@ -50,9 +50,9 @@ class ProteinProperties:
             names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, 
             names_nonccdprotein, names_ccdtranscript):
         '''Reads in information about protein properties for evaluating differences in melting temps'''
-        self.proteinDisorder = dict([(r[1][1], r[1][2:]) for r in pd.read_csv("input/processed/ProteinDisorderProperties.csv.gz").iterrows()])
-        self.aebersoldNumbers = pd.read_csv("C:/Users/antho/Dropbox/Projects/Nucleoli/AebersoldNumbers.csv", index_col=False)
-        self.geneId_variant = read_variants("C:/Users/antho/Dropbox/ProjectData/CellCycle/combined.spritz.snpeff.vcf.gz")
+        self.proteinDisorder = dict([(r[1][1], r[1][2:]) for r in pd.read_csv("input/ProteinProperties/ProteinDisorderProperties.csv.gz").iterrows()])
+        self.aebersoldNumbers = pd.read_csv("input/ProteinProperties/U2OSCopiesPerCell.csv", index_col=False)
+        self.geneId_variant = read_variants("input/ProteinProperties/U2OSFucciSingleCell.spritz.snpeff.vcf.gz")
         self.wp_ensg = wp_ensg
         self.ensg_ccdprotein_transcript_regulated = ensg_ccdprotein_transcript_regulated
         self.ensg_ccdprotein_nontranscript_regulated = ensg_ccdprotein_nontranscript_regulated
@@ -66,7 +66,7 @@ class ProteinProperties:
         self.names_ccdprotein_nontranscript_regulated = names_ccdprotein_nontranscript_regulated
         self.names_nonccdprotein = names_nonccdprotein
         self.names_ccdtranscript = names_ccdtranscript
-        self.names_hpamapped = pd.read_csv("input/raw/proteinatlas.tsv.gz", sep="\t")["Gene"]
+        self.names_hpamapped = pd.read_csv("input/ProteinProperties/proteinatlas.tsv.gz", sep="\t")["Gene"]
         self.test_results = {}
 
     def analyze2(self, aa, bb, aa_lab, bb_lab, property_label, testZerosSeparately=False):
@@ -98,7 +98,7 @@ class ProteinProperties:
     def analyze_melting_points(self):
         '''Gather measurements of melting points for each protein across 10 cell lines; get the median per protein and evaluate for differences between CCD groups'''
         # Load melting points for each protein across 10 samples
-        meltingDf = pd.read_csv("input/raw/ProteinStability/human.csv.gz")
+        meltingDf = pd.read_csv("input/ProteinProperties/human.proteinstability.csv.gz")
         meltingDf = meltingDf[pd.notna(meltingDf["quan_norm_meltPoint"])]
         print(f"{','.join(np.unique(meltingDf['cell_line_or_type']))}: unique human cell samples\n")
         self.all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
@@ -445,9 +445,9 @@ class ProteinProperties:
     def kinase_families(self):
         '''Investigate whether there are differences in upstream kinases from mapped proteins'''
         print("Running kinase family analysis")
-        kinaseFams = pd.read_csv("C:\\Users\\antho\\Dropbox\\ProjectData\\PhosphositePlus\\KinHubKinaseFamilies.csv")
+        kinaseFams = pd.read_csv("input/ProteinProperties/KinHubKinaseFamilies.csv")
         kinFamDict = dict([(row[7], row[4]) for idx, row in kinaseFams.iterrows()])
-        phosphositeplus = pd.read_csv("C:\\Users\\antho\\Dropbox\\ProjectData\\PhosphositePlus\\Kinase_Substrate_Dataset_NoHeader.gz", sep="\t")
+        phosphositeplus = pd.read_csv("input/ProteinProperties/KinaseSubstrateDatasetWithoutHeader.txt.gz", sep="\t")
         phosphositeplus["KINASE_FAMILY"] = [kinFamDict[x] if x in kinFamDict else "Other" for x in phosphositeplus["KIN_ACC_ID"]]
         phosHuman = phosphositeplus[phosphositeplus["SUB_ORGANISM"] == "human"]
         
