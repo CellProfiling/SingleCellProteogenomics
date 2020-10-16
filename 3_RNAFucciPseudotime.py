@@ -67,12 +67,10 @@ normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:,Non
 RNACellCycleDependence.plot_expression_facs(wp_ensg[np.isin(wp_ensg, adata.var_names)], normalized_exp_data, phasesfilt, adata.var_names, 
                                             "figures/GeneExpressionFucci")
 
-# UMAPs with RNA expression overlayed
-RNACellCycleDependence.plot_expression_umap(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], "figures/GeneExpressionUmap")
-
 # Cluster the expression into phases and analyze it that way
 bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use)
 # RNACellCycleDependence.plot_expression_boxplots(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], bulk_phase_tests, "figures/GeneExpressionBoxplots")
+# RNACellCycleDependence.plot_expression_umap(adata, wp_ensg[np.isin(wp_ensg, adata.var_names)], "figures/GeneExpressionUmap")
 
 #%% Moving average calculations and randomization analysis for RNA
 rna_ccd_analysis_results = RNACellCycleDependence.analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein, adata_regevccdgenes, biotype_to_use)

@@ -89,4 +89,4 @@ pd.DataFrame({
     "HydrophobicResidueCount" : [x[5] for x in protein_properties],
     "PolarResidueCount" : [x[6] for x in protein_properties],
     "Length" : [x[7] for x in protein_properties]
-    }).to_csv("input/processed/ProteinDisorderProperties.csv.gz")
+    }).to_csv("input/ProteinProperties/ProteinDisorderProperties.csv.gz")

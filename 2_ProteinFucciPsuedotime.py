@@ -102,5 +102,6 @@ ProteinCellCycleDependence.compare_to_lasso_analysis(u_well_plates, pol_sort_nor
      pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, pol_sort_fred, pol_sort_fgreen, wp_iscell, wp_isnuc, wp_iscyto, wp_ensg, ccd_comp)
 
 # Generate UMAPs to illustrate cutoffs and stability
-ProteinCellCycleDependence.generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
-                                                  wp_iscell, wp_isnuc, wp_iscyto, mean_diff_from_rng)
+ProteinCellCycleDependence.generate_protein_umaps(u_well_plates, 
+      pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
+      wp_iscell, wp_isnuc, wp_iscyto, mean_diff_from_rng)

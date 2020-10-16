@@ -11,11 +11,12 @@ Methods for assessing cell cycle dependence of protein abundance in single cells
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
 import umap
+from sklearn.linear_model import MultiTaskLassoCV
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 10 # Number of points for moving average window for protein analysis
 WINDOW_FUCCI_MARKERS = 100 # Used for getting median FUCCI marker intensity for LASSO analysis
-PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+PERMUTATIONS = 100#10000 # Number of permutations used for randomization analysis
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 BINS_FOR_UMAP_AND_LASSO = 400 # Number of bins for creating UMAPs/LASSO model. Chosen for the best stability.
 chosen_nn = 5
@@ -97,9 +98,8 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     curr_area_cell, curr_area_nuc, curr_well_plate_imgnb = [],[],[]
     cell_counts = []
     
-    analysis = "MeanRng"
-    folder = f"figures/TemporalMovingAverages{analysis}191205"
-    folder_mt = f"figures/TemporalMovingAverages{analysis}191205_mt"
+    folder = f"figures/TemporalMovingAverages"
+    folder_mt = f"figures/TemporalMovingAveragesMicrotubules"
     folder_rng = f"figures/TemporalMovingAverageRandomizationExamples"
     if not os.path.exists(folder): os.mkdir(folder)
     if not os.path.exists(folder_mt): os.mkdir(folder_mt)
@@ -186,11 +186,15 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
             
             windows1 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust1_idx) - WINDOW + 1)])
             windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
-            MovingAverages.temporal_mov_avg_protein(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], mvavgs_x_clust1[-1], mvavg_clust1, windows1, None, folder, fileprefixes[i] + "_clust1")
-            MovingAverages.temporal_mov_avg_protein(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], mvavgs_x_clust2[-1], mvavg_clust2, windows2, None, folder, fileprefixes[i] + "_clust2")
+            mvperc1 = MovingAverages.mvpercentiles(curr_comp_norm[clust1_idx][windows1])
+            mvperc2 = MovingAverages.mvpercentiles(curr_comp_norm[clust2_idx][windows2])
+            MovingAverages.temporal_mov_avg_protein(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], 
+                mvavgs_x_clust1[-1], mvavgs_comp_clust1[-1], mvperc1, None, folder, fileprefixes[i] + "_clust1")
+            MovingAverages.temporal_mov_avg_protein(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], 
+                mvavgs_x_clust2[-1], mvavgs_comp_clust2[-1], mvperc2, None, folder, fileprefixes[i] + "_clust2")
         
-        # Make example plots for the randomization trials, but no need for the bimodal ones
-        elif np.mean(curr_comp_percvar - curr_percvar_rng_comp) > 0.05:
+        # Make example plots for the randomization trials for the NFAT5 example in manuscript
+        if wp_ensg[i] == "ENSG00000102908":
             median_rng_idx = np.argsort(curr_percvar_rng_comp)
             for iii, idx in enumerate([0,len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)//2,3*len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)-1]):
                 MovingAverages.temporal_mov_avg_randomization_example_protein(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], 
@@ -221,17 +225,18 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
         mvperc_comp = MovingAverages.mvpercentiles(curr_ab_norm[windows])
         mvperc_comps.append(mvperc_comp)
-        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_comp,
-            mvperc_comp, None, folder, fileprefixes[i])
+        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
+            mvavg_xvals, mvavg_comp, mvperc_comp, None, folder, fileprefixes[i])
         
         # Make the plots for microtubules (takes 10 mins)
         mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
-        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, mvavg_xvals, mvavg_mt, windows, None, folder_mt, f"{fileprefixes[i]}_mt")
+        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, 
+                mvavg_xvals, mvavg_mt, mvperc_mt, None, folder_mt, f"{fileprefixes[i]}_mt")
         
         # Make the plots for each bimodal protein
         if clusters is not None:
-            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, mvavg_xvals, mvavg_comp, 
-                mvperc_comp, clusters, folder, fileprefixes[i] + "_clust1&2")
+            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
+                mvavg_xvals, mvavg_comp, mvperc_comp, clusters, folder, fileprefixes[i] + "_clust1&2")
         
     alpha_ccd = 0.01
     perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
@@ -343,7 +348,9 @@ def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimo
     nonccdfolder = f"figures/NonCCD"
     bimodalnonccdfolder = f"figures/NonCCDBimodal"
     examplesfolder = f"figures/Examples"
-    for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,bimodalnonccdfolder,examplesfolder]:
+    for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,
+              ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,
+              bimodalnonccdfolder,examplesfolder]:
         if not os.path.exists(f): os.mkdir(f)
     
     # CCD Unimodal
@@ -429,7 +436,7 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     ### address gene redundancy
     wp_ccd_bimodalonecluster = wp_comp_ccd_clust1 ^ wp_comp_ccd_clust2
     wp_ccd_bimodaltwocluster = wp_comp_ccd_clust1 & wp_comp_ccd_clust2
-    removeThese = pd.read_csv("input/ProteinData/ReliabilityScores.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0]
     wp_removeReplicate = np.isin(u_well_plates, removeThese)
     
     bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures
@@ -445,9 +452,9 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
     nonccd_comp[wp_removeReplicate] = False
            
     # Accounting for biologically CCD ones
-    knownccd1 = np.genfromtxt("input/processed/manual/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
-    knownccd2 = np.genfromtxt("input/processed/manual/known_go_ccd.txt", dtype='str') # from GO cell cycle
-    knownccd3 = np.genfromtxt("input/processed/manual/known_go_proliferation.txt", dtype='str') # from GO proliferation
+    knownccd1 = np.genfromtxt("input/ProteinData/knownccd.txt", dtype='str') # from gene ontology, reactome, cyclebase 3.0, NCBI gene from mcm3
+    knownccd2 = np.genfromtxt("input/ProteinData/known_go_ccd.txt", dtype='str') # from GO cell cycle
+    knownccd3 = np.genfromtxt("input/ProteinData/known_go_proliferation.txt", dtype='str') # from GO proliferation
     print(f"{len(bioccd)}: number of mitotic structure proteins")
     
     ccd_prots_withmitotic = np.unique(np.concatenate((wp_ensg[ccd_comp], bioccd)))
@@ -622,7 +629,7 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
         wp_binned_values = np.array(wp_binned_values)
         for nn in nneighbors:
             for md in mindists:
-                cutoff=0.05 
+                cutoff=chosen_cutoff
                 reducer=umap.UMAP(n_neighbors=nn, min_dist=md, random_state=0)
                 embeddingCcd=reducer.fit_transform(wp_binned_values[mean_diff_from_rng > cutoff,:].T)
                 plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
@@ -682,7 +689,7 @@ def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto,
     mvperc_90p = [x[-1] for x in mvperc_comps]
     mvperc_25p = [x[1] for x in mvperc_comps]
     mvperc_75p = [x[-2] for x in mvperc_comps]
-    removeThese = pd.read_csv("input/ProteinData/ReliabilityScores.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0]
     ccdStrings = get_ccd_strings(ccd_comp, wp_ensg, bioccd)
     pd.DataFrame({
         "ENSG" : wp_ensg,

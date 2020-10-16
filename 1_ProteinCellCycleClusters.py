@@ -59,7 +59,7 @@ plt.show()
 plt.close()
 
 # General picture of antibody intensity density
-sbn.displot(ab_cell, hist=False)
+sbn.displot(ab_cell, kind="hist")
 plt.xlabel("Mean Intensity")
 plt.ylabel("Density")
 plt.savefig("figures/antibody_cell_intensity.pdf")

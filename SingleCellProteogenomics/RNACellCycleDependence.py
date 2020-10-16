@@ -14,7 +14,7 @@ from sklearn.impute import KNNImputer
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
-PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+PERMUTATIONS = 100#10000 # Number of permutations used for randomization analysis
 PERMUTATIONS_ISOFORMS = 100
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
@@ -191,7 +191,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     gtpass_eq_percvar_adj = pass_eq_percvar_adj & (percent_ccd_variance > np.median(percent_ccd_variance_rng, axis=0))
 
     ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     gene_ids = list(gene_info["gene_id"])
     gene_names = list(gene_info["name"])
     gene_id_name = dict([(gene_ids[idxx], gene_names[idxx]) for idxx in range(len(gene_info))])

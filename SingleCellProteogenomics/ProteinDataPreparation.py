@@ -195,7 +195,10 @@ def apply_cell_count_filter(my_df):
     my_df_filtered = my_df
     well_plate = np.asarray(my_df_filtered.well_plate)
     u_well_plates = np.unique(my_df_filtered.well_plate)
-    cell_count_dict = dict((wp, sum(my_df.well_plate == wp)) for wp in u_well_plates)
+    cell_count_dict = {}
+    for wp in well_plate:
+        if wp in cell_count_dict: cell_count_dict[wp] += 1
+        else: cell_count_dict[wp] = 1
     cell_counts = np.array([cell_count_dict[wp] for wp in well_plate])
     print("filtering low cell counts")
     my_df_filtered = my_df_filtered[cell_counts >= MIN_CELL_COUNT]

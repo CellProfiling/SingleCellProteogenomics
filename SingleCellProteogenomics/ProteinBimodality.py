@@ -73,13 +73,13 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
     wp_enoughcellsinbothclusters = np.array([sum(c1[0]) > 50 and sum(c1[1]) > 50 for c1 in wp_bimodal_cluster_idxs])
     wp_isbimodal_generally = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass
     wp_isbimodal_fcpadj_pass = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass & ~wp_timebimodal_pass & wp_enoughcellsinbothclusters
-    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0]
     wp_removeReplicate = np.isin(u_well_plates, removeThese)
     print(f"{sum(~wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying unimodal distributions ({sum(~wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     print(f"{sum(wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying bimodal distributions ({sum(wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     
     # Show that the intensity measurements are reasonable for these bimodal samples
-    plt.hist(np.concatenate(np.array(wp_intensities)[wp_isbimodal_generally]))
+    plt.hist(np.concatenate(np.array(wp_intensities, dtype=object)[wp_isbimodal_generally]))
     plt.xlabel("Mean intensity")
     plt.ylabel("Count")
     plt.title("Intensities of Cells within Bimodal Distributions\nAre Similar to those Overall")
