@@ -112,7 +112,7 @@ def general_plots():
     plt.xlabel("TPM")
     plt.ylabel("Density")
     plt.savefig("figures/rna_abundance_density.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
     
 def plot_markers_vs_reads(adata):
@@ -189,7 +189,7 @@ def readcount_and_genecount_over_pseudotime():
     We also show the resulting increase in the number of genes detected.
     '''
     valuetype, use_spikeins, biotype_to_use = "Counts", False, "protein_coding"
-    adata, phases = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
     expression_data = adata.X
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
@@ -212,7 +212,7 @@ def readcount_and_genecount_over_pseudotime():
     plt.legend(fontsize=14)
     plt.tight_layout()
     plt.savefig(f"figures/TotalCountsPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # Total genes detected per cell, moving average
@@ -231,5 +231,5 @@ def readcount_and_genecount_over_pseudotime():
     plt.legend(fontsize=14)
     plt.tight_layout()
     plt.savefig(f"figures/TotalGenesPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()

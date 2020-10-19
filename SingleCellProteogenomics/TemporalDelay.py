@@ -74,7 +74,8 @@ def protein_heatmap(nbins, highlight_names, highlight_ensg, ccd_comp, u_well_pla
     plt.tight_layout()
     plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.pdf'), transparent=True)
     plt.savefig(os.path.join("figures",'sorted_heatmap21_sw30_take4.png'), transparent=True)
-    plt.show()
+    # plt.show()
+    plt.close()
 
     np.save("output/pickles/wp_max_pol.npy", wp_max_pol, allow_pickle=True)
 
@@ -88,7 +89,7 @@ def scatter_genes(gene1, gene2, r, wp_binned_values, wp_ensg):
     plt.ylabel(f"{gene2[1]} Expression Binned by Pseudotime", fontsize=14, fontname="Arial")
     plt.text(np.min(wp_binned_values[wp_ensg == gene1[0]][0]), np.max(wp_binned_values[wp_ensg == gene2[0]][0]), f"Pearson's r = {r}", fontsize=14, fontname="Arial")
     plt.savefig(f"figures/Correlations/{gene1[1]}_{gene2[1]}.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def peak_expression_correlation_analysis(wp_binned_values, wp_max_pol, wp_ensg, pol_sort_well_plate, u_well_plates):
@@ -240,7 +241,8 @@ def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, is
     plt.tight_layout()
     plt.savefig(os.path.join("figures", f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.pdf"), transparent=True)
     plt.savefig(os.path.join("figures", f"sorted_rna_heatmap{'_isoform' if isIsoformData else ''}.png"), transparent=True)
-    plt.show()
+    # plt.show()
+    plt.close()
 
     return sorted_max_moving_avg_pol_ccd, norm_exp_sort, max_moving_avg_pol, sorted_rna_binned_norm
 
@@ -308,7 +310,8 @@ def peak_expression_alluvial(diff_max_pol, insct_rna_max_pol_ccd, insct_prot_max
     fig.set_size_inches(5 ,10)
     plt.savefig("figures/transitions.png")
     plt.savefig("figures/transitions.pdf")
-    plt.show()
+    # plt.show()
+    plt.close()
 
 def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd, diff_max_pol):
     '''Make a scatterplot with time of peak RNA and protein expression colored by the temporal delay'''
@@ -325,7 +328,7 @@ def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd,
     plt.ylabel("Peak Protein Expression, hrs",fontname='Arial',size=20)
     plt.tight_layout()
     plt.savefig("figures/TemporalDelayScatter.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, wp_max_pol, wp_max_pol_ccd, 
