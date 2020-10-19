@@ -362,7 +362,7 @@ def plot_umap_ccd_cutoffs(adata, mean_diff_from_rng):
         adata_withoutCCd = adata[:,mean_diff_from_rng < cutoff]
         sc.pp.neighbors(adata_withoutCCd, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata_withoutCCd)
-        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=True, save=True)
+        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=False, save=True)
         shutil.move("figures/umap.pdf", f"figures/RNACcdUmapCutoffs/umap{cutoff}cutoff.pdf")
 
 def ccd_analysis_of_spikeins(adata_spikeins, perms):
@@ -423,12 +423,12 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     adataCCd = adata[:,nz_coef]
     sc.pp.neighbors(adataCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataCCd)
-    sc.pl.umap(adataCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoCCD.pdf")
     adataNonCCd = adata[:,~nz_coef]
     sc.pp.neighbors(adataNonCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataNonCCd)
-    sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataNonCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
     plt.rcParams['figure.figsize'] = prevPlotSize
 
