@@ -254,7 +254,8 @@ class ProteinProperties:
         # plt.ylabel("Melting Point (°C)")
         # plt.legend()
         # plt.savefig(f"figures/{propertyLabel}VsTm_all.png")
-        # plt.show(); plt.close()
+        # plt.show()
+        # plt.close()
         
         plt.scatter(*self.get_property_and_temps(transregProperty, self.names_ccdprotein_transcript_regulated), label="Trans Reg")
         plt.scatter(*self.get_property_and_temps(nontransregProperty, self.names_ccdprotein_nontranscript_regulated), label="Non-Trans Reg")
@@ -263,7 +264,8 @@ class ProteinProperties:
         plt.ylabel("Melting Point (°C)")
         plt.legend()
         plt.savefig(f"figures/{propertyLabel}VsTm.png")
-        plt.show(); plt.close()
+        # plt.show()
+        plt.close()
     
     def apply_linregress(self, allProperty, propertyLabel, isAbundance = False):
         names = self.proteinDisorder.keys() if not isAbundance else self.aebGenes
@@ -276,7 +278,8 @@ class ProteinProperties:
         plt.xlabel(f"Fraction {propertyLabel} Residues")
         plt.ylabel("Melting Point (°C)")
         plt.savefig(f"figures/All{propertyLabel}VsTm.png")
-        plt.show(); plt.close()
+        # plt.show()
+        plt.close()
         print(f"{linModel.slope}: slope for all melting temperatures vs fract {propertyLabel} residues")
         print(f"{linModel.rvalue**2}: r-squared for all melting temperatures vs fract {propertyLabel} residues")
         print(f"{linModel.pvalue}: p-value for nonzero slope for all melting temperatures vs fract {propertyLabel} residues")
@@ -365,7 +368,7 @@ class ProteinProperties:
         
     def boxplot_saveclose(self, filename):
         plt.savefig(filename)
-        plt.show()
+        # plt.show()
         plt.close()
     
     def generate_statistical_boxplots(self):

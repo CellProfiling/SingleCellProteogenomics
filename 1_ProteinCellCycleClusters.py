@@ -14,13 +14,10 @@ from SingleCellProteogenomics import (ProteinBimodality,
                                       ProteinVariability)
 from SingleCellProteogenomics.utils import *
 
-plt.rcParams["pdf.fonttype"], plt.rcParams["ps.fonttype"], plt.rcParams[
-    "savefig.dpi"
-] = (
-    42,
-    42,
-    300,
-)  # Make PDF text readable
+# Make PDF text readable
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["savefig.dpi"] = 300
 
 #%% Read in the protein data (methods in ProteinDataPreparation.py)
 my_df = ProteinDataPreparation.read_raw_data()
@@ -91,7 +88,7 @@ plt.hist2d(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale, bins=200)
 plt.xlabel("Log10 Green Fucci Intensity")
 plt.ylabel("Log10 Red Fucci Intensity")
 plt.savefig("figures/FucciPlotProteinIFData_unfiltered.png")
-plt.show()
+# plt.show()
 plt.close()
 
 # General picture of antibody intensity density
@@ -99,7 +96,7 @@ sbn.displot(ab_cell, kind="hist")
 plt.xlabel("Mean Intensity")
 plt.ylabel("Density")
 plt.savefig("figures/antibody_cell_intensity.pdf")
-plt.show()
+# plt.show()
 plt.close()
 
 #%% Idea: Gaussian clustering per plate to identify G1/S/G2 and do kruskal test for variance
@@ -116,11 +113,9 @@ clusternames = [
 cluster_labels = ProteinGaussianClustering.gaussian_clustering(
     log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_rescale, clusternames
 )
-g1, sph, g2 = (
-    cluster_labels == g1_idx,
-    cluster_labels == sph_idx,
-    cluster_labels == g2_idx,
-)
+g1 = cluster_labels == g1_idx
+sph = cluster_labels == sph_idx
+g2 = cluster_labels == g2_idx
 alpha_gauss, doGenerateBoxplotsPerGene = 0.05, False
 wp_comp_kruskal_gaussccd_adj, wp_pass_kruskal_gaussccd_bh_comp, wp_mt_kruskal_gaussccd_adj, wp_pass_gaussccd_bh_mt = ProteinGaussianClustering.gaussian_clustering_analysis(
     alpha_gauss,

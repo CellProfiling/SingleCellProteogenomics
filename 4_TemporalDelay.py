@@ -11,13 +11,10 @@ from SingleCellProteogenomics import (Loaders, RNADataPreparation,
                                       TemporalDelay, utils)
 from SingleCellProteogenomics.utils import *
 
-plt.rcParams["pdf.fonttype"], plt.rcParams["ps.fonttype"], plt.rcParams[
-    "savefig.dpi"
-] = (
-    42,
-    42,
-    300,
-)  # Make PDF text readable
+# Make PDF text readable
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["savefig.dpi"] = 300
 
 #%% Read in the protein data
 import_dict = Loaders.load_temporal_delay()
@@ -132,6 +129,7 @@ TemporalDelay.compare_variances_prot_v_rna(
     gini_cell_prot,
     cv_cell_prot,
 )
+
 TemporalDelay.compare_peak_expression_prot_v_rna(
     adata,
     wp_ensg,
