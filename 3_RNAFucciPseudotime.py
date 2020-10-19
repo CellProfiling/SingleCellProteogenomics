@@ -13,13 +13,10 @@ from SingleCellProteogenomics import (FucciCellCycle, FucciPseudotime,
                                       RNADataPreparation, stretch_time, utils)
 from SingleCellProteogenomics.utils import *
 
-plt.rcParams["pdf.fonttype"], plt.rcParams["ps.fonttype"], plt.rcParams[
-    "savefig.dpi"
-] = (
-    42,
-    42,
-    300,
-)  # Make PDF text readable
+# Make PDF text readable
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["savefig.dpi"] = 300
 
 bioccd = np.genfromtxt(
     "input/ProteinData/BiologicallyDefinedCCD.txt", dtype="str"
@@ -57,11 +54,9 @@ adata, phasesfilt = RNADataPreparation.qc_filtering(
 )
 RNADataPreparation.plot_markers_vs_reads(adata)
 RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "AfterRemovingNoncycling")
-g1, s, g2 = (
-    adata.obs["phase"] == "G1",
-    adata.obs["phase"] == "S-ph",
-    adata.obs["phase"] == "G2M",
-)
+g1 = adata.obs["phase"] == "G1"
+s = adata.obs["phase"] == "S-ph"
+g2 = adata.obs["phase"] == "G2M"
 do_make_boxplots = False
 if do_make_boxplots:
     for iii, ensg in enumerate(adata.var_names):

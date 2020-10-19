@@ -14,13 +14,10 @@ from SingleCellProteogenomics import (FucciPseudotime, Loaders,
                                       ProteinVariability)
 from SingleCellProteogenomics.utils import *
 
-plt.rcParams["pdf.fonttype"], plt.rcParams["ps.fonttype"], plt.rcParams[
-    "savefig.dpi"
-] = (
-    42,
-    42,
-    300,
-)  # Make PDF text readable
+# Make PDF text readable
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
+plt.rcParams["savefig.dpi"] = 300
 
 #%% Read in the protein data
 import_dict = Loaders.load_protein_fucci_pseudotime()
@@ -91,9 +88,9 @@ pol_sort_well_plate, pol_sort_norm_rev, pol_sort_well_plate_imgnb, pol_sort_well
 # Execution: Now that we already have the data filtered for variability, this is just descriptive.
 # Output: scatters of antibody vs microtubule variances by different measures of variaibility
 
-use_log = (
-    False
-)  # toggle for using log-transformed intensities; we decided to use natural intensities
+# toggle for using log-transformed intensities
+# we decided to use natural intensities
+use_log = False
 calculate_variaton_result = ProteinVariability.calculate_variation(
     use_log,
     u_well_plates,
@@ -139,14 +136,17 @@ general_boxplot(
     False,
     f"figures/ProteinMicrotubuleGinis.pdf",
 )
+p_varProt_varMt = scipy.stats.kruskal(var_comp, var_mt)[1]
+p_cvProt_cvMt = scipy.stats.kruskal(cv_comp, cv_mt)[1]
+p_giniProt_giniMt = scipy.stats.kruskal(gini_comp, gini_mt)[1]
 print(
-    f"{scipy.stats.kruskal(var_comp, var_mt)[1]}: p-value for difference between protein and microtubule variances"
+    f"{p_varProt_varMt}: p-value for difference between protein and microtubule variances"
 )
 print(
-    f"{scipy.stats.kruskal(cv_comp, gini_mt)[1]}: p-value for difference between protein and microtubule CVs"
+    f"{p_cvProt_cvMt}: p-value for difference between protein and microtubule CVs"
 )
 print(
-    f"{scipy.stats.kruskal(gini_comp, gini_mt)[1]}: p-value for difference between protein and microtubule Gini indices"
+    f"{p_giniProt_giniMt}: p-value for difference between protein and microtubule Gini indices"
 )
 
 #%% Gaussian clustering to identify biomodal intensity distributions
