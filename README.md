@@ -10,7 +10,7 @@ The code is listed in order of execution, e.g. "1_", "2_" etc. The output of eac
 
 The logic for these analyses is contained in the SingleCellProteogenomics folder.
 
-The input files are contained in the "input" folder. This folder is linked to the review responses as a zip file, input.zip. Expand this folder within the SingleCellProteogenomics folder.
+The input files are contained in the "input" folder. This folder is linked to the review responses as a zip file, `input.zip`. Expand this folder within the SingleCellProteogenomics folder.
 
 The output files are added to a folder "output" during the analysis, and figures are added to a folder "figures."
 

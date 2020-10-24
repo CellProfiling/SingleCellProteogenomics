@@ -12,11 +12,14 @@ from SingleCellProteogenomics import (FucciCellCycle, FucciPseudotime,
                                       RNACellCycleDependence,
                                       RNADataPreparation, stretch_time, utils)
 from SingleCellProteogenomics.utils import *
+import warnings
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["savefig.dpi"] = 300
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 bioccd = np.genfromtxt(
     "input/ProteinData/BiologicallyDefinedCCD.txt", dtype="str"

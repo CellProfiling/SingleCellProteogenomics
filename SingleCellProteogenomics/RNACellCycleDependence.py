@@ -11,6 +11,7 @@ from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages, FucciCellCycle, FucciPseudotime, RNADataPreparation
 from sklearn.linear_model import MultiTaskLassoCV
 from sklearn.impute import KNNImputer
+import warnings
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
@@ -29,8 +30,8 @@ def boxplot_result(g1, s, g2, outfolder, ensg):
     cccc.extend(["G1/S"] * len(s))
     cccc.extend(["G2"] * len(g2))
     boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
-    boxplot.set_xlabel("", size=36,fontname='Arial')
-    boxplot.set_ylabel("Normalized Log10(TPM)", size=18,fontname='Arial')
+    boxplot.set_xlabel("", size=36)
+    boxplot.set_ylabel("Normalized Log10(TPM)", size=18)
     boxplot.tick_params(axis="both", which="major", labelsize=14)
     plt.title("")
     plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
@@ -65,8 +66,8 @@ def plot_expression_facs(genelist, normalized_exp_data, phases, var_names, outfo
         plt.tight_layout()
         cbar = plt.colorbar()
         cbar.ax.get_yaxis().labelpad = 15
-        cbar.ax.set_ylabel("Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
-        plt.title(gene,size=20,fontname='Arial')
+        cbar.ax.set_ylabel("Normalized RNA-Seq Counts", rotation=270,size=16)
+        plt.title(gene,size=20)
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
 
@@ -83,12 +84,12 @@ def plot_expression_boxplots(adata, genelist, bulk_phase_tests, outfolder):
         expression_stage = pd.DataFrame({gene : normalized_exp_data, "stage" : adata.obs["phase"]})
         exp_stage_filt = expression_stage[expression_stage.stage != "nan"].reset_index(drop=True)
         boxplot = exp_stage_filt.boxplot(gene, by="stage", figsize=(12, 8))
-        boxplot.set_xlabel("Cell Cycle Stage", size=36,fontname='Arial')
-        boxplot.set_ylabel("Normalized Transcript Expression", size=36,fontname='Arial')
+        boxplot.set_xlabel("Cell Cycle Stage", size=36)
+        boxplot.set_ylabel("Normalized Transcript Expression", size=36)
         boxplot.tick_params(axis="both", which="major", labelsize=16)
         qqq = bulk_phase_tests[bulk_phase_tests.gene == gene].iloc[0]["pvaladj"]
         rej = bulk_phase_tests[bulk_phase_tests.gene == gene].iloc[0]["reject"]
-        boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36,fontname='Arial')
+        boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36)
         boxplot.get_figure().savefig(f"{outfolder}/{gene}_boxplot.png")
         plt.close()
     pd.DataFrame({"gene" : notfound}).to_csv(f"{outfolder}/GenesFilteredInScRNASeqAnalysis.csv")
@@ -96,13 +97,13 @@ def plot_expression_boxplots(adata, genelist, bulk_phase_tests, outfolder):
 def panel_variances_tf(total_var, percent_var, expression_color, title, file_tag):
     '''Displaying the bulk_phase results on the percent variances: plot percent variances from cell line against total variance'''
     plt.scatter(total_var, percent_var, c=expression_color, cmap="bwr_r")
-    plt.xlabel("Gini of Gene Expression", size=24,fontname='Arial')
-    plt.ylabel("Percent Variance Due to Cell Cycle",size=24,fontname='Arial')
+    plt.xlabel("Gini of Gene Expression", size=24)
+    plt.ylabel("Percent Variance Due to Cell Cycle",size=24)
     plt.xticks(size=14)
     plt.yticks(size=14)
     plt.xlim(-0.005, 1)
     plt.ylim(-0.05, 0.8)
-    plt.title(title, size=24, fontname='Arial')
+    plt.title(title, size=24)
     plt.legend()
 
 def plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, ccdprotein, nonccdprotein, regevccdgenes):
@@ -252,9 +253,10 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     # Figures of merit
     with open("output/figuresofmerit.txt", "a") as file:
         fom = "--- RNA pseudotime\n\n"
-        fom += f"We identified {sum(ccdtranscript)} genes of {len(ccdtranscript)} protein-coding genes analyzed ({100 * sum(ccdtranscript) / len(ccdtranscript)}%) to have variance in expression levels correlated to cell cycle progression" + "\n\n"
-        fom += f"We can attribute only {100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing" + "\n\n"
-        fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names[adata_regevccdgenes])) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
+        fom += f"We identified {sum(ccdtranscript)} {'genes' if use_isoforms else 'transcript isoforms'} of {len(ccdtranscript)} protein-coding {'genes' if use_isoforms else 'transcript isoforms'} analyzed ({100 * sum(ccdtranscript) / len(ccdtranscript)}%) to have variance in expression levels correlated to cell cycle progression" + "\n\n"
+        if not use_isoforms:
+            fom += f"We can attribute only {100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing" + "\n\n"
+            fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names[adata_regevccdgenes])) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
         fom += f"" + "\n\n"
         print(fom)
         file.write(fom)
@@ -263,7 +265,8 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 
 def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprotein, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
-    gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
+    gene_varnames = list(adata.var_names)
+    isoform_varnames = list(adata_isoform.var_names)
     isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
@@ -403,6 +406,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     plt.rcParams['figure.figsize'] = (6, 5)
 
     print("ANALYZING SC-RNA-SEQ WITH LASSO")
+    warnings.filterwarnings("ignore")
     fucci_rna_data = [(adata.obs["Red585"][ii], adata.obs["Green530"][ii]) for ii in np.arange(len(adata.obs))]
     imputer = KNNImputer(missing_values=0)
     expression = imputer.fit_transform(adata.X)
@@ -431,6 +435,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
     plt.rcParams['figure.figsize'] = prevPlotSize
+    warnings.filterwarnings("default")
 
 def analyze_cnv_calls(adata, ccdtranscript):
     '''Take results from cnvkit calls to analyze effects of copy number variation'''

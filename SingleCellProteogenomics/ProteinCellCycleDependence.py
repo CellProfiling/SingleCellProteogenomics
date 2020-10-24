@@ -10,7 +10,7 @@ Methods for assessing cell cycle dependence of protein abundance in single cells
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
-import umap
+import umap, warnings
 from sklearn.linear_model import MultiTaskLassoCV
 
 np.random.seed(0) # Get the same results each time
@@ -314,7 +314,9 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     pervar_adj_withbimodal_nextafter = np.nextafter(wp_comp_eq_percvar_adj_withbimodal, wp_comp_eq_percvar_adj_withbimodal + 1)
     plt.figure(figsize=(10,10))
     plt.scatter(mean_diff_from_rng_withbimodal, -np.log10(pervar_adj_withbimodal_nextafter), c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
-    plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(-np.log10(pervar_adj_withbimodal_nextafter)), np.max(-np.log10(wp_comp_eq_percvar_adj_withbimodal)), color="gray")
+    plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, 
+               np.min(-np.log10(pervar_adj_withbimodal_nextafter)), 
+               np.max(-np.log10(pervar_adj_withbimodal_nextafter)), color="gray")
     plt.xlabel("Mean Difference from Random")
     plt.ylabel("-log10 adj p-value from randomization")
     plt.savefig("figures/MedianDiffFromRandomVolcano.png")
@@ -410,8 +412,9 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
                                 -np.log10(wp_comp_kruskal_gaussccd_adj), "FDR for Cell Cycle Dependence", True, 
                                 "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentCVProteinFractionVariance.png")
     
+    pervar_eq_percvar_adj = np.nextafter(wp_comp_eq_percvar_adj, wp_comp_eq_percvar_adj + 1)
     plt.figure(figsize=(10,10))
-    plt.scatter(perc_var_comp, -np.log10(wp_comp_eq_percvar_adj))
+    plt.scatter(perc_var_comp, -np.log10(pervar_eq_percvar_adj))
     plt.xlabel("percent variance new")
     plt.ylabel("-log10 FDR for CCD")
     plt.hlines(-np.log10(alphaa), np.min(perc_var_comp), np.max(perc_var_comp))
@@ -595,30 +598,32 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
     print(f"{np.sum(fucci_protein.coef_, axis=0)[np.sum(fucci_protein.coef_, axis=0) != 0]}")
     
     # Make a UMAPs for the LASSO analysis to demonstrate higher false negative rate
-    nz_coef_protein = np.sum(fucci_protein.coef_, axis=0) != 0
-    reducer=umap.UMAP(n_neighbors=chosen_nn, min_dist=chosen_md, random_state=0)
-    
-    embeddingCcd=reducer.fit_transform(wp_binned_values[nz_coef_protein,:].T)
-    plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
-    plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
-    cb = plt.colorbar()
-    cb.set_label("Pseudotime")
-    plt.savefig(f"figures/umapProteinLassoCCD.pdf")
-    plt.close()
-    
-    embeddingNonCcd=reducer.fit_transform(wp_binned_values[~nz_coef_protein,:].T)
-    plt.scatter(embeddingNonCcd[:,0],embeddingNonCcd[:,1], c=xvals[1:])
-    plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
-    cb = plt.colorbar()
-    cb.set_label("Pseudotime")
-    plt.savefig(f"figures/umapProteinLassoNonCCD.pdf")
-    plt.close()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        nz_coef_protein = np.sum(fucci_protein.coef_, axis=0) != 0
+        reducer=umap.UMAP(n_neighbors=chosen_nn, min_dist=chosen_md, random_state=0)
+        embeddingCcd=reducer.fit_transform(wp_binned_values[nz_coef_protein,:].T)
+        plt.scatter(embeddingCcd[:,0],embeddingCcd[:,1], c=xvals[1:])
+        plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+        cb = plt.colorbar()
+        cb.set_label("Pseudotime")
+        plt.savefig(f"figures/umapProteinLassoCCD.pdf")
+        plt.close()
+        
+        embeddingNonCcd=reducer.fit_transform(wp_binned_values[~nz_coef_protein,:].T)
+        plt.scatter(embeddingNonCcd[:,0],embeddingNonCcd[:,1], c=xvals[1:])
+        plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
+        cb = plt.colorbar()
+        cb.set_label("Pseudotime")
+        plt.savefig(f"figures/umapProteinLassoNonCCD.pdf")
+        plt.close()
     
 def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 
                    wp_iscell, wp_isnuc, wp_iscyto, mean_diff_from_rng):
     if not os.path.exists("figures/ProteinUmaps"): os.mkdir("figures/ProteinUmaps")
     if not os.path.exists("figures/ProteinUmapStability"): os.mkdir("figures/ProteinUmapStability")
     
+    warnings.filterwarnings("ignore")
     nneighbors = [5, 10, 15, 20, 50] # used nn=10 in the paper
     mindists = [0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1] # used 0.5 (default) in the paper
     nbinses = [50, 100, 200, 300, 400, 500]
@@ -680,6 +685,7 @@ def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate
         cb.set_label("Pseudotime")
         plt.savefig(f"figures/ProteinUmaps/proteinUmap{round(cutoff, 2)}NonCCD.pdf")
         plt.close()
+    warnings.filterwarnings("default")
 
 def make_plotting_dataframe(wp_ensg, wp_ab, u_well_plates, wp_iscell, wp_iscyto, wp_isnuc, ccd_comp, bioccd, 
             curr_pols, curr_ab_norms, curr_freds, curr_fgreens, curr_mockbulk_phases, mvavgs_x, mvavgs_comp, mvperc_comps, 

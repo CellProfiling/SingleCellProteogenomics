@@ -61,14 +61,14 @@ def protein_heatmap(nbins, highlight_names, highlight_ensg, ccd_comp, u_well_pla
     ax.tick_params(direction='out', length=12, width=2, colors='k', axis='x',which='major')
     ax.tick_params(direction='out', length=56, width=1, colors='k', axis='y',which='major')
     ax.set_aspect('auto')
-    plt.xlabel('Division Cycle, hrs',size=20,fontname='Arial')
-    plt.ylabel('Gene',size=20,fontname='Arial')
-    plt.xticks(size=12,fontname='Arial')
-    plt.yticks(size=10,fontname='Arial')
+    plt.xlabel('Division Cycle, hrs',size=20)
+    plt.ylabel('Gene',size=20)
+    plt.xticks(size=12)
+    plt.yticks(size=10)
     divider1 = make_axes_locatable(ax)
     cax1 = divider1.append_axes("right", size="5%", pad=0.05)
     cbar = plt.colorbar(sc, cax = cax1)
-    cbar.set_label('Relative expression', fontname='Arial', size=20)
+    cbar.set_label('Relative expression', size=20)
     cbar.ax.tick_params(labelsize=18)
 
     plt.tight_layout()
@@ -84,9 +84,9 @@ def scatter_genes(gene1, gene2, r, wp_binned_values, wp_ensg):
     '''Make a scatterplot to go along with the correlation of protein expression between two genes'''
     if not os.path.exists("figures/Correlations"): os.mkdir("figures/Correlations")
     plt.scatter(wp_binned_values[wp_ensg == gene1[0]][0], wp_binned_values[wp_ensg == gene2[0]][0])
-    plt.xlabel(f"{gene1[1]} Expression Binned by Pseudotime", fontsize=14, fontname="Arial")
-    plt.ylabel(f"{gene2[1]} Expression Binned by Pseudotime", fontsize=14, fontname="Arial")
-    plt.text(np.min(wp_binned_values[wp_ensg == gene1[0]][0]), np.max(wp_binned_values[wp_ensg == gene2[0]][0]), f"Pearson's r = {r}", fontsize=14, fontname="Arial")
+    plt.xlabel(f"{gene1[1]} Expression Binned by Pseudotime", fontsize=14)
+    plt.ylabel(f"{gene2[1]} Expression Binned by Pseudotime", fontsize=14)
+    plt.text(np.min(wp_binned_values[wp_ensg == gene1[0]][0]), np.max(wp_binned_values[wp_ensg == gene2[0]][0]), f"Pearson's r = {r}", fontsize=14)
     plt.savefig(f"figures/Correlations/{gene1[1]}_{gene2[1]}.pdf")
     plt.show()
     plt.close()
@@ -227,10 +227,10 @@ def rna_heatmap(adata, highlight_names, highlight_ensg, ccdtranscript, xvals, is
     ax.tick_params(direction='out', length=12, width=2, colors='k', axis='x',which='major')
     ax.tick_params(direction='out', length=56, width=1, colors='k', axis='y',which='major')
     ax.set_aspect('auto')
-    plt.xlabel('Division Cycle, hrs',size=20,fontname='Arial')
-    plt.ylabel('Gene',size=20,fontname='Arial')
-    plt.xticks(size=12,fontname='Arial')
-    plt.yticks(size=10,fontname='Arial')
+    plt.xlabel('Division Cycle, hrs',size=20)
+    plt.ylabel('Gene',size=20)
+    plt.xticks(size=12)
+    plt.yticks(size=10)
     divider1 = make_axes_locatable(ax)
     cax1 = divider1.append_axes("right", size="5%", pad=0.05)
     cbar = plt.colorbar(sc, cax = cax1)
@@ -319,10 +319,10 @@ def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd,
     ax.yaxis.tick_right()
     ax.set_xticks([0,5,10,15,20])
     cbar = plt.colorbar(pad=0.15)
-    cbar.set_label('Temporal Delay, hrs',fontname='Arial',size=20)
+    cbar.set_label('Temporal Delay, hrs',size=20)
     cbar.ax.tick_params(labelsize=18)
-    plt.xlabel("Peak RNA Expression, hrs",fontname='Arial',size=20)
-    plt.ylabel("Peak Protein Expression, hrs",fontname='Arial',size=20)
+    plt.xlabel("Peak RNA Expression, hrs",size=20)
+    plt.ylabel("Peak Protein Expression, hrs",size=20)
     plt.tight_layout()
     plt.savefig("figures/TemporalDelayScatter.pdf")
     plt.show()
@@ -384,7 +384,6 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         "diff_max_pol" : diff_max_pol
         }).to_csv("output/diff_max_pol.csv", index=False)
 
-
     #% Figures of merit
     peaked_after_g1_prot = sorted_maxpol_array * fucci.TOT_LEN > fucci.G1_LEN
     wp_ensg_counts_ccd = np.array([sum([eeee == ensg for eeee in wp_ensg[ccd_comp]]) for ensg in wp_ensg[ccd_comp]])
@@ -401,10 +400,10 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         print(fom)
         file.write(fom)
         
-        
 def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals):
     '''Evaluate the pearson correlations for CCD isoforms from genes with multiple CCD isoforms'''
-    gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
+    gene_varnames = list(adata.var_names)
+    isoform_varnames = list(adata_isoform.var_names)
     isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
