@@ -164,7 +164,7 @@ def plot_areas(areas, title):
     plt.ylabel("Count")
     plt.xlabel("Area")
     plt.savefig(f"figures/areas{title}.png")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def apply_big_nucleus_filter(my_df):

@@ -308,7 +308,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     plt.ylabel("Mean Difference from Random")
     plt.savefig("figures/MedianDiffFromRandom.png")
     plt.savefig("figures/MedianDiffFromRandom.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
     
     pervar_adj_withbimodal_nextafter = np.nextafter(wp_comp_eq_percvar_adj_withbimodal, wp_comp_eq_percvar_adj_withbimodal + 1)
@@ -321,7 +321,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
     plt.ylabel("-log10 adj p-value from randomization")
     plt.savefig("figures/MedianDiffFromRandomVolcano.png")
     plt.savefig("figures/MedianDiffFromRandomVolcano.pdf")
-    plt.show()
+    # plt.show()
     plt.close()    
     
     return (wp_comp_ccd_difffromrng, mean_diff_from_rng_mt, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, 
@@ -419,7 +419,7 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
     plt.ylabel("-log10 FDR for CCD")
     plt.hlines(-np.log10(alphaa), np.min(perc_var_comp), np.max(perc_var_comp))
     plt.savefig(f"figures/PercVarVsLog10FdrCCD_comp.png")
-    plt.show()
+    # plt.show()
     plt.close()
     
 def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
@@ -559,7 +559,8 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
     cb = plt.colorbar()
     cb.set_label('Pseudotime')
     plt.savefig("figures/FucciCoordinateAverages.png")
-    plt.show(); plt.close()
+    # plt.show()
+    plt.close()
     
     xvals = np.linspace(0,1,num=BINS_FOR_UMAP_AND_LASSO)
     wp_max_pol = []
@@ -580,7 +581,8 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
     cb = plt.colorbar()
     cb.set_label('Pseudotime')
     plt.savefig("figures/FucciCoordinateBinnedAverages.png")
-    plt.show(); plt.close()
+    # plt.show()
+    plt.close()
     
     protein_fucci = np.vstack((binned_values_fred, binned_values_fgreen))
     fucci_protein_path = f"output/pickles/fucci_protein_lasso_binned{BINS_FOR_UMAP_AND_LASSO}{'Norm' if do_normalize else 'NoNorm'}.pkl"

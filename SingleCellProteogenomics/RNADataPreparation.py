@@ -88,7 +88,7 @@ def general_plots():
     adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
 
     # QC plots before filtering
-    sc.pl.highest_expr_genes(adata, n_top=20, show=True, save=True)
+    sc.pl.highest_expr_genes(adata, n_top=20, show=False, save=True)
     shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_AllCells.pdf")
 
     # Post filtering QC
@@ -96,7 +96,7 @@ def general_plots():
     do_remove_blob = False
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
-    sc.pl.highly_variable_genes(adata, show=True, save=True)
+    sc.pl.highly_variable_genes(adata, show=False, save=True)
     shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersionAllCells.pdf")
 
     # UMAP plots
@@ -106,7 +106,7 @@ def general_plots():
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata)
     plt.rcParams['figure.figsize'] = (10, 10)
-    sc.pl.umap(adata, color=["phase"], show=True, save=True)
+    sc.pl.umap(adata, color=["phase"], show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqCenterPhase.pdf")
 
     # General display of RNA abundances in TPMs
@@ -114,7 +114,7 @@ def general_plots():
     plt.xlabel("TPM")
     plt.ylabel("Density")
     plt.savefig("figures/rna_abundance_density.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
     
 def plot_markers_vs_reads(adata):
@@ -152,7 +152,7 @@ def analyze_noncycling_cells():
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=True, save=True)
+            sc.pl.umap(adata, color="louvain", show=False, save=True)
             shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_before_nn{nn}_md{md}.pdf")
     sc.tl.rank_genes_groups(adata, groupby="louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
@@ -168,7 +168,7 @@ def analyze_noncycling_cells():
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=True, save=True)
+            sc.pl.umap(adata, color="louvain", show=False, save=True)
             shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
@@ -180,13 +180,13 @@ def demonstrate_umap_cycle_without_ccd(adata):
     adata_ccdregev = adata[:, [x for x in adata.var_names if x not in ccd_regev_filtered]]
     sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata_ccdregev)
-    sc.pl.umap(adata_ccdregev, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapAllCellsPhaseNonCcdCurated.pdf")
 
     adata_ccdregev = adata[:, [x for x in adata.var_names if x in nonccd_filtered]]
     sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata_ccdregev)
-    sc.pl.umap(adata_ccdregev, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapAllCellsPhaseNonCcd.pdf")
 
 def readcount_and_genecount_over_pseudotime():
@@ -218,7 +218,7 @@ def readcount_and_genecount_over_pseudotime():
     plt.legend(fontsize=14)
     plt.tight_layout()
     plt.savefig(f"figures/TotalCountsPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # Total genes detected per cell, moving average
@@ -237,5 +237,5 @@ def readcount_and_genecount_over_pseudotime():
     plt.legend(fontsize=14)
     plt.tight_layout()
     plt.savefig(f"figures/TotalGenesPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()

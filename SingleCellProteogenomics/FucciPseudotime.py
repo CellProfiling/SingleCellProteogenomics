@@ -99,7 +99,7 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
         plt.savefig(f'figures/GMNN_FUCCI_plot.pdf', transparent=True)
     else:
         plt.savefig(f'figures/masked_polar_hist_{analysis_title}.pdf', transparent=True)
-    plt.show()
+    # plt.show()
     plt.close()
 
 def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_data1, pol_sort_centered_data0):
@@ -124,7 +124,7 @@ def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_da
     plt.tight_layout()
     plt.savefig("figures/FUCCIOverPseudotime.pdf")
     plt.savefig("figures/FUCCIOverPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()
     
 def fucci_polar_coords(x, y, analysis_title):
@@ -170,7 +170,7 @@ def fucci_polar_coords(x, y, analysis_title):
     pol_sort_norm_rev = stretch_time.stretch_time(pol_sort_norm_rev)
     plt.tight_layout()
     plt.savefig(f"figures/FucciAllPseudotimeHist_{analysis_title}.png")
-    plt.show()
+    # plt.show()
 
     # visualize that result
     start_pt = pol2cart(R_2,start_phi)
@@ -259,7 +259,7 @@ def pseudotime_rna(adata, phases_filt):
     plt.ylabel("log10(CDT1 RFP Intensity)",size=20)
     plt.tight_layout()
     plt.savefig(f"figures/FucciAllFucciPseudotime.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # Save fucci times, so they can be used in other workbooks
@@ -281,6 +281,6 @@ def pseudotime_umap(adata, isIsoform=False):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+            sc.pl.umap(adata, color=["fucci_time"], show=False, save=True)
             shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime_nn{nn}_md{md}{'_Isoform' if isIsoform else ''}.pdf")
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)

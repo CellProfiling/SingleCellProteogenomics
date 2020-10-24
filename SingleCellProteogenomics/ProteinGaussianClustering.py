@@ -71,7 +71,7 @@ def gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_resca
         plt.xlabel("Log10 Green Fucci Intensity")
         plt.ylabel("Log10 Red Fucci Intensity")
         plt.savefig(f"figures/FucciPlotProteinIFData_unfiltered_Gauss{cluster}.png")
-        plt.show()
+        # plt.show()
         plt.close()
     return cluster_labels
 

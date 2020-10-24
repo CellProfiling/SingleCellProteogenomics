@@ -120,13 +120,13 @@ def plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_cc
     plt.subplot(224)
     panel_variances_tf(total_gini[nonccdprotein], percent_ccd_variance[nonccdprotein], pass_meandiff[nonccdprotein], "Non-CCD Proteins", "DianaNonCCD")
     plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # A second plot with just the variance for all
     panel_variances_tf(total_gini, percent_ccd_variance, pass_meandiff, "All Genes", "All")
     plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}_allgenes.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use):
@@ -316,7 +316,7 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.ylabel("Mean Difference from Random")
     plt.savefig("figures/MedianDiffFromRandom_RNA.png")
     plt.savefig("figures/MedianDiffFromRandom_RNA.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     eq_percvar_adj_nextafter = np.nextafter(eq_percvar_adj, eq_percvar_adj + 1)
@@ -327,7 +327,7 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.ylabel("-log10 adj p-value from randomization")
     plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.png")
     plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, use_isoforms=False):
@@ -365,7 +365,7 @@ def plot_umap_ccd_cutoffs(adata, mean_diff_from_rng):
         adata_withoutCCd = adata[:,mean_diff_from_rng < cutoff]
         sc.pp.neighbors(adata_withoutCCd, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata_withoutCCd)
-        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=True, save=True)
+        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=False, save=True)
         shutil.move("figures/umap.pdf", f"figures/RNACcdUmapCutoffs/umap{cutoff}cutoff.pdf")
 
 def ccd_analysis_of_spikeins(adata_spikeins, perms):
@@ -427,12 +427,12 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     adataCCd = adata[:,nz_coef]
     sc.pp.neighbors(adataCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataCCd)
-    sc.pl.umap(adataCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoCCD.pdf")
     adataNonCCd = adata[:,~nz_coef]
     sc.pp.neighbors(adataNonCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataNonCCd)
-    sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataNonCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
     plt.rcParams['figure.figsize'] = prevPlotSize
     warnings.filterwarnings("default")
@@ -462,7 +462,9 @@ def analyze_cnv_calls(adata, ccdtranscript):
     heatmap[cnsResultsCellData.T == 2] = 2
     heatmap[cnsResultsCellData.T > 2] = 3
     clustergrid = sbn.clustermap(heatmap[:,:-8], col_cluster=False)
-    plt.savefig("figures/CnvConsistency.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvConsistency.pdf")
+    # plt.show()
+    plt.close()
     
     # heatmaps for phases
     adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, 
@@ -471,7 +473,9 @@ def analyze_cnv_calls(adata, ccdtranscript):
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "S-ph",
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G2M"],
                 yticklabels=["G1", "S", "G2"])
-    plt.savefig("figures/CnvConsistencyPhases.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvConsistencyPhases.pdf")
+    # plt.show()
+    plt.close()
     
     # is there enrichment for phase in the highly amplified genes?
     # print(adata_ccd_isInCns.obs["phase"][clustergrid.dendrogram_row.reordered_ind[:100]].value_counts())
@@ -484,7 +488,9 @@ def analyze_cnv_calls(adata, ccdtranscript):
     plt.scatter(x * fucci.TOT_LEN, linearModel.intercept + x * linearModel.slope)
     plt.xlabel("Cell Division Time, hrs")
     plt.ylabel("Mean CNV of All Chromosome Arms")
-    plt.savefig("figures/CnvCorrelation.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvCorrelation.pdf")
+    # plt.show()
+    plt.close()
     
     print(f"{linearModel[3]}: p-value for nonzero slope by two-sided t test")
     residualLinearModel = scipy.stats.linregress(np.asarray(x).astype(float), np.asarray(y - (linearModel.intercept + x * linearModel.slope)).astype(float))
