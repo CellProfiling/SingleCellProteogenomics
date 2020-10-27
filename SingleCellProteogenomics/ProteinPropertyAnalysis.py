@@ -301,12 +301,12 @@ class ProteinProperties:
         for nn in genes:
             isGene = nn in self.proteinDisorder
             idx = -1 if not isGene else protDisorderGeneList.index(nn)                
-            lengths.append("" if not isGene else self.lengthAll[idx])
-            disordered.append("" if not isGene else self.fractDisorderAll[idx])
-            hydrophob.append("" if not isGene else self.fractHydrophobicAll[idx])
-            cysteine.append("" if not isGene else self.fractCysteinesAll[idx])
-            polar.append("" if not isGene else self.fractPolarAll[idx])
-            variants.append("" if not nn in variant_gene_name_set else ";".join(
+            lengths.append("N/A" if not isGene else self.lengthAll[idx])
+            disordered.append("N/A" if not isGene else self.fractDisorderAll[idx])
+            hydrophob.append("N/A" if not isGene else self.fractHydrophobicAll[idx])
+            cysteine.append("N/A" if not isGene else self.fractCysteinesAll[idx])
+            polar.append("N/A" if not isGene else self.fractPolarAll[idx])
+            variants.append("N/A" if not nn in variant_gene_name_set else ";".join(
                 ["_".join((xx[0], "_".join([vv.decode('ascii') for vv in xx[1]]))) for xx in ensg_variant[variant_gene_names == nn]]))
         pd.DataFrame({
             "Protein" : genes,
@@ -316,9 +316,9 @@ class ProteinProperties:
             "IsMitoticCCD" : np.isin(genes, self.names_bioccd),
             "IsTranscriptRegCCD" : np.isin(genes, self.names_ccdprotein_transcript_regulated),
             "IsNonTranscriptRegCCD" : np.isin(genes, self.names_ccdprotein_nontranscript_regulated),
-            "Melting Temperature (deg C)" : [self.all_temps[self.all_protnames_list.index(nn)] if nn in self.all_protnames_set else "" for nn in genes],
+            "Melting Temperature (deg C)" : [self.all_temps[self.all_protnames_list.index(nn)] if nn in self.all_protnames_set else "N/A" for nn in genes],
             "Length" : lengths,
-            "Abundance (Copies per Cell)" : [self.abundanceAll[self.aebGenes.index(nn)] if nn in self.aebGenesSet else "" for nn in genes],
+            "Abundance (Copies per Cell)" : [self.abundanceAll[self.aebGenes.index(nn)] if nn in self.aebGenesSet else "N/A" for nn in genes],
             "Disordered Residue Fraction" : disordered,
             "Hydrophobic Residue Fraction" : hydrophob,
             "Cysteine Fraction" : cysteine,
