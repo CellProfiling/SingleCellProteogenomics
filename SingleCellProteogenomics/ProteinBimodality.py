@@ -73,24 +73,26 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
     wp_enoughcellsinbothclusters = np.array([sum(c1[0]) > 50 and sum(c1[1]) > 50 for c1 in wp_bimodal_cluster_idxs])
     wp_isbimodal_generally = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass
     wp_isbimodal_fcpadj_pass = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass & ~wp_timebimodal_pass & wp_enoughcellsinbothclusters
-    removeThese = pd.read_csv("input/processed/manual/replicatesToRemove.txt", header=None)[0]
+    removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0]
     wp_removeReplicate = np.isin(u_well_plates, removeThese)
     print(f"{sum(~wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying unimodal distributions ({sum(~wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     print(f"{sum(wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying bimodal distributions ({sum(wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     
     # Show that the intensity measurements are reasonable for these bimodal samples
-    plt.hist(np.concatenate(np.array(wp_intensities)[wp_isbimodal_generally]))
+    plt.hist(np.concatenate(np.array(wp_intensities, dtype=object)[wp_isbimodal_generally]))
     plt.xlabel("Mean intensity")
     plt.ylabel("Count")
     plt.title("Intensities of Cells within Bimodal Distributions\nAre Similar to those Overall")
-    plt.show();plt.close()
+    # plt.show()
+    plt.close()
 
     print("Illustrate the significantly distinct high- and low-expressing cell populations")
     plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_generally, alpha=0.5, cmap="bwr_r")
     plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
     plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
     plt.savefig("figures/BimodalSignificance_GeneralBimodality.png")
-    plt.show();plt.close()
+    # plt.show()
+    plt.close()
 
     print("Illustrate the significantly distinct high- and low-expressing cell populations")
     print("with no difference in pseudotime. These are evaluated separately for CCD.")
@@ -99,13 +101,15 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
     plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
     plt.savefig("figures/BimodalSignificance.png")
     plt.savefig("figures/BimodalSignificance.pdf")
-    plt.show();plt.close()
+    # plt.show()
+    plt.close()
     
     print("Illustrate the samples with sufficient cell count for CCD evaluation of high- and low-expressing cell populations.")
     plt.scatter([sum(c1[0]) for c1 in wp_bimodal_cluster_idxs], [sum(c1[1]) for c1 in wp_bimodal_cluster_idxs], c=wp_enoughcellsinbothclusters, alpha=0.5, cmap="bwr_r")
     plt.xlabel("Cell Count, Cluster 1")
     plt.ylabel("Cell Count, Cluster 2")
     plt.savefig("figures/BimodalCellCount.png")
-    plt.show();plt.close()
+    # plt.show()
+    plt.close()
     
     return wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_isbimodal_generally, wp_bimodal_fcmaxmin

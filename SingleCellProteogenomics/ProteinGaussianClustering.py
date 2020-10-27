@@ -52,8 +52,8 @@ def gaussian_boxplot_result(g1, s, g2, outfolder, ensg):
     cccc.extend(["G1/S"] * len(s))
     cccc.extend(["G2"] * len(g2))
     boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=False, color="grey")
-    boxplot.set_xlabel("", size=36,fontname='Arial')
-    boxplot.set_ylabel("Normalized Mean Intensity", size=18,fontname='Arial')
+    boxplot.set_xlabel("", size=36)
+    boxplot.set_ylabel("Normalized Mean Intensity", size=18)
     boxplot.tick_params(axis="both", which="major", labelsize=14)
     plt.ylim(0,1)
     plt.title("")
@@ -71,7 +71,7 @@ def gaussian_clustering(log_green_fucci_zeroc_rescale, log_red_fucci_zeroc_resca
         plt.xlabel("Log10 Green Fucci Intensity")
         plt.ylabel("Log10 Red Fucci Intensity")
         plt.savefig(f"figures/FucciPlotProteinIFData_unfiltered_Gauss{cluster}.png")
-        plt.show()
+        # plt.show()
         plt.close()
     return cluster_labels
 
@@ -127,7 +127,7 @@ def gaussian_clustering_analysis(alpha_gauss, doGeneratePlots, g1, sph, g2,
     utils.np_save_overwriting("output/pickles/wp_pass_gaussccd_bh_mt.npy", wp_pass_gaussccd_bh_mt)
     
     # save the phase information
-    utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases))
+    utils.np_save_overwriting("output/pickles/curr_wp_phases.npy", np.array(curr_wp_phases, dtype=object))
     utils.np_save_overwriting("output/pickles/mockbulk_phases.npy", np.array(mockbulk_phases))
 
     print(f"{len(wp_pass_kruskal_gaussccd_bh_comp)}: number of genes tested")

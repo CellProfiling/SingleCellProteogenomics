@@ -11,7 +11,6 @@ The variance of protein expression in the cell populations was evaluated using:
 
 from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
-import scipy.optimize
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 def plot_average_intensities_by_batch(u_well_plates, mean_mean_cell, mean_mean_nuc, mean_mean_cyto, mean_mean_mt, wp_iscell, wp_isnuc, wp_iscyto):
@@ -22,7 +21,7 @@ def plot_average_intensities_by_batch(u_well_plates, mean_mean_cell, mean_mean_n
     plt.hist(np.array(mean_mean_comp)[~firstbatch], bins=200, label="secondbatch")
     plt.legend()
     plt.savefig("figures/MeanMeancComp.png")
-    plt.show()
+    # plt.show()
     plt.close()
     
     firstbatch = np.asarray([not str(p).split("_")[1].startswith("67") for p in u_well_plates])
@@ -30,7 +29,7 @@ def plot_average_intensities_by_batch(u_well_plates, mean_mean_cell, mean_mean_n
     plt.hist(np.array(mean_mean_mt)[~firstbatch], bins=200, label="secondbatch")
     plt.legend()
     plt.savefig("figures/MeanMeanMt.png")
-    plt.show()
+    # plt.show()
     plt.close()
     
 
@@ -164,13 +163,15 @@ def calculate_variation(use_log, u_well_plates, wp_iscell, wp_isnuc, wp_iscyto,
     print(np.concatenate(wpi_img)[np.argmax(np.concatenate(var_comp_img))] + ": the image with the max variance")
 
     plt.hist(np.concatenate([vvv / var_comp[i] for i, vvv in enumerate(var_comp_img)]))
-    plt.show();plt.close();
+    # plt.show()
+    plt.close()
     high_var_img = np.concatenate(wpi_img)[np.concatenate([vvv > 4 * var_comp[i] for i, vvv in enumerate(var_comp_img)])]
     print(f"{high_var_img}: the images with greater than 4x the variance of the whole sample")
     
     norm_cv_img = np.concatenate([vvv / cv_comp[i] for i, vvv in enumerate(cv_comp_img)])
     plt.hist(norm_cv_img)
-    plt.show();plt.close();
+    # plt.show()
+    plt.close()
     cutoff = np.mean(norm_cv_img) + 3 * np.std(norm_cv_img)
     high_cv_img = np.concatenate(wpi_img)[norm_cv_img > cutoff]
     print(f"{high_cv_img}: the images with greater than 4x the variance of the whole sample")

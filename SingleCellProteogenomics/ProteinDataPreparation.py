@@ -29,8 +29,8 @@ INTENSITY_SWITCH = 0 # cell size does increase into G2 and that has a substantia
 def read_raw_data():
     '''Read in the raw protein IF data'''
     print("reading raw protein IF data")
-    my_df1 = pd.read_csv("input/raw/nuc_predicted_prob_phases_mt_all_firstbatch_plates.csv.gz")
-    my_df2 = pd.read_csv("input/raw/nuc_predicted_prob_phases_190909.csv.gz")
+    my_df1 = pd.read_csv("input/ProteinData/FucciDataFirstPlates.csv.gz")
+    my_df2 = pd.read_csv("input/ProteinData/FucciDataSecondPlates.csv.gz")
     my_df = pd.concat((my_df1, my_df2), sort=True)
     print("loaded raw data")
     return my_df
@@ -48,9 +48,9 @@ def read_sample_info(df):
     area_cell = np.asarray(df.Area_cell)
     area_nuc = np.asarray(df.AreaShape_Area)
     area_cyto = np.asarray(df.Area_cyto)
-    name_df = pd.read_csv("input/processed/excel/Fucci_staining_summary_first_plates.csv")
+    name_df = pd.read_csv("input/ProteinData/FucciStainingSummaryFirstPlates.csv")
     wppp1, ensggg1, abbb1, rrrr, cccc1 = list(name_df["well_plate"]), list(name_df["ENSG"]), list(name_df["Antibody"]), list(name_df["Results_final_update"]), list(name_df["Compartment"])
-    name_df2 = pd.read_csv("input/processed/excel/Fucci_staining_review_variation_check.csv")
+    name_df2 = pd.read_csv("input/ProteinData/FucciStainingSummarySecondPlates.csv")
     wppp2, ensggg2, abbb2, cccc2 = list(name_df2["well_plate"]), list(name_df2["ENSG"]), list(name_df2["Antibody"]), list(name_df2["Compartment"])
     wppp, ensggg, abbb, cccc = wppp1 + wppp2, ensggg1 + ensggg2, abbb1 +  abbb2, cccc1 + cccc2
     ensg_dict = dict([(wppp[i], ensggg[i]) for i in range(len(wppp))])
@@ -63,6 +63,9 @@ def read_sample_info(df):
     compartment = np.asarray([compartment_dict[wp] if wp in compartment_dict else "" for wp in well_plate])
     
     # Pickle the results
+    if not os.path.exists("output/"): os.mkdir("output/")
+    if not os.path.exists("output/pickles/"): os.mkdir("output/pickles/")
+    if not os.path.exists("figures/"): os.mkdir("figures/")
     utils.np_save_overwriting("output/pickles/plate.npy", plate)
     utils.np_save_overwriting("output/pickles/u_plate.npy", u_plate)
     utils.np_save_overwriting("output/pickles/u_well_plates.npy", u_well_plates)
@@ -107,7 +110,7 @@ def apply_manual_filtering(my_df, result_dict, ab_dict):
     
     my_df_filtered = my_df
     print("filtering out of focus")
-    oof = pd.read_csv("input/processed/excel/outoffocusimages.txt", header=None)[0]
+    oof = pd.read_csv("input/ProteinData/OutOfFocusImages.txt", header=None)[0]
     well_plate = np.asarray(my_df_filtered.well_plate)
     imgnb = np.asarray(my_df_filtered.ImageNumber)
     well_plate_imgnb = np.asarray([f"{wp}_{imgnb[i]}" for i,wp in enumerate(well_plate)])
@@ -124,7 +127,7 @@ def apply_manual_filtering(my_df, result_dict, ab_dict):
     print("finished filtering")
      
     print("filtering bad fields of view (negative staining, unspecific, etc)")
-    filterthese = pd.read_csv("input/processed/excel/FOV_ImgNum_Lookup.csv")
+    filterthese = pd.read_csv("input/ProteinData/FOV_ImgNum_Lookup.csv")
     badfov = filterthese["well_plate_imgnb"][(filterthese["UseImage"] == 0)]
     well_plate = np.asarray(my_df_filtered.well_plate)
     imgnb = np.asarray(my_df_filtered.ImageNumber)
@@ -136,14 +139,14 @@ def apply_manual_filtering(my_df, result_dict, ab_dict):
     print("finished filtering")
     
     print("filtering failed antibodies")
-    failedab = np.genfromtxt("input/processed/manual/failedab.txt", dtype='str')
+    failedab = np.genfromtxt("input/ProteinData/RecentlyFailedAntibodies.txt", dtype='str')
     print(f"{len(my_df_filtered)}: number of cells before filtering antibodies failed in HPAv19")
     my_df_filtered = my_df_filtered[~np.isin([ab_dict[wp] for wp in my_df_filtered.well_plate], failedab)]
     print(f"{len(my_df_filtered)}: number of cells after filtering antibodies failed in HPAv19")
     print("finished filtering")
     
     print("filtering mitotic proteins")
-    mitoticab = np.genfromtxt("input/processed/manual/mitotic_n_microtubules_to_remove.txt", dtype='str')
+    mitoticab = np.genfromtxt("input/ProteinData/RemoveMitoticAndMicrotubules.txt", dtype='str')
     print(f"{len(my_df_filtered)}: number of cells before filtering mitotic/microtubule proteins")
     my_df_filtered = my_df_filtered[~np.isin([ab_dict[wp] for wp in my_df_filtered.well_plate], mitoticab)]
     print(f"{len(my_df_filtered)}: number of cells after filtering mitotic/microtubule proteins")
@@ -161,7 +164,7 @@ def plot_areas(areas, title):
     plt.ylabel("Count")
     plt.xlabel("Area")
     plt.savefig(f"figures/areas{title}.png")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def apply_big_nucleus_filter(my_df):
@@ -192,7 +195,10 @@ def apply_cell_count_filter(my_df):
     my_df_filtered = my_df
     well_plate = np.asarray(my_df_filtered.well_plate)
     u_well_plates = np.unique(my_df_filtered.well_plate)
-    cell_count_dict = dict((wp, sum(my_df.well_plate == wp)) for wp in u_well_plates)
+    cell_count_dict = {}
+    for wp in well_plate:
+        if wp in cell_count_dict: cell_count_dict[wp] += 1
+        else: cell_count_dict[wp] = 1
     cell_counts = np.array([cell_count_dict[wp] for wp in well_plate])
     print("filtering low cell counts")
     my_df_filtered = my_df_filtered[cell_counts >= MIN_CELL_COUNT]
@@ -206,7 +212,7 @@ def apply_variation_filter(my_df_filtered, result_dict, unfiltered_df):
     my_df_filtered_variation, my_df_filtered_novariation = my_df_filtered, my_df_filtered
     variable_firstbatch = np.asarray([wp in result_dict and not result_dict[wp].replace(" ","").startswith("novariation") for wp in my_df_filtered.well_plate])
     
-    varann_secondbatch = pd.read_csv("input/processed/excel/SecondBatchVariableLookup.csv")
+    varann_secondbatch = pd.read_csv("input/ProteinData/SecondBatchVariableLookup.csv")
     variable_ann_secondbatch = np.asarray([str(vv).lower().startswith("yes") for vv in varann_secondbatch["IsVariable"]])
     variable_wp_secondbatch = np.asarray(varann_secondbatch["well_plate"][variable_ann_secondbatch])
     variable_secondbatch = np.isin(my_df_filtered.well_plate, variable_wp_secondbatch)

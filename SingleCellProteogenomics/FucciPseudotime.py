@@ -16,6 +16,7 @@ from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 import scipy.optimize
 import sklearn.mixture
 import decimal
+import copy
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 NBINS_POLAR_COORD = 150 # Number of bins for polar coord calculation, arbitrary choice for now
@@ -64,10 +65,10 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
     If `show_gmnn` is true, generate an overlay of the GMNN antibody staining intensities.
     '''
     fig, ax1 = plt.subplots(figsize=(10,10))
-    mycmap = plt.cm.gray_r
+    mycmap = copy.copy(plt.cm.get_cmap("gray_r"))
     mycmap.set_under(color='w',alpha=None)
     ax1.hist2d(centered_data[:,0],centered_data[:,1],bins=nbins,alpha=1,cmap=mycmap)
-    hist, xbins, ybins = np.histogram2d(cart_data_ur[0], cart_data_ur[1], bins=nbins, normed=True)
+    hist, xbins, ybins = np.histogram2d(cart_data_ur[0], cart_data_ur[1], bins=nbins, density=True)
     extent = [xbins.min(),xbins.max(),ybins.min(),ybins.max()]
     im = ax1.imshow(
             np.ma.masked_where(hist == 0, hist).T,
@@ -91,14 +92,14 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
         plt.annotate(f"  {fucci.G1_LEN + fucci.G1_S_TRANS} hrs (end of S)", (g1s_end_pt[0],g1s_end_pt[1]))
         for yeah in list(drange(decimal.Decimal(0.1), 0.9, '0.1')):
             plot_annotate_time(R_2, start_phi, yeah)
-    plt.xlabel(r'$\propto log_{10}(GMNN_{fucci})$',size=20,fontname='Arial')
-    plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20,fontname='Arial')
+    plt.xlabel(r'$\propto log_{10}(GMNN_{fucci})$',size=20)
+    plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20)
     plt.tight_layout()
     if show_gmnn:
         plt.savefig(f'figures/GMNN_FUCCI_plot.pdf', transparent=True)
     else:
         plt.savefig(f'figures/masked_polar_hist_{analysis_title}.pdf', transparent=True)
-    plt.show()
+    # plt.show()
     plt.close()
 
 def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_data1, pol_sort_centered_data0):
@@ -123,7 +124,7 @@ def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_da
     plt.tight_layout()
     plt.savefig("figures/FUCCIOverPseudotime.pdf")
     plt.savefig("figures/FUCCIOverPseudotime.png")
-    plt.show()
+    # plt.show()
     plt.close()
     
 def fucci_polar_coords(x, y, analysis_title):
@@ -169,7 +170,7 @@ def fucci_polar_coords(x, y, analysis_title):
     pol_sort_norm_rev = stretch_time.stretch_time(pol_sort_norm_rev)
     plt.tight_layout()
     plt.savefig(f"figures/FucciAllPseudotimeHist_{analysis_title}.png")
-    plt.show()
+    # plt.show()
 
     # visualize that result
     start_pt = pol2cart(R_2,start_phi)
@@ -252,13 +253,13 @@ def pseudotime_rna(adata, phases_filt):
     plt.figure(figsize=(6,5))
     plt.scatter(phases_validInt["Green530"], phases_validInt["Red585"], c = phases_validInt["fucci_time"], cmap="RdYlGn")
     cbar = plt.colorbar()
-    cbar.set_label('Pseudotime',fontname='Arial',size=20)
+    cbar.set_label('Pseudotime',size=20)
     cbar.ax.tick_params(labelsize=18)
-    plt.xlabel("log10(GMNN GFP Intensity)",fontname='Arial',size=20)
-    plt.ylabel("log10(CDT1 RFP Intensity)",fontname='Arial',size=20)
+    plt.xlabel("log10(GMNN GFP Intensity)",size=20)
+    plt.ylabel("log10(CDT1 RFP Intensity)",size=20)
     plt.tight_layout()
     plt.savefig(f"figures/FucciAllFucciPseudotime.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # Save fucci times, so they can be used in other workbooks
@@ -280,6 +281,6 @@ def pseudotime_umap(adata, isIsoform=False):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color=["fucci_time"], show=True, save=True)
+            sc.pl.umap(adata, color=["fucci_time"], show=False, save=True)
             shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqFucciPseudotime_nn{nn}_md{md}{'_Isoform' if isIsoform else ''}.pdf")
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)

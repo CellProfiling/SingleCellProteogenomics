@@ -5,10 +5,9 @@ channels:
 dependencies:
   - pandas
   - numpy
-  - scanpy
+  - scanpy=1.4.0
   - scipy
   - matplotlib
   - scikit-learn
   - seaborn
   - biopython
-  - basemap

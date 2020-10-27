@@ -11,10 +11,11 @@ from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages, FucciCellCycle, FucciPseudotime, RNADataPreparation
 from sklearn.linear_model import MultiTaskLassoCV
 from sklearn.impute import KNNImputer
+import warnings
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
-PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
+PERMUTATIONS = 100#10000 # Number of permutations used for randomization analysis
 PERMUTATIONS_ISOFORMS = 100
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
@@ -29,8 +30,8 @@ def boxplot_result(g1, s, g2, outfolder, ensg):
     cccc.extend(["G1/S"] * len(s))
     cccc.extend(["G2"] * len(g2))
     boxplot = sbn.boxplot(x=cccc, y=mmmm, showfliers=True)
-    boxplot.set_xlabel("", size=36,fontname='Arial')
-    boxplot.set_ylabel("Normalized Log10(TPM)", size=18,fontname='Arial')
+    boxplot.set_xlabel("", size=36)
+    boxplot.set_ylabel("Normalized Log10(TPM)", size=18)
     boxplot.tick_params(axis="both", which="major", labelsize=14)
     plt.title("")
     plt.savefig(f"{outfolder}_png/GaussianClusteringProtein_{ensg}.png")
@@ -65,8 +66,8 @@ def plot_expression_facs(genelist, normalized_exp_data, phases, var_names, outfo
         plt.tight_layout()
         cbar = plt.colorbar()
         cbar.ax.get_yaxis().labelpad = 15
-        cbar.ax.set_ylabel("Normalized RNA-Seq Counts", rotation=270,size=16,fontname='Arial')
-        plt.title(gene,size=20,fontname='Arial')
+        cbar.ax.set_ylabel("Normalized RNA-Seq Counts", rotation=270,size=16)
+        plt.title(gene,size=20)
         plt.savefig(f"{outfolder}/{gene}.png")
         plt.close()
 
@@ -83,12 +84,12 @@ def plot_expression_boxplots(adata, genelist, bulk_phase_tests, outfolder):
         expression_stage = pd.DataFrame({gene : normalized_exp_data, "stage" : adata.obs["phase"]})
         exp_stage_filt = expression_stage[expression_stage.stage != "nan"].reset_index(drop=True)
         boxplot = exp_stage_filt.boxplot(gene, by="stage", figsize=(12, 8))
-        boxplot.set_xlabel("Cell Cycle Stage", size=36,fontname='Arial')
-        boxplot.set_ylabel("Normalized Transcript Expression", size=36,fontname='Arial')
+        boxplot.set_xlabel("Cell Cycle Stage", size=36)
+        boxplot.set_ylabel("Normalized Transcript Expression", size=36)
         boxplot.tick_params(axis="both", which="major", labelsize=16)
         qqq = bulk_phase_tests[bulk_phase_tests.gene == gene].iloc[0]["pvaladj"]
         rej = bulk_phase_tests[bulk_phase_tests.gene == gene].iloc[0]["reject"]
-        boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36,fontname='Arial')
+        boxplot.set_title(f"{gene} (Q_bh = {format_p(qqq)})",size=36)
         boxplot.get_figure().savefig(f"{outfolder}/{gene}_boxplot.png")
         plt.close()
     pd.DataFrame({"gene" : notfound}).to_csv(f"{outfolder}/GenesFilteredInScRNASeqAnalysis.csv")
@@ -96,13 +97,13 @@ def plot_expression_boxplots(adata, genelist, bulk_phase_tests, outfolder):
 def panel_variances_tf(total_var, percent_var, expression_color, title, file_tag):
     '''Displaying the bulk_phase results on the percent variances: plot percent variances from cell line against total variance'''
     plt.scatter(total_var, percent_var, c=expression_color, cmap="bwr_r")
-    plt.xlabel("Gini of Gene Expression", size=24,fontname='Arial')
-    plt.ylabel("Percent Variance Due to Cell Cycle",size=24,fontname='Arial')
+    plt.xlabel("Gini of Gene Expression", size=24)
+    plt.ylabel("Percent Variance Due to Cell Cycle",size=24)
     plt.xticks(size=14)
     plt.yticks(size=14)
     plt.xlim(-0.005, 1)
     plt.ylim(-0.05, 0.8)
-    plt.title(title, size=24, fontname='Arial')
+    plt.title(title, size=24)
     plt.legend()
 
 def plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_ccd_variance, pass_meandiff, ccdprotein, nonccdprotein, regevccdgenes):
@@ -119,13 +120,13 @@ def plot_overall_and_ccd_variances(adata, biotype_to_use, total_gini, percent_cc
     plt.subplot(224)
     panel_variances_tf(total_gini[nonccdprotein], percent_ccd_variance[nonccdprotein], pass_meandiff[nonccdprotein], "Non-CCD Proteins", "DianaNonCCD")
     plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     # A second plot with just the variance for all
     panel_variances_tf(total_gini, percent_ccd_variance, pass_meandiff, "All Genes", "All")
     plt.savefig(f"figures/VarianceSignificancePlots{biotype_to_use}_allgenes.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def analyze_ccd_variation_by_phase_rna(adata, normalized_exp_data, biotype_to_use):
@@ -191,7 +192,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     gtpass_eq_percvar_adj = pass_eq_percvar_adj & (percent_ccd_variance > np.median(percent_ccd_variance_rng, axis=0))
 
     ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    gene_info = pd.read_csv("input/processed/python/IdsToNames.csv", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     gene_ids = list(gene_info["gene_id"])
     gene_names = list(gene_info["name"])
     gene_id_name = dict([(gene_ids[idxx], gene_names[idxx]) for idxx in range(len(gene_info))])
@@ -252,9 +253,10 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     # Figures of merit
     with open("output/figuresofmerit.txt", "a") as file:
         fom = "--- RNA pseudotime\n\n"
-        fom += f"We identified {sum(ccdtranscript)} genes of {len(ccdtranscript)} protein-coding genes analyzed ({100 * sum(ccdtranscript) / len(ccdtranscript)}%) to have variance in expression levels correlated to cell cycle progression" + "\n\n"
-        fom += f"We can attribute only {100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing" + "\n\n"
-        fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names[adata_regevccdgenes])) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
+        fom += f"We identified {sum(ccdtranscript)} {'genes' if use_isoforms else 'transcript isoforms'} of {len(ccdtranscript)} protein-coding {'genes' if use_isoforms else 'transcript isoforms'} analyzed ({100 * sum(ccdtranscript) / len(ccdtranscript)}%) to have variance in expression levels correlated to cell cycle progression" + "\n\n"
+        if not use_isoforms:
+            fom += f"We can attribute only {100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}% of proteomic cell cycle regulation to transcriptomic cycling with single-cell RNA sequencing" + "\n\n"
+            fom += f"This includes {100 * sum(np.isin(adata.var_names[mean_diff_from_rng > MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM], adata.var_names[adata_regevccdgenes])) / sum(adata_regevccdgenes)}% of known CCD transcripts. Of these, {sum(ccdprotein_transcript_regulated)} were also cell cycle dependent proteins ({100 * sum(ccdprotein_transcript_regulated) / sum(ccdprotein)}%). Of the {sum(ccdprotein)} CCD proteins, {sum(ccdprotein_nontranscript_regulated)} did not have CCD transcripts, including DUSP18 (Figure 2E). There were {sum(ccdtranscript & adata_nonccdproteins)} CCD transcripts that were Non-CCD as proteins." + "\n\n"
         fom += f"" + "\n\n"
         print(fom)
         file.write(fom)
@@ -263,8 +265,9 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
 
 def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprotein, adata_isoform, ccdtranscript_isoform):
     '''Check out the isoform results at the gene level'''
-    gene_varnames, isoform_varnames = list(adata.var_names), list(adata_isoform.var_names)
-    isoformToGene = pd.read_csv("input/processed/python/IsoformToGene.csv", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    gene_varnames = list(adata.var_names)
+    isoform_varnames = list(adata_isoform.var_names)
+    isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
     ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])
@@ -293,7 +296,7 @@ def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp):
     # FucciPseudotime.pseudotime_umap(adata_isoform, isIsoform=True)
    
     # Cell cycle analysis    
-    bioccd = np.genfromtxt("input/processed/manual/biologically_defined_ccd.txt", dtype='str') # from mitotic structures in the protein work
+    bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures in the protein work
     ccd_regev_filtered_isoform, ccd_filtered_isoform, nonccd_filtered_isoform = utils.ccd_gene_lists(adata_isoform)
     adata_ccdprotein_isoform, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform = RNADataPreparation.is_ccd(adata_isoform, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered_isoform)
     rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, True)
@@ -313,7 +316,7 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.ylabel("Mean Difference from Random")
     plt.savefig("figures/MedianDiffFromRandom_RNA.png")
     plt.savefig("figures/MedianDiffFromRandom_RNA.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
     eq_percvar_adj_nextafter = np.nextafter(eq_percvar_adj, eq_percvar_adj + 1)
@@ -324,7 +327,7 @@ def figures_ccd_analysis_rna(adata, percent_ccd_variance, mean_diff_from_rng, pa
     plt.ylabel("-log10 adj p-value from randomization")
     plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.png")
     plt.savefig("figures/MedianDiffFromRandomVolcano_RNA.pdf")
-    plt.show()
+    # plt.show()
     plt.close()
 
 def mvavg_plots_pergene(adata, fucci_time_inds, norm_exp_sort, moving_averages, mvavg_xvals, use_isoforms=False):
@@ -362,7 +365,7 @@ def plot_umap_ccd_cutoffs(adata, mean_diff_from_rng):
         adata_withoutCCd = adata[:,mean_diff_from_rng < cutoff]
         sc.pp.neighbors(adata_withoutCCd, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata_withoutCCd)
-        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=True, save=True)
+        sc.pl.umap(adata_withoutCCd, color="fucci_time", show=False, save=True)
         shutil.move("figures/umap.pdf", f"figures/RNACcdUmapCutoffs/umap{cutoff}cutoff.pdf")
 
 def ccd_analysis_of_spikeins(adata_spikeins, perms):
@@ -403,6 +406,7 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     plt.rcParams['figure.figsize'] = (6, 5)
 
     print("ANALYZING SC-RNA-SEQ WITH LASSO")
+    warnings.filterwarnings("ignore")
     fucci_rna_data = [(adata.obs["Red585"][ii], adata.obs["Green530"][ii]) for ii in np.arange(len(adata.obs))]
     imputer = KNNImputer(missing_values=0)
     expression = imputer.fit_transform(adata.X)
@@ -423,27 +427,30 @@ def compare_to_lasso_analysis(adata, ccdtranscript):
     adataCCd = adata[:,nz_coef]
     sc.pp.neighbors(adataCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataCCd)
-    sc.pl.umap(adataCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoCCD.pdf")
     adataNonCCd = adata[:,~nz_coef]
     sc.pp.neighbors(adataNonCCd, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adataNonCCd)
-    sc.pl.umap(adataNonCCd, color="fucci_time", show=True, save=True)
+    sc.pl.umap(adataNonCCd, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapRNALassoNonCCD.pdf")
     plt.rcParams['figure.figsize'] = prevPlotSize
+    warnings.filterwarnings("default")
 
 def analyze_cnv_calls(adata, ccdtranscript):
     '''Take results from cnvkit calls to analyze effects of copy number variation'''
-    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
+    cnsresults = pd.read_csv("input/RNAData/CnsCallSummary.tsv", sep="\t")
     cnsresults_gene = cnsresults["gene"]
     cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
-    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript]))
-    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns), np.arange(len(ccdtranscript))[ccdtranscript][np.isin(adata_names, cnsresults_allgenes)]]
-    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    genenamedict = utils.getGeneNameDict()
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names[ccdtranscript], genenamedict))
+    adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns), 
+                              np.arange(len(ccdtranscript))[ccdtranscript][np.isin(adata_names, cnsresults_allgenes)]]
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names, genenamedict)
     cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
     geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
     adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
-    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names, genenamedict)
     cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
     cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
     
@@ -455,15 +462,20 @@ def analyze_cnv_calls(adata, ccdtranscript):
     heatmap[cnsResultsCellData.T == 2] = 2
     heatmap[cnsResultsCellData.T > 2] = 3
     clustergrid = sbn.clustermap(heatmap[:,:-8], col_cluster=False)
-    plt.savefig("figures/CnvConsistency.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvConsistency.pdf")
+    # plt.show()
+    plt.close()
     
     # heatmaps for phases
-    adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]])
+    adata_idx = np.array([list(adata.obs["Well_Plate"]).index(wp) for wp in cnsresults.columns[np.isin(cnsresults.columns, 
+                                               adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]])
     sbn.heatmap([adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G1",
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "S-ph",
                  adata_ccd_isInCns.obs["phase"][np.asarray(clustergrid.dendrogram_row.reordered_ind)] == "G2M"],
                 yticklabels=["G1", "S", "G2"])
-    plt.savefig("figures/CnvConsistencyPhases.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvConsistencyPhases.pdf")
+    # plt.show()
+    plt.close()
     
     # is there enrichment for phase in the highly amplified genes?
     # print(adata_ccd_isInCns.obs["phase"][clustergrid.dendrogram_row.reordered_ind[:100]].value_counts())
@@ -476,7 +488,10 @@ def analyze_cnv_calls(adata, ccdtranscript):
     plt.scatter(x * fucci.TOT_LEN, linearModel.intercept + x * linearModel.slope)
     plt.xlabel("Cell Division Time, hrs")
     plt.ylabel("Mean CNV of All Chromosome Arms")
-    plt.savefig("figures/CnvCorrelation.pdf"); plt.show(); plt.close()
+    plt.savefig("figures/CnvCorrelation.pdf")
+    # plt.show()
+    plt.close()
+    
     print(f"{linearModel[3]}: p-value for nonzero slope by two-sided t test")
     residualLinearModel = scipy.stats.linregress(np.asarray(x).astype(float), np.asarray(y - (linearModel.intercept + x * linearModel.slope)).astype(float))
     residualNormality = scipy.stats.normaltest(np.asarray(y - (linearModel.intercept + x * linearModel.slope)))
@@ -484,16 +499,13 @@ def analyze_cnv_calls(adata, ccdtranscript):
     print(f"{residualNormality[1]}: p-value for normality of residuals")
     
     # what if we only look at one phase? G1 before doubling? for all genes?
-    cnsresults = pd.read_csv("input/processed/python/cns_call_summary.tsv", sep="\t")
-    cnsresults_gene = cnsresults["gene"]
-    cnsresults_allgenes = np.concatenate([g.split(',') for g in cnsresults_gene])
-    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names))
+    adata_names = np.array(utils.ccd_gene_names_gapped(adata.var_names, genenamedict))
     adata_ccd_isInCns = adata[np.isin(adata.obs["Well_Plate"], cnsresults.columns) & (adata.obs["phase"] == "G1"), np.arange(len(adata_names))[np.isin(adata_names, cnsresults_allgenes)]]
-    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names)
+    adata_ccd_isInCns_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns.var_names, genenamedict)
     cnsresultIdx = np.array([[n in genelist for genelist in cnsresults_gene] for n in adata_ccd_isInCns_names])
     geneInJustOneList = np.array([sum(x) == 1 for x in cnsresultIdx])
     adata_ccd_isInCns_inJustOneList = adata_ccd_isInCns[:, geneInJustOneList]
-    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names)
+    adata_ccd_isInCns_inJustOneList_names = utils.ccd_gene_names_gapped(adata_ccd_isInCns_inJustOneList.var_names, genenamedict)
     cnsresultIdx_inJustOneList = cnsresultIdx[geneInJustOneList]
     cnsResultsCellData = np.array(cnsresults)[:, np.isin(cnsresults.columns, adata_ccd_isInCns_inJustOneList.obs["Well_Plate"])]
     cnvAmplified, cnvPvalOneSided = [],[]
@@ -539,15 +551,15 @@ def make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort
     pd.DataFrame({
         "ENSG" : adata.var_names[filterccd],
         "CCD" : ccdtranscript[filterccd],
-        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_intensity" :  [",".join([str(yyy) for yyy in yy[filterccd][:,ii]]) for ii,yy in enumerate(norm_exp_sort.T[filterccd])],
-        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])],
-        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ensg in adata.var_names[filterccd]],
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time']]) for ii in np.arange(sum(filterccd))],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy]) for ii, yy in enumerate(norm_exp_sort.T[filterccd])],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585']]) for ii in np.arange(sum(filterccd))],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530']]) for ii in np.arange(sum(filterccd))],
+        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ii in np.arange(sum(filterccd))],
         "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T[filterccd]],
         "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,0,:]],
         "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-1,:]],
         "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,1,:]],
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-2,:]],
-        "phase" : [",".join([str(xx) for xx in adata.obs['phase'][filterccd][:,ii]]) for ii,ensg in enumerate(adata.var_names[filterccd])]
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase']]) for ii in np.arange(sum(filterccd))]
         }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")
