@@ -1,0 +1,705 @@
+CellProfiler_Version,2014-07-23T17:39:57 6c2d896
+ChannelType_Ab,Grayscale
+ChannelType_GreenFUCCI,Grayscale
+ChannelType_RedFUCCI,Grayscale
+ChannelType_mt,Grayscale
+ImageSet_Zip_Dictionary,"[ 60  63 120 ..., 108 115  58]"
+Metadata_GroupingTags,"[""Metadata_Ser""]"
+Metadata_Tags,"[""ImageNumber""]"
+Pipeline_Pipeline,"CellProfiler Pipeline: http://www.cellprofiler.org
+Version:3
+DateRevision:20140723173957
+GitHash:6c2d896
+ModuleCount:38
+HasImagePlaneDetails:False
+
+Images:[module_num:1|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\'To begin creating your project, use the Images module to compile a list of files and/or folders that you want to analyze. You can also specify a set of rules to include only the desired files in your selected folders.\', \'---\', \'Settings converted from legacy pipeline.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    :
+    Filter images?:Custom
+    Select the rule criteria:and (extension does istif) (file doesnot contain ""LUT"")
+
+Metadata:[module_num:2|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'The Metadata module optionally allows you to extract information describing your images (i.e, metadata) which will be stored along with your measurements. This information can be contained in the file name and/or location, or in an external file.\', \'---\', \'Settings converted from legacy pipeline.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Extract metadata?:Yes
+    Metadata data type:Text
+    Metadata types:{}
+    Extraction method count:3
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:File name
+    Regular expression:^(?P<plate>\x5B0-9\x5D\x5B0-9\x5D\x5B0-9\x5D\x5B0-9\x5D)_(?P<Well>\x5BA-Z\x5D\x5B0-9\x5D\x5B0-9\x5D)_(?P<Site>s\x5B0-9\x5D)_w\x5B0-9\x5D
+    Regular expression:(?P<Date>\x5B0-9\x5D{4}_\x5B0-9\x5D{2}_\x5B0-9\x5D{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:or (file does containregexp ""ch"")
+    Metadata file location:
+    Match file and image metadata:\x5B\x5D
+    Use case insensitive matching?:No
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:Folder name
+    Regular expression:^(?P<Plate>.*)_(?P<Well>\x5BA-P\x5D\x5B0-9\x5D{2})_s(?P<Site>\x5B0-9\x5D)_w(?P<ChannelNumber>\x5B0-9\x5D)
+    Regular expression:(?P<Run>.*)$
+    Extract metadata from:Images matching a rule
+    Select the filtering criteria:and (file does containregexp ""W"")
+    Metadata file location:
+    Match file and image metadata:\x5B\x5D
+    Use case insensitive matching?:No
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:File name
+    Regular expression:^(?P<Ser>.*)_(?P<stain>)_(?P<ch>)
+    Regular expression:(?P<Date>\x5B0-9\x5D{4}_\x5B0-9\x5D{2}_\x5B0-9\x5D{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:and (file does contain """")
+    Metadata file location:
+    Match file and image metadata:\x5B\x5D
+    Use case insensitive matching?:No
+
+NamesAndTypes:[module_num:3|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\'The NamesAndTypes module allows you to assign a meaningful name to each image by which other modules will refer to it.\', \'---\', \'Settings converted from legacy pipeline.\', \'Please change any color images from ""Load as Grayscale image"" to ""Load as Color image""\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Assign a name to:Images matching rules
+    Select the image type:Grayscale image
+    Name to assign these images:DNA
+    Match metadata:\x5B\x5D
+    Image set matching method:Order
+    Set intensity range from:Image metadata
+    Assignments count:4
+    Single images count:0
+    Select the rule criteria:and (file does contain ""w3"")
+    Name to assign these images:RedFUCCI
+    Name to assign these objects:Cell
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Retain outlines of loaded objects?:No
+    Name the outline image:LoadedOutlines
+    Select the rule criteria:and (file does contain ""w2"")
+    Name to assign these images:GreenFUCCI
+    Name to assign these objects:Speckle
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Retain outlines of loaded objects?:No
+    Name the outline image:LoadedOutlines
+    Select the rule criteria:and (file does contain ""w1"")
+    Name to assign these images:mt
+    Name to assign these objects:Nucleus
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Retain outlines of loaded objects?:No
+    Name the outline image:LoadedOutlines
+    Select the rule criteria:and (file does contain ""w4"")
+    Name to assign these images:Ab
+    Name to assign these objects:Cytoplasm
+    Select the image type:Grayscale image
+    Set intensity range from:Image metadata
+    Retain outlines of loaded objects?:No
+    Name the outline image:LoadedOutlines
+
+Groups:[module_num:4|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\'The Groups module optionally allows you to split your list of images into image subsets (groups) which will be processed independently of each other. Examples of groupings include screening batches, microtiter plates, time-lapse movies, etc.\', \'---\', \'Settings converted from legacy pipeline.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Do you want to group your images?:Yes
+    grouping metadata count:1
+    Metadata category:Ser
+
+Resize:[module_num:5|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:GreenFUCCI
+    Name the output image:ResizedGreenFUCCI
+    Resizing method:Resize by a fraction or multiple of the original size
+    Resizing factor:0.5
+    Width of the final image:100
+    Height of the final image:100
+    Interpolation method:Bicubic
+    Method to specify the dimensions:Manual
+    Select the image with the desired dimensions:None
+    Additional image count:3
+    Select the additional image?:RedFUCCI
+    Name the output image:ResizedRedFUCCI
+    Select the additional image?:mt
+    Name the output image:Resizedmt
+    Select the additional image?:Ab
+    Name the output image:ResizedAb
+
+Morph:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:Resizedmt
+    Name the output image:MorphMT
+    Select the operation to perform:dilate
+    Number of times to repeat operation:Once
+    Repetition number:2
+    Scale:10
+    Structuring element:Disk
+    X offset:1
+    Y offset:1
+    Angle:0
+    Width:3
+    Height:3
+    Custom:3,3,111111111
+    Rescale values from 0 to 1?:Yes
+
+CorrectIlluminationCalculate:[module_num:7|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedGreenFUCCI
+    Name the output image:IllumResizedGreenFUCCI
+    Select how the illumination function is calculated:Background
+    Dilate objects in the final averaged image?:No
+    Dilation radius:1
+    Block size:60
+    Rescale the illumination function?:No
+    Calculate function for each image individually, or based on all images?:Each
+    Smoothing method:Splines
+    Method to calculate smoothing filter size:Automatic
+    Approximate object size:10
+    Smoothing filter size:10
+    Retain the averaged image?:No
+    Name the averaged image:IllumBlueAvg
+    Retain the dilated image?:No
+    Name the dilated image:IllumBlueDilated
+    Automatically calculate spline parameters?:Yes
+    Background mode:auto
+    Number of spline points:5
+    Background threshold:2.0
+    Image resampling factor:2.0
+    Maximum number of iterations:40
+    Residual value for convergence:0.001
+
+CorrectIlluminationApply:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedGreenFUCCI
+    Name the output image:CorrResizedGreenFUCCI
+    Select the illumination function:IllumResizedGreenFUCCI
+    Select how the illumination function is applied:Subtract
+
+CorrectIlluminationCalculate:[module_num:9|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedRedFUCCI
+    Name the output image:IllumResizedRedFUCCI
+    Select how the illumination function is calculated:Background
+    Dilate objects in the final averaged image?:No
+    Dilation radius:1
+    Block size:60
+    Rescale the illumination function?:No
+    Calculate function for each image individually, or based on all images?:Each
+    Smoothing method:Splines
+    Method to calculate smoothing filter size:Automatic
+    Approximate object size:10
+    Smoothing filter size:10
+    Retain the averaged image?:No
+    Name the averaged image:IllumBlueAvg
+    Retain the dilated image?:No
+    Name the dilated image:IllumBlueDilated
+    Automatically calculate spline parameters?:Yes
+    Background mode:auto
+    Number of spline points:5
+    Background threshold:2.0
+    Image resampling factor:2.0
+    Maximum number of iterations:40
+    Residual value for convergence:0.001
+
+CorrectIlluminationApply:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedRedFUCCI
+    Name the output image:CorrResizedRedFUCCI
+    Select the illumination function:IllumResizedRedFUCCI
+    Select how the illumination function is applied:Subtract
+
+ImageMath:[module_num:11|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Add
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:No
+    Set values greater than 1 equal to 1?:No
+    Ignore the image masks?:No
+    Name the output image:ResizedDapi
+    Image or measurement?:Image
+    Select the first image:CorrResizedGreenFUCCI
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:CorrResizedRedFUCCI
+    Multiply the second image by:1.0
+    Measurement:
+
+Morph:[module_num:12|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedDapi
+    Name the output image:ResizedDapi
+    Select the operation to perform:open
+    Number of times to repeat operation:Once
+    Repetition number:2
+    Scale:3.0
+    Structuring element:Disk
+    X offset:1.0
+    Y offset:1.0
+    Angle:0.0
+    Width:3.0
+    Height:3.0
+    Custom:5,5,1111111111111111111111111
+    Rescale values from 0 to 1?:Yes
+
+ImageMath:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:Log transform (base 2)
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Ignore the image masks?:No
+    Name the output image:ResizedDapi2
+    Image or measurement?:Image
+    Select the first image:ResizedDapi
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:CorrResizedRedFUCCI
+    Multiply the second image by:1.0
+    Measurement:
+
+EnhanceEdges:[module_num:14|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:False|wants_pause:False]
+    Select the input image:ResizedDapi2
+    Name the output image:EdgedImage
+    Automatically calculate the threshold?:Yes
+    Absolute threshold:0.2
+    Threshold adjustment factor:1.0
+    Select an edge-finding method:Sobel
+    Select edge direction to enhance:All
+    Calculate Gaussian\'s sigma automatically?:Yes
+    Gaussian\'s sigma value:10.0
+    Calculate value for low threshold automatically?:Yes
+    Low threshold value:0.1
+
+MakeProjection:[module_num:15|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:False|wants_pause:True]
+    Select the input image:RedFUCCI
+    Type of projection:Maximum
+    Name the output image:Projection
+    Frequency:6.0
+
+IdentifyPrimaryObjects:[module_num:16|svn_version:\'Unknown\'|variable_revision_number:10|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:False|wants_pause:False]
+    Select the input image:ResizedDapi
+    Name the primary objects to be identified:Nuclei
+    Typical diameter of objects, in pixel units (Min,Max):7,30
+    Discard objects outside the diameter range?:Yes
+    Try to merge too small objects with nearby larger objects?:No
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Intensity
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:7.0
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Name the outline image:PrimaryOutlines
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Retain outlines of the identified objects?:No
+    Automatically calculate the threshold using the Otsu method?:Yes
+    Enter Laplacian of Gaussian threshold:0.5
+    Automatically calculate the size of objects for the Laplacian of Gaussian filter?:Yes
+    Enter LoG filter diameter:5.0
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Threshold setting version:1
+    Threshold strategy:Manual
+    Thresholding method:RidlerCalvard
+    Select the smoothing method for thresholding:Automatic
+    Threshold smoothing scale:1.0
+    Threshold correction factor:1
+    Lower and upper bounds on threshold:0.0,1
+    Approximate fraction of image covered by objects?:0.1
+    Manual threshold:0.045
+    Select the measurement to threshold with:None
+    Select binary image:ResizedDapi
+    Masking objects:None
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Method to calculate adaptive window size:Image size
+    Size of adaptive window:10
+
+IdentifyPrimaryObjects:[module_num:17|svn_version:\'Unknown\'|variable_revision_number:10|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:ResizedDapi2
+    Name the primary objects to be identified:Nuclei
+    Typical diameter of objects, in pixel units (Min,Max):30,110
+    Discard objects outside the diameter range?:Yes
+    Try to merge too small objects with nearby larger objects?:No
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Intensity
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:7.0
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Name the outline image:PrimaryOutlines
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Retain outlines of the identified objects?:No
+    Automatically calculate the threshold using the Otsu method?:Yes
+    Enter Laplacian of Gaussian threshold:0.5
+    Automatically calculate the size of objects for the Laplacian of Gaussian filter?:Yes
+    Enter LoG filter diameter:5.0
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Threshold setting version:1
+    Threshold strategy:Adaptive
+    Thresholding method:RidlerCalvard
+    Select the smoothing method for thresholding:No smoothing
+    Threshold smoothing scale:1.0
+    Threshold correction factor:1
+    Lower and upper bounds on threshold:0.0,1
+    Approximate fraction of image covered by objects?:0.1
+    Manual threshold:0.04
+    Select the measurement to threshold with:None
+    Select binary image:ResizedDapi
+    Masking objects:None
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Method to calculate adaptive window size:Image size
+    Size of adaptive window:10
+
+IdentifySecondaryObjects:[module_num:18|svn_version:\'Unknown\'|variable_revision_number:9|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Nuclei
+    Name the objects to be identified:Cells
+    Select the method to identify the secondary objects:Propagation
+    Select the input image:MorphMT
+    Number of pixels by which to expand the primary objects:10
+    Regularization factor:0.05
+    Name the outline image:SecondaryOutlines
+    Retain outlines of the identified secondary objects?:No
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Retain outlines of the new primary objects?:No
+    Name the new primary object outlines:FilteredNucleiOutlines
+    Fill holes in identified objects?:Yes
+    Threshold setting version:1
+    Threshold strategy:Manual
+    Thresholding method:Otsu
+    Select the smoothing method for thresholding:No smoothing
+    Threshold smoothing scale:1.0
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.0,1.0
+    Approximate fraction of image covered by objects?:0.01
+    Manual threshold:0.02
+    Select the measurement to threshold with:None
+    Select binary image:None
+    Masking objects:None
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Method to calculate adaptive window size:Image size
+    Size of adaptive window:10
+
+IdentifyTertiaryObjects:[module_num:19|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Cells
+    Select the smaller identified objects:Nuclei
+    Name the tertiary objects to be identified:Cytoplasm
+    Name the outline image:CytoplasmOutlines
+    Retain outlines of the tertiary objects?:No
+    Shrink smaller object prior to subtraction?:Yes
+
+ConvertObjectsToImage:[module_num:20|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Cytoplasm
+    Name the output image:cytooutline
+    Select the color format:Color
+    Select the colormap:Default
+
+ConvertObjectsToImage:[module_num:21|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Nuclei
+    Name the output image:nucleioutline
+    Select the color format:Color
+    Select the colormap:Default
+
+DisplayDataOnImage:[module_num:22|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Display object or image measurements?:Object
+    Select the input objects:Nuclei
+    Measurement to display:Number_Object_Number
+    Select the image on which to display the measurements:nucleioutline
+    Text color:white
+    Name the output image that has the measurements displayed:DisplayImage
+    Font size (points):10
+    Number of decimals:0
+    Image elements to save:Image
+    Annotation offset (in pixels):0
+    Display mode:Text
+    Color map:Default
+    Display background image?:Yes
+
+DisplayDataOnImage:[module_num:23|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:False|wants_pause:False]
+    Display object or image measurements?:Object
+    Select the input objects:Nuclei
+    Measurement to display:Number_Object_Number
+    Select the image on which to display the measurements:OrigOverlay
+    Text color:white
+    Name the output image that has the measurements displayed:DisplayImage
+    Font size (points):10
+    Number of decimals:0
+    Image elements to save:Image
+    Annotation offset (in pixels):0
+    Display mode:Text
+    Color map:Default
+    Display background image?:Yes
+
+DisplayDataOnImage:[module_num:24|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Display object or image measurements?:Object
+    Select the input objects:Cytoplasm
+    Measurement to display:Number_Object_Number
+    Select the image on which to display the measurements:cytooutline
+    Text color:white
+    Name the output image that has the measurements displayed:DisplayImage
+    Font size (points):10
+    Number of decimals:0
+    Image elements to save:Image
+    Annotation offset (in pixels):0
+    Display mode:Text
+    Color map:Default
+    Display background image?:Yes
+
+MeasureObjectIntensity:[module_num:25|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Hidden:4
+    Select an image to measure:CorrResizedGreenFUCCI
+    Select an image to measure:CorrResizedRedFUCCI
+    Select an image to measure:ResizedAb
+    Select an image to measure:Resizedmt
+    Select objects to measure:Nuclei
+    Select objects to measure:Cytoplasm
+    Select objects to measure:Cells
+
+MeasureObjectSizeShape:[module_num:26|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select objects to measure:Nuclei
+    Select objects to measure:Cells
+    Select objects to measure:Cytoplasm
+    Calculate the Zernike features?:No
+
+DisplayScatterPlot:[module_num:27|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Type of measurement to plot on X-axis:Object
+    Select the object to plot on the X-axis:Nuclei
+    Select the measurement to plot on the X-axis:Intensity_MeanIntensity_CorrResizedGreenFUCCI
+    Type of measurement to plot on Y-axis:Object
+    Select the object to plot on the Y-axis:Nuclei
+    Select the measurement to plot on the Y-axis:Intensity_MeanIntensity_CorrResizedRedFUCCI
+    How should the X-axis be scaled?:linear
+    How should the Y-axis be scaled?:linear
+    Enter a title for the plot, if desired:x=green, y=red
+
+FilterObjects:[module_num:28|svn_version:\'Unknown\'|variable_revision_number:7|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Name the output objects:FilteredG1
+    Select the object to filter:Nuclei
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Retain outlines of the identified objects?:No
+    Name the outline image:FilteredObjects
+    Rules file location:Elsewhere...\x7C
+    Rules file name:rules.txt
+    Class number:1
+    Measurement count:2
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedRedFUCCI
+    Filter using a minimum measurement value?:Yes
+    Minimum value:0.0
+    Filter using a maximum measurement value?:No
+    Maximum value:0.1
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedGreenFUCCI
+    Filter using a minimum measurement value?:No
+    Minimum value:0.0
+    Filter using a maximum measurement value?:Yes
+    Maximum value:0.04
+
+FilterObjects:[module_num:29|svn_version:\'Unknown\'|variable_revision_number:7|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Name the output objects:FilteredG1S
+    Select the object to filter:Nuclei
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Retain outlines of the identified objects?:No
+    Name the outline image:FilteredObjects
+    Rules file location:Elsewhere...\x7C
+    Rules file name:rules.txt
+    Class number:1
+    Measurement count:2
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedRedFUCCI
+    Filter using a minimum measurement value?:Yes
+    Minimum value:0.04
+    Filter using a maximum measurement value?:Yes
+    Maximum value:0.4
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedGreenFUCCI
+    Filter using a minimum measurement value?:Yes
+    Minimum value:0.04
+    Filter using a maximum measurement value?:Yes
+    Maximum value:0.4
+
+FilterObjects:[module_num:30|svn_version:\'Unknown\'|variable_revision_number:7|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Name the output objects:FilteredSG2
+    Select the object to filter:Nuclei
+    Select the filtering mode:Measurements
+    Select the filtering method:Limits
+    Select the objects that contain the filtered objects:None
+    Retain outlines of the identified objects?:No
+    Name the outline image:FilteredObjects
+    Rules file location:Elsewhere...\x7C
+    Rules file name:rules.txt
+    Class number:1
+    Measurement count:2
+    Additional object count:0
+    Assign overlapping child to:Both parents
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedGreenFUCCI
+    Filter using a minimum measurement value?:Yes
+    Minimum value:0.041
+    Filter using a maximum measurement value?:No
+    Maximum value:1.0
+    Select the measurement to filter by:Intensity_MeanIntensity_CorrResizedRedFUCCI
+    Filter using a minimum measurement value?:No
+    Minimum value:0.0
+    Filter using a maximum measurement value?:Yes
+    Maximum value:0.04
+
+MeasureObjectIntensity:[module_num:31|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Hidden:3
+    Select an image to measure:CorrResizedGreenFUCCI
+    Select an image to measure:CorrResizedRedFUCCI
+    Select an image to measure:ResizedAb
+    Select objects to measure:FilteredG1
+    Select objects to measure:FilteredG1S
+    Select objects to measure:FilteredSG2
+
+GrayToColor:[module_num:32|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select a color scheme:RGB
+    Select the image to be colored red:CorrResizedRedFUCCI
+    Select the image to be colored green:CorrResizedGreenFUCCI
+    Select the image to be colored blue:Leave this black
+    Name the output image:RedGreenFUCCI
+    Relative weight for the red image:1.0
+    Relative weight for the green image:1.0
+    Relative weight for the blue image:1.0
+    Select the image to be colored cyan:Leave this black
+    Select the image to be colored magenta:Leave this black
+    Select the image to be colored yellow:Leave this black
+    Select the image that determines brightness:Leave this black
+    Relative weight for the cyan image:1.0
+    Relative weight for the magenta image:1.0
+    Relative weight for the yellow image:1.0
+    Relative weight for the brightness image:1.0
+    Select the input image to add to the stacked image:None
+
+OverlayOutlines:[module_num:33|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Display outlines on a blank image?:No
+    Select image on which to display outlines:RedGreenFUCCI
+    Name the output image:OrigOverlay
+    Outline display mode:Color
+    Select method to determine brightness of outlines:Max of image
+    Width of outlines:1
+    Select outlines to display:None
+    Select outline color:#FF241D
+    Load outlines from an image or objects?:Objects
+    Select objects to display:FilteredG1
+    Select outlines to display:None
+    Select outline color:#FFE019
+    Load outlines from an image or objects?:Objects
+    Select objects to display:FilteredG1S
+    Select outlines to display:None
+    Select outline color:#32FF38
+    Load outlines from an image or objects?:Objects
+    Select objects to display:FilteredSG2
+
+DisplayDataOnImage:[module_num:34|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Display object or image measurements?:Object
+    Select the input objects:Nuclei
+    Measurement to display:Number_Object_Number
+    Select the image on which to display the measurements:OrigOverlay
+    Text color:white
+    Name the output image that has the measurements displayed:DisplayImage
+    Font size (points):10
+    Number of decimals:0
+    Image elements to save:Image
+    Annotation offset (in pixels):0
+    Display mode:Text
+    Color map:Default
+    Display background image?:Yes
+
+SaveImages:[module_num:35|svn_version:\'Unknown\'|variable_revision_number:11|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:True]
+    Select the type of image to save:Image
+    Select the image to save:DisplayImage
+    Select the objects to save:Nuclei
+    Select the module display window to save:None
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:GreenFUCCI
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:FilteredlCell
+    Saved file format:png
+    Output file location:Default Output Folder sub-folder\x7CFilteredlCell
+    Image bit depth:8
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Rescale the images? :No
+    Save as grayscale or color image?:Grayscale
+    Select colormap:Default
+    Record the file and path information to the saved image?:No
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...\x7C/Users/dianatelessemian
+    Saved movie format:avi
+
+SaveImages:[module_num:36|svn_version:\'Unknown\'|variable_revision_number:11|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:nucleioutline
+    Select the objects to save:Nuclei
+    Select the module display window to save:None
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:GreenFUCCI
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:nucleioutline
+    Saved file format:png
+    Output file location:Default Output Folder sub-folder\x7Cnucleioutline
+    Image bit depth:8
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Rescale the images? :No
+    Save as grayscale or color image?:Grayscale
+    Select colormap:Default
+    Record the file and path information to the saved image?:No
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...\x7C/Users/dianatelessemian
+    Saved movie format:avi
+
+SaveImages:[module_num:37|svn_version:\'Unknown\'|variable_revision_number:11|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:cytooutline
+    Select the objects to save:Nuclei
+    Select the module display window to save:None
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:GreenFUCCI
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:cytooutline
+    Saved file format:png
+    Output file location:Default Output Folder sub-folder\x7Ccytooutline
+    Image bit depth:8
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Rescale the images? :No
+    Save as grayscale or color image?:Grayscale
+    Select colormap:Default
+    Record the file and path information to the saved image?:No
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...\x7C/Users/dianatelessemian
+    Saved movie format:avi
+
+ExportToSpreadsheet:[module_num:38|svn_version:\'Unknown\'|variable_revision_number:11|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:True]
+    Select the column delimiter:Comma ("","")
+    Add image metadata columns to your object data file?:No
+    Limit output to a size that is allowed in Excel?:No
+    Select the measurements to export:Yes
+    Calculate the per-image mean values for object measurements?:Yes
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder sub-folder\x7Cmeasurement
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:Yes
+    Press button to select measurements to export:FilteredG1\x7CIntensity_MinIntensity_ResizedAb,FilteredG1\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_IntegratedIntensityEdge_ResizedAb,FilteredG1\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_StdIntensity_ResizedAb,FilteredG1\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MassDisplacement_ResizedAb,FilteredG1\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MinIntensityEdge_ResizedAb,FilteredG1\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_LowerQuartileIntensity_ResizedAb,FilteredG1\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_UpperQuartileIntensity_ResizedAb,FilteredG1\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MADIntensity_ResizedAb,FilteredG1\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MeanIntensity_ResizedAb,FilteredG1\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MeanIntensityEdge_ResizedAb,FilteredG1\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MaxIntensity_ResizedAb,FilteredG1\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MedianIntensity_ResizedAb,FilteredG1\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_IntegratedIntensity_ResizedAb,FilteredG1\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_MaxIntensityEdge_ResizedAb,FilteredG1\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,FilteredG1\x7CIntensity_StdIntensityEdge_ResizedAb,FilteredG1\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,FilteredG1\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,FilteredG1\x7CLocation_CenterMassIntensity_Y_ResizedAb,FilteredG1\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,FilteredG1\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,FilteredG1\x7CLocation_CenterMassIntensity_X_ResizedAb,FilteredG1\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,FilteredG1\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,FilteredG1\x7CLocation_Center_Y,FilteredG1\x7CLocation_Center_X,FilteredG1\x7CLocation_MaxIntensity_Y_ResizedAb,FilteredG1\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,FilteredG1\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,FilteredG1\x7CLocation_MaxIntensity_X_ResizedAb,FilteredG1\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,FilteredG1\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,FilteredG1\x7CParent_Nuclei,FilteredG1\x7CNumber_Object_Number,Cytoplasm\x7CParent_Cells,Cytoplasm\x7CParent_Nuclei,Cytoplasm\x7CNumber_Object_Number,Cytoplasm\x7CIntensity_MinIntensity_ResizedAb,Cytoplasm\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MinIntensity_Resizedmt,Cytoplasm\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_StdIntensity_ResizedAb,Cytoplasm\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_StdIntensity_Resizedmt,Cytoplasm\x7CIntensity_IntegratedIntensityEdge_ResizedAb,Cytoplasm\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_IntegratedIntensityEdge_Resizedmt,Cytoplasm\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MassDisplacement_ResizedAb,Cytoplasm\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MassDisplacement_Resizedmt,Cytoplasm\x7CIntensity_UpperQuartileIntensity_ResizedAb,Cytoplasm\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_UpperQuartileIntensity_Resizedmt,Cytoplasm\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_IntegratedIntensity_ResizedAb,Cytoplasm\x7CIntensity_IntegratedIntensity_Resizedmt,Cytoplasm\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MinIntensityEdge_ResizedAb,Cytoplasm\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MinIntensityEdge_Resizedmt,Cytoplasm\x7CIntensity_MADIntensity_ResizedAb,Cytoplasm\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MADIntensity_Resizedmt,Cytoplasm\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MeanIntensity_ResizedAb,Cytoplasm\x7CIntensity_MeanIntensity_Resizedmt,Cytoplasm\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MeanIntensityEdge_ResizedAb,Cytoplasm\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MeanIntensityEdge_Resizedmt,Cytoplasm\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MaxIntensity_ResizedAb,Cytoplasm\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MaxIntensity_Resizedmt,Cytoplasm\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MedianIntensity_ResizedAb,Cytoplasm\x7CIntensity_MedianIntensity_Resizedmt,Cytoplasm\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_LowerQuartileIntensity_ResizedAb,Cytoplasm\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_LowerQuartileIntensity_Resizedmt,Cytoplasm\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_MaxIntensityEdge_ResizedAb,Cytoplasm\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_MaxIntensityEdge_Resizedmt,Cytoplasm\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,Cytoplasm\x7CIntensity_StdIntensityEdge_ResizedAb,Cytoplasm\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,Cytoplasm\x7CIntensity_StdIntensityEdge_Resizedmt,Cytoplasm\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,Cytoplasm\x7CLocation_MaxIntensity_Y_ResizedAb,Cytoplasm\x7CLocation_MaxIntensity_Y_Resizedmt,Cytoplasm\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,Cytoplasm\x7CLocation_MaxIntensity_X_ResizedAb,Cytoplasm\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,Cytoplasm\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,Cytoplasm\x7CLocation_MaxIntensity_X_Resizedmt,Cytoplasm\x7CLocation_CenterMassIntensity_Y_ResizedAb,Cytoplasm\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,Cytoplasm\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,Cytoplasm\x7CLocation_CenterMassIntensity_Y_Resizedmt,Cytoplasm\x7CLocation_CenterMassIntensity_X_ResizedAb,Cytoplasm\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,Cytoplasm\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,Cytoplasm\x7CLocation_CenterMassIntensity_X_Resizedmt,Cytoplasm\x7CLocation_Center_Y,Cytoplasm\x7CLocation_Center_X,Cytoplasm\x7CAreaShape_Perimeter,Cytoplasm\x7CAreaShape_Solidity,Cytoplasm\x7CAreaShape_Center_Y,Cytoplasm\x7CAreaShape_Center_X,Cytoplasm\x7CAreaShape_MajorAxisLength,Cytoplasm\x7CAreaShape_MinFeretDiameter,Cytoplasm\x7CAreaShape_Area,Cytoplasm\x7CAreaShape_MaxFeretDiameter,Cytoplasm\x7CAreaShape_MeanRadius,Cytoplasm\x7CAreaShape_EulerNumber,Cytoplasm\x7CAreaShape_Eccentricity,Cytoplasm\x7CAreaShape_Compactness,Cytoplasm\x7CAreaShape_Extent,Cytoplasm\x7CAreaShape_MedianRadius,Cytoplasm\x7CAreaShape_MaximumRadius,Cytoplasm\x7CAreaShape_FormFactor,Cytoplasm\x7CAreaShape_MinorAxisLength,Cytoplasm\x7CAreaShape_Orientation,Cells\x7CParent_Nuclei,Cells\x7CNumber_Object_Number,Cells\x7CIntensity_MinIntensity_ResizedAb,Cells\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_MinIntensity_Resizedmt,Cells\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_StdIntensity_ResizedAb,Cells\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_StdIntensity_Resizedmt,Cells\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,Cells\x7CIntensity_IntegratedIntensityEdge_ResizedAb,Cells\x7CIntensity_IntegratedIntensityEdge_Resizedmt,Cells\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,Cells\x7CIntensity_MassDisplacement_ResizedAb,Cells\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,Cells\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,Cells\x7CIntensity_MassDisplacement_Resizedmt,Cells\x7CIntensity_MinIntensityEdge_ResizedAb,Cells\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,Cells\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,Cells\x7CIntensity_MinIntensityEdge_Resizedmt,Cells\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_LowerQuartileIntensity_ResizedAb,Cells\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_LowerQuartileIntensity_Resizedmt,Cells\x7CIntensity_UpperQuartileIntensity_ResizedAb,Cells\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_UpperQuartileIntensity_Resizedmt,Cells\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_MADIntensity_ResizedAb,Cells\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_MADIntensity_Resizedmt,Cells\x7CIntensity_MeanIntensity_ResizedAb,Cells\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_MeanIntensity_Resizedmt,Cells\x7CIntensity_MeanIntensityEdge_ResizedAb,Cells\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,Cells\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,Cells\x7CIntensity_MeanIntensityEdge_Resizedmt,Cells\x7CIntensity_MaxIntensity_ResizedAb,Cells\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_MaxIntensity_Resizedmt,Cells\x7CIntensity_MedianIntensity_ResizedAb,Cells\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_MedianIntensity_Resizedmt,Cells\x7CIntensity_IntegratedIntensity_ResizedAb,Cells\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,Cells\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,Cells\x7CIntensity_IntegratedIntensity_Resizedmt,Cells\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,Cells\x7CIntensity_MaxIntensityEdge_ResizedAb,Cells\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,Cells\x7CIntensity_MaxIntensityEdge_Resizedmt,Cells\x7CIntensity_StdIntensityEdge_ResizedAb,Cells\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,Cells\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,Cells\x7CIntensity_StdIntensityEdge_Resizedmt,Cells\x7CLocation_MaxIntensity_Y_ResizedAb,Cells\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,Cells\x7CLocation_MaxIntensity_Y_Resizedmt,Cells\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,Cells\x7CLocation_MaxIntensity_X_ResizedAb,Cells\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,Cells\x7CLocation_MaxIntensity_X_Resizedmt,Cells\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,Cells\x7CLocation_CenterMassIntensity_Y_ResizedAb,Cells\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,Cells\x7CLocation_CenterMassIntensity_Y_Resizedmt,Cells\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,Cells\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,Cells\x7CLocation_CenterMassIntensity_X_ResizedAb,Cells\x7CLocation_CenterMassIntensity_X_Resizedmt,Cells\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,Cells\x7CLocation_Center_Y,Cells\x7CLocation_Center_X,Cells\x7CAreaShape_Perimeter,Cells\x7CAreaShape_Solidity,Cells\x7CAreaShape_Orientation,Cells\x7CAreaShape_FormFactor,Cells\x7CAreaShape_MinFeretDiameter,Cells\x7CAreaShape_MaxFeretDiameter,Cells\x7CAreaShape_EulerNumber,Cells\x7CAreaShape_MeanRadius,Cells\x7CAreaShape_Eccentricity,Cells\x7CAreaShape_Compactness,Cells\x7CAreaShape_Extent,Cells\x7CAreaShape_MedianRadius,Cells\x7CAreaShape_MaximumRadius,Cells\x7CAreaShape_MinorAxisLength,Cells\x7CAreaShape_Area,Cells\x7CAreaShape_MajorAxisLength,Cells\x7CAreaShape_Center_Y,Cells\x7CAreaShape_Center_X,Cells\x7CChildren_Cytoplasm_Count,FilteredSG2\x7CIntensity_MinIntensity_ResizedAb,FilteredSG2\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_IntegratedIntensityEdge_ResizedAb,FilteredSG2\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_StdIntensity_ResizedAb,FilteredSG2\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MassDisplacement_ResizedAb,FilteredSG2\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_UpperQuartileIntensity_ResizedAb,FilteredSG2\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_LowerQuartileIntensity_ResizedAb,FilteredSG2\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MinIntensityEdge_ResizedAb,FilteredSG2\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MADIntensity_ResizedAb,FilteredSG2\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_IntegratedIntensity_ResizedAb,FilteredSG2\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MeanIntensityEdge_ResizedAb,FilteredSG2\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MaxIntensity_ResizedAb,FilteredSG2\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MedianIntensity_ResizedAb,FilteredSG2\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MeanIntensity_ResizedAb,FilteredSG2\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_StdIntensityEdge_ResizedAb,FilteredSG2\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,FilteredSG2\x7CIntensity_MaxIntensityEdge_ResizedAb,FilteredSG2\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,FilteredSG2\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,FilteredSG2\x7CLocation_CenterMassIntensity_Y_ResizedAb,FilteredSG2\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,FilteredSG2\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,FilteredSG2\x7CLocation_CenterMassIntensity_X_ResizedAb,FilteredSG2\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,FilteredSG2\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,FilteredSG2\x7CLocation_Center_Y,FilteredSG2\x7CLocation_Center_X,FilteredSG2\x7CLocation_MaxIntensity_Y_ResizedAb,FilteredSG2\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,FilteredSG2\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,FilteredSG2\x7CLocation_MaxIntensity_X_ResizedAb,FilteredSG2\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,FilteredSG2\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,FilteredSG2\x7CParent_Nuclei,FilteredSG2\x7CNumber_Object_Number,Experiment\x7CPipeline_Pipeline,Experiment\x7CRun_Timestamp,Experiment\x7CCellProfiler_Version,Experiment\x7CModification_Timestamp,Experiment\x7CMetadata_GroupingTags,Nuclei\x7CNumber_Object_Number,Nuclei\x7CIntensity_MinIntensity_ResizedAb,Nuclei\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MinIntensity_Resizedmt,Nuclei\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,Nuclei\x7CIntensity_IntegratedIntensityEdge_ResizedAb,Nuclei\x7CIntensity_IntegratedIntensityEdge_Resizedmt,Nuclei\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_StdIntensity_ResizedAb,Nuclei\x7CIntensity_StdIntensity_Resizedmt,Nuclei\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MassDisplacement_ResizedAb,Nuclei\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MassDisplacement_Resizedmt,Nuclei\x7CIntensity_UpperQuartileIntensity_ResizedAb,Nuclei\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_UpperQuartileIntensity_Resizedmt,Nuclei\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_LowerQuartileIntensity_ResizedAb,Nuclei\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_LowerQuartileIntensity_Resizedmt,Nuclei\x7CIntensity_MinIntensityEdge_ResizedAb,Nuclei\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MinIntensityEdge_Resizedmt,Nuclei\x7CIntensity_MADIntensity_ResizedAb,Nuclei\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MADIntensity_Resizedmt,Nuclei\x7CIntensity_MeanIntensity_ResizedAb,Nuclei\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MeanIntensity_Resizedmt,Nuclei\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_IntegratedIntensity_ResizedAb,Nuclei\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_IntegratedIntensity_Resizedmt,Nuclei\x7CIntensity_MeanIntensityEdge_ResizedAb,Nuclei\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MeanIntensityEdge_Resizedmt,Nuclei\x7CIntensity_MaxIntensity_ResizedAb,Nuclei\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MaxIntensity_Resizedmt,Nuclei\x7CIntensity_MedianIntensity_ResizedAb,Nuclei\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MedianIntensity_Resizedmt,Nuclei\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,Nuclei\x7CIntensity_StdIntensityEdge_ResizedAb,Nuclei\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_StdIntensityEdge_Resizedmt,Nuclei\x7CIntensity_MaxIntensityEdge_ResizedAb,Nuclei\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,Nuclei\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,Nuclei\x7CIntensity_MaxIntensityEdge_Resizedmt,Nuclei\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,Nuclei\x7CLocation_MaxIntensity_Y_ResizedAb,Nuclei\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,Nuclei\x7CLocation_MaxIntensity_Y_Resizedmt,Nuclei\x7CLocation_MaxIntensity_X_ResizedAb,Nuclei\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,Nuclei\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,Nuclei\x7CLocation_MaxIntensity_X_Resizedmt,Nuclei\x7CLocation_CenterMassIntensity_Y_ResizedAb,Nuclei\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,Nuclei\x7CLocation_CenterMassIntensity_Y_Resizedmt,Nuclei\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,Nuclei\x7CLocation_CenterMassIntensity_X_ResizedAb,Nuclei\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,Nuclei\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,Nuclei\x7CLocation_CenterMassIntensity_X_Resizedmt,Nuclei\x7CLocation_Center_Y,Nuclei\x7CLocation_Center_X,Nuclei\x7CAreaShape_Perimeter,Nuclei\x7CAreaShape_Solidity,Nuclei\x7CAreaShape_Center_Y,Nuclei\x7CAreaShape_Center_X,Nuclei\x7CAreaShape_MaxFeretDiameter,Nuclei\x7CAreaShape_MinFeretDiameter,Nuclei\x7CAreaShape_Area,Nuclei\x7CAreaShape_EulerNumber,Nuclei\x7CAreaShape_MedianRadius,Nuclei\x7CAreaShape_Compactness,Nuclei\x7CAreaShape_Extent,Nuclei\x7CAreaShape_Orientation,Nuclei\x7CAreaShape_Eccentricity,Nuclei\x7CAreaShape_MaximumRadius,Nuclei\x7CAreaShape_FormFactor,Nuclei\x7CAreaShape_MinorAxisLength,Nuclei\x7CAreaShape_MajorAxisLength,Nuclei\x7CAreaShape_MeanRadius,Nuclei\x7CChildren_FilteredG1_Count,Nuclei\x7CChildren_Cytoplasm_Count,Nuclei\x7CChildren_Cells_Count,Nuclei\x7CChildren_FilteredSG2_Count,Nuclei\x7CChildren_FilteredG1S_Count,Image\x7CCount_FilteredG1,Image\x7CCount_Cytoplasm,Image\x7CCount_Cells,Image\x7CCount_FilteredSG2,Image\x7CCount_Nuclei,Image\x7CCount_FilteredG1S,Image\x7CMD5Digest_RedFUCCI,Image\x7CMD5Digest_mt,Image\x7CMD5Digest_Ab,Image\x7CMD5Digest_GreenFUCCI,Image\x7CModuleError_30FilterObjects,Image\x7CModuleError_08CorrectIlluminationApply,Image\x7CModuleError_19IdentifyTertiaryObjects,Image\x7CModuleError_33OverlayOutlines,Image\x7CModuleError_27DisplayScatterPlot,Image\x7CModuleError_03NamesAndTypes,Image\x7CModuleError_18IdentifySecondaryObjects,Image\x7CModuleError_09CorrectIlluminationCalculate,Image\x7CModuleError_12Morph,Image\x7CModuleError_32GrayToColor,Image\x7CModuleError_04Groups,Image\x7CModuleError_13ImageMath,Image\x7CModuleError_02Metadata,Image\x7CModuleError_10CorrectIlluminationApply,Image\x7CModuleError_37SaveImages,Image\x7CModuleError_11ImageMath,Image\x7CModuleError_36SaveImages,Image\x7CModuleError_01Images,Image\x7CModuleError_21ConvertObjectsToImage,Image\x7CModuleError_34DisplayDataOnImage,Image\x7CModuleError_24DisplayDataOnImage,Image\x7CModuleError_17IdentifyPrimaryObjects,Image\x7CModuleError_28FilterObjects,Image\x7CModuleError_26MeasureObjectSizeShape,Image\x7CModuleError_20ConvertObjectsToImage,Image\x7CModuleError_06Morph,Image\x7CModuleError_29FilterObjects,Image\x7CModuleError_35SaveImages,Image\x7CModuleError_07CorrectIlluminationCalculate,Image\x7CModuleError_25MeasureObjectIntensity,Image\x7CModuleError_22DisplayDataOnImage,Image\x7CModuleError_05Resize,Image\x7CModuleError_31MeasureObjectIntensity,Image\x7CExecutionTime_30FilterObjects,Image\x7CExecutionTime_08CorrectIlluminationApply,Image\x7CExecutionTime_19IdentifyTertiaryObjects,Image\x7CExecutionTime_33OverlayOutlines,Image\x7CExecutionTime_27DisplayScatterPlot,Image\x7CExecutionTime_03NamesAndTypes,Image\x7CExecutionTime_25MeasureObjectIntensity,Image\x7CExecutionTime_09CorrectIlluminationCalculate,Image\x7CExecutionTime_12Morph,Image\x7CExecutionTime_06Morph,Image\x7CExecutionTime_04Groups,Image\x7CExecutionTime_13ImageMath,Image\x7CExecutionTime_02Metadata,Image\x7CExecutionTime_10CorrectIlluminationApply,Image\x7CExecutionTime_37SaveImages,Image\x7CExecutionTime_11ImageMath,Image\x7CExecutionTime_36SaveImages,Image\x7CExecutionTime_01Images,Image\x7CExecutionTime_21ConvertObjectsToImage,Image\x7CExecutionTime_34DisplayDataOnImage,Image\x7CExecutionTime_24DisplayDataOnImage,Image\x7CExecutionTime_17IdentifyPrimaryObjects,Image\x7CExecutionTime_28FilterObjects,Image\x7CExecutionTime_26MeasureObjectSizeShape,Image\x7CExecutionTime_20ConvertObjectsToImage,Image\x7CExecutionTime_32GrayToColor,Image\x7CExecutionTime_29FilterObjects,Image\x7CExecutionTime_35SaveImages,Image\x7CExecutionTime_07CorrectIlluminationCalculate,Image\x7CExecutionTime_18IdentifySecondaryObjects,Image\x7CExecutionTime_22DisplayDataOnImage,Image\x7CExecutionTime_05Resize,Image\x7CExecutionTime_31MeasureObjectIntensity,Image\x7CSeries_RedFUCCI,Image\x7CSeries_GreenFUCCI,Image\x7CSeries_mt,Image\x7CSeries_Ab,Image\x7CFrame_GreenFUCCI,Image\x7CFrame_mt,Image\x7CFrame_RedFUCCI,Image\x7CFrame_Ab,Image\x7CURL_GreenFUCCI,Image\x7CURL_Ab,Image\x7CURL_RedFUCCI,Image\x7CURL_mt,Image\x7CFileName_GreenFUCCI,Image\x7CFileName_Ab,Image\x7CFileName_RedFUCCI,Image\x7CFileName_mt,Image\x7CScaling_GreenFUCCI,Image\x7CScaling_RedFUCCI,Image\x7CScaling_Ab,Image\x7CScaling_mt,Image\x7CWidth_RedFUCCI,Image\x7CWidth_Ab,Image\x7CWidth_GreenFUCCI,Image\x7CWidth_mt,Image\x7CPathName_GreenFUCCI,Image\x7CPathName_mt,Image\x7CPathName_RedFUCCI,Image\x7CPathName_Ab,Image\x7CThreshold_FinalThreshold_Nuclei,Image\x7CThreshold_FinalThreshold_Cells,Image\x7CThreshold_SumOfEntropies_Nuclei,Image\x7CThreshold_SumOfEntropies_Cells,Image\x7CThreshold_WeightedVariance_Cells,Image\x7CThreshold_WeightedVariance_Nuclei,Image\x7CThreshold_OrigThreshold_Nuclei,Image\x7CThreshold_OrigThreshold_Cells,Image\x7CGroup_Number,Image\x7CGroup_Index,Image\x7CHeight_GreenFUCCI,Image\x7CHeight_RedFUCCI,Image\x7CHeight_Ab,Image\x7CHeight_mt,Image\x7CMetadata_plate,Image\x7CMetadata_ch,Image\x7CMetadata_Run,Image\x7CMetadata_Ser,Image\x7CMetadata_Series,Image\x7CMetadata_Frame,Image\x7CMetadata_Well,Image\x7CMetadata_Site,Image\x7CMetadata_FileLocation,Image\x7CMetadata_stain,FilteredG1S\x7CIntensity_MinIntensity_ResizedAb,FilteredG1S\x7CIntensity_MinIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MinIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_StdIntensity_ResizedAb,FilteredG1S\x7CIntensity_StdIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_StdIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_IntegratedIntensityEdge_ResizedAb,FilteredG1S\x7CIntensity_IntegratedIntensityEdge_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_IntegratedIntensityEdge_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MassDisplacement_ResizedAb,FilteredG1S\x7CIntensity_MassDisplacement_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MassDisplacement_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_UpperQuartileIntensity_ResizedAb,FilteredG1S\x7CIntensity_UpperQuartileIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_UpperQuartileIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MinIntensityEdge_ResizedAb,FilteredG1S\x7CIntensity_MinIntensityEdge_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MinIntensityEdge_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MADIntensity_ResizedAb,FilteredG1S\x7CIntensity_MADIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MADIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_LowerQuartileIntensity_ResizedAb,FilteredG1S\x7CIntensity_LowerQuartileIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_LowerQuartileIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MeanIntensityEdge_ResizedAb,FilteredG1S\x7CIntensity_MeanIntensityEdge_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MeanIntensityEdge_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MaxIntensity_ResizedAb,FilteredG1S\x7CIntensity_MaxIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MaxIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MedianIntensity_ResizedAb,FilteredG1S\x7CIntensity_MedianIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MedianIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MeanIntensity_ResizedAb,FilteredG1S\x7CIntensity_MeanIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MeanIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_IntegratedIntensity_ResizedAb,FilteredG1S\x7CIntensity_IntegratedIntensity_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_IntegratedIntensity_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_MaxIntensityEdge_ResizedAb,FilteredG1S\x7CIntensity_MaxIntensityEdge_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_MaxIntensityEdge_CorrResizedGreenFUCCI,FilteredG1S\x7CIntensity_StdIntensityEdge_ResizedAb,FilteredG1S\x7CIntensity_StdIntensityEdge_CorrResizedRedFUCCI,FilteredG1S\x7CIntensity_StdIntensityEdge_CorrResizedGreenFUCCI,FilteredG1S\x7CNumber_Object_Number,FilteredG1S\x7CParent_Nuclei,FilteredG1S\x7CLocation_MaxIntensity_Y_ResizedAb,FilteredG1S\x7CLocation_MaxIntensity_Y_CorrResizedRedFUCCI,FilteredG1S\x7CLocation_MaxIntensity_Y_CorrResizedGreenFUCCI,FilteredG1S\x7CLocation_MaxIntensity_X_ResizedAb,FilteredG1S\x7CLocation_MaxIntensity_X_CorrResizedRedFUCCI,FilteredG1S\x7CLocation_MaxIntensity_X_CorrResizedGreenFUCCI,FilteredG1S\x7CLocation_CenterMassIntensity_Y_ResizedAb,FilteredG1S\x7CLocation_CenterMassIntensity_Y_CorrResizedRedFUCCI,FilteredG1S\x7CLocation_CenterMassIntensity_Y_CorrResizedGreenFUCCI,FilteredG1S\x7CLocation_CenterMassIntensity_X_ResizedAb,FilteredG1S\x7CLocation_CenterMassIntensity_X_CorrResizedRedFUCCI,FilteredG1S\x7CLocation_CenterMassIntensity_X_CorrResizedGreenFUCCI,FilteredG1S\x7CLocation_Center_Y,FilteredG1S\x7CLocation_Center_X
+    Representation of Nan/Inf:NaN
+    Add a prefix to file names?:No
+    Filename prefix\x3A:MyExpt_
+    Overwrite without warning?:Yes
+    Data to export:Do not use
+    Combine these object measurements with those of the previous object?:No
+    File name:DATA.csv
+    Use the object name for the file name?:Yes
+"
+Run_Timestamp,2019-06-26T09:33:03.714784
