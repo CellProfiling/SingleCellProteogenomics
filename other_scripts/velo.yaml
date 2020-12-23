@@ -24,4 +24,4 @@ dependencies:
     - pysam==0.15.2
     - loompy==2.0.17
     - velocyto==0.17.17 # see https://hub.docker.com/r/jsschrepping/velocyto-docker/dockerfile for aptitude installs
-    - scvelo
+    - scvelo==0.2.2 # N.B.: used 0.1.24 in the work, but works better with 0.2.2 as of Dec. 2020

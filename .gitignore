@@ -5,6 +5,7 @@ __pycache__/
 .pybiomart.sqlite
 ~$*
 */~$*
+cache/
 
 # Output or Downloaded Folders
 input.zip

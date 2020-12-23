@@ -127,6 +127,16 @@ def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_da
     # plt.show()
     plt.close()
     
+    pd.DataFrame({
+        "cell_cycle_time_hrs" : mvavg_xvals * fucci.TOT_LEN,
+        "mvavgs_red" : mvavg_red,
+        "mvavgs_red_25p" : mvperc_red[1],
+        "mvavgs_red_75p" : mvperc_red[-2],        
+        "mvavgs_green" : mvavg_green,
+        "mvavgs_red_25p" : mvperc_green[1],
+        "mvavgs_red_75p" : mvperc_green[-2]}).to_csv(
+            "output/FucciIntensitiesOnPseudotime.tsv", index=False, sep="\t")
+    
 def fucci_polar_coords(x, y, analysis_title):
     '''
     Calculate the polar coordinate position of each cell based on the FUCCI intensities (x, y).

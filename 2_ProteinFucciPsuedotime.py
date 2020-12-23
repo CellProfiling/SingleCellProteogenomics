@@ -176,6 +176,7 @@ alphaa = 0.05
 ccd_results = ProteinCellCycleDependence.cell_cycle_dependence_protein(
     u_well_plates,
     wp_ensg,
+    wp_ab,
     use_log_ccd,
     do_remove_outliers,
     pol_sort_well_plate,
@@ -239,6 +240,7 @@ ccd_comp, nonccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation
     wp_comp_ccd_clust2,
     var_comp,
     gini_comp,
+    perc_var_comp,
     mean_diff_from_rng,
     wp_comp_kruskal_gaussccd_adj,
     wp_comp_eq_percvar_adj,

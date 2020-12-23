@@ -183,6 +183,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
         percent_ccd_variance_rng = np.load(picklePath, allow_pickle=True)
     percent_ccd_variance_rng = np.asarray(percent_ccd_variance_rng)
     mean_diff_from_rng = np.mean((percent_ccd_variance - percent_ccd_variance_rng).T, 1)
+    utils.np_save_overwriting(meandiffPath, mean_diff_from_rng)
 
     # Statistical testing based on randomization analysis
     alpha_ccd = 0.01
@@ -563,3 +564,18 @@ def make_plotting_dataframe(adata, ccdtranscript, wp_ensg, bioccd, norm_exp_sort
         "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[filterccd,-2,:]],
         "phase" : [",".join([str(xx) for xx in adata.obs['phase']]) for ii in np.arange(sum(filterccd))]
         }).to_csv("output/RNAPseudotimePlotting.csv.gz", index=False, sep="\t")
+    pd.DataFrame({
+        "ENSG" : adata.var_names,
+        "CCD" : ccdtranscript,
+        "cell_pseudotime" : [",".join([str(xx) for xx in adata.obs['fucci_time']]) for ii in np.arange(len(adata.var_names))],
+        "cell_intensity" :  [",".join([str(yyy) for yyy in yy]) for ii, yy in enumerate(norm_exp_sort.T)],
+        "cell_fred" : [",".join([str(xx) for xx in adata.obs['Red585']]) for ii in np.arange(len(adata.var_names))],
+        "cell_fgreen" : [",".join([str(xx) for xx in adata.obs['Green530']]) for ii in np.arange(len(adata.var_names))],
+        "mvavg_x" : [",".join([str(xx) for xx in mvavgs_x]) for ii in np.arange(len(adata.var_names))],
+        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in moving_averages.T],
+        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,0,:]],
+        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-1,:]],
+        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,1,:]],
+        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in mvpercs[:,-2,:]],
+        "phase" : [",".join([str(xx) for xx in adata.obs['phase']]) for ii in np.arange(len(adata.var_names))]
+        }).to_csv("output/RNAPseudotimePlotting_Unfiltered.csv.gz", index=False, sep="\t")

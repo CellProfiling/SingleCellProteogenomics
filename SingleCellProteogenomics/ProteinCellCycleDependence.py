@@ -80,7 +80,7 @@ def get_ccd_strings(ccd_comp, wp_ensg, bioccd):
     ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
     return ccdstring
 
-def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove_outliers,
+def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do_remove_outliers,
         pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
         pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases,
         pol_sort_area_cell, pol_sort_area_nuc, pol_sort_well_plate_imgnb,
@@ -228,10 +228,28 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, use_log_ccd, do_remove
         MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
             mvavg_xvals, mvavg_comp, mvperc_comp, None, folder, fileprefixes[i])
         
-        # Make the plots for microtubules (takes 10 mins)
-        mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
-        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, 
-                mvavg_xvals, mvavg_mt, mvperc_mt, None, folder_mt, f"{fileprefixes[i]}_mt")
+        # Make the plots for microtubules (takes 10 mins for all, so just do the arbitrary one in the Fig 1)
+        if well == "C07_55405991":
+            mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
+            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, 
+                    mvavg_xvals, mvavg_mt, mvperc_mt, None, folder_mt, f"{fileprefixes[i]}_mt")
+            if well == "C07_55405991": # keep here in case making all pseudotime plots
+                pd.DataFrame({
+                    "ENSG" : wp_ensg[i],
+                    "Antibody" : wp_ab[i],
+                    "Compartment" : "Cell",
+                    "CCD" : "No",
+                    "cell_pseudotime" : [",".join([str(ppp) for ppp in pp]) for pp in [curr_pol]],
+                    "cell_intensity" : [",".join([str(yyy) for yyy in yy]) for yy in [curr_mt_cell_norm]],
+                    "mvavg_x" : [",".join([str(xxx) for xxx in xx]) for xx in [mvavg_xvals]],
+                    "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in [mvavg_mt]],
+                    "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[0]]],
+                    "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-1]]],
+                    "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[1]]],
+                    "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-2]]],
+                    "phase" : [",".join(pp) for pp in [curr_mockbulk_phase]],
+                    "WellPlate" : u_well_plates[i]}).to_csv(
+                        "output/mtplottingline.tsv", index=False, sep="\t")
         
         # Make the plots for each bimodal protein
         if clusters is not None:
@@ -424,7 +442,7 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
     
 def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_iscell, wp_isnuc, wp_iscyto,
             wp_comp_ccd_difffromrng, wp_comp_ccd_clust1, wp_comp_ccd_clust2, 
-            var_comp, gini_comp, 
+            var_comp, gini_comp, percvar_comp,
             mean_diff_from_rng, wp_comp_kruskal_gaussccd_adj, wp_comp_eq_percvar_adj, 
             mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2,
             wp_isbimodal_fcpadj_pass, wp_isbimodal_generally, wp_ccd_unibimodal, wp_bimodal_fcmaxmin, wp_comp_ccd_gauss):
@@ -507,8 +525,9 @@ def analyze_ccd_variation_protein(folder, u_well_plates, wp_ensg, wp_ab, wp_isce
         "antibody": wp_ab,
         "antibody_hpa_scores" : ab_scores,
         "compartment" : get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc),
-        "variance_comp":var_comp,
-        "gini_comp":gini_comp,
+        "variance_comp" : var_comp,
+        "gini_comp" : gini_comp,
+        "percent_variance_explained" : percvar_comp,
         "known_by_GoReactomeCyclebaseNcbi":np.isin(wp_ensg, np.concatenate((knownccd1, knownccd2, knownccd3))),
         "mean_percvar_diff_from_random":mean_diff_from_rng,
         "wp_comp_kruskal_gaussccd_adj":wp_comp_kruskal_gaussccd_adj,
