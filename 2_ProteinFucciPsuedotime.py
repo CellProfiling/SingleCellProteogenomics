@@ -109,8 +109,9 @@ mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell, var_
 )
 
 # Compare variances for protein and microtubules, the internal control for each image
+removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0] # make these independent samples for one-sided Kruskal-Wallis tests
 general_boxplot(
-    (var_comp, var_mt),
+    (var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
     "Variance",
@@ -119,7 +120,7 @@ general_boxplot(
     f"figures/ProteinMicrotubuleVariances.pdf",
 )
 general_boxplot(
-    (cv_comp, gini_mt),
+    (cv_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
     "CV",
@@ -128,7 +129,7 @@ general_boxplot(
     f"figures/ProteinMicrotubuleCVs.pdf",
 )
 general_boxplot(
-    (gini_comp, gini_mt),
+    (gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
     "Gini",
@@ -136,9 +137,9 @@ general_boxplot(
     False,
     f"figures/ProteinMicrotubuleGinis.pdf",
 )
-p_varProt_varMt = scipy.stats.kruskal(var_comp, var_mt)[1]
-p_cvProt_cvMt = scipy.stats.kruskal(cv_comp, cv_mt)[1]
-p_giniProt_giniMt = scipy.stats.kruskal(gini_comp, gini_mt)[1]
+p_varProt_varMt = 2*scipy.stats.kruskal(var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)])[1]
+p_cvProt_cvMt = 2*scipy.stats.kruskal(cv_comp[~np.isin(u_well_plates, removeThese)], cv_mt[~np.isin(u_well_plates, removeThese)])[1]
+p_giniProt_giniMt = 2*scipy.stats.kruskal(gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)])[1]
 print(
     f"{p_varProt_varMt}: p-value for difference between protein and microtubule variances"
 )
