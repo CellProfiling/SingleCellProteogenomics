@@ -23,7 +23,8 @@ class ProteinProperties:
             names_ccdprotein_transcript_regulated, names_ccdprotein_nontranscript_regulated, 
             names_nonccdprotein, names_ccdtranscript):
         '''Reads in information about protein properties for evaluating differences in melting temps'''
-        self.proteinDisorder = dict([(r[1][1], r[1][2:]) for r in pd.read_csv("input/ProteinProperties/ProteinDisorderProperties.csv.gz").iterrows()])
+        self.proteinDisorder = dict([(r[1][2], r[1][3:]) for r in pd.read_csv("input/ProteinProperties/ProteinDisorderProperties.csv.gz").iterrows()])
+        # gene lists
         self.wp_ensg = wp_ensg
         self.ensg_ccdprotein_transcript_regulated = ensg_ccdprotein_transcript_regulated
         self.ensg_ccdprotein_nontranscript_regulated = ensg_ccdprotein_nontranscript_regulated
@@ -37,29 +38,63 @@ class ProteinProperties:
         self.names_ccdprotein_nontranscript_regulated = names_ccdprotein_nontranscript_regulated
         self.names_nonccdprotein = names_nonccdprotein
         self.names_ccdtranscript = names_ccdtranscript
-        self.names_hpamapped = pd.read_csv("input/ProteinProperties/proteinatlas.tsv.gz", sep="\t")["Gene"]
+        self.names_all = pd.read_csv("input/ProteinProperties/proteinatlas.tsv.gz", sep="\t")["Gene"]
+        # background: U2OS expressed proteome (completely mapped)
+        self.rna_cellline = dict([(x[1][1], x[1][3]) for x in pd.read_csv("input/ProteinProperties/rna_celline.tsv.gz", sep="\t").iterrows() if x[1][2] == "U-2 OS"]) # gene, tpm
+        self.names_allu2os = [x[0] for x in self.rna_cellline.items() if x[1] > 1]
+        self.names_u2osmapped = [x for x in pd.read_csv("input/ProteinProperties/subcellular_location.tsv.gz", sep="\t")["Gene name"] if self.rna_cellline[x] >= 1] # 1 TPM in U2OS cutoff (defined as mapped and expressed in HPA)
+        # keeping track of statistical tests
         self.test_results = {}
 
-    def analyze2(self, aa, bb, aa_lab, bb_lab, property_label, testNonzeroDistribution=False):
+    def analyze2(self, source, aa_idx, bb_idx, aa_lab, bb_lab, property_label, testNonzeroDistribution=False):
+        aa = source[aa_idx]
+        bb = source[bb_idx]
         if testNonzeroDistribution:
-            self.test_results[(property_label, f"{aa_lab}_vs_{bb_lab}_NonzeroDistribution")] = ("Median", np.median(aa[aa!=0]), np.median(bb[bb!=0]), 
-                    "Kruskal", stats.kruskal(aa[aa!=0], bb[bb!=0])[1] * 2) # one-sided
-            self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}_NonzeroDistribution")] = ("Std", np.std(aa[aa!=0]), np.std(bb[bb!=0]), 
-                   "EqualVarianceLevene", stats.levene(aa[aa!=0], bb[bb!=0])[1])
+            self.test_results[(property_label, f"{aa_lab}_vs_{bb_lab}_NonzeroDistribution")] = (
+                "Median", 
+                np.median(aa[aa!=0]), 
+                np.median(bb[bb!=0]),
+                sum(aa!=0),
+                len(bb!=0),
+                "Kruskal", 
+                stats.kruskal(aa[aa!=0], bb[bb!=0])[1] * 2) # one-sided
+            self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}_NonzeroDistribution")] = (
+                "Std", 
+                np.std(aa[aa!=0]), 
+                np.std(bb[bb!=0]), 
+                sum(aa!=0),
+                sum(bb!=0),
+                "EqualVarianceLevene", 
+                stats.levene(aa[aa!=0], bb[bb!=0])[1])
         else:
-            self.test_results[(property_label, f"{aa_lab}_vs_{bb_lab}")] = ("Median", np.median(aa), np.median(bb), 
-                    "Kruskal", stats.kruskal(aa, bb)[1] * 2) # one-sided
-            self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}")] = ("Std", np.std(aa), np.std(bb), 
-                   "EqualVarianceLevene", stats.levene(aa, bb)[1])
+            self.test_results[(property_label, f"{aa_lab}_vs_{bb_lab}")] = (
+                "Median", 
+                np.median(aa), 
+                np.median(bb),
+                len(aa),
+                len(bb),
+                "Kruskal", 
+                stats.kruskal(aa, bb)[1] * 2) # one-sided
+            self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}")] = (
+                "Std", 
+                np.std(aa), 
+                np.std(bb),
+                len(aa),
+                len(bb),
+                "EqualVarianceLevene", 
+                stats.levene(aa, bb)[1])
 
-    def analyze3(self, aa, bb, cc, aa_lab, bb_lab, cc_lab, property_label, testNonzeroDistribution=False):#, lab_lab, showfliers, fileprefix):
+    def analyze3(self, source, aa_idx, bb_idx, cc_idx, aa_lab, bb_lab, cc_lab, property_label, testNonzeroDistribution=False):#, lab_lab, showfliers, fileprefix):
         '''General boxplot and kruskal-wallis test'''
+        aa = source[aa_idx]
+        bb = source[bb_idx]
+        cc = source[cc_idx]
         self.analyze2(aa, bb, aa_lab, bb_lab, property_label, testNonzeroDistribution)
         self.analyze2(bb, cc, bb_lab, cc_lab, property_label, testNonzeroDistribution)
         self.analyze2(aa, cc, aa_lab, cc_lab, property_label, testNonzeroDistribution)
         
     def analyzeAll(self, property_label, *groups, testNonzeroDistribution=False):
-        self.test_results[(property_label), "allgroups"] = ("N/A", "N/A", "N/A", 
+        self.test_results[(property_label), "allgroups"] = ("N/A", "N/A", "N/A", "N/A", "N/A",
                         "Kruskal", stats.kruskal(*[group[group != 0] if testNonzeroDistribution else group for group in groups])[1])
     
     def analyze_melting_points(self):
@@ -70,26 +105,36 @@ class ProteinProperties:
         print(f"{','.join(np.unique(meltingDf['cell_line_or_type']))}: unique human cell samples\n")
         self.all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
         self.all_protnames, ant, att, trp, ntp, nnp = [],[],[],[],[],[]
-        med = meltingDf.groupby("gene_name")["quan_norm_meltPoint"].median()
-        self.all_temps = np.asarray(med)
-        self.all_protnames = np.asarray(med.index)
+        self.median_temps = meltingDf.groupby("gene_name")["quan_norm_meltPoint"].median()
+        self.all_temps = np.asarray(self.median_temps)
+        self.all_protnames = np.asarray(self.median_temps.index)
         self.all_protnames_list = list(self.all_protnames)
         self.all_protnames_set = set(self.all_protnames)
-        self.ccdprotein_temps = np.asarray(med[np.isin(self.all_protnames, self.names_ccdprotein)])
-        self.nonccdprotein_temps = np.asarray(med[np.isin(self.all_protnames, self.names_nonccdprotein)])
-        self.ccdprotein_transreg_temps = np.asarray(med[np.isin(self.all_protnames, self.names_ccdprotein_transcript_regulated)])
-        self.ccdprotein_nontransreg_temps = np.asarray(med[np.isin(self.all_protnames, self.names_ccdprotein_nontranscript_regulated)])
-        self.ccdprotein_mitotic_temps = np.asarray(med[np.isin(self.all_protnames, self.names_bioccd)])
-        self.ccdprotein_interphase_temps = np.asarray(med[np.isin(self.all_protnames, self.names_ccdprotein[~np.isin(self.names_ccdprotein, self.names_bioccd)])])
-        self.ccdtranscript_temps = np.asarray(med[np.isin(self.all_protnames, self.names_ccdtranscript)])
-        self.allmapped_temps = np.asarray(med[np.isin(self.all_protnames, self.names_hpamapped)])
-        self.variable_temps = np.concatenate((self.ccdprotein_temps, self.nonccdprotein_temps))
+        self.ccdprotein_temps = np.isin(self.all_protnames, self.names_ccdprotein)
+        self.nonccdprotein_temps = np.isin(self.all_protnames, self.names_nonccdprotein)
+        self.ccdprotein_transreg_temps = np.isin(self.all_protnames, self.names_ccdprotein_transcript_regulated)
+        self.ccdprotein_nontransreg_temps = np.isin(self.all_protnames, self.names_ccdprotein_nontranscript_regulated)
+        self.ccdprotein_mitotic_temps = np.isin(self.all_protnames, self.names_bioccd)
+        self.ccdprotein_interphase_temps = np.isin(self.all_protnames, self.names_ccdprotein[~np.isin(self.names_ccdprotein, self.names_bioccd)])
+        self.ccdtranscript_temps = np.isin(self.all_protnames, self.names_ccdtranscript)
+        self.allmapped_temps = np.isin(self.all_protnames, self.names_u2osmapped)
+        self.allu2os_temps = np.isin(self.all_protnames, self.names_allu2os)
+        self.all_temps = np.isin(self.all_protnames, self.names_all)
+        self.variable_temps = self.ccdprotein_temps | self.nonccdprotein_temps
         
         # Aggregate measurements per protein
         property_label = "Tm"
-        self.analyze3(self.ccdprotein_temps, self.nonccdprotein_temps, self.allmapped_temps, "ccd", "nonccd", "allmapped", property_label)
-        self.analyze3(self.ccdprotein_transreg_temps, self.ccdprotein_nontransreg_temps, self.allmapped_temps, "transreg", "nontransreg", "allmapped", property_label)
-        self.analyze2(self.variable_temps, self.allmapped_temps, "variable", "allmapped", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_transreg_temps, self.all_temps, "transreg", "all", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_nontransreg_temps, self.all_temps, "nontransreg", "all", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_temps, self.all_temps, "ccd", "all", property_label)
+        self.analyze2(self.median_temps, self.nonccdprotein_temps, self.all_temps, "nonccd", "all", property_label)
+        self.analyze2(self.median_temps, self.variable_temps, self.all_temps, "variable", "all", property_label)
+        self.analyze2(self.median_temps, self.allmapped_temps, self.all_temps, "allU2OSmapped", "all", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_transreg_temps, self.allmapped_temps, "transreg", "allU2OSmapped", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_nontransreg_temps, self.allmapped_temps, "nontransreg", "allU2OSmapped", property_label)
+        self.analyze2(self.median_temps, self.ccdprotein_temps, self.allmapped_temps, "ccd", "allU2OSmapped", property_label)
+        self.analyze2(self.median_temps, self.nonccdprotein_temps, self.allmapped_temps, "nonccd", "allU2OSmapped", property_label)
+        self.analyze2(self.median_temps, self.variable_temps, self.allmapped_temps, "variable", "allU2OSmapped", property_label)
 
     def getSequenceFractions(self, idx, isLength, names):
         '''Gets the feature as fraction of length (or the log2-length if returning length)'''
@@ -100,31 +145,44 @@ class ProteinProperties:
     def analyzeSequenceFraction(self, idx, property_label, isLength=False, testNonzeroDistribution=False):
         '''Performs statistical tests on fraction of sequence with feature (or just length of sequence)'''
         fractPropertyAll = self.getSequenceFractions(idx, isLength, self.proteinDisorder.keys())
-        fractPropertyAllMapped = self.getSequenceFractions(idx, isLength, self.names_hpamapped)
-        fractPropertyTransreg = self.getSequenceFractions(idx, isLength, self.names_ccdprotein_transcript_regulated)
-        fractPropertyNontransreg = self.getSequenceFractions(idx, isLength, self.names_ccdprotein_nontranscript_regulated)
-        fractPropertyBioccd = self.getSequenceFractions(idx, isLength,  self.names_bioccd)
-        fractPropertyCcdPseudotime = self.getSequenceFractions(idx, isLength, self.names_ccdprotein[~np.isin(self.names_ccdprotein, self.names_bioccd)])
-        fractPropertyNonCcd = self.getSequenceFractions(idx, isLength,  self.names_nonccdprotein)
-        fractPropertyCcd = self.getSequenceFractions(idx, isLength,  self.names_ccdprotein)
-        fractPropertyTranscriptCCD = self.getSequenceFractions(idx, isLength,  self.names_ccdtranscript)
-        fractPropertyVariable = np.concatenate((fractPropertyCcd, fractPropertyNonCcd))
-        self.analyze3(fractPropertyTransreg, fractPropertyNontransreg, fractPropertyAllMapped, 
-                      "transreg", "nontransreg", "allmapped", property_label, 
-                      testNonzeroDistribution=testNonzeroDistribution)
-        self.analyze3(fractPropertyCcd, fractPropertyNonCcd, fractPropertyAllMapped, 
-                      "ccd", "nonccd", "allmapped", property_label, 
-                      testNonzeroDistribution=testNonzeroDistribution)
-        self.analyze2(fractPropertyVariable, fractPropertyAllMapped, "variable", "allmapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        proteinDisorderKeysList = list(self.proteinDisorder.keys())
+        fractPropertyAll_idx = np.isin(proteinDisorderKeysList, self.names_all)
+        fractPropertyAllU2OS_idx = np.isin(proteinDisorderKeysList, self.names_allu2os)
+        fractPropertyAllMapped_idx = np.isin(proteinDisorderKeysList, self.names_u2osmapped)
+        fractPropertyTransreg_idx = np.isin(proteinDisorderKeysList, self.names_ccdprotein_transcript_regulated)
+        fractPropertyNontransreg_idx = np.isin(proteinDisorderKeysList, self.names_ccdprotein_nontranscript_regulated)
+        fractPropertyBioccd_idx = np.isin(proteinDisorderKeysList, self.names_bioccd)
+        fractPropertyCcdPseudotime_idx = np.isin(proteinDisorderKeysList, self.names_ccdprotein[~np.isin(self.names_ccdprotein, self.names_bioccd)])
+        fractPropertyNonCcd_idx = np.isin(proteinDisorderKeysList, self.names_nonccdprotein)
+        fractPropertyCcd_idx= np.isin(proteinDisorderKeysList, self.names_ccdprotein)
+        fractPropertyTranscriptCCD_idx = np.isin(proteinDisorderKeysList, self.names_ccdtranscript)
+        fractPropertyVariable_idx = fractPropertyCcd_idx | fractPropertyNonCcd_idx
+        self.analyze2(fractPropertyAll, fractPropertyTransreg_idx, fractPropertyAll_idx, "transreg", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyNontransreg_idx, fractPropertyAll_idx, "nontransreg", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyCcd_idx, fractPropertyAll_idx, "ccd", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyNonCcd_idx, fractPropertyAll_idx, "nonccd", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyVariable_idx, fractPropertyAll_idx, "variable", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyAllMapped_idx, fractPropertyAll_idx, "allU2osMapped", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyTransreg_idx, fractPropertyAllMapped_idx, "transreg", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyNontransreg_idx, fractPropertyAllMapped_idx, "nontransreg", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyCcd_idx, fractPropertyAllMapped_idx, "ccd", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyNonCcd_idx, fractPropertyAllMapped_idx, "nonccd", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        self.analyze2(fractPropertyAll, fractPropertyVariable_idx, fractPropertyAllMapped_idx, "variable", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
         if property_label == "Disorder":
-            self.analyze3(fractPropertyBioccd, fractPropertyCcdPseudotime, fractPropertyAllMapped, 
-                          "mitoticCCD", "interphaseCCD", "allmapped", property_label, 
-                          testNonzeroDistribution=testNonzeroDistribution)
-            self.analyze2(fractPropertyCcdPseudotime, fractPropertyNonCcd, 
-                          "interphaseCCD", "nonccd", property_label, testNonzeroDistribution=testNonzeroDistribution)
-            self.analyze2(fractPropertyBioccd, fractPropertyNonCcd, 
-                          "mitoticCCD", "nonccd", property_label, testNonzeroDistribution=testNonzeroDistribution)
-        return fractPropertyAll, fractPropertyAllMapped, fractPropertyVariable, fractPropertyTransreg, fractPropertyNontransreg, fractPropertyBioccd, fractPropertyCcdPseudotime, fractPropertyNonCcd, fractPropertyCcd, fractPropertyTranscriptCCD
+            self.analyze2(fractPropertyAll, fractPropertyBioccd_idx, fractPropertyAll_idx, "mitoticCCD", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+            self.analyze2(fractPropertyAll, fractPropertyCcdPseudotime_idx, fractPropertyAll_idx, "interphaseCCD", "all", property_label, testNonzeroDistribution=testNonzeroDistribution)
+            self.analyze2(fractPropertyAll, fractPropertyBioccd_idx, fractPropertyAllMapped_idx, "mitoticCCD", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+            self.analyze2(fractPropertyAll, fractPropertyCcdPseudotime_idx, fractPropertyAllMapped_idx, "interphaseCCD", "allU2osMapped", property_label, testNonzeroDistribution=testNonzeroDistribution)
+        return (fractPropertyAll,
+            fractPropertyAll[fractPropertyAllMapped_idx],
+            fractPropertyAll[fractPropertyVariable_idx],
+            fractPropertyAll[fractPropertyTransreg_idx],
+            fractPropertyAll[fractPropertyNontransreg_idx],
+            fractPropertyAll[fractPropertyBioccd_idx],
+            fractPropertyAll[fractPropertyCcdPseudotime_idx],
+            fractPropertyAll[fractPropertyNonCcd_idx],
+            fractPropertyAll[fractPropertyCcd_idx],
+            fractPropertyAll[fractPropertyTranscriptCCD_idx])
 
     def analyze_disorder(self):
         disorderedMitotic = sum([self.proteinDisorder[nn][0] for nn in self.names_bioccd if nn in self.proteinDisorder])
@@ -133,7 +191,7 @@ class ProteinProperties:
         disorderedCcdProtein = sum([self.proteinDisorder[nn][0] for nn in self.names_ccdprotein if nn in self.proteinDisorder and not nn in self.names_bioccd])
         totalCcdProtein = sum([nn in self.proteinDisorder for nn in self.names_ccdprotein if not nn in self.names_bioccd])
         print(f"{disorderedCcdProtein / totalCcdProtein}: fraction of disordered CCD pseuduotime-only proteins")
-        results = self.analyzeSequenceFraction(2, "Disorder", testNonzeroDistribution=True)
+        results = self.analyzeSequenceFraction(2, "Disorder", testNonzeroDistribution=False)
         self.fractDisorderAll, self.fractDisorderAllMapped, self.fractDisorderVariable, self.fractDisorderTransreg, self.fractDisorderNontransreg, self.fractDisorderBioccd, self.fractDisorderCcdPseudotime, self.fractDisorderNonCcd, self.fractDisorderCcd, self.fractDisorderTranscriptCCD = results
         
     def analyze_cysteines(self):
@@ -162,7 +220,7 @@ class ProteinProperties:
         self.all_protnames_list = list(self.all_protnames)
         filterNames = [nn in self.all_protnames_set for nn in names_filter if nn in self.proteinDisorder] 
         filteredPropertyValues = np.asarray(propertyValues)[filterNames]
-        filteredTempValues = [self.all_temps[self.all_protnames_list.index(nn)] for nn in names_filter if nn in self.all_protnames_set and nn in self.proteinDisorder]
+        filteredTempValues = [self.median_temps[self.all_protnames_list.index(nn)] for nn in names_filter if nn in self.all_protnames_set and nn in self.proteinDisorder]
         return filteredPropertyValues, filteredTempValues
         
     def temp_property_scatter(self, transregProperty, nontransregProperty, nonccdProperty, propertyLabel):
@@ -194,7 +252,6 @@ class ProteinProperties:
     def tm_scatters(self):
         self.temp_property_scatter(self.fractDisorderTransreg, self.fractDisorderNontransreg, self.fractDisorderNonCcd, "Disorder")
         self.apply_linregress(self.fractDisorderAll, "Disorder")
-        self.apply_linregress(self.lengthAll, "Length")
         
     def generate_properties_table(self):
         '''Make a table with all the values analyzed'''
@@ -208,25 +265,26 @@ class ProteinProperties:
             disordered.append("N/A" if not isGene else self.fractDisorderAll[idx])
         pd.DataFrame({
             "Protein" : genes,
+            "IsMappedInU2OS" : np.isin(genes, self.names_u2osmapped),
             "IsCCD" : np.isin(genes, self.names_ccdprotein),
             "IsNonCCD" : np.isin(genes, self.names_nonccdprotein),
             "IsInterphaseCCD" : np.isin(genes, self.names_ccdprotein) & ~np.isin(genes, self.names_bioccd),
             "IsMitoticCCD" : np.isin(genes, self.names_bioccd),
             "IsTranscriptRegCCD" : np.isin(genes, self.names_ccdprotein_transcript_regulated),
             "IsNonTranscriptRegCCD" : np.isin(genes, self.names_ccdprotein_nontranscript_regulated),
-            "Melting Temperature (deg C)" : [self.all_temps[self.all_protnames_list.index(nn)] if nn in self.all_protnames_set else "N/A" for nn in genes],
-            "Log2 Length" : lengths,
+            "Melting Temperature (deg C)" : [self.median_temps[self.all_protnames_list.index(nn)] if nn in self.all_protnames_set else "N/A" for nn in genes],
+            "Log2Length" : lengths,
             "Disordered Residue Fraction" : disordered,
             }).to_csv("output/PropertiesTable.csv", index=False)
 
     def statistical_properties_table(self):
         '''Multiple testing correction; summarize the statistical results'''
-        #self.test_results # (comparisonName, propertyName),  (valuename, valueA, valueB, testName, testPvalue)
-        self.pvalues = np.array([x[1][4] for x in self.test_results.items()], dtype=float)
+        #self.test_results # (comparisonName, propertyName),  (valuename, valueA, valueB, valueA_count, valueB_count, testName, testPvalue)
+        self.pvalues = np.array([x[1][6] for x in self.test_results.items()], dtype=float)
         self.pvalues_bonf, self.pass_bonf = np.zeros(len(self.pvalues)), np.zeros(len(self.pvalues))
         
         # Correct equal variance tests
-        testnames = np.array([x[1][3] for x in self.test_results.items()])
+        testnames = np.array([x[1][5] for x in self.test_results.items()])
         eqvartests = testnames == "EqualVarianceLevene"
         eqvar_bonf, eqvar_bonfpass = utils.bonf(0.05, self.pvalues[eqvartests])
         self.pvalues_bonf[eqvartests] = eqvar_bonf
@@ -252,8 +310,8 @@ class ProteinProperties:
             "PValue_BonfAlpha0.05Pass" : self.pass_bonf
             }).to_csv("output/PropertyStatistics.csv", index=False)
     
-    def boxplot_summary(self, allmapped, variable, nonccd, ccd, transreg, nontransreg, ylabel, showfliers):
-        tempsforboxes = (allmapped, variable, nonccd, ccd, transreg, nontransreg)
+    def boxplot_summary(self, allproteome, allmapped, variable, nonccd, ccd, transreg, nontransreg, ylabel, showfliers):
+        tempsforboxes = (allproteome, allmapped, variable, nonccd, ccd, transreg, nontransreg)
         utils.general_boxplot_setup(tempsforboxes, [str(len(x)) for x in tempsforboxes], "", ylabel, "", showfliers)
         
     def boxplot_saveclose(self, filename):
@@ -261,36 +319,33 @@ class ProteinProperties:
         plt.close()
     
     def generate_statistical_boxplots(self):
-        # Temps (ccd vs nonccd; transreg vs nontransreg)
-        values = (self.allmapped_temps, self.variable_temps, 
-                       self.nonccdprotein_temps, self.ccdprotein_temps, 
-                       self.ccdprotein_transreg_temps, self.ccdprotein_nontransreg_temps)
+        # Temps
+        values = (self.median_temps[self.all_temps],
+                  self.median_temps[self.allmapped_temps], 
+                  self.median_temps[self.variable_temps], 
+                  self.median_temps[self.nonccdprotein_temps], 
+                  self.median_temps[self.ccdprotein_temps], 
+                  self.median_temps[self.ccdprotein_transreg_temps],
+                  self.median_temps[self.ccdprotein_nontransreg_temps])
         self.boxplot_summary(*values, "Melting Point (°C)", True)
-        utils.barplot_annotate_brackets(2, 3, f"p={'%.1e' % self.test_results['Tm','ccd_vs_nonccd'][4]}", np.arange(len(values)), [max(vv) for vv in values]) # highlight CCD vs nonccd
-        utils.barplot_annotate_brackets(4, 5, f"p={'%.1e' % self.test_results['Tm','transreg_vs_nontransreg'][4]}", np.arange(len(values)), [5+max(vv) for vv in values]) # highlight CCD vs nonccd        
-        self.boxplot_saveclose("figures/ProteinMeltingPointBox.pdf") # highlight transreg vs nontransreg
+        self.boxplot_saveclose("figures/ProteinMeltingPointBox.pdf")
         
-        # Disorder ()
-        values = (self.fractDisorderAllMapped, self.fractDisorderVariable, 
-                       self.fractDisorderNonCcd, self.fractDisorderCcd, 
-                       self.fractDisorderTransreg, self.fractDisorderNontransreg)
-        self.boxplot_summary(*values, "Disorder", False)
-        utils.barplot_annotate_brackets(0, 1, f"p={'%.1e' % self.test_results['Disorder','variable_vs_allmapped_NonzeroDistribution'][4]}", np.arange(len(values)), [max(vv) for vv in values]) # highlight CCD vs nonccd
-        self.boxplot_saveclose(f"figures/DisorderBox.pdf")
-        
-        # Length ()
-        values = (self.lengthAllMapped, self.lengthVariable, 
-                       self.lengthNonCcd, self.lengthCcd, 
-                       self.lengthTransreg, self.lengthNontransreg)
-        self.boxplot_summary(*values, "Log2 Length", False)
-        utils.barplot_annotate_brackets(0, 1, f"p={'%.1e' % self.test_results['Log2 Length','variable_vs_allmapped'][4]}", np.arange(len(values)), [np.percentile(vv, 98) for vv in values]) # highlight CCD vs nonccd
-        self.boxplot_saveclose(f"figures/LengthBox.pdf")
+        # Disorder
+        values = (self.fractDisorderAll,
+                  self.fractDisorderAllMapped, 
+                  self.fractDisorderVariable, 
+                  self.fractDisorderNonCcd, 
+                  self.fractDisorderCcd, 
+                  self.fractDisorderTransreg, 
+                  self.fractDisorderNontransreg)
+        self.boxplot_summary(*values, "Disorder", True)
+        self.boxplot_saveclose(f"figures/DisorderBox.pdf.pdf")
                 
     
     def proportion_test(self, phosHuman, names_subset, names_alt=[]):
         '''Test the proportions of kinase families with Fisher exact test'''
         subset = np.isin(phosHuman["SUBSTRATE"], names_subset)
-        mapped_minus = np.isin(phosHuman["SUBSTRATE"], self.names_hpamapped if len(names_alt) == 0 else names_alt) & ~subset # mutually exclusive mapped proteome
+        mapped_minus = np.isin(phosHuman["SUBSTRATE"], self.names_u2osmapped if len(names_alt) == 0 else names_alt) & ~subset # mutually exclusive mapped proteome
         counts_subset = phosHuman["KINASE_FAMILY"][subset].value_counts()
         counts_mappedminus = phosHuman["KINASE_FAMILY"][mapped_minus].value_counts()
         labels_subset = counts_subset.index
@@ -315,7 +370,8 @@ class ProteinProperties:
         kinFamDict = dict([(row[7], row[4]) for idx, row in kinaseFams.iterrows()])
         phosphositeplus = pd.read_csv("input/ProteinProperties/KinaseSubstrateDatasetWithoutHeader.txt.gz", sep="\t")
         phosphositeplus["KINASE_FAMILY"] = [kinFamDict[x] if x in kinFamDict else "Other" for x in phosphositeplus["KIN_ACC_ID"]]
-        phosHuman = phosphositeplus[phosphositeplus["SUB_ORGANISM"] == "human"]
+        humanPhosphoInFamily = (phosphositeplus["SUB_ORGANISM"] == "human") & (phosphositeplus["KINASE_FAMILY"] != "Other") # drop Other, as it's not an actual grouping
+        phosHuman = phosphositeplus[humanPhosphoInFamily]
         
         # Are there any overrepresented kinase families upstream phosphosites on CCD or non-CCD proteins?
         labels_comb_ccd, counts_comb_ccd, values_comb_ccd, counts_comb_mappedminus_ccd, values_comb_mappedminus_ccd, fisher_comb_ccd = self.proportion_test(phosHuman, self.names_ccdprotein)

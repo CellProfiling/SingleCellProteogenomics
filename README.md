@@ -8,17 +8,17 @@ Please find the preprint manuscript here: https://www.biorxiv.org/content/10.110
 ## Structure of repository
 The code is listed in order of execution, e.g. "1_", "2_" etc. The output of each script is used in the subsequent script.
 
-The logic for these analyses is contained in the SingleCellProteogenomics folder.
+The logic for these analyses is contained in the `SingleCellProteogenomics` folder.
 
-The input files are contained in the "input" folder. This folder is linked [here](https://drive.google.com/file/d/1mdQbYcDPqiTOHeiYbv_4RtrxrmlhYMNl/view?usp=sharing) as a zip file, `input.zip`. Expand this folder within the SingleCellProteogenomics folder.
+The input files are contained in the "input" folder. This folder is linked [here](https://drive.google.com/file/d/1mdQbYcDPqiTOHeiYbv_4RtrxrmlhYMNl/view?usp=sharing) as a zip file, `input.zip`. Expand this folder within the SingleCellProteogenomics folder. (If you are looking for the raw imaging proteomic dataset produced after filtering artifacts and such, that is located [here](https://drive.google.com/file/d/11vjsZV-nmzPpFmA7ShbfHzmbrk057b1V/view?usp=sharing).)
 
 The output files are added to a folder "output" during the analysis, and figures are added to a folder "figures."
 
-An R-script used to analyze skewness and kurtosis (noted in the Methods of the manuscript) is contained in the other_scripts folder. The other_scripts/ProteinDisorder.py script utilizes [IUPRED2A](https://iupred2a.elte.hu/) and a [human UniProt](https://www.uniprot.org/proteomes/UP000005640) database.
+An R-script used to analyze skewness and kurtosis (noted in the Methods of the manuscript) is contained in the other_scripts folder. The `other_scripts/ProteinDisorder.py` script utilizes [IUPRED2A](https://iupred2a.elte.hu/) and a [human UniProt](https://www.uniprot.org/proteomes/UP000005640) database.
 
 ## Prerequisites
 
-Prerequisites are listed in enviro.yaml file. They can be installed using conda:
+Prerequisites are listed in `enviro.yaml` file. They can be installed using `conda`:
 
 1. Install Miniconda from https://docs.conda.io/en/latest/miniconda.html
 
