@@ -12,7 +12,7 @@ from scipy import stats
 import re
 proteome = {}
 header = ""
-with gzip.open("iupred2a/data/uniprot-proteome_UP000005640.fasta.gz", mode="rt") as file_handler:
+with gzip.open("input/ProteinProperties/uniprot-canonical-proteome_UP000005640.fasta.gz", mode="rt") as file_handler:
     for line in file_handler:
         if line.startswith(">"):
             header = line
@@ -47,7 +47,7 @@ totalDisorderedResidues = 0
 disordered_proteins = 0
 totalResidues = 0
 
-aebersoldNumbers = pd.read_csv("C:/Users/antho/Dropbox/Projects/Nucleoli/AebersoldNumbers.csv", index_col=False)
+aebersoldNumbers = pd.read_csv("input/ProteinProperties/AebersoldNumbers.csv.gz", index_col=False)
 all_intensities = aebersoldNumbers["Copies Per Cell"]
 aebGenes = list(aebersoldNumbers["GeneName"])
 # nucleoli_intensities = aebersoldNumbers["Copies Per Cell"][np.isin(aebersoldNumbers["GeneName"], np.concatenate(nucleoli))]
@@ -81,6 +81,7 @@ protein_names = list(protein_disorder.keys())
 protein_properties = list(protein_disorder.values())
 pd.DataFrame({
     "ProteinName" : protein_names,
+    "GeneName" : gene_names,
     "IsDisordered" : [x[0] for x in protein_properties],
     "MaxDisorderedLen" : [x[1] for x in protein_properties],
     "DisorderedResidueCount" : [x[2] for x in protein_properties],
