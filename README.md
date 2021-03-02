@@ -25,7 +25,14 @@ Prerequisites are listed in `enviro.yaml` file. They can be installed using `con
 
 The single-cell RNA-Seq data is available at GEO SRA under project number [GSE146773](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE146773). 
 
+The cell cycle phase and FACS intensity data for these ~1,000 cells are contained in the [input folder](https://drive.google.com/file/d/1mdQbYcDPqiTOHeiYbv_4RtrxrmlhYMNl/view?usp=sharing) within the file `ProteinData/WellPlatePhasesLogNormIntensities.csv`:
+* The column "Well_Plate" (e.g., A10_355) corresponds to the sample title within GEO SRA (e.g., "Single U2OS cell A10_355"). 
+* The column "Stage" corresponds to the phase assigned by FACS gating.
+* The "Green530" and "Red585" columns correspond to the log-intensities for the red (CDT1) and green (GMNN) FUCCI markers for the individual cells.
+
 The `snakemake` workflow used to analyze the scRNA-Seq dataset, including RNA velocity calculations and louvain unsupervised clustering, can be found in this repository: https://github.com/CellProfiling/FucciSingleCellSeqPipeline.
+
+The `loom` file containing the results of RNA velocity analysis, including spliced and unspliced counts, can be found in the [input folder](https://drive.google.com/file/d/1mdQbYcDPqiTOHeiYbv_4RtrxrmlhYMNl/view?usp=sharing) under `RNAData/a.loom`, and the observation names used for each cell that match the "Well_Plate" identifiers can be found in `RNAData/a.obs_names.csv`.
 
 ## Citation
 
