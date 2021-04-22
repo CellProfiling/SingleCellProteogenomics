@@ -19,17 +19,18 @@ plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["savefig.dpi"] = 300
 fucci = FucciCellCycle.FucciCellCycle()
+u_rna_plates = ["355","356","357"]
 
 #%% Import the genes names we're analyzing
 # Read in RNA-Seq data again and the CCD gene lists
 valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
 adata, phases = RNADataPreparation.read_counts_and_phases(
-    valuetype, use_spikeins, biotype_to_use
+    valuetype, use_spikeins, biotype_to_use, u_rna_plates
 )
 adata, phasesfilt = RNADataPreparation.qc_filtering(
     adata, do_log_normalize=True, do_remove_blob=True
 )
-
+adata = RNADataPreparation.zero_center_fucci(adata)
 import_dict = Loaders.load_ptm_and_stability(adata)
 wp_ensg, ccd_comp, nonccd_comp, ccdtranscript, wp_max_pol = (
     import_dict["wp_ensg"],

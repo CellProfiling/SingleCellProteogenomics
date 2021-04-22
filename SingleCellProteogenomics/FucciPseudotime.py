@@ -52,6 +52,7 @@ def plot_annotate_time(R_2, start_phi, fraction):
     pt = pol2cart(R_2,start_phi + (1 - fraction) * 2 * np.pi)
     plt.scatter(pt[0],pt[1],c='c',linewidths=4)
     plt.annotate(f"  {round(fraction * fucci.TOT_LEN, 2)} hrs", (pt[0], pt[1]))
+    
 def drange(x, y, jump):
     '''Increment `x` by a decimal `jump` until greater than `y`'''
     while x < y:
@@ -181,6 +182,7 @@ def fucci_polar_coords(x, y, analysis_title):
     plt.tight_layout()
     plt.savefig(f"figures/FucciAllPseudotimeHist_{analysis_title}.png")
     # plt.show()
+    plt.close()
 
     # visualize that result
     start_pt = pol2cart(R_2,start_phi)
@@ -189,7 +191,7 @@ def fucci_polar_coords(x, y, analysis_title):
     cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, analysis_title, R_2, start_phi)
 
-    return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, 
+    return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder,
         more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
 def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb, well_plate_imgnb_objnb,
@@ -197,7 +199,7 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     # Generate model
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Sort results by pseudotime
     sort_results = pol_sort(pol_sort_inds, more_than_start, less_than_start, well_plate, well_plate_imgnb, well_plate_imgnb_objnb, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases)
@@ -239,29 +241,27 @@ def defined_phases_scatter(phases_filtered, outfile):
     plt.savefig(outfile)
     plt.close()
 
-def pseudotime_rna(adata, phases_filt):
+def pseudotime_rna(adata):
     '''
     Model the pseudotime of FUCCI markers measured by FACS for cell analyzed with single-cell RNA sequencing
     Input: RNA-Seq data; cell cycle phase for each cell
     Output: Cell cycle pseudotime for each cell; plots illustrating FUCCI intensities over pseudotime
     '''
-    phases_validIntPhase = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585) & pd.notnull(phases_filt.Stage)]
-    utils.general_scatter_color(phases_validIntPhase["Green530"], phases_validIntPhase["Red585"], "log(Green530)", "log(Red585)", 
-        phases_validIntPhase["Stage"].apply(lambda x: get_phase_colormap()[x]), "Cell Cycle Phase", False, "", "figures/FucciPlotByPhase_RNA.png", 
+    adataValidPhase = adata.obs["phase"] != "N/A"
+    utils.general_scatter_color(adata.obs["Green530"][adataValidPhase], adata.obs["Red585"][adataValidPhase], "log(Green530)", "log(Red585)", 
+        adata.obs["phase"][adataValidPhase].apply(lambda x: get_phase_colormap()[x]), "Cell Cycle Phase", False, "", "figures/FucciPlotByPhase_RNA.png", 
         get_phase_colormap())
     
-    phases_validInt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
-    polar_coord_results = fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
+    polar_coord_results = fucci_polar_coords(adata.obs["Green530"], adata.obs["Red585"], "RNA")
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Assign cells a pseudotime and visualize in fucci plot
     pol_unsort = np.argsort(pol_sort_inds_reorder)
     fucci_time = pol_sort_norm_rev[pol_unsort]
     adata.obs["fucci_time"] = fucci_time
-    phases_validInt["fucci_time"] = fucci_time
 
     plt.figure(figsize=(6,5))
-    plt.scatter(phases_validInt["Green530"], phases_validInt["Red585"], c = phases_validInt["fucci_time"], cmap="RdYlGn")
+    plt.scatter(adata.obs["Green530"], adata.obs["Red585"], c = adata.obs["fucci_time"], cmap="RdYlGn")
     cbar = plt.colorbar()
     cbar.set_label('Pseudotime',size=20)
     cbar.ax.tick_params(labelsize=18)
@@ -275,9 +275,21 @@ def pseudotime_rna(adata, phases_filt):
     # Save fucci times, so they can be used in other workbooks
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
-    cell_time_sort = pd.DataFrame({"fucci_time" : fucci_time_sort, "cell" : np.take(adata.obs_names, fucci_time_inds)})
-    cell_time_sort.to_csv("output/CellPseudotimes.csv")
-    pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
+    cell_time_sort = pd.DataFrame({
+        "fucci_time" : fucci_time_sort, 
+        "cell" : np.take(adata.obs["Well_Plate"], fucci_time_inds)})
+    cell_time_sort.to_csv("output/CellPseudotimes.csv", index=False)
+    cell_polar_coords = pd.DataFrame({
+        "cell" : np.take(adata.obs["Well_Plate"], fucci_time_inds),
+        "phase_by_facs_gating" : adata.obs["phase"][fucci_time_inds],
+        "raw_green530" : adata.obs["MeanGreen530"][fucci_time_inds],
+        "raw_red585" : adata.obs["MeanRed585"][fucci_time_inds],
+        "green530_lognorm_rescale" : adata.obs["Green530"][fucci_time_inds],
+        "red585_lognorm_rescale" : adata.obs["Red585"][fucci_time_inds],
+        "polar_coord_phi" : pol_sort_phi[pol_unsort][fucci_time_inds],
+        "fucci_time_hrs" : fucci_time_sort * fucci.TOT_LEN})
+    cell_polar_coords.to_csv("output/fucci_coords.csv", index=False)
+    pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv", index=False)
 
 def pseudotime_umap(adata, isIsoform=False):
     '''
