@@ -1,4 +1,5 @@
 # IDE and Checkpoint Files
+.spyproject/
 .vscode/
 .ipynb_checkpoints
 __pycache__/
