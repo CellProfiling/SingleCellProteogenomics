@@ -189,7 +189,7 @@ def fucci_polar_coords(x, y, analysis_title):
     cart_data_ur = pol2cart(np.repeat(R_2,len(centered_data)), pol_data[1])
     fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, analysis_title, R_2, start_phi)
 
-    return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, 
+    return (pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder,
         more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi)
 
 def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, well_plate, well_plate_imgnb, well_plate_imgnb_objnb,
@@ -197,7 +197,7 @@ def pseudotime_protein(fucci_data, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell,
     '''Generate a polar coordinate model of cell cycle progression based on the FUCCI intensities'''
     # Generate model
     polar_coord_results = fucci_polar_coords(fucci_data[:,0], fucci_data[:,1], "Protein")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Sort results by pseudotime
     sort_results = pol_sort(pol_sort_inds, more_than_start, less_than_start, well_plate, well_plate_imgnb, well_plate_imgnb_objnb, ab_nuc, ab_cyto, ab_cell, mt_cell, area_cell, area_nuc, log_red_fucci_zeroc_rescale, log_green_fucci_zeroc_rescale, mockbulk_phases)
@@ -252,7 +252,7 @@ def pseudotime_rna(adata, phases_filt):
     
     phases_validInt = phases_filt[pd.notnull(phases_filt.Green530) & pd.notnull(phases_filt.Red585)] # stage may be null
     polar_coord_results = fucci_polar_coords(phases_validInt["Green530"], phases_validInt["Red585"], "RNA")
-    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_inds, pol_sort_inds_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
+    pol_sort_norm_rev, centered_data, pol_sort_centered_data0, pol_sort_centered_data1, pol_sort_phi, pol_sort_inds, pol_sort_inds_reorder, pol_sort_phi_reorder, more_than_start, less_than_start, start_pt, g1_end_pt, g1s_end_pt, cart_data_ur, R_2, start_phi = polar_coord_results
 
     # Assign cells a pseudotime and visualize in fucci plot
     pol_unsort = np.argsort(pol_sort_inds_reorder)
@@ -275,9 +275,16 @@ def pseudotime_rna(adata, phases_filt):
     # Save fucci times, so they can be used in other workbooks
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
-    cell_time_sort = pd.DataFrame({"fucci_time" : fucci_time_sort, "cell" : np.take(adata.obs_names, fucci_time_inds)})
-    cell_time_sort.to_csv("output/CellPseudotimes.csv")
-    pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv")
+    cell_time_sort = pd.DataFrame({
+        "fucci_time" : fucci_time_sort, 
+        "cell" : np.take(adata.obs["Well_Plate"], fucci_time_inds)})
+    cell_time_sort.to_csv("output/CellPseudotimes.csv", index=False)
+    cell_polar_coords = pd.DataFrame({
+        "cell" : np.take(adata.obs["Well_Plate"], fucci_time_inds),
+        "polar_coord_phi" : pol_sort_phi[pol_unsort][fucci_time_inds],
+        "fucci_time_hrs" : fucci_time_sort * fucci.TOT_LEN})
+    cell_polar_coords.to_csv("output/fucci_coords.csv", index=False)
+    pd.DataFrame({"fucci_time": fucci_time}).to_csv("output/fucci_time.csv", index=False)
 
 def pseudotime_umap(adata, isIsoform=False):
     '''
