@@ -85,26 +85,29 @@ TemporalDelay.peak_expression_correlation_analysis(
 
 #%% Create a heatmap of peak RNA expression
 highlight_names, highlight_ensg = [], []
+u_rna_plates = ["355","356","357"]
 
 # Read in RNA-Seq data; use TPMs so that the gene-specific results scales match for cross-gene comparisons
 valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
 adata, phases = RNADataPreparation.read_counts_and_phases(
-    valuetype, use_spikeins, biotype_to_use
+    valuetype, use_spikeins, biotype_to_use, u_rna_plates
 )
 adata, phasesfilt = RNADataPreparation.qc_filtering(
     adata, do_log_normalize=True, do_remove_blob=True
 )
+adata = RNADataPreparation.zero_center_fucci(adata)
 sorted_max_moving_avg_pol_ccd, norm_exp_sort, max_moving_avg_pol, sorted_rna_binned_norm = TemporalDelay.rna_heatmap(
     adata, highlight_names, highlight_ensg, ccdtranscript, xvals
 )
 
 # Analyze isoforms
 adata_isoform, phases_isoform = RNADataPreparation.read_counts_and_phases(
-    valuetype, use_spikeins, biotype_to_use, use_isoforms=True
+    valuetype, use_spikeins, biotype_to_use, u_rna_plates, use_isoforms=True,
 )
 adata_isoform, phasesfilt_isoform = RNADataPreparation.qc_filtering(
     adata_isoform, do_log_normalize=True, do_remove_blob=True
 )
+adata_isoform = RNADataPreparation.zero_center_fucci(adata_isoform)
 sorted_max_moving_avg_pol_ccd_isoform, norm_exp_sort_isoform, max_moving_avg_pol_isoform, sorted_rna_binned_norm_isoform = TemporalDelay.rna_heatmap(
     adata_isoform,
     highlight_names,
@@ -114,7 +117,7 @@ sorted_max_moving_avg_pol_ccd_isoform, norm_exp_sort_isoform, max_moving_avg_pol
     isIsoformData=True,
 )
 pearsonCorrelations = TemporalDelay.analyze_ccd_isoform_correlations(
-    adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals
+    adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals, u_rna_plates
 )
 
 #%% Compare the variances and time of peak expression between protein and RNA

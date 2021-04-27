@@ -403,7 +403,7 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         print(fom)
         file.write(fom)
         
-def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals):
+def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtranscript_isoform, xvals, u_rna_plates):
     '''Evaluate the pearson correlations for CCD isoforms from genes with multiple CCD isoforms'''
     gene_varnames = list(adata.var_names)
     isoform_varnames = list(adata_isoform.var_names)
@@ -432,7 +432,7 @@ def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtra
     
     isoformsFromGenesWithMultipleCCD_binned = [binned_norm[(isoform_varnames_geneids == gene_id) & ccdtranscript_isoform] for gene_id in perGene_geneIds[useGene][ccdIsoformsPerGene > 1]]
     pearsonCorrelations = [[scipy.stats.pearsonr(combo[0], combo[1])[0] for combo in itertools.combinations(a, 2)] for a in isoformsFromGenesWithMultipleCCD_binned]
-    adata_isoform_raw, phases_isoform_raw = RNADataPreparation.read_counts_and_phases("Tpms", False, "protein_coding", use_isoforms=True)
+    adata_isoform_raw, phases_isoform_raw = RNADataPreparation.read_counts_and_phases("Tpms", False, "protein_coding", u_rna_plates, use_isoforms=True)
     print("ISOFORM PEARSON CORRELATIONS FOR CCD GENES WITH MULTIPLE CCD ISOFORMS")
     for ii, arr in enumerate(pearsonCorrelations):
         if sum(np.array(arr) < 0.5) == 0: continue

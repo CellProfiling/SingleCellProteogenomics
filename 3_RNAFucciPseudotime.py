@@ -27,22 +27,25 @@ bioccd = np.genfromtxt(
 wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
 ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
+u_plates = ["355","356","357"]
 
 #%% Convert FACS intensities for FUCCI markers to pseudotime using the same polar coordinate methods as for protein
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
 # Execution: Adapt Devin's code for the cells sorted for RNA-Seq
 # Output: Make log-log fucci intensity plots for the cells analyzed by RNA-Seq; Plot of all fucci pseudotimes; table of pseudotimes for each cell
 adata, phases_filt = RNADataPreparation.read_counts_and_phases(
-    "Counts", False, "protein_coding"
-)  # no qc, yet
-FucciPseudotime.pseudotime_rna(adata, phases_filt)
+    "Counts", False, "protein_coding", u_plates
+)
+adata = RNADataPreparation.zero_center_fucci(adata)
+FucciPseudotime.pseudotime_rna(adata)
 
 #%% Single cell RNA-Seq data preparation and general analysis
-RNADataPreparation.general_plots()
-RNADataPreparation.analyze_noncycling_cells()
+RNADataPreparation.general_plots(u_plates)
+RNADataPreparation.analyze_noncycling_cells(u_plates)
 adata, phasesfilt = RNADataPreparation.qc_filtering(
     adata, do_log_normalize=True, do_remove_blob=False
 )
+adata = RNADataPreparation.zero_center_fucci(adata)
 RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "BeforeRemovingNoncycling")
 
 #%% Idea: Similar to mock-bulk analysis for proteins, we can evaluate each gene bundled by phase across cells
@@ -50,11 +53,12 @@ RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "BeforeRemovingNonc
 # Output: boxplots for each gene
 valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
 adata, phases = RNADataPreparation.read_counts_and_phases(
-    valuetype, use_spikeins, biotype_to_use
+    valuetype, use_spikeins, biotype_to_use, u_plates
 )
 adata, phasesfilt = RNADataPreparation.qc_filtering(
     adata, do_log_normalize=True, do_remove_blob=True
 )
+adata = RNADataPreparation.zero_center_fucci(adata)
 RNADataPreparation.plot_markers_vs_reads(adata)
 RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "AfterRemovingNoncycling")
 g1 = adata.obs["phase"] == "G1"
@@ -93,10 +97,9 @@ normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:, No
 
 # Log-log FUCCI plot with RNA expression overlayed
 RNACellCycleDependence.plot_expression_facs(
+    adata,
     wp_ensg[np.isin(wp_ensg, adata.var_names)],
     normalized_exp_data,
-    phasesfilt,
-    adata.var_names,
     "figures/GeneExpressionFucci",
 )
 
@@ -157,7 +160,7 @@ RNACellCycleDependence.analyze_cnv_calls(adata, ccdtranscript)
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls
 adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(
-    valuetype, use_spike_ins=True, biotype_to_use=""
+    valuetype, use_spike_ins=True, biotype_to_use="", u_plates=u_plates
 )
 sc.pp.filter_genes(adata_spikeins, min_cells=100)
 print(f"data shape after filtering: {adata_spikeins.X.shape}")
@@ -166,7 +169,7 @@ RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
 
 #%% Analyze isoforms
 adata_isoform, ccdtranscript_isoform = RNACellCycleDependence.analyze_isoforms(
-    adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp
+    adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp, u_plates
 )
 RNACellCycleDependence.compare_genes_to_isoforms(
     adata,

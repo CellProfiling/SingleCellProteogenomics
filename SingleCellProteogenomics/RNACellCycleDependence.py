@@ -53,16 +53,16 @@ def plot_expression_umap(adata, genelist, outfolder):
         plt.close()
         adata.obs.drop(gene, 1)
 
-def plot_expression_facs(genelist, normalized_exp_data, phases, var_names, outfolder):
+def plot_expression_facs(adata, genelist, normalized_exp_data, outfolder):
     '''
     Displaying relative expression on the FUCCI plot (log-log intensity of FUCCI markers)
     Output: a folder of FUCCI plots for each gene in a list
     '''
-    phases_validInt = phases[pd.notnull(phases.Green530) & pd.notnull(phases.Red585)]
     if not os.path.exists(outfolder): os.mkdir(outfolder)
+    var_name_list= list(adata.var_names)
     for gene in genelist:
-        nexp = normalized_exp_data[:,list(var_names).index(gene)]
-        plt.scatter(phases_validInt["Green530"], phases_validInt["Red585"], c=nexp)
+        nexp = normalized_exp_data[:,var_name_list.index(gene)]
+        plt.scatter(adata.obs["Green530"], adata.obs["Red585"], c=nexp)
         plt.tight_layout()
         cbar = plt.colorbar()
         cbar.ax.get_yaxis().labelpad = 15
@@ -286,13 +286,14 @@ def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprot
     print(f"{sum(ccdIsoformsPerCcdProtein > 0) / sum(ccdprotein)}% of CCD proteins had at least one CCD transcript isoform")
     print(f"{sum(ccdIsoformsPerNonCcdProtein > 0) / sum(adata_nonccdprotein)}% of non-CCD proteins had at least one CCD transcript isoform")
     
-def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp):
+def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp, u_plates):
     '''Analyze the isoform-level results over the cell cycle'''
     # Read in the data & QC analysis
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
-    adata_isoform, phases_isoform = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, use_isoforms=True)
+    adata_isoform, phases_isoform = RNADataPreparation.read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates, use_isoforms=True)
     # RNADataPreparation.plot_pca_for_batch_effect_analysis(adata_isoform, "BeforeRemovingNoncycling_Isoform")
     adata_isoform, phasesfilt_isoform = RNADataPreparation.qc_filtering(adata_isoform, do_log_normalize=True, do_remove_blob=True)
+    adata_isoform = RNADataPreparation.zero_center_fucci(adata_isoform)
     # RNADataPreparation.plot_pca_for_batch_effect_analysis(adata_isoform, "AfterRemovingNoncycling_Isoform")
     # FucciPseudotime.pseudotime_umap(adata_isoform, isIsoform=True)
    
