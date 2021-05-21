@@ -1,4 +1,5 @@
 # IDE and Checkpoint Files
+.spyproject/
 .vscode/
 .ipynb_checkpoints
 __pycache__/
@@ -6,8 +7,7 @@ __pycache__/
 ~$*
 */~$*
 cache/
-.DS_Store
-*/.DS_Store
+**/.DS_Store
 
 # Output or Downloaded Folders
 input.zip
@@ -18,3 +18,6 @@ data/
 
 # External Software
 iupred2a/
+
+# Snakemake files
+**/.snakemake

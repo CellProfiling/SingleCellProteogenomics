@@ -17,7 +17,7 @@ import os, shutil
 import seaborn as sbn
 from SingleCellProteogenomics import utils
 
-def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, use_isoforms=False):
+def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plates, use_isoforms=False):
     '''
     Read data into scanpy; Read phases and FACS intensities
         - count_or_rpkm: Must be "Counts" or "Tpms"
@@ -37,15 +37,35 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, use_iso
     print(f"data shape: {adata.X.shape}")
     # adata.raw = adata
 
-    phases = pd.read_csv("input/ProteinData/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
-    
+    intensities, phases = [],[]
+    for plate in u_plates:
+        file = f"input/RNAData/180911_Fucci_single cell seq_ss2-18-{plate}_index sort export.csv"
+        plateIntensities = pd.read_csv(file, skiprows=2)
+        newColumns = list(plateIntensities.columns)
+        newColumns[5] = "MeanGreen530"
+        newColumns[6] = "MeanRed585"
+        plateIntensities.columns = newColumns
+        plateIntensities["Plate"] = [plate] * len(plateIntensities)
+        plateIntensities["Well_Plate"] = [f"{w}_{plate}" for w in plateIntensities["Well"]]
+        intensitiesSubFrame = plateIntensities[plateIntensities["Population"] == "All Events"]
+        if len(intensities) == 0: intensities = intensitiesSubFrame
+        else: intensities = intensities.append(intensitiesSubFrame, ignore_index=True)
+        isPhaseRow = ~plateIntensities["Population"].isin(["All Events", "Cells", "Singlets"])
+        phasesSubFrame = plateIntensities[isPhaseRow & (plateIntensities["% Total"] == "100.00%")]
+        if len(phases) == 0: phases = phasesSubFrame
+        else: phases = phases.append(phasesSubFrame, ignore_index=True)
+    wp_idx = list(phases.columns).index("Well_Plate")
+    pop_idx = list(phases.columns).index("Population")
+    phases_lookup = dict([(row[1][wp_idx], row[1][pop_idx]) for row in phases.iterrows()])
+            
     # Assign phases and log intensities; require log intensity
-    adata.obs["Well_Plate"] = np.array(phases["Well_Plate"])
-    adata.obs["plate"] = np.array([wp.split("_")[1] for wp in adata.obs["Well_Plate"]])
-    adata.obs["phase"] = np.array(phases["Stage"])
-    adata.obs["Green530"] = np.array(phases["Green530"])
-    adata.obs["Red585"] = np.array(phases["Red585"])
-    adata = adata[pd.notnull(adata.obs["Green530"]) & pd.notnull(adata.obs["Red585"])] # removes dark mitotic cells
+    intensities = intensities.sort_values(by="Well_Plate")
+    adata.obs["Well_Plate"] = np.array(intensities["Well_Plate"])
+    adata.obs["plate"] = np.array(intensities["Plate"])
+    adata.obs["phase"] = np.array([phases_lookup[wp] if wp in phases_lookup else "N/A" for wp in intensities["Well_Plate"]])
+    adata.obs["MeanGreen530"] = np.array(intensities["MeanGreen530"])
+    adata.obs["MeanRed585"] = np.array(intensities["MeanRed585"])
+    adata = adata[pd.notnull(adata.obs["MeanGreen530"]) & pd.notnull(adata.obs["MeanRed585"])] # removes 6 dark likely mitotic cells
     
     # Read in fucci pseudotime from previous analysis
     if os.path.isfile("output/fucci_time.csv"):
@@ -60,6 +80,27 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, use_iso
 
     return adata, phases
 
+def zero_center_fucci(adata):
+    '''Zero center and recenter after filtering'''
+    plate = np.array(adata.obs["plate"])
+    u_plate = np.unique(plate)
+    well_plate = adata.obs["Well_Plate"]
+    green_fucci, red_fucci = adata.obs["MeanGreen530"], adata.obs["MeanRed585"]
+    log_green_fucci, log_red_fucci = np.log10(green_fucci), np.log10(red_fucci)
+    wp_p_dict = dict([(str(p), plate == p) for p in u_plate])
+    logmed_green_fucci_p = dict([(str(p), np.log10(np.median(green_fucci[wp_p_dict[str(p)]]))) for p in u_plate])
+    logmed_red_fucci_p = dict([(str(p), np.log10(np.median(red_fucci[wp_p_dict[str(p)]]))) for p in u_plate])
+    logmed_green_fucci = np.array([logmed_green_fucci_p[wp.split("_")[1]] for wp in well_plate])
+    logmed_red_fucci = np.array([logmed_red_fucci_p[wp.split("_")[1]] for wp in well_plate])
+    log_green_fucci_zeroc = np.array(log_green_fucci) - logmed_green_fucci
+    log_red_fucci_zeroc = np.array(log_red_fucci) - logmed_red_fucci
+    log_green_fucci_zeroc_rescale = (log_green_fucci_zeroc - np.min(log_green_fucci_zeroc)) / np.max(log_green_fucci_zeroc)
+    log_red_fucci_zeroc_rescale = (log_red_fucci_zeroc - np.min(log_red_fucci_zeroc)) / np.max(log_red_fucci_zeroc)
+    adata.obs["Green530"] = log_green_fucci_zeroc_rescale # LogNormRescaleGreen530
+    adata.obs["Red585"] = log_red_fucci_zeroc_rescale # LogNormRescaleRed585
+    fucci_data = np.column_stack([log_green_fucci_zeroc_rescale,log_red_fucci_zeroc_rescale])
+    return adata
+    
 def qc_filtering(adata, do_log_normalize, do_remove_blob):
     '''QC and filtering; remove cluster of cells in senescent G0'''
     sc.pp.filter_cells(adata, min_genes=500)
@@ -69,9 +110,7 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     louvain = np.load("input/RNAData/louvain.npy", allow_pickle=True)
     adata.obs["louvain"] = louvain
     if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
-    phases = pd.read_csv("input/ProteinData/WellPlatePhasesLogNormIntensities.csv").sort_values(by="Well_Plate")
-    phases_filt = phases[phases["Well_Plate"].isin(adata.obs["Well_Plate"])]
-    phases_filt = phases_filt.reset_index(drop=True) # remove filtered indices
+    phases_filt = np.array(adata.obs["phase"]) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
     return adata, phases_filt
 
@@ -82,10 +121,10 @@ def is_ccd(adata, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered):
     regevccdgenes = np.isin(adata.var_names, ccd_regev_filtered)
     return ccdprotein, nonccdprotein, regevccdgenes
 
-def general_plots():
+def general_plots(u_plates):
     '''Make plots to illustrate the results of the scRNA-Seq analysis'''
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
-    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates)
 
     # QC plots before filtering
     sc.pl.highest_expr_genes(adata, n_top=20, show=False, save=True)
@@ -95,6 +134,7 @@ def general_plots():
     do_log_normalization = True
     do_remove_blob = False
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
+    adata = zero_center_fucci(adata)
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
     sc.pl.highly_variable_genes(adata, show=False, save=True)
     shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersionAllCells.pdf")
@@ -130,20 +170,21 @@ def plot_markers_vs_reads(adata):
 def plot_pca_for_batch_effect_analysis(adata, suffix):
     '''Make PCA plots to show batch effects if they exits'''
     sc.tl.pca(adata)
-    sc.pl.pca(adata, color="plate", palette=['b','tab:orange','g','grey'], save=True)
+    sc.pl.pca(adata, color="plate", palette=['b','tab:orange','g','grey'], show=False, save=True)
     shutil.move("figures/pca.pdf", f"figures/pcaByPlate_{suffix}.pdf")
-    sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], save=True)
+    sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], show=False, save=True)
     shutil.move("figures/pca.pdf", f"figures/pcaByPhase_{suffix}.pdf")
     pca_var = np.var(adata.obsm['X_pca'], axis=0)
     pd.DataFrame({"pca_var" : pca_var / sum(pca_var)}).to_csv(f"output/pca{suffix}_var.txt", sep="\t")
     
-def analyze_noncycling_cells():
+def analyze_noncycling_cells(u_plates):
     '''The raw UMAP shows a group of cells that appear sequestered from cycling; investigate those'''
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
     do_log_normalization = True
     do_remove_blob = False
-    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
-    adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob) 
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates)
+    adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
+    adata = zero_center_fucci(adata)
 
     # Unsupervised clustering and generate the gene list for the uncycling cells, aka the unknown blob
     nneighbors = [5, 10, 15, 30, 100] # used nn=10 in the paper
@@ -162,8 +203,9 @@ def analyze_noncycling_cells():
 
     # Remove the blob
     do_remove_blob = True
-    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates)
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
+    adata = zero_center_fucci(adata)
     for nn in nneighbors:
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
@@ -189,13 +231,13 @@ def demonstrate_umap_cycle_without_ccd(adata):
     sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save=True)
     shutil.move("figures/umap.pdf", f"figures/umapAllCellsPhaseNonCcd.pdf")
 
-def readcount_and_genecount_over_pseudotime():
+def readcount_and_genecount_over_pseudotime(u_plates):
     '''
     To demonstrate why we normalize read counts per cell, these plots show the increase in read count over the cell cycle as the cell grows.
     We also show the resulting increase in the number of genes detected.
     '''
     valuetype, use_spikeins, biotype_to_use = "Counts", False, "protein_coding"
-    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use)
+    adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates)
     expression_data = adata.X
     fucci_time_inds = np.argsort(adata.obs["fucci_time"])
     fucci_time_sort = np.take(np.array(adata.obs["fucci_time"]), fucci_time_inds)
