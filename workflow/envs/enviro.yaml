@@ -5,11 +5,13 @@ channels:
 dependencies:
   - pandas
   - numpy
-  - python=3.6 # required for scanpy version 1.4
-  - scanpy=1.4.0
-  - umap-learn=0.3.10
+  - python
+  - scanpy=1.7.2
+  - umap-learn=0.5.1
   - scipy
   - matplotlib
   - scikit-learn
   - seaborn
   - biopython
+  - louvain
+  - scvelo=0.2.3

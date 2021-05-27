@@ -7,12 +7,11 @@ Analysis of mass spectrometry (MS) proteomic profiling of protein melting points
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-import re, gzip
+from SingleCellProteogenomics import utils
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy import stats
-from SingleCellProteogenomics import utils
+import scipy
 
 class ProteinProperties:
     '''Analyzes protein properties for evaluating differences in melting temperatures'''
@@ -57,7 +56,7 @@ class ProteinProperties:
                 sum(aa!=0),
                 len(bb!=0),
                 "Kruskal", 
-                stats.kruskal(aa[aa!=0], bb[bb!=0])[1] * 2) # one-sided
+                scipy.stats.kruskal(aa[aa!=0], bb[bb!=0])[1] * 2) # one-sided
             self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}_NonzeroDistribution")] = (
                 "Std", 
                 np.std(aa[aa!=0]), 
@@ -65,7 +64,7 @@ class ProteinProperties:
                 sum(aa!=0),
                 sum(bb!=0),
                 "EqualVarianceLevene", 
-                stats.levene(aa[aa!=0], bb[bb!=0])[1])
+                scipy.stats.levene(aa[aa!=0], bb[bb!=0])[1])
         else:
             self.test_results[(property_label, f"{aa_lab}_vs_{bb_lab}")] = (
                 "Median", 
@@ -74,7 +73,7 @@ class ProteinProperties:
                 len(aa),
                 len(bb),
                 "Kruskal", 
-                stats.kruskal(aa, bb)[1] * 2) # one-sided
+                scipy.stats.kruskal(aa, bb)[1] * 2) # one-sided
             self.test_results[(property_label, f"{aa_lab}_eqvar_{bb_lab}")] = (
                 "Std", 
                 np.std(aa), 
@@ -82,7 +81,7 @@ class ProteinProperties:
                 len(aa),
                 len(bb),
                 "EqualVarianceLevene", 
-                stats.levene(aa, bb)[1])
+                scipy.stats.levene(aa, bb)[1])
 
     def analyze3(self, source, aa_idx, bb_idx, cc_idx, aa_lab, bb_lab, cc_lab, property_label, testNonzeroDistribution=False):#, lab_lab, showfliers, fileprefix):
         '''General boxplot and kruskal-wallis test'''
@@ -95,7 +94,7 @@ class ProteinProperties:
         
     def analyzeAll(self, property_label, *groups, testNonzeroDistribution=False):
         self.test_results[(property_label), "allgroups"] = ("N/A", "N/A", "N/A", "N/A", "N/A",
-                        "Kruskal", stats.kruskal(*[group[group != 0] if testNonzeroDistribution else group for group in groups])[1])
+                        "Kruskal", scipy.stats.kruskal(*[group[group != 0] if testNonzeroDistribution else group for group in groups])[1])
     
     def analyze_melting_points(self):
         '''Gather measurements of melting points for each protein across 10 cell lines; get the median per protein and evaluate for differences between CCD groups'''
@@ -103,8 +102,8 @@ class ProteinProperties:
         meltingDf = pd.read_csv("input/ProteinProperties/human.proteinstability.csv.gz")
         meltingDf = meltingDf[pd.notna(meltingDf["quan_norm_meltPoint"])]
         print(f"{','.join(np.unique(meltingDf['cell_line_or_type']))}: unique human cell samples\n")
-        self.all_temps, allnonccdtranscript, allccdtranscript, transcript_reg, nontranscr_reg, nonccd_temps = [],[],[],[],[],[]
-        self.all_protnames, ant, att, trp, ntp, nnp = [],[],[],[],[],[]
+        self.all_temps = []
+        self.all_protnames = []
         self.median_temps = meltingDf.groupby("gene_name")["quan_norm_meltPoint"].median()
         self.all_temps = np.asarray(self.median_temps)
         self.all_protnames = np.asarray(self.median_temps.index)
@@ -236,7 +235,7 @@ class ProteinProperties:
     def apply_linregress(self, allProperty, propertyLabel):
         names = self.proteinDisorder.keys()
         propertyValues, propertyTemps = self.get_property_and_temps(allProperty, names)
-        linModel = stats.linregress(propertyValues, propertyTemps)
+        linModel = scipy.stats.linregress(propertyValues, propertyTemps)
         plt.scatter(propertyValues, propertyTemps, alpha=0.1)
         xfit = np.min(propertyValues) + np.arange(100) / 100 * (np.max(propertyValues) - np.min(propertyValues))
         yfit = linModel.intercept + xfit * linModel.slope
@@ -257,7 +256,7 @@ class ProteinProperties:
         '''Make a table with all the values analyzed'''
         protDisorderGeneList = list(self.proteinDisorder.keys())
         genes = np.sort(np.unique(np.concatenate((protDisorderGeneList, self.all_protnames_list))))
-        lengths, disordered, hydrophob = [],[],[]
+        lengths, disordered = [],[]
         for nn in genes:
             isGene = nn in self.proteinDisorder
             idx = -1 if not isGene else protDisorderGeneList.index(nn)                
@@ -339,8 +338,7 @@ class ProteinProperties:
                   self.fractDisorderTransreg, 
                   self.fractDisorderNontransreg)
         self.boxplot_summary(*values, "Disorder", True)
-        self.boxplot_saveclose(f"figures/DisorderBox.pdf.pdf")
-                
+        self.boxplot_saveclose("figures/DisorderBox.pdf")
     
     def proportion_test(self, phosHuman, names_subset, names_alt=[]):
         '''Test the proportions of kinase families with Fisher exact test'''
@@ -358,7 +356,7 @@ class ProteinProperties:
         counts_comb_mappedminus = np.array([counts_mappedminus[np.array(labels_mappedminus) == x][0] if x in labels_mappedminus else 0 for x in labels_comb])
         values_comb_subset = np.array([proportion_subset[np.array(labels_subset) == x][0] if x in labels_subset else 0 for x in labels_comb])
         values_comb_mappedminus = np.array([proportion_mappedminus[np.array(labels_mappedminus) == x][0] if x in labels_mappedminus else 0 for x in labels_comb])
-        fisher_comb_subset = np.array([stats.fisher_exact([
+        fisher_comb_subset = np.array([scipy.stats.fisher_exact([
             [counts_comb_subset[idx], sum(counts_comb_subset) - counts_comb_subset[idx]], 
             [counts_comb_mappedminus[idx], sum(counts_comb_mappedminus) - counts_comb_mappedminus[idx]]], "greater") for idx in np.arange(len(labels_comb))])
         return labels_comb, counts_comb_subset, values_comb_subset, counts_comb_mappedminus, values_comb_mappedminus, fisher_comb_subset

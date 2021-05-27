@@ -12,7 +12,8 @@ from SingleCellProteogenomics import (ProteinBimodality,
                                       ProteinDataPreparation,
                                       ProteinGaussianClustering,
                                       ProteinVariability)
-from SingleCellProteogenomics.utils import *
+import matplotlib.pyplot as plt
+import seaborn as sbn
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42

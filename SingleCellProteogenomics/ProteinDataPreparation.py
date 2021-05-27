@@ -12,7 +12,10 @@ Filtering the data for:
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from SingleCellProteogenomics import utils
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
@@ -164,7 +167,6 @@ def plot_areas(areas, title):
     plt.ylabel("Count")
     plt.xlabel("Area")
     plt.savefig(f"figures/areas{title}.png")
-    # plt.show()
     plt.close()
 
 def apply_big_nucleus_filter(my_df):

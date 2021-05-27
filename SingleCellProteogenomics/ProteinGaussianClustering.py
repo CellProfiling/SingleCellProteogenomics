@@ -9,11 +9,13 @@ Clustering the cells into cell cycle phases using FUCCI cell cycle markers:
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils
 import numpy as np
-import sklearn.mixture
+import matplotlib.pyplot as plt
+import os
 import seaborn as sbn
+import scipy
+from SingleCellProteogenomics import utils
+import sklearn.mixture
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 def zero_center_fucci(green_fucci, red_fucci, u_plate, well_plate, plate):
