@@ -33,13 +33,15 @@ nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
 u_plates = ["355","356","357"]
 
 #%% Check for new RNA inputs
-newinputsfolder = "newinputs"
+newinputsfolder = "newinputs/RNAData/"
 if os.path.exists(newinputsfolder):
     for file in os.listdir(newinputsfolder):
-        targetfile=f"inputs/RNAData/{os.path.basename(file)"
-        if os.path.exists(targetfile):
-            shutil.rmtree(targetfile)
-        shutil.copytree(file, targetfile)
+        filepath=f"{newinputsfolder}{file}"
+        targetfile=f"input/RNAData/{os.path.basename(file)}"
+        targetfilepc=f"{targetfile}.protein_coding.csv"
+        if os.path.exists(targetfile): os.remove(targetfile)
+        if os.path.exists(targetfilepc): os.remove(targetfilepc)
+        shutil.copyfile(filepath, targetfile)
 
 #%% Convert FACS intensities for FUCCI markers to pseudotime using the same polar coordinate methods as for protein
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
