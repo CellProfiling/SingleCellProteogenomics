@@ -1,6 +1,6 @@
 import os
 
-INPUTID="1G4i115FCH8XNyiEHCkBXMSO_9pwGflTq"
+INPUTID="149ICTtieYjuKWZoLwRLzimwff0n6eWqw"
 
 # scripts currently expect base directory as working directory
 if os.path.basename(os.path.abspath(os.curdir)) == "workflow":
