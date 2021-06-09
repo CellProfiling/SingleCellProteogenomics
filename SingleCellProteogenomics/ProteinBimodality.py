@@ -8,9 +8,12 @@ were evaluated separately for cell cycle dependence in subsequent analysis.
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils
 import sklearn.mixture
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scipy
 
 def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
              pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
@@ -67,8 +70,8 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
         wp_timebimodal_p.append(p)
     
     # Multiple testing corrections
-    wp_isbimodal_padj, wp_isbimodal_pass = benji_hoch(0.01, wp_isbimodal_p)
-    wp_timebimodal_padj, wp_timebimodal_pass = benji_hoch(0.01, wp_timebimodal_p)
+    wp_isbimodal_padj, wp_isbimodal_pass = utils.benji_hoch(0.01, wp_isbimodal_p)
+    wp_timebimodal_padj, wp_timebimodal_pass = utils.benji_hoch(0.01, wp_timebimodal_p)
     
     wp_enoughcellsinbothclusters = np.array([sum(c1[0]) > 50 and sum(c1[1]) > 50 for c1 in wp_bimodal_cluster_idxs])
     wp_isbimodal_generally = (np.abs(np.log(wp_bimodal_fcmeans) / np.log(2)) > 1) & wp_isbimodal_pass

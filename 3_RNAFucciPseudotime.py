@@ -8,18 +8,21 @@ Analysis of transcript abundance in individual cells over cell division time.
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics import (FucciCellCycle, FucciPseudotime,
+from SingleCellProteogenomics import (FucciPseudotime,
                                       RNACellCycleDependence,
-                                      RNADataPreparation, stretch_time, utils)
-from SingleCellProteogenomics.utils import *
-import warnings
+                                      RNADataPreparation,
+                                      RNAVelocity,
+                                      utils)
+import scanpy as sc
+import numpy as np
+import matplotlib.pyplot as plt
+import shutil
+import os
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["savefig.dpi"] = 300
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
 
 bioccd = np.genfromtxt(
     "input/ProteinData/BiologicallyDefinedCCD.txt", dtype="str"
@@ -28,6 +31,17 @@ wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
 ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
 u_plates = ["355","356","357"]
+
+#%% Check for new RNA inputs
+newinputsfolder = "newinputs/RNAData/"
+if os.path.exists(newinputsfolder):
+    for file in os.listdir(newinputsfolder):
+        filepath=f"{newinputsfolder}{file}"
+        targetfile=f"input/RNAData/{os.path.basename(file)}"
+        targetfilepc=f"{targetfile}.protein_coding.csv"
+        if os.path.exists(targetfile): os.remove(targetfile)
+        if os.path.exists(targetfilepc): os.remove(targetfilepc)
+        shutil.copyfile(filepath, targetfile)
 
 #%% Convert FACS intensities for FUCCI markers to pseudotime using the same polar coordinate methods as for protein
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
@@ -166,6 +180,16 @@ sc.pp.filter_genes(adata_spikeins, min_cells=100)
 print(f"data shape after filtering: {adata_spikeins.X.shape}")
 
 RNACellCycleDependence.ccd_analysis_of_spikeins(adata_spikeins, perms)
+
+#%% Analyze RNA velocity
+valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
+adata, phases = RNADataPreparation.read_counts_and_phases(
+    valuetype, use_spikeins, biotype_to_use, u_plates, load_velocities=True
+)
+adata_blobless, phasesfilt = RNADataPreparation.qc_filtering(
+    adata, do_log_normalize=True, do_remove_blob=False
+)
+RNAVelocity.analyze_rna_velocity(adata_blobless, mean_diff_from_rng)
 
 #%% Analyze isoforms
 adata_isoform, ccdtranscript_isoform = RNACellCycleDependence.analyze_isoforms(

@@ -7,12 +7,10 @@ Analysis of protein abundance by cell cycle phase.
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics import (ProteinBimodality,
-                                      ProteinCellCycleDependence,
-                                      ProteinDataPreparation,
-                                      ProteinGaussianClustering,
-                                      ProteinVariability)
-from SingleCellProteogenomics.utils import *
+from SingleCellProteogenomics import (ProteinDataPreparation,
+                                      ProteinGaussianClustering)
+import matplotlib.pyplot as plt
+import seaborn as sbn
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42

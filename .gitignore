@@ -15,6 +15,7 @@ figures/
 output/
 input/
 data/
+newinputs/
 
 # External Software
 iupred2a/

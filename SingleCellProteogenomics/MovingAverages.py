@@ -6,8 +6,9 @@ Methods for calculating moving averages of single-cell protein and RNA expressio
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils
+import os
+import numpy as np
+import matplotlib.pyplot as plt
 from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 
 TOT_LEN = FucciCellCycle().TOT_LEN  # Object representing FUCCI cell cycle phase durations

@@ -8,10 +8,14 @@ Evaluates the delay between peak protein and RNA expression over the cell cycle:
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
-from SingleCellProteogenomics import utils, FucciCellCycle, MovingAverages, RNADataPreparation, alluvial
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import scipy
+from SingleCellProteogenomics import (utils, FucciCellCycle, MovingAverages, 
+                                      RNADataPreparation, alluvial)
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import SingleCellProteogenomics.alluvial
 import itertools
 
 fucci = FucciCellCycle.FucciCellCycle() # Object representing FUCCI cell cycle phase durations
@@ -304,13 +308,11 @@ def peak_expression_alluvial(diff_max_pol, insct_rna_max_pol_ccd, insct_prot_max
             transitiondict[startloc][endloc] = 1
         else:
             transitiondict[startloc] = {endloc:1}
-    cmap = plt.cm.get_cmap('viridis_r')
     ax = alluvial.plot(transitiondict, colors=['r', 'y', 'b'], a_sort=startphases, b_sort=endphases)
     fig = ax.get_figure()
     fig.set_size_inches(5 ,10)
     plt.savefig("figures/transitions.png")
     plt.savefig("figures/transitions.pdf")
-    # plt.show()
     plt.close()
 
 def peak_expression_delay_scatter(insct_rna_max_pol_ccd, insct_prot_max_pol_ccd, diff_max_pol):
@@ -397,9 +399,9 @@ def compare_peak_expression_prot_v_rna(adata, wp_ensg, ccd_comp, ccdtranscript, 
         fom += f"However, the majority ({100 * sum(peaked_after_g1_prot) / len(np.unique(wp_ensg[ccd_comp]))}%) of the proteins peaked towards the end of the cell cycle corresponding to the S&G2 phases" + "\n\n"
         fom += f"The delay between peak RNA and protein expression for the 50 CCD proteins that also had CCD transcripts was {fucci.TOT_LEN * np.median(diff_max_pol)} hrs on average " + "\n\n"
         fom += f"this delay indicates that it may take a little less than the same amount of time ({12 - fucci.TOT_LEN * np.median(diff_max_pol)} hrs) to produce a target metabolite after peak expression of an enzyme." + "\n\n"
-        fom += f"" + "\n\n"
-        fom += f"" + "\n\n"
-        fom += f"" + "\n\n"
+        fom += "" + "\n\n"
+        fom += "" + "\n\n"
+        fom += "" + "\n\n"
         print(fom)
         file.write(fom)
         

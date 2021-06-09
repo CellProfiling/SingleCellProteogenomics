@@ -9,15 +9,16 @@ Preparation of single-cell RNA sequencing data:
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
+from SingleCellProteogenomics import utils
 import pandas as pd
 import numpy as np
 import scanpy as sc
-import matplotlib.pyplot as plt
-import os, shutil
+import matplotlib as plt
+import os
 import seaborn as sbn
-from SingleCellProteogenomics import utils
+import scvelo as scv
 
-def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plates, use_isoforms=False):
+def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plates, use_isoforms=False, load_velocities=False):
     '''
     Read data into scanpy; Read phases and FACS intensities
         - count_or_rpkm: Must be "Counts" or "Tpms"
@@ -30,12 +31,13 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plate
             gene_info = pd.read_csv(f"input/RNAData/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
                                     index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
             biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
-            pd.read_csv(read_file)[biotyped ].to_csv(biotype_file, index=False)
+            pd.read_csv(read_file)[biotyped].to_csv(biotype_file, index=False)
         read_file = biotype_file
 
     adata = sc.read_csv(read_file)
     print(f"data shape: {adata.X.shape}")
-    # adata.raw = adata
+    if load_velocities:
+        adata.obs_names = pd.read_csv("input/RNAData/Tpms.obs_names.csv")["well_plate"]
 
     intensities, phases = [],[]
     for plate in u_plates:
@@ -77,6 +79,13 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plate
     adata.var["name"] = gene_info["name"]
     adata.var["biotype"] = gene_info["biotype"]
     adata.var["description"] = gene_info["description"]
+    
+    if load_velocities:
+        ldata = scv.read("input/RNAData/a.loom", cache=True)
+        ldata.obs_names = pd.read_csv("input/RNAData/a.obs_names.csv")["well_plate"]
+        ldata.var["GeneName"] = ldata.var_names
+        ldata.var_names = ldata.var["Accession"]
+        adata = scv.utils.merge(adata, ldata, copy=True)
 
     return adata, phases
 
@@ -98,18 +107,21 @@ def zero_center_fucci(adata):
     log_red_fucci_zeroc_rescale = (log_red_fucci_zeroc - np.min(log_red_fucci_zeroc)) / np.max(log_red_fucci_zeroc)
     adata.obs["Green530"] = log_green_fucci_zeroc_rescale # LogNormRescaleGreen530
     adata.obs["Red585"] = log_red_fucci_zeroc_rescale # LogNormRescaleRed585
-    fucci_data = np.column_stack([log_green_fucci_zeroc_rescale,log_red_fucci_zeroc_rescale])
     return adata
     
 def qc_filtering(adata, do_log_normalize, do_remove_blob):
-    '''QC and filtering; remove cluster of cells in senescent G0'''
+    '''QC and filtering; remove cluster of cells in senescent G0 from original clustering'''
     sc.pp.filter_cells(adata, min_genes=500)
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
     if do_log_normalize: sc.pp.log1p(adata)
-    louvain = np.load("input/RNAData/louvain.npy", allow_pickle=True)
-    adata.obs["louvain"] = louvain
-    if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
+    louvain_file="input/RNAData/louvain_original.npy"
+    louvain = np.load(louvain_file, allow_pickle=True)
+    adata.obs["original_louvain_wp"] = louvain[:,0]
+    adata.obs["original_louvain"] = louvain[:,1]
+    if do_remove_blob: 
+        removeThese = np.isin(adata.obs["Well_Plate"], adata.obs["original_louvain_wp"][adata.obs["original_louvain"] == "5"])
+        adata = adata[~removeThese,:]
     phases_filt = np.array(adata.obs["phase"]) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
     return adata, phases_filt
@@ -127,8 +139,7 @@ def general_plots(u_plates):
     adata, phases = read_counts_and_phases(valuetype, use_spikeins, biotype_to_use, u_plates)
 
     # QC plots before filtering
-    sc.pl.highest_expr_genes(adata, n_top=20, show=False, save=True)
-    shutil.move("figures/highest_expr_genes.pdf", f"figures/highest_expr_genes_AllCells.pdf")
+    sc.pl.highest_expr_genes(adata, n_top=20, show=False, save="AllCells.pdf")
 
     # Post filtering QC
     do_log_normalization = True
@@ -136,25 +147,24 @@ def general_plots(u_plates):
     adata, phasesfilt = qc_filtering(adata, do_log_normalization, do_remove_blob)
     adata = zero_center_fucci(adata)
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
-    sc.pl.highly_variable_genes(adata, show=False, save=True)
-    shutil.move("figures/filter_genes_dispersion.pdf", f"figures/filter_genes_dispersionAllCells.pdf")
+    sc.pl.highly_variable_genes(adata, show=False, save="AllCells.pdf")
 
-    # UMAP plots
+    # Louvain clustering and UMAP plots
     # Idea: based on the expression of all genes, do the cell cycle phases cluster together?
     # Execution: scanpy methods: UMAP statistics first, then make UMAP
     # Output: UMAP plots
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.tl.louvain(adata)
+    utils.np_save_overwriting("output/pickles/louvain.npy", adata.obs["louvain"])
     sc.tl.umap(adata)
     plt.rcParams['figure.figsize'] = (10, 10)
-    sc.pl.umap(adata, color=["phase"], show=False, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umapAllCellsSeqCenterPhase.pdf")
+    sc.pl.umap(adata, color=["phase"], show=False, save="AllCellsSeqCenterPhase.pdf")
 
     # General display of RNA abundances in TPMs
     sbn.displot(np.concatenate(adata.X), color="tab:orange")
     plt.xlabel("TPM")
     plt.ylabel("Density")
     plt.savefig("figures/rna_abundance_density.pdf")
-    # plt.show()
     plt.close()
     
 def plot_markers_vs_reads(adata):
@@ -170,10 +180,8 @@ def plot_markers_vs_reads(adata):
 def plot_pca_for_batch_effect_analysis(adata, suffix):
     '''Make PCA plots to show batch effects if they exits'''
     sc.tl.pca(adata)
-    sc.pl.pca(adata, color="plate", palette=['b','tab:orange','g','grey'], show=False, save=True)
-    shutil.move("figures/pca.pdf", f"figures/pcaByPlate_{suffix}.pdf")
-    sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], show=False, save=True)
-    shutil.move("figures/pca.pdf", f"figures/pcaByPhase_{suffix}.pdf")
+    sc.pl.pca(adata, color="plate", palette=['b','tab:orange','g','grey'], show=False, save=f"ByPlate_{suffix}.pdf")
+    sc.pl.pca(adata, color="phase", palette=['b','tab:orange','g','grey'], show=False, save=f"ByPhase_{suffix}.pdf")
     pca_var = np.var(adata.obsm['X_pca'], axis=0)
     pd.DataFrame({"pca_var" : pca_var / sum(pca_var)}).to_csv(f"output/pca{suffix}_var.txt", sep="\t")
     
@@ -193,8 +201,7 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=True)
-            shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_before_nn{nn}_md{md}.pdf")
+            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
     sc.tl.rank_genes_groups(adata, groupby="louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
     p_blob_sig = np.array(p_blob) < 0.01
@@ -210,8 +217,7 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=True)
-            shutil.move("figures/umap.pdf", f"figures/umap_louvain_clusters_after_nn{nn}_md{md}.pdf")
+            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
     '''
@@ -222,14 +228,12 @@ def demonstrate_umap_cycle_without_ccd(adata):
     adata_ccdregev = adata[:, [x for x in adata.var_names if x not in ccd_regev_filtered]]
     sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata_ccdregev)
-    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umapAllCellsPhaseNonCcdCurated.pdf")
+    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save="AllCellsPhaseNonCcdCurated.pdf")
 
     adata_ccdregev = adata[:, [x for x in adata.var_names if x in nonccd_filtered]]
     sc.pp.neighbors(adata_ccdregev, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata_ccdregev)
-    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save=True)
-    shutil.move("figures/umap.pdf", f"figures/umapAllCellsPhaseNonCcd.pdf")
+    sc.pl.umap(adata_ccdregev, color="fucci_time", show=False, save="AllCellsPhaseNonCcd.pdf")
 
 def readcount_and_genecount_over_pseudotime(u_plates):
     '''
@@ -256,11 +260,9 @@ def readcount_and_genecount_over_pseudotime(u_plates):
     plt.ylabel("Total RNA-Seq Counts",size=36)
     plt.xticks(size=14)
     plt.yticks(size=14)
-    # plt.title("Total Counts",size=36)
     plt.legend(fontsize=14)
     plt.tight_layout()
-    plt.savefig(f"figures/TotalCountsPseudotime.png")
-    # plt.show()
+    plt.savefig("figures/TotalCountsPseudotime.png")
     plt.close()
 
     # Total genes detected per cell, moving average
@@ -275,9 +277,7 @@ def readcount_and_genecount_over_pseudotime(u_plates):
     plt.ylabel("Total Genes Detected By RNA-Seq",size=36)
     plt.xticks(size=14)
     plt.yticks(size=14)
-    # plt.title("Total Genes ",size=36)
     plt.legend(fontsize=14)
     plt.tight_layout()
-    plt.savefig(f"figures/TotalGenesPseudotime.png")
-    # plt.show()
+    plt.savefig("figures/TotalGenesPseudotime.png")
     plt.close()

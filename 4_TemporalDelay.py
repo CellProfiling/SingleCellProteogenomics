@@ -8,8 +8,8 @@ Comparison of the times of peak expression for protein and RNA for each gene
 """
 
 from SingleCellProteogenomics import (Loaders, RNADataPreparation,
-                                      TemporalDelay, utils)
-from SingleCellProteogenomics.utils import *
+                                      TemporalDelay)
+import matplotlib.pyplot as plt
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42

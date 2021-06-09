@@ -9,14 +9,15 @@ The markers were measured for each cell in RNA analysis using FACS intentensitie
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, stretch_time
 from SingleCellProteogenomics.MovingAverages import mvpercentiles, mvavg
 from SingleCellProteogenomics.FucciCellCycle import FucciCellCycle
 import scipy.optimize
-import sklearn.mixture
-import decimal
-import copy
+import numpy as np
+import pandas as pd
+import scanpy as sc
+import matplotlib.pyplot as plt
+import copy, shutil, decimal
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 
 NBINS_POLAR_COORD = 150 # Number of bins for polar coord calculation, arbitrary choice for now
@@ -88,7 +89,7 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
         plt.scatter(g1_end_pt[0],g1_end_pt[1],c='c',linewidths=4)
         plt.scatter(g1s_end_pt[0],g1s_end_pt[1],c='c',linewidths=4)
         plt.scatter(0,0,c='m',linewidths=4)
-        plt.annotate(f"  0 hrs (start)", (start_pt[0],start_pt[1]))
+        plt.annotate("  0 hrs (start)", (start_pt[0],start_pt[1]))
         plt.annotate(f"  {fucci.G1_LEN} hrs (end of G1)", (g1_end_pt[0],g1_end_pt[1]))
         plt.annotate(f"  {fucci.G1_LEN + fucci.G1_S_TRANS} hrs (end of S)", (g1s_end_pt[0],g1s_end_pt[1]))
         for yeah in list(drange(decimal.Decimal(0.1), 0.9, '0.1')):
@@ -97,7 +98,7 @@ def fucci_hist2d(centered_data, cart_data_ur, start_pt, g1_end_pt, g1s_end_pt, a
     plt.ylabel(r'$\propto log_{10}(CDT1_{fucci})$',size=20)
     plt.tight_layout()
     if show_gmnn:
-        plt.savefig(f'figures/GMNN_FUCCI_plot.pdf', transparent=True)
+        plt.savefig('figures/GMNN_FUCCI_plot.pdf', transparent=True)
     else:
         plt.savefig(f'figures/masked_polar_hist_{analysis_title}.pdf', transparent=True)
     # plt.show()
@@ -134,8 +135,8 @@ def plot_fucci_intensities_on_pseudotime(pol_sort_norm_rev, pol_sort_centered_da
         "mvavgs_red_25p" : mvperc_red[1],
         "mvavgs_red_75p" : mvperc_red[-2],        
         "mvavgs_green" : mvavg_green,
-        "mvavgs_red_25p" : mvperc_green[1],
-        "mvavgs_red_75p" : mvperc_green[-2]}).to_csv(
+        "mvavgs_green_25p" : mvperc_green[1],
+        "mvavgs_green_75p" : mvperc_green[-2]}).to_csv(
             "output/FucciIntensitiesOnPseudotime.tsv", index=False, sep="\t")
     
 def fucci_polar_coords(x, y, analysis_title):
@@ -268,7 +269,7 @@ def pseudotime_rna(adata):
     plt.xlabel("log10(GMNN GFP Intensity)",size=20)
     plt.ylabel("log10(CDT1 RFP Intensity)",size=20)
     plt.tight_layout()
-    plt.savefig(f"figures/FucciAllFucciPseudotime.pdf")
+    plt.savefig("figures/FucciAllFucciPseudotime.pdf")
     # plt.show()
     plt.close()
 

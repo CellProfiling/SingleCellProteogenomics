@@ -8,8 +8,6 @@ Separating analysis files improved the speed of testing and rerunning analyses.
 """
 
 import numpy as np
-import pandas as pd
-from SingleCellProteogenomics import utils
 
 def load_protein_fucci_pseudotime():
     '''Loads results of previous analysis files for Protein FUCCI pseudotime analysis'''
@@ -52,7 +50,6 @@ def load_temporal_delay():
     add_dict = {
         "ccd_comp" : np.load("output/pickles/ccd_comp.npy", allow_pickle=True),
         "nonccd_comp" : np.load("output/pickles/nonccd_comp.npy", allow_pickle=True),
-        "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
         "ccdtranscript" : np.load("output/pickles/ccdtranscript.npy", allow_pickle=True),
         "ccdtranscript_isoform" : np.load("output/pickles/ccdtranscriptIsoforms.npy", allow_pickle=True),
         "var_comp" : np.load("output/pickles/var_comp.npy", allow_pickle=True),

@@ -12,7 +12,8 @@ Investigation of the properties of proteins with different cell cycle regulation
 from SingleCellProteogenomics import (FucciCellCycle, Loaders,
                                       ProteinPropertyAnalysis,
                                       RNADataPreparation, utils)
-from SingleCellProteogenomics.utils import *
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42

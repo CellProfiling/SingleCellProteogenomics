@@ -12,16 +12,6 @@ Utility functions for:
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as mpcolors
-import matplotlib.patches as mpatches
-import scanpy as sc
-import os
-import pickle
-import glob
-import shutil
-import scipy
-import scipy.stats
 import seaborn as sbn
 
 def values_comp(values_cell, values_nuc, values_cyto, wp_iscell, wp_isnuc, wp_iscyto):
@@ -124,7 +114,6 @@ def general_boxplot(group_values, group_labels, xlabel, ylabel, title, showflier
     '''Make a boxplot given equal length group_values and group_labels'''
     general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, ylim)
     plt.savefig(outfile)
-    # plt.show()
     plt.close()
 
 def boxplot_with_stripplot(group_values, group_labels, xlabel, ylabel, title, showfliers, outfile, alpha=0.3, size=5, jitter=0.25, ylim=()):
@@ -132,7 +121,6 @@ def boxplot_with_stripplot(group_values, group_labels, xlabel, ylabel, title, sh
     cccc, mmmm, ax = general_boxplot_setup(group_values, group_labels, xlabel, ylabel, title, showfliers, ylim)
     boxplot = sbn.stripplot(x=cccc, y=mmmm, alpha=alpha, color=".3", size=size, jitter=jitter)
     plt.savefig(outfile)
-    # plt.show()
     plt.close()
 
 def general_scatter(x, y, xlabel, ylabel, outfile, showLegend=True):
@@ -144,7 +132,6 @@ def general_scatter(x, y, xlabel, ylabel, outfile, showLegend=True):
     if showLegend: 
         plt.legend()
     plt.savefig(outfile)
-    # plt.show()
     plt.close()
     
 def general_scatter_color(x, y, xlabel, ylabel, c, clabel, show_color_bar, title, outfile, cmap="viridis", alpha=1):
@@ -158,7 +145,6 @@ def general_scatter_color(x, y, xlabel, ylabel, c, clabel, show_color_bar, title
         cb.set_label(clabel)
     plt.title(title)
     plt.savefig(outfile)
-    # plt.show()
     plt.close()
 
 def general_histogram(x, xlabel, ylabel, alpha, outfile):
@@ -168,7 +154,6 @@ def general_histogram(x, xlabel, ylabel, alpha, outfile):
     plt.ylabel(ylabel)
     plt.tight_layout()
     plt.savefig(outfile)
-    # plt.show()
     plt.close()
 
 def format_p(p):

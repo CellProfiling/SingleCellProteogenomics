@@ -8,7 +8,6 @@ Creates a uniform density across pseudotime for polar coordinate calculations.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from functools import reduce
 from copy import deepcopy
 
 def frange(start, stop, step):
@@ -33,6 +32,7 @@ def stretch_time(time_data,nbins=1000):
     n, bins, patches = plt.hist(time_data, histedges_equalN(time_data, nbins), density=True)
     tmp_time_data = deepcopy(time_data)
     trans_time = np.zeros([len(time_data)])
+    
     # Get bin indexes
     for i,c_bin in enumerate(bins[1:]):
         c_inds = np.argwhere(tmp_time_data<c_bin)

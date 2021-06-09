@@ -8,9 +8,13 @@ Methods for assessing cell cycle dependence of protein abundance in single cells
 @author: devinsullivan
 """
 
-from SingleCellProteogenomics.utils import *
 from SingleCellProteogenomics import utils, MovingAverages
-import umap, warnings
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import umap
+import scipy
+import warnings, pickle, shutil, os
 from sklearn.linear_model import MultiTaskLassoCV
 
 np.random.seed(0) # Get the same results each time
@@ -98,9 +102,9 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
     curr_area_cell, curr_area_nuc, curr_well_plate_imgnb = [],[],[]
     cell_counts = []
     
-    folder = f"figures/TemporalMovingAverages"
-    folder_mt = f"figures/TemporalMovingAveragesMicrotubules"
-    folder_rng = f"figures/TemporalMovingAverageRandomizationExamples"
+    folder = "figures/TemporalMovingAverages"
+    folder_mt = "figures/TemporalMovingAveragesMicrotubules"
+    folder_rng = "figures/TemporalMovingAverageRandomizationExamples"
     if not os.path.exists(folder): os.mkdir(folder)
     if not os.path.exists(folder_mt): os.mkdir(folder_mt)
     if not os.path.exists(folder_rng): os.mkdir(folder_rng)
@@ -261,7 +265,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
     perc_var_mt_rng, perc_var_comp_rng = np.array(perc_var_mt_rng), np.array(perc_var_comp_rng) 
     
     # Let's check out which percent variances are greater than the permuted values
-    perc_var_comp = values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
+    perc_var_comp = utils.values_comp(perc_var_cell, perc_var_nuc, perc_var_cyto, wp_iscell, wp_isnuc, wp_iscyto)
     perc_var_comp_withbimodal = np.concatenate((perc_var_comp, perc_var_comp_clust1, perc_var_comp_clust2))
     perc_var_comp_rng_withbimodal = np.concatenate((perc_var_comp_rng, perc_var_comp_clust1_rng, perc_var_comp_clust2_rng))
     ccd_var_comp_rng_wilcoxp_withbimodal = np.apply_along_axis(scipy.stats.wilcoxon, 1, (perc_var_comp_withbimodal - perc_var_comp_rng_withbimodal.T).T, None, "wilcox", False, "greater").T[1].T
@@ -269,7 +273,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
     mean_diff_from_rng_mt = np.mean((perc_var_mt - perc_var_mt_rng.T).T, 1)
 
     # randomization tests, try being a bit more stringent, try drawing the cutoff based on microtubules per sample
-    wp_comp_eq_percvar_adj_withbimodal, wp_comp_pass_eq_percvar_adj_withbimodal = bonf(alpha_ccd, ccd_var_comp_rng_wilcoxp_withbimodal)
+    wp_comp_eq_percvar_adj_withbimodal, wp_comp_pass_eq_percvar_adj_withbimodal = utils.bonf(alpha_ccd, ccd_var_comp_rng_wilcoxp_withbimodal)
     wp_comp_gtpass_eq_percvar_adj_withbimodal = wp_comp_pass_eq_percvar_adj_withbimodal & (perc_var_comp_withbimodal > np.median(perc_var_comp_rng_withbimodal, axis=1))
     
     # median differences from random
@@ -295,7 +299,7 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
     wp_comp_ccd_difffromrng_clust2 = clust_to_wp(wp_comp_ccd_difffromrng_withbimodal[len(perc_var_comp) + len(perc_var_comp_clust1):], wp_isbimodal_fcpadj_pass)
     
     wp_normal_randompercvar_p = np.apply_along_axis(scipy.stats.normaltest, 1, (perc_var_comp - perc_var_comp_rng.T).T).T[1].T
-    wp_randompercvarnorm_adj, wp_randompercvarnorm_pass = benji_hoch(0.05, wp_normal_randompercvar_p)
+    wp_randompercvarnorm_adj, wp_randompercvarnorm_pass = utils.benji_hoch(0.05, wp_normal_randompercvar_p)
     print(f"{sum(wp_randompercvarnorm_pass)}: number of genes with randomized percvars that form normal distributions")
     
     wp_comp_ccd_difffromrng = wp_comp_ccd_difffromrng
@@ -359,15 +363,15 @@ def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimo
     # 3) Non-CCD
     # 3) Gaussian analysis and CCD (unimodal or bimodal)
     # 4) Gaussian analysis and non-CCD (unimodal or bimodal)
-    ccdunifolder = f"figures/CCDUnimodal"
-    ccdunibifolder = f"figures/CCDUnimodalAndBimodal"
-    ccdpbifolder = f"figures/CCDBimodal"
-    ccdgaussccdfolder = f"figures/GaussAndCCD"
-    ccdgaussnonccdfolder = f"figures/GaussAndNonCCD"
-    nongaussccdfolder = f"figures/CCDAndNonGauss"
-    nonccdfolder = f"figures/NonCCD"
-    bimodalnonccdfolder = f"figures/NonCCDBimodal"
-    examplesfolder = f"figures/Examples"
+    ccdunifolder = "figures/CCDUnimodal"
+    ccdunibifolder = "figures/CCDUnimodalAndBimodal"
+    ccdpbifolder = "figures/CCDBimodal"
+    ccdgaussccdfolder = "figures/GaussAndCCD"
+    ccdgaussnonccdfolder = "figures/GaussAndNonCCD"
+    nongaussccdfolder = "figures/CCDAndNonGauss"
+    nonccdfolder = "figures/NonCCD"
+    bimodalnonccdfolder = "figures/NonCCDBimodal"
+    examplesfolder = "figures/Examples"
     for f in [ccdunifolder,ccdunibifolder,ccdpbifolder,ccdgaussccdfolder,
               ccdgaussnonccdfolder,nongaussccdfolder,nonccdfolder,
               bimodalnonccdfolder,examplesfolder]:
@@ -417,8 +421,8 @@ def copy_mvavg_plots_protein(folder, wp_ensg, wp_comp_ccd_difffromrng, wp_isbimo
 def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp, mean_mean_comp, 
                          gini_comp, cv_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, wp_comp_kruskal_gaussccd_adj):
     '''Illustrate the CCD variances of all proteins'''
-    utils.general_scatter(perc_var_comp, mean_mean_comp, "percent variance", "mean mean intensity", f"figures/PercVarVsMeanMeanIntensity_comp.png")
-    utils.general_scatter(mean_mean_comp, mean_diff_from_rng, "Mean Mean Intensity", "Mean Additional Percent Variance Explained than Random", f"figures/IntensityVsMeanDiff.png")
+    utils.general_scatter(perc_var_comp, mean_mean_comp, "percent variance", "mean mean intensity", "figures/PercVarVsMeanMeanIntensity_comp.png")
+    utils.general_scatter(mean_mean_comp, mean_diff_from_rng, "Mean Mean Intensity", "Mean Additional Percent Variance Explained than Random", "figures/IntensityVsMeanDiff.png")
     utils.general_scatter_color(gini_comp, perc_var_comp, "Gini of Protein Expression", "Fraction of Variance Due to Cell Cycle",
                                 -np.log10(wp_comp_kruskal_gaussccd_adj), "FDR for Cell Cycle Dependence", True,
                                 "Compartment - Fraction of Variance Due to Cell Cycle", "figures/CompartmentProteinFractionVariance.png")
@@ -436,7 +440,7 @@ def global_plots_protein(alphaa, u_well_plates, wp_ccd_unibimodal, perc_var_comp
     plt.xlabel("percent variance new")
     plt.ylabel("-log10 FDR for CCD")
     plt.hlines(-np.log10(alphaa), np.min(perc_var_comp), np.max(perc_var_comp))
-    plt.savefig(f"figures/PercVarVsLog10FdrCCD_comp.png")
+    plt.savefig("figures/PercVarVsLog10FdrCCD_comp.png")
     # plt.show()
     plt.close()
     
@@ -628,7 +632,7 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
         plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
         cb = plt.colorbar()
         cb.set_label("Pseudotime")
-        plt.savefig(f"figures/umapProteinLassoCCD.pdf")
+        plt.savefig("figures/umapProteinLassoCCD.pdf")
         plt.close()
         
         embeddingNonCcd=reducer.fit_transform(wp_binned_values[~nz_coef_protein,:].T)
@@ -636,7 +640,7 @@ def compare_to_lasso_analysis(u_well_plates, pol_sort_norm_rev, pol_sort_well_pl
         plt.xlabel("UMAP1"); plt.ylabel("UMAP2")
         cb = plt.colorbar()
         cb.set_label("Pseudotime")
-        plt.savefig(f"figures/umapProteinLassoNonCCD.pdf")
+        plt.savefig("figures/umapProteinLassoNonCCD.pdf")
         plt.close()
     
 def generate_protein_umaps(u_well_plates, pol_sort_norm_rev, pol_sort_well_plate, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell, 

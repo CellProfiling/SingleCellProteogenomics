@@ -11,8 +11,11 @@ Analysis of protein abundance in individual cells over cell division time.
 from SingleCellProteogenomics import (FucciPseudotime, Loaders,
                                       ProteinBimodality,
                                       ProteinCellCycleDependence,
-                                      ProteinVariability)
-from SingleCellProteogenomics.utils import *
+                                      ProteinVariability, utils)
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import scipy
 
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42
@@ -110,7 +113,7 @@ mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell, var_
 
 # Compare variances for protein and microtubules, the internal control for each image
 removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0] # make these independent samples for one-sided Kruskal-Wallis tests
-general_boxplot(
+utils.general_boxplot(
     (var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
@@ -119,7 +122,7 @@ general_boxplot(
     False,
     f"figures/ProteinMicrotubuleVariances.pdf",
 )
-general_boxplot(
+utils.general_boxplot(
     (cv_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
@@ -128,7 +131,7 @@ general_boxplot(
     False,
     f"figures/ProteinMicrotubuleCVs.pdf",
 )
-general_boxplot(
+utils.general_boxplot(
     (gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
     ("Protein", "Microtubules"),
     "",
