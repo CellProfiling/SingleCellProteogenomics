@@ -110,16 +110,18 @@ def zero_center_fucci(adata):
     return adata
     
 def qc_filtering(adata, do_log_normalize, do_remove_blob):
-    '''QC and filtering; remove cluster of cells in senescent G0'''
+    '''QC and filtering; remove cluster of cells in senescent G0 from original clustering'''
     sc.pp.filter_cells(adata, min_genes=500)
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
     if do_log_normalize: sc.pp.log1p(adata)
-    louvain_file="output/pickles/louvain.npy"
-    if os.path.exists(louvain_file):
-        louvain = np.load(louvain_file, allow_pickle=True)
-        adata.obs["louvain"] = louvain
-        if do_remove_blob: adata = adata[adata.obs["louvain"] != "5",:]
+    louvain_file="input/RNAData/louvain_original.npy"
+    louvain = np.load(louvain_file, allow_pickle=True)
+    adata.obs["original_louvain_wp"] = louvain[:,0]
+    adata.obs["original_louvain"] = louvain[:,1]
+    if do_remove_blob: 
+        removeThese = np.isin(adata.obs["Well_Plate"], adata.obs["original_louvain_wp"][adata.obs["original_louvain"] == "5"])
+        adata = adata[~removeThese,:]
     phases_filt = np.array(adata.obs["phase"]) # remove filtered indices
     print(f"data shape after filtering: {adata.X.shape}")
     return adata, phases_filt

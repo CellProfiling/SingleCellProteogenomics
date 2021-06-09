@@ -14,7 +14,7 @@ rule downloadInputs:
     conda: "envs/download.yaml"
     log: "output/downloadInputs.log"
     shell:
-        "(gdown -O input.zip https://drive.google.com/uc?export=download&id=" + INPUTID + \
+        f"(gdown -O input.zip \"https://drive.google.com/uc?export=download&id={INPUTID}\""
         " && unzip input.zip) 2> {log}"
 
 rule ProteinCellCycleClusters:
@@ -22,32 +22,32 @@ rule ProteinCellCycleClusters:
     output: "output/pickles/mockbulk_phases.npy"
     conda: "envs/enviro.yaml"
     log: "output/1_ProteinCellCycleClusters.log"
-    shell: "python3.6 1_ProteinCellCycleClusters.py &> {log}"
+    shell: "python 1_ProteinCellCycleClusters.py &> {log}"
 
 rule ProteinFucciPsuedotime:
     input: "output/pickles/mockbulk_phases.npy"
     output: "output/ProteinPseudotimePlotting.csv.gz"
     conda: "envs/enviro.yaml"
     log: "output/2_ProteinFucciPsuedotime.log"
-    shell: "python3.6 2_ProteinFucciPsuedotime.py &> {log}"
+    shell: "python 2_ProteinFucciPsuedotime.py &> {log}"
 
 rule RNAFucciPseudotime:
     input: "output/ProteinPseudotimePlotting.csv.gz"
     output: "output/RNAPseudotimePlotting.csv.gz"
     conda: "envs/enviro.yaml"
     log: "output/3_RNAFucciPseudotime.log"
-    shell: "python3.6 3_RNAFucciPseudotime.py &> {log}"
+    shell: "python 3_RNAFucciPseudotime.py &> {log}"
 
 rule TemporalDelay:
     input: "output/RNAPseudotimePlotting.csv.gz"
     output: "output/diff_max_pol.csv"
     conda: "envs/enviro.yaml"
     log: "output/4_TemporalDelay.log"
-    shell: "python3.6 4_TemporalDelay.py &> {log}"
+    shell: "python 4_TemporalDelay.py &> {log}"
 
 rule ProteinProperties:
     input: "output/diff_max_pol.csv"
     output: "output/upstreamKinaseResults.csv"
     conda: "envs/enviro.yaml"
     log: "output/5_ProteinProperties.log"
-    shell: "python3.6 5_ProteinProperties.py &> {log}"
+    shell: "python 5_ProteinProperties.py &> {log}"

@@ -15,3 +15,5 @@ dependencies:
   - biopython
   - louvain
   - scvelo=0.2.3
+  - gdown # for downloads; keep here too
+  - unzip # for downloads; keep here too
