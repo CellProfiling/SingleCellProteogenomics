@@ -13,7 +13,7 @@ from SingleCellProteogenomics import utils
 import pandas as pd
 import numpy as np
 import scanpy as sc
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import os
 import seaborn as sbn
 import scvelo as scv
