@@ -16,7 +16,7 @@ plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig
 plt.rcParams['figure.figsize'] = (10, 10)
 
 def analyze_rna_velocity(adata_withblob, mean_diff_from_rng):
-    adata_blobless = adata_withblob[adata_withblob.obs["louvain"] != "5",:]
+    adata_blobless = adata_withblob[adata_withblob.obs["original_louvain"] != "5",:]
     
     # Make the chosen cutoff UMAP
     cutoff=0.08

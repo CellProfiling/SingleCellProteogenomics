@@ -28,7 +28,7 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plate
         print(f"filtering for biotype: {biotype_to_use}")
         biotype_file = f"{read_file}.{biotype_to_use}.csv"
         if not os.path.exists(biotype_file):
-            gene_info = pd.read_csv(f"input/RNAData/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
+            gene_info = pd.read_csv(f"newinputs/RNAData/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv", 
                                     index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
             biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
             pd.read_csv(read_file)[biotyped].to_csv(biotype_file, index=False)
@@ -117,8 +117,13 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     if do_log_normalize: sc.pp.log1p(adata)
     louvain_file="input/RNAData/louvain_original.npy"
     louvain = np.load(louvain_file, allow_pickle=True)
-    adata.obs["original_louvain_wp"] = louvain[:,0]
-    adata.obs["original_louvain"] = louvain[:,1]
+    print("louvain shape:")
+    print(louvain.shape)
+    print("Adata shape:")
+    print(adata)
+    print(adata.shape)
+    adata.obs["original_louvain_wp"] = louvain[:, 0]
+    adata.obs["original_louvain"] = louvain[:, 1]
     if do_remove_blob: 
         removeThese = np.isin(adata.obs["Well_Plate"], adata.obs["original_louvain_wp"][adata.obs["original_louvain"] == "5"])
         adata = adata[~removeThese,:]
@@ -155,7 +160,7 @@ def general_plots(u_plates):
     # Output: UMAP plots
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
     sc.tl.louvain(adata)
-    utils.np_save_overwriting("output/pickles/louvain.npy", adata.obs["louvain"])
+    utils.np_save_overwriting("output/pickles/louvain.npy", adata.obs["original_louvain"])
     sc.tl.umap(adata)
     plt.rcParams['figure.figsize'] = (10, 10)
     sc.pl.umap(adata, color=["phase"], show=False, save="AllCellsSeqCenterPhase.pdf")
@@ -201,8 +206,8 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
-    sc.tl.rank_genes_groups(adata, groupby="louvain")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
+    sc.tl.rank_genes_groups(adata, groupby="original_louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
     p_blob_sig = np.array(p_blob) < 0.01
     ensg_blob_sig=np.array([a[5] for a in adata.uns["rank_genes_groups"]["names"]])[p_blob_sig]
@@ -217,7 +222,7 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
     '''

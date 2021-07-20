@@ -32,16 +32,16 @@ ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
 u_plates = ["355","356","357"]
 
-#%% Check for new RNA inputs
-newinputsfolder = "newinputs/RNAData/"
-if os.path.exists(newinputsfolder):
-    for file in os.listdir(newinputsfolder):
-        filepath=f"{newinputsfolder}{file}"
-        targetfile=f"input/RNAData/{os.path.basename(file)}"
-        targetfilepc=f"{targetfile}.protein_coding.csv"
-        if os.path.exists(targetfile): os.remove(targetfile)
-        if os.path.exists(targetfilepc): os.remove(targetfilepc)
-        shutil.copyfile(filepath, targetfile)
+# #%% Check for new RNA inputs
+# newinputsfolder = "newinputs/RNAData/"
+# if os.path.exists(newinputsfolder):
+    # for file in os.listdir(newinputsfolder):
+        # filepath=f"{newinputsfolder}{file}"
+        # targetfile=f"input/RNAData/{os.path.basename(file)}"
+        # targetfilepc=f"{targetfile}.protein_coding.csv"
+        # if os.path.exists(targetfile): os.remove(targetfile)
+        # if os.path.exists(targetfilepc): os.remove(targetfilepc)
+        # shutil.copyfile(filepath, targetfile)
 
 #%% Convert FACS intensities for FUCCI markers to pseudotime using the same polar coordinate methods as for protein
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell
@@ -73,8 +73,8 @@ adata, phasesfilt = RNADataPreparation.qc_filtering(
     adata, do_log_normalize=True, do_remove_blob=True
 )
 adata = RNADataPreparation.zero_center_fucci(adata)
-RNADataPreparation.plot_markers_vs_reads(adata)
-RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "AfterRemovingNoncycling")
+# RNADataPreparation.plot_markers_vs_reads(adata)
+# RNADataPreparation.plot_pca_for_batch_effect_analysis(adata, "AfterRemovingNoncycling")
 g1 = adata.obs["phase"] == "G1"
 s = adata.obs["phase"] == "S-ph"
 g2 = adata.obs["phase"] == "G2M"
@@ -93,11 +93,11 @@ if do_make_boxplots:
         )
 
 #%% Idea: Display general RNA expression patterns in single cells using UMAP dimensionality reduction, and display with FUCCI pseudotime overlayed
-FucciPseudotime.pseudotime_umap(adata)  # Generate a UMAP with the pseudotime overlayed
+# FucciPseudotime.pseudotime_umap(adata)  # Generate a UMAP with the pseudotime overlayed
 
 # We can also show that the cycle pattern remains when the curated CCD genes or CCD proteins are removed,
 # demonstrating that there's still valuable information about cell cycling beyond what was called CCD
-RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
+# RNADataPreparation.demonstrate_umap_cycle_without_ccd(adata)
 
 # Read in the curated CCD genes / CCD proteins from the present work / Non-CCD genes from the present work; filter for genes that weren't filtered in QC of RNA-Seq
 ccd_regev_filtered, ccd_filtered, nonccd_filtered = utils.ccd_gene_lists(adata)
@@ -109,13 +109,13 @@ adata_ccdprotein, adata_nonccdprotein, adata_regevccdgenes = RNADataPreparation.
 expression_data = adata.X
 normalized_exp_data = (expression_data.T / np.max(expression_data, axis=0)[:, None]).T
 
-# Log-log FUCCI plot with RNA expression overlayed
-RNACellCycleDependence.plot_expression_facs(
-    adata,
-    wp_ensg[np.isin(wp_ensg, adata.var_names)],
-    normalized_exp_data,
-    "figures/GeneExpressionFucci",
-)
+# # Log-log FUCCI plot with RNA expression overlayed
+# RNACellCycleDependence.plot_expression_facs(
+    # adata,
+    # wp_ensg[np.isin(wp_ensg, adata.var_names)],
+    # normalized_exp_data,
+    # "figures/GeneExpressionFucci",
+# )
 
 # Cluster the expression into phases and analyze it that way
 bulk_phase_tests = RNACellCycleDependence.analyze_ccd_variation_by_phase_rna(
@@ -138,27 +138,27 @@ percent_ccd_variance, total_gini, mean_diff_from_rng, pass_meandiff, eq_percvar_
     rna_ccd_analysis_results
 )
 
-RNACellCycleDependence.plot_umap_ccd_cutoffs(adata, mean_diff_from_rng)
-RNACellCycleDependence.figures_ccd_analysis_rna(
-    adata,
-    percent_ccd_variance,
-    mean_diff_from_rng,
-    pass_meandiff,
-    eq_percvar_adj,
-    wp_ensg,
-    ccd_comp,
-    ccd_regev_filtered,
-)
-RNACellCycleDependence.plot_overall_and_ccd_variances(
-    adata,
-    biotype_to_use,
-    total_gini,
-    percent_ccd_variance,
-    pass_meandiff,
-    adata_ccdprotein,
-    adata_nonccdprotein,
-    adata_regevccdgenes,
-)
+# RNACellCycleDependence.plot_umap_ccd_cutoffs(adata, mean_diff_from_rng)
+# RNACellCycleDependence.figures_ccd_analysis_rna(
+    # adata,
+    # percent_ccd_variance,
+    # mean_diff_from_rng,
+    # pass_meandiff,
+    # eq_percvar_adj,
+    # wp_ensg,
+    # ccd_comp,
+    # ccd_regev_filtered,
+# )
+# RNACellCycleDependence.plot_overall_and_ccd_variances(
+    # adata,
+    # biotype_to_use,
+    # total_gini,
+    # percent_ccd_variance,
+    # pass_meandiff,
+    # adata_ccdprotein,
+    # adata_nonccdprotein,
+    # adata_regevccdgenes,
+# )
 RNACellCycleDependence.make_plotting_dataframe(
     adata,
     ccdtranscript,
@@ -169,8 +169,8 @@ RNACellCycleDependence.make_plotting_dataframe(
     moving_averages,
     mvpercs,
 )
-RNACellCycleDependence.compare_to_lasso_analysis(adata, ccdtranscript)
-RNACellCycleDependence.analyze_cnv_calls(adata, ccdtranscript)
+# RNACellCycleDependence.compare_to_lasso_analysis(adata, ccdtranscript)
+# RNACellCycleDependence.analyze_cnv_calls(adata, ccdtranscript)
 
 #%% Moving average calculations and randomization analysis for the spike-in internal controls
 adata_spikeins, phases_spikeins = RNADataPreparation.read_counts_and_phases(
