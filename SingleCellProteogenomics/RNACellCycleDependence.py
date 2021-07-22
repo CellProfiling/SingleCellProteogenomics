@@ -199,7 +199,7 @@ def analyze_ccd_variation_by_mvavg_rna(adata, wp_ensg, ccd_comp, bioccd, adata_n
     gtpass_eq_percvar_adj = pass_eq_percvar_adj & (percent_ccd_variance > np.median(percent_ccd_variance_rng, axis=0))
 
     ccdprotein = np.isin(adata.var_names, np.concatenate((wp_ensg[ccd_comp], bioccd)))
-    gene_info = pd.read_csv("input/RNAData/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
+    gene_info = pd.read_csv(f"{RNADataPreparation.{newinputs()}}/IdsToNames.csv.gz", index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
     gene_ids = list(gene_info["gene_id"])
     gene_names = list(gene_info["name"])
     gene_id_name = dict([(gene_ids[idxx], gene_names[idxx]) for idxx in range(len(gene_info))])
@@ -274,7 +274,7 @@ def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprot
     '''Check out the isoform results at the gene level'''
     gene_varnames = list(adata.var_names)
     isoform_varnames = list(adata_isoform.var_names)
-    isoformToGene = pd.read_csv("input/RNAData/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformToGene = pd.read_csv(f"{RNADataPreparation.{newinputs()}}/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
     ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])

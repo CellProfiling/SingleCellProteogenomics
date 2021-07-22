@@ -5,7 +5,7 @@ Analysis of protein abundance in individual cells over cell division time.
 -  The cell division time modeling is referred to as the "pseudotime" analysis in the paper.
 -  Protein abundance is measured in individual asynchronous cells using immunofluorescence and antibody staining.
 
-@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: Anthony J. Cesnik, ccesnik [at] kth.se
 """
 
 from SingleCellProteogenomics import (FucciPseudotime, Loaders,

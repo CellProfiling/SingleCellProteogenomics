@@ -6,7 +6,7 @@ Investigation of the properties of proteins with different cell cycle regulation
 -  Protein stability was measured by MS thermal profiling in an external study
 -  Differences in thermal shifts indicate different stabilities and propensity for unfolding
 
-@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: Anthony J. Cesnik, cesnik [at] kth.se
 """
 
 from SingleCellProteogenomics import (FucciCellCycle, Loaders,

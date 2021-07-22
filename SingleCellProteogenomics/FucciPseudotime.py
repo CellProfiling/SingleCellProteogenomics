@@ -6,7 +6,7 @@ The markers were measured for each cell in protein measurements using confocal m
 The markers were measured for each cell in RNA analysis using FACS intentensities.
 
 @author: devinsullivan
-@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: Anthony J. Cesnik, cesnik [at] kth.se
 """
 
 from SingleCellProteogenomics import utils, stretch_time

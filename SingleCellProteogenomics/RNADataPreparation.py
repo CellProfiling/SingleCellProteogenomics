@@ -18,17 +18,20 @@ import os
 import seaborn as sbn
 import scvelo as scv
 
+def newinputs():
+    return "newinputs/RNAData" if os.path.exists("newinputs/RNAData") else "input"
+
 def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plates, use_isoforms=False, load_velocities=False):
     '''
     Read data into scanpy; Read phases and FACS intensities
         - count_or_rpkm: Must be "Counts" or "Tpms"
     '''
-    read_file = f"input/RNAData/{count_or_rpkm}{'_Isoforms' if use_isoforms else ''}.csv" + (".ercc.csv" if use_spike_ins else "")
+    read_file = f"{newinputs()}/{count_or_rpkm}{'_Isoforms' if use_isoforms else ''}.csv" + (".ercc.csv" if use_spike_ins else "")
     if biotype_to_use != None and len(biotype_to_use) > 0:
         print(f"filtering for biotype: {biotype_to_use}")
         biotype_file = f"{read_file}.{biotype_to_use}.csv"
         if not os.path.exists(biotype_file):
-            gene_info = pd.read_csv(f"input/RNAData/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
+            gene_info = pd.read_csv(f"{newinputs()}/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
                                     index_col=False, header=None, names=["gene_id", "name", "biotype", "description"])
             biotyped = gene_info[gene_info["biotype"] == biotype_to_use]["gene_id"]
             pd.read_csv(read_file)[biotyped].to_csv(biotype_file, index=False)
@@ -37,7 +40,7 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plate
     adata = sc.read_csv(read_file)
     print(f"data shape: {adata.X.shape}")
     if load_velocities:
-        adata.obs_names = pd.read_csv("input/RNAData/Tpms.obs_names.csv")["well_plate"]
+        adata.obs_names = pd.read_csv("{newinputs()}/Tpms.obs_names.csv")["well_plate"]
 
     intensities, phases = [],[]
     for plate in u_plates:
@@ -74,15 +77,15 @@ def read_counts_and_phases(count_or_rpkm, use_spike_ins, biotype_to_use, u_plate
         adata.obs["fucci_time"] = np.array(pd.read_csv("output/fucci_time.csv")["fucci_time"])
 
     # Get info about the genes
-    gene_info = pd.read_csv(f"input/RNAData/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
+    gene_info = pd.read_csv(f"{newinputs()}/IdsToNames{'_Isoforms' if use_isoforms else ''}.csv.gz", 
                             header=None, names=["name", "biotype", "description"], index_col=0)
     adata.var["name"] = gene_info["name"]
     adata.var["biotype"] = gene_info["biotype"]
     adata.var["description"] = gene_info["description"]
     
     if load_velocities:
-        ldata = scv.read("input/RNAData/a.loom", cache=True)
-        ldata.obs_names = pd.read_csv("input/RNAData/a.obs_names.csv")["well_plate"]
+        ldata = scv.read("{newinputs()}/a.loom", cache=True)
+        ldata.obs_names = pd.read_csv("{newinputs()}/a.obs_names.csv")["well_plate"]
         ldata.var["GeneName"] = ldata.var_names
         ldata.var_names = ldata.var["Accession"]
         adata = scv.utils.merge(adata, ldata, copy=True)
@@ -115,10 +118,12 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     sc.pp.filter_genes(adata, min_cells=100)
     sc.pp.normalize_per_cell(adata, counts_per_cell_after=1e4)
     if do_log_normalize: sc.pp.log1p(adata)
-    louvain_file="input/RNAData/louvain_original.npy"
-    louvain = np.load(louvain_file, allow_pickle=True)
-    adata.obs["original_louvain_wp"] = louvain[:,0]
-    adata.obs["original_louvain"] = louvain[:,1]
+    louvain_original_file="input/RNAData/louvain_original.npy"
+    louvain_new_file="output/pickles/louvain.npy"
+    louvain_original = np.load(louvain_file, allow_pickle=True)
+    adata.obs["original_louvain_wp"] = louvain_original[:,0]
+    adata.obs["original_louvain"] = louvain_original[:,1]
+    adata.obs["new_louvain"] = np.load(louvain_new_file, allow_pickle=True)
     if do_remove_blob: 
         removeThese = np.isin(adata.obs["Well_Plate"], adata.obs["original_louvain_wp"][adata.obs["original_louvain"] == "5"])
         adata = adata[~removeThese,:]
@@ -201,8 +206,8 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
-    sc.tl.rank_genes_groups(adata, groupby="louvain")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
+    sc.tl.rank_genes_groups(adata, groupby="original_louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
     p_blob_sig = np.array(p_blob) < 0.01
     ensg_blob_sig=np.array([a[5] for a in adata.uns["rank_genes_groups"]["names"]])[p_blob_sig]
@@ -217,7 +222,7 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
     '''

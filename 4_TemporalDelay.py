@@ -4,7 +4,7 @@ Comparison of the times of peak expression for protein and RNA for each gene
 -  The peak expression for each protein and transcript were determined using the FUCCI pseudotime analysis
 -  This is the first demonstration of the temporal delay between protein and RNA on the single cell level
 
-@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: Anthony J. Cesnik, cesnik [at] kth.se
 """
 
 from SingleCellProteogenomics import (Loaders, RNADataPreparation,

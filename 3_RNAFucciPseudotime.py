@@ -5,7 +5,7 @@ Analysis of transcript abundance in individual cells over cell division time.
 -  RNA abundance was measured with single-cell RNA sequencing.
 -  FUCCI marker intensities are measured for each individual cell with fluorescence assisted cell sorting (FACS)
 
-@author: Anthony J. Cesnik, cesnik@stanford.edu
+@author: Anthony J. Cesnik, cesnik [at] kth.se
 """
 
 from SingleCellProteogenomics import (FucciPseudotime,
@@ -31,17 +31,6 @@ wp_ensg = np.load("output/pickles/wp_ensg.npy", allow_pickle=True)
 ccd_comp = np.load("output/pickles/ccd_comp.npy", allow_pickle=True)
 nonccd_comp = np.load("output/pickles/nonccd_comp.npy", allow_pickle=True)
 u_plates = ["355","356","357"]
-
-#%% Check for new RNA inputs
-newinputsfolder = "newinputs/RNAData/"
-if os.path.exists(newinputsfolder):
-    for file in os.listdir(newinputsfolder):
-        filepath=f"{newinputsfolder}{file}"
-        targetfile=f"input/RNAData/{os.path.basename(file)}"
-        targetfilepc=f"{targetfile}.protein_coding.csv"
-        if os.path.exists(targetfile): os.remove(targetfile)
-        if os.path.exists(targetfilepc): os.remove(targetfilepc)
-        shutil.copyfile(filepath, targetfile)
 
 #%% Convert FACS intensities for FUCCI markers to pseudotime using the same polar coordinate methods as for protein
 # Idea: Use the polar coordinate pseudotime calculations to calculate the pseudotime for each cell

@@ -19,9 +19,9 @@ This workflow can be run using `snakemake`:
 
 1. Install Miniconda from https://docs.conda.io/en/latest/miniconda.html.
 
-2. Install snakemake using `conda install -c conda-forge snakemake-minimal`.
+2. Install snakemake and mamba using `conda install -c conda-forge snakemake-minimal mamba`.
 
-3. Within this directory, run `snakemake -j 1 --use-conda --snakefile workflow/Snakefile`.
+3. Within this directory, run `snakemake -j 1 --use-conda --conda-frontend mamba --snakefile workflow/Snakefile`.
 
 ## Single-cell RNA-Seq analysis
 
