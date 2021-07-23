@@ -23,6 +23,7 @@ plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 plt.rcParams["savefig.dpi"] = 300
 
+# EMPTYWELLS: These wells on the last plate didn't have cells; the segmentation algorithm still annotated some, so remove them
 EMPTYWELLS = set(
     [
         "B11_6745",
@@ -41,8 +42,9 @@ EMPTYWELLS = set(
         "G12_6745",
     ]
 )
-# EMPTYWELLS: These wells on the last plate didn't have cells; the segmentation algorithm still annotated some, so remove them
-MIN_CELL_COUNT = 60  # Minimum number of cells per sample required for cell cycle analysis with pseudotime
+
+# Minimum number of cells per sample required for cell cycle analysis with pseudotime
+MIN_CELL_COUNT = 60
 
 # 0: use mean, (testing intensity that's already normalized for cell size)
 # 1: use integrated, (testing integrated because it reflects that small cells are often brighter because they have rounded up and are thicker)
@@ -66,8 +68,8 @@ def plot_areas(areas, title):
 class ProteinData:
     """Loading in protein data"""
 
-    def __init__(self):
-        pass
+    def __init__(self, do_plotting):
+        self.do_plotting = do_plotting
 
     def read_raw_data(self):
         """Read in the raw protein IF data"""
@@ -328,9 +330,10 @@ class ProteinData:
         area_nuc = my_df.AreaShape_Area
         area_cyto = my_df.Area_cyto
 
-        plot_areas(area_cell, "area_cell")
-        plot_areas(area_nuc, "area_nuc")
-        plot_areas(area_cyto, "area_cyto")
+        if self.do_plotting:
+            plot_areas(area_cell, "area_cell")
+            plot_areas(area_nuc, "area_nuc")
+            plot_areas(area_cyto, "area_cyto")
 
         upper_nucleus_cutoff = np.mean(area_nuc) + 2 * np.std(area_nuc)
 
@@ -349,9 +352,10 @@ class ProteinData:
         area_nuc_filtered = my_df_filtered.AreaShape_Area
         area_cyto_filtered = my_df_filtered.Area_cyto
 
-        plot_areas(area_cell_filtered, "area_cell_filtered")
-        plot_areas(area_nuc_filtered, "area_nuc_filtered")
-        plot_areas(area_cyto_filtered, "area_cyto_filtered")
+        if self.do_plotting:
+            plot_areas(area_cell_filtered, "area_cell_filtered")
+            plot_areas(area_nuc_filtered, "area_nuc_filtered")
+            plot_areas(area_cyto_filtered, "area_cyto_filtered")
 
         self.filtered_protein_data = my_df_filtered
 

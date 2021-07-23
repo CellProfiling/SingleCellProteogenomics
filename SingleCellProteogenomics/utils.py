@@ -27,6 +27,23 @@ def np_save_overwriting(fn, arr):
     with open(fn,"wb") as f:    
         np.save(f, arr, allow_pickle=True)
 
+def get_compartment_strings(wp_iscell, wp_iscyto, wp_isnuc):
+    """Make strings to represent the metacompartment"""
+    compartmentstring = np.array(["Cell"] * len(wp_iscell))
+    compartmentstring[wp_iscyto] = "Cyto"
+    compartmentstring[wp_isnuc] = "Nuc"
+    return compartmentstring
+
+
+def get_ccd_strings(ccd_comp, wp_ensg, bioccd):
+    """Make strings to represent the CCD conclusion"""
+    ccdstring = np.array(["No                 "] * len(ccd_comp))
+    ccdstring[ccd_comp] = "Pseudotime"
+    ccdstring[np.isin(wp_ensg, bioccd)] = "Mitotic"
+    ccdstring[ccd_comp & np.isin(wp_ensg, bioccd)] = "Pseudotime&Mitotic"
+    return ccdstring
+
+
 ## STATISTICS HELPERS
 
 def gini(array):

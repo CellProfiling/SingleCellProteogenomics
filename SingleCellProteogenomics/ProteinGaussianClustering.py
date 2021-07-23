@@ -153,6 +153,8 @@ class ProteinGaussianClustering:
                 [self.log_green_fucci_zeroc_rescale, self.log_red_fucci_zeroc_rescale]
             ).T
         )
+
+        # Do these in HPA runs, since it's important to double check these
         for cluster in range(3):
             plt.hist2d(
                 self.log_green_fucci_zeroc_rescale[cluster_labels == cluster],
@@ -164,6 +166,7 @@ class ProteinGaussianClustering:
             plt.ylabel("Log10 Red Fucci Intensity")
             plt.savefig(f"figures/FucciPlotProteinIFData_unfiltered_Gauss{cluster}.png")
             plt.close()
+
         return cluster_labels
 
     def make_cluster_labels(self, g1_idx=1, sph_idx=2, g2_idx=0):
@@ -182,9 +185,7 @@ class ProteinGaussianClustering:
         self.sph = cluster_labels == sph_idx
         self.g2 = cluster_labels == g2_idx
 
-    def gaussian_clustering_analysis(
-        self, alpha_gauss=0.05, doGenerateBoxplotsPerGene=False
-    ):
+    def gaussian_clustering_analysis(self, alpha_gauss=0.05, do_plotting=False):
         """Analyze the results of Gaussian clustering of FUCCI data for each protein antibody staining"""
         g1, sph, g2 = self.g1, self.sph, self.g2
 
@@ -236,7 +237,7 @@ class ProteinGaussianClustering:
                 )[1]
             )
 
-            if doGenerateBoxplotsPerGene:
+            if do_plotting:
                 max_val_for_norm = np.max(
                     ab_cell[curr_well_inds]
                     if wp_iscell[iii]
@@ -333,6 +334,8 @@ class ProteinGaussianClustering:
         self.wp_pass_kruskal_gaussccd_bh_comp = wp_pass_kruskal_gaussccd_bh_comp
         self.wp_mt_kruskal_gaussccd_adj = wp_mt_kruskal_gaussccd_adj
         self.wp_pass_gaussccd_bh_mt = wp_pass_gaussccd_bh_mt
+        self.curr_wp_phases = curr_wp_phases
+        self.mockbulk_phases = mockbulk_phases
 
     def address_replicates(self, alpha_gauss=0.05):
         """Look for replicated protein samples and antibody stainings"""
