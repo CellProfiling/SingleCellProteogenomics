@@ -7,8 +7,7 @@ Analysis of protein abundance by cell cycle phase.
 @author: Anthony J. Cesnik, cesnik [at] kth.se
 """
 
-from SingleCellProteogenomics import (ProteinDataPreparation,
-                                      ProteinGaussianClustering)
+from SingleCellProteogenomics import ProteinDataPreparation, ProteinGaussianClustering
 
 # Read in the raw protein imaging data
 protein_data = ProteinDataPreparation.ProteinData()
@@ -45,16 +44,8 @@ protein_clustering.fucci_plots()
 # Exec: sklearn.mixture.GaussianMixture & scipy.stats.kruskal
 # Output: FDR for cell cycle variation per well per compartment
 # NB! The cluster labels can change if any prior analysis changes. Inspect the plots so that top-left FUCCI cluster is G1, top-right is S, bottom-right is G2.
-protein_clustering.make_cluster_labels(
-    g1_idx=1, 
-    sph_idx=2, 
-    g2_idx=0
-)
+protein_clustering.make_cluster_labels(g1_idx=1, sph_idx=2, g2_idx=0)
 protein_clustering.gaussian_clustering_analysis(
-    alpha_gauss=0.05, 
-    doGenerateBoxplotsPerGene=False
+    alpha_gauss=0.05, doGenerateBoxplotsPerGene=False
 )
-protein_clustering.address_replicates(
-    alpha_gauss=0.05
-)
-
+protein_clustering.address_replicates(alpha_gauss=0.05)
