@@ -8,18 +8,16 @@ were evaluated separately for cell cycle dependence in subsequent analysis.
 @author: Anthony J. Cesnik, cesnik@stanford.edu
 """
 
-from SingleCellProteogenomics import utils, ProteinBimodality, MovingAverages
+from SingleCellProteogenomics import utils, MovingAverages
 import sklearn.mixture
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
-
 
 class ProteinBimodality:
     def __init__(self):
         pass
-
+        
     def identify_bimodal_intensity_distributions(self, protein_ccd):
         """
         Some proteins display bimodal intensity distributions.
@@ -177,109 +175,3 @@ class ProteinBimodality:
             plt.savefig("figures/BimodalCellCount.png")
             plt.close()
             
-        def assess_bimodal_ccd(self, protein_ccd, i, curr_comp, fileprefixes, mvavg_window):
-            '''Assess CCD in high- and low-expressing cell populations of proteins determined to have bimodal population intensity'''
-            clusters = None
-            if self.wp_isbimodal_fcpadj_pass[i]:
-                (
-                    clust1_idx,
-                    clust2_idx,
-                ) = self.wp_bimodal_cluster_idxs[i]
-                if protein_ccd.do_remove_outliers:
-                    clust1_idx, clust2_idx = MovingAverages.remove_outliers(
-                        curr_comp, clust1_idx
-                    ), MovingAverages.remove_outliers(curr_comp, clust2_idx)
-                perc_var_comp_clust1_val, mvavg_clust1 = MovingAverages.mvavg_perc_var(
-                    curr_comp_norm[clust1_idx], mvavg_window
-                )
-                perc_var_comp_clust2_val, mvavg_clust2 = MovingAverages.mvavg_perc_var(
-                    curr_comp_norm[clust2_idx], mvavg_window
-                )
-                self.mvavgs_x_clust1.append(
-                    MovingAverages.mvavg(curr_pol[clust1_idx], mvavg_window)
-                )
-                self.mvavgs_x_clust2.append(
-                    MovingAverages.mvavg(curr_pol[clust2_idx], mvavg_window)
-                )
-                self.perc_var_comp_clust1.append(perc_var_comp_clust1_val)
-                self.perc_var_comp_clust2.append(perc_var_comp_clust2_val)
-                self.mvavgs_comp_clust1.append(mvavg_clust1)
-                self.mvavgs_comp_clust2.append(mvavg_clust2)
-
-                clust1gt = np.mean(mvavg_clust1) > np.mean(mvavg_clust2)
-                clusters = np.array([clust1gt] * len(clust1_idx))
-                clusters[clust2_idx] = not clust1gt
-
-                perms1 = np.asarray(
-                    [
-                        np.random.permutation(sum(clust1_idx))
-                        for nnn in np.arange(PERMUTATIONS)
-                    ]
-                )
-                perms2 = np.asarray(
-                    [
-                        np.random.permutation(sum(clust2_idx))
-                        for nnn in np.arange(PERMUTATIONS)
-                    ]
-                )
-                curr_comp_perm1 = np.asarray(
-                    [curr_comp_norm[clust1_idx][perm] for perm in perms1]
-                )
-                curr_comp_perm2 = np.asarray(
-                    [curr_comp_norm[clust2_idx][perm] for perm in perms2]
-                )
-                curr_clust1_mvavg_rng_comp = np.apply_along_axis(
-                    MovingAverages.mvavg, 1, curr_comp_perm1, mvavg_window
-                )
-                curr_clust2_mvavg_rng_comp = np.apply_along_axis(
-                    MovingAverages.mvavg, 1, curr_comp_perm2, mvavg_window
-                )
-                curr_clust1_percvar_rng_comp = np.var(
-                    curr_clust1_mvavg_rng_comp, axis=1
-                ) / np.var(curr_comp_perm1, axis=1)
-                curr_clust2_percvar_rng_comp = np.var(
-                    curr_clust2_mvavg_rng_comp, axis=1
-                ) / np.var(curr_comp_perm2, axis=1)
-                self.perc_var_comp_clust1_rng.append(curr_clust1_percvar_rng_comp)
-                self.perc_var_comp_clust2_rng.append(curr_clust2_percvar_rng_comp)
-
-                windows1 = np.asarray(
-                    [
-                        np.arange(start, start + mvavg_window)
-                        for start in np.arange(sum(clust1_idx) - mvavg_window + 1)
-                    ]
-                )
-                windows2 = np.asarray(
-                    [
-                        np.arange(start, start + mvavg_window)
-                        for start in np.arange(sum(clust2_idx) - mvavg_window + 1)
-                    ]
-                )
-                mvperc1 = MovingAverages.mvpercentiles(
-                    curr_comp_norm[clust1_idx][windows1]
-                )
-                mvperc2 = MovingAverages.mvpercentiles(
-                    curr_comp_norm[clust2_idx][windows2]
-                )
-                if self.do_plotting:
-                    MovingAverages.temporal_mov_avg_protein(
-                        curr_pol[clust1_idx],
-                        curr_comp_norm[clust1_idx],
-                        self.mvavgs_x_clust1[-1],
-                        self.mvavgs_comp_clust1[-1],
-                        mvperc1,
-                        None,
-                        self.folder,
-                        fileprefixes[i] + "_clust1",
-                    )
-                    MovingAverages.temporal_mov_avg_protein(
-                        curr_pol[clust2_idx],
-                        curr_comp_norm[clust2_idx],
-                        self.mvavgs_x_clust2[-1],
-                        self.mvavgs_comp_clust2[-1],
-                        mvperc2,
-                        None,
-                        self.folder,
-                        fileprefixes[i] + "_clust2",
-                    )
-                return clusters
