@@ -17,6 +17,8 @@ import pandas as pd
 import numpy as np
 import scipy
 
+ALL_PLOTS_AND_ANALYSES = False
+
 # Make PDF text readable
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
@@ -112,46 +114,47 @@ mean_mean_comp, var_comp, gini_comp, cv_comp, var_cell, gini_cell, cv_cell, var_
 )
 
 # Compare variances for protein and microtubules, the internal control for each image
-removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0] # make these independent samples for one-sided Kruskal-Wallis tests
-utils.general_boxplot(
-    (var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)]),
-    ("Protein", "Microtubules"),
-    "",
-    "Variance",
-    "",
-    False,
-    f"figures/ProteinMicrotubuleVariances.pdf",
-)
-utils.general_boxplot(
-    (cv_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
-    ("Protein", "Microtubules"),
-    "",
-    "CV",
-    "",
-    False,
-    f"figures/ProteinMicrotubuleCVs.pdf",
-)
-utils.general_boxplot(
-    (gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
-    ("Protein", "Microtubules"),
-    "",
-    "Gini",
-    "",
-    False,
-    f"figures/ProteinMicrotubuleGinis.pdf",
-)
-p_varProt_varMt = 2*scipy.stats.kruskal(var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)])[1]
-p_cvProt_cvMt = 2*scipy.stats.kruskal(cv_comp[~np.isin(u_well_plates, removeThese)], cv_mt[~np.isin(u_well_plates, removeThese)])[1]
-p_giniProt_giniMt = 2*scipy.stats.kruskal(gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)])[1]
-print(
-    f"{p_varProt_varMt}: p-value for difference between protein and microtubule variances"
-)
-print(
-    f"{p_cvProt_cvMt}: p-value for difference between protein and microtubule CVs"
-)
-print(
-    f"{p_giniProt_giniMt}: p-value for difference between protein and microtubule Gini indices"
-)
+if ALL_PLOTS_AND_ANALYSES:
+    removeThese = pd.read_csv("input/ProteinData/ReplicatesToRemove.txt", header=None)[0] # make these independent samples for one-sided Kruskal-Wallis tests
+    utils.general_boxplot(
+        (var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)]),
+        ("Protein", "Microtubules"),
+        "",
+        "Variance",
+        "",
+        False,
+        f"figures/ProteinMicrotubuleVariances.pdf",
+    )
+    utils.general_boxplot(
+        (cv_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
+        ("Protein", "Microtubules"),
+        "",
+        "CV",
+        "",
+        False,
+        f"figures/ProteinMicrotubuleCVs.pdf",
+    )
+    utils.general_boxplot(
+        (gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)]),
+        ("Protein", "Microtubules"),
+        "",
+        "Gini",
+        "",
+        False,
+        f"figures/ProteinMicrotubuleGinis.pdf",
+    )
+    p_varProt_varMt = 2*scipy.stats.kruskal(var_comp[~np.isin(u_well_plates, removeThese)], var_mt[~np.isin(u_well_plates, removeThese)])[1]
+    p_cvProt_cvMt = 2*scipy.stats.kruskal(cv_comp[~np.isin(u_well_plates, removeThese)], cv_mt[~np.isin(u_well_plates, removeThese)])[1]
+    p_giniProt_giniMt = 2*scipy.stats.kruskal(gini_comp[~np.isin(u_well_plates, removeThese)], gini_mt[~np.isin(u_well_plates, removeThese)])[1]
+    print(
+        f"{p_varProt_varMt}: p-value for difference between protein and microtubule variances"
+    )
+    print(
+        f"{p_cvProt_cvMt}: p-value for difference between protein and microtubule CVs"
+    )
+    print(
+        f"{p_giniProt_giniMt}: p-value for difference between protein and microtubule Gini indices"
+    )
 
 #%% Gaussian clustering to identify biomodal intensity distributions
 bimodal_results = ProteinBimodality.identify_bimodal_intensity_distributions(
@@ -166,6 +169,7 @@ bimodal_results = ProteinBimodality.identify_bimodal_intensity_distributions(
     wp_iscell,
     wp_isnuc,
     wp_iscyto,
+    ALL_PLOTS_AND_ANALYSES
 )
 wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_isbimodal_generally, wp_bimodal_fcmaxmin = (
     bimodal_results
@@ -201,34 +205,36 @@ ccd_results = ProteinCellCycleDependence.cell_cycle_dependence_protein(
     wp_isbimodal_fcpadj_pass,
     wp_bimodal_cluster_idxs,
     wp_comp_kruskal_gaussccd_adj,
+    ALL_PLOTS_AND_ANALYSES
 )
 wp_comp_ccd_difffromrng, mean_diff_from_rng_mt, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, mean_diff_from_rng_clust1, wp_comp_eq_percvar_adj_clust1, mean_diff_from_rng_clust2, wp_comp_eq_percvar_adj_clust2, mvavgs_x, mvavgs_comp, curr_pols, curr_ab_norms, mvperc_comps, curr_freds, curr_fgreens, curr_mockbulk_phases, curr_area_cell, curr_ab_nuc, curr_well_plate_imgnb, folder = (
     ccd_results
 )
 
 # Move the temporal average plots to more informative places
-ProteinCellCycleDependence.copy_mvavg_plots_protein(
-    folder,
-    wp_ensg,
-    wp_comp_ccd_difffromrng,
-    wp_isbimodal_fcpadj_pass,
-    wp_comp_ccd_clust1,
-    wp_comp_ccd_clust2,
-    wp_ccd_unibimodal,
-    wp_comp_ccd_gauss,
-)
-ProteinCellCycleDependence.global_plots_protein(
-    alphaa,
-    u_well_plates,
-    wp_ccd_unibimodal,
-    perc_var_comp,
-    mean_mean_comp,
-    gini_comp,
-    cv_comp,
-    mean_diff_from_rng,
-    wp_comp_eq_percvar_adj,
-    wp_comp_kruskal_gaussccd_adj,
-)
+if ALL_PLOTS_AND_ANALYSES:
+    ProteinCellCycleDependence.copy_mvavg_plots_protein(
+        folder,
+        wp_ensg,
+        wp_comp_ccd_difffromrng,
+        wp_isbimodal_fcpadj_pass,
+        wp_comp_ccd_clust1,
+        wp_comp_ccd_clust2,
+        wp_ccd_unibimodal,
+        wp_comp_ccd_gauss,
+    )
+    ProteinCellCycleDependence.global_plots_protein(
+        alphaa,
+        u_well_plates,
+        wp_ccd_unibimodal,
+        perc_var_comp,
+        mean_mean_comp,
+        gini_comp,
+        cv_comp,
+        mean_diff_from_rng,
+        wp_comp_eq_percvar_adj,
+        wp_comp_kruskal_gaussccd_adj,
+    )
 
 # Analyze the CCD results and save them
 ccd_comp, nonccd_comp, bioccd = ProteinCellCycleDependence.analyze_ccd_variation_protein(
@@ -282,34 +288,35 @@ ProteinCellCycleDependence.make_plotting_dataframe(
 )
 
 # Perform comparison to LASSO for finding CCD proteins
-ProteinCellCycleDependence.compare_to_lasso_analysis(
-    u_well_plates,
-    pol_sort_norm_rev,
-    pol_sort_well_plate,
-    pol_sort_ab_cell,
-    pol_sort_ab_nuc,
-    pol_sort_ab_cyto,
-    pol_sort_mt_cell,
-    pol_sort_fred,
-    pol_sort_fgreen,
-    wp_iscell,
-    wp_isnuc,
-    wp_iscyto,
-    wp_ensg,
-    ccd_comp,
-)
-
-# Generate UMAPs to illustrate cutoffs and stability
-ProteinCellCycleDependence.generate_protein_umaps(
-    u_well_plates,
-    pol_sort_norm_rev,
-    pol_sort_well_plate,
-    pol_sort_ab_cell,
-    pol_sort_ab_nuc,
-    pol_sort_ab_cyto,
-    pol_sort_mt_cell,
-    wp_iscell,
-    wp_isnuc,
-    wp_iscyto,
-    mean_diff_from_rng,
-)
+if ALL_PLOTS_AND_ANALYSES:
+    ProteinCellCycleDependence.compare_to_lasso_analysis(
+        u_well_plates,
+        pol_sort_norm_rev,
+        pol_sort_well_plate,
+        pol_sort_ab_cell,
+        pol_sort_ab_nuc,
+        pol_sort_ab_cyto,
+        pol_sort_mt_cell,
+        pol_sort_fred,
+        pol_sort_fgreen,
+        wp_iscell,
+        wp_isnuc,
+        wp_iscyto,
+        wp_ensg,
+        ccd_comp,
+    )
+    
+    # Generate UMAPs to illustrate cutoffs and stability
+    ProteinCellCycleDependence.generate_protein_umaps(
+        u_well_plates,
+        pol_sort_norm_rev,
+        pol_sort_well_plate,
+        pol_sort_ab_cell,
+        pol_sort_ab_nuc,
+        pol_sort_ab_cyto,
+        pol_sort_mt_cell,
+        wp_iscell,
+        wp_isnuc,
+        wp_iscyto,
+        mean_diff_from_rng,
+    )

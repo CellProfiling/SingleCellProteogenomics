@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 plt.rcParams['pdf.fonttype'], plt.rcParams['ps.fonttype'], plt.rcParams['savefig.dpi'] = 42, 42, 300 #Make PDF text readable
 plt.rcParams['figure.figsize'] = (10, 10)
 
-def analyze_rna_velocity(adata_withblob, mean_diff_from_rng):
-    adata_blobless = adata_withblob[adata_withblob.obs["louvain"] != "5",:]
+def analyze_rna_velocity(adata_withblob, mean_diff_from_rng, do_all_plotting):
+    adata_blobless = adata_withblob[adata_withblob.obs["original_louvain"] != "5",:]
     
     # Make the chosen cutoff UMAP
     cutoff=0.08
@@ -35,6 +35,9 @@ def analyze_rna_velocity(adata_withblob, mean_diff_from_rng):
         "y_umap" : [x[1] for x in adata_withCutoff.obsm['velocity_umap']]}).to_csv(
             f"figures/velocityStreamUmap{cutoff}CCD.tsv", index=False, sep="\t")
     
+    if not do_all_plotting:
+        return
+            
     # Profile different cutoffs for CCD and non-CCD, UMAP and tSNE to evaluate params and consistency
     for cutoff in (np.arange(20) + 1) / 100:
         adata_withCutoff = adata_blobless[:,mean_diff_from_rng <= cutoff]
