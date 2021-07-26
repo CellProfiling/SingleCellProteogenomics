@@ -117,8 +117,10 @@ def qc_filtering(adata, do_log_normalize, do_remove_blob):
     if do_log_normalize: sc.pp.log1p(adata)
     louvain_file="input/RNAData/louvain_original.npy"
     louvain = np.load(louvain_file, allow_pickle=True)
-    adata.obs["original_louvain_wp"] = louvain[:,0]
-    adata.obs["original_louvain"] = louvain[:,1]
+    original_louvain_wp = louvain[:,0]
+    keepThese = np.isin(original_louvain_wp, adata.obs["Well_Plate"]) # can have slightly different number of cells
+    adata.obs["original_louvain_wp"] = louvain[:,0][keepThese]
+    adata.obs["original_louvain"] = louvain[:,1][keepThese]
     if do_remove_blob: 
         removeThese = np.isin(adata.obs["Well_Plate"], adata.obs["original_louvain_wp"][adata.obs["original_louvain"] == "5"])
         adata = adata[~removeThese,:]
@@ -201,8 +203,8 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
-    sc.tl.rank_genes_groups(adata, groupby="louvain")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_before_nn{nn}_md{md}.pdf")
+    sc.tl.rank_genes_groups(adata, groupby="original_louvain")
     p_blob=[a[5] for a in adata.uns["rank_genes_groups"]["pvals_adj"]]
     p_blob_sig = np.array(p_blob) < 0.01
     ensg_blob_sig=np.array([a[5] for a in adata.uns["rank_genes_groups"]["names"]])[p_blob_sig]
@@ -217,7 +219,7 @@ def analyze_noncycling_cells(u_plates):
         for md in mindists:
             sc.pp.neighbors(adata, n_neighbors=nn, n_pcs=40)
             sc.tl.umap(adata, min_dist=md)
-            sc.pl.umap(adata, color="louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
+            sc.pl.umap(adata, color="original_louvain", show=False, save=f"louvain_clusters_after_nn{nn}_md{md}.pdf")
 
 def demonstrate_umap_cycle_without_ccd(adata):
     '''

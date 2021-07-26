@@ -17,7 +17,7 @@ import scipy
 
 def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
              pol_sort_well_plate, pol_sort_norm_rev, pol_sort_ab_cell, pol_sort_ab_nuc, pol_sort_ab_cyto, pol_sort_mt_cell,
-             wp_iscell, wp_isnuc, wp_iscyto):
+             wp_iscell, wp_isnuc, wp_iscyto, do_plotting):
     '''
     Some proteins display bimodal intensity distributions. 
     This method seeks to identify distributions with high- and low-expressing cells, 
@@ -81,38 +81,39 @@ def identify_bimodal_intensity_distributions(u_well_plates, wp_ensg,
     print(f"{sum(~wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying unimodal distributions ({sum(~wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     print(f"{sum(wp_isbimodal_generally[~wp_removeReplicate])}: number of proteins displaying bimodal distributions ({sum(wp_isbimodal_generally)/len(wp_isbimodal_generally)}%)")
     
-    # Show that the intensity measurements are reasonable for these bimodal samples
-    plt.hist(np.concatenate(np.array(wp_intensities, dtype=object)[wp_isbimodal_generally]))
-    plt.xlabel("Mean intensity")
-    plt.ylabel("Count")
-    plt.title("Intensities of Cells within Bimodal Distributions\nAre Similar to those Overall")
-    # plt.show()
-    plt.close()
-
-    print("Illustrate the significantly distinct high- and low-expressing cell populations")
-    plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_generally, alpha=0.5, cmap="bwr_r")
-    plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
-    plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
-    plt.savefig("figures/BimodalSignificance_GeneralBimodality.png")
-    # plt.show()
-    plt.close()
-
-    print("Illustrate the significantly distinct high- and low-expressing cell populations")
-    print("with no difference in pseudotime. These are evaluated separately for CCD.")
-    plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_fcpadj_pass, alpha=0.5, cmap="bwr_r")
-    plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
-    plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
-    plt.savefig("figures/BimodalSignificance.png")
-    plt.savefig("figures/BimodalSignificance.pdf")
-    # plt.show()
-    plt.close()
+    if do_plotting:
+        # Show that the intensity measurements are reasonable for these bimodal samples
+        plt.hist(np.concatenate(np.array(wp_intensities, dtype=object)[wp_isbimodal_generally]))
+        plt.xlabel("Mean intensity")
+        plt.ylabel("Count")
+        plt.title("Intensities of Cells within Bimodal Distributions\nAre Similar to those Overall")
+        # plt.show()
+        plt.close()
     
-    print("Illustrate the samples with sufficient cell count for CCD evaluation of high- and low-expressing cell populations.")
-    plt.scatter([sum(c1[0]) for c1 in wp_bimodal_cluster_idxs], [sum(c1[1]) for c1 in wp_bimodal_cluster_idxs], c=wp_enoughcellsinbothclusters, alpha=0.5, cmap="bwr_r")
-    plt.xlabel("Cell Count, Cluster 1")
-    plt.ylabel("Cell Count, Cluster 2")
-    plt.savefig("figures/BimodalCellCount.png")
-    # plt.show()
-    plt.close()
+        print("Illustrate the significantly distinct high- and low-expressing cell populations")
+        plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_generally, alpha=0.5, cmap="bwr_r")
+        plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
+        plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
+        plt.savefig("figures/BimodalSignificance_GeneralBimodality.png")
+        # plt.show()
+        plt.close()
+    
+        print("Illustrate the significantly distinct high- and low-expressing cell populations")
+        print("with no difference in pseudotime. These are evaluated separately for CCD.")
+        plt.scatter(np.log(wp_bimodal_fcmeans) / np.log(2), -np.log10(wp_isbimodal_padj), c=wp_isbimodal_fcpadj_pass, alpha=0.5, cmap="bwr_r")
+        plt.xlabel("Log2 Fold Change Between Gaussian Clusters")
+        plt.ylabel("-Log10 Adj. p-Value for Difference Between Clusters")
+        plt.savefig("figures/BimodalSignificance.png")
+        plt.savefig("figures/BimodalSignificance.pdf")
+        # plt.show()
+        plt.close()
+        
+        print("Illustrate the samples with sufficient cell count for CCD evaluation of high- and low-expressing cell populations.")
+        plt.scatter([sum(c1[0]) for c1 in wp_bimodal_cluster_idxs], [sum(c1[1]) for c1 in wp_bimodal_cluster_idxs], c=wp_enoughcellsinbothclusters, alpha=0.5, cmap="bwr_r")
+        plt.xlabel("Cell Count, Cluster 1")
+        plt.ylabel("Cell Count, Cluster 2")
+        plt.savefig("figures/BimodalCellCount.png")
+        # plt.show()
+        plt.close()
     
     return wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_isbimodal_generally, wp_bimodal_fcmaxmin

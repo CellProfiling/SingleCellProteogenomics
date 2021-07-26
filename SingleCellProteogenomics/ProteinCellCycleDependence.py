@@ -89,7 +89,8 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
         pol_sort_fred, pol_sort_fgreen, pol_sort_mockbulk_phases,
         pol_sort_area_cell, pol_sort_area_nuc, pol_sort_well_plate_imgnb,
         wp_iscell, wp_isnuc, wp_iscyto,
-        wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj):
+        wp_isbimodal_fcpadj_pass, wp_bimodal_cluster_idxs, wp_comp_kruskal_gaussccd_adj,
+        do_plotting):
     '''
     Use a moving average model of protein expression over the cell cycle to determine cell cycle dependence.
     Generates plots for each gene
@@ -192,13 +193,14 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
             windows2 = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(sum(clust2_idx) - WINDOW + 1)])
             mvperc1 = MovingAverages.mvpercentiles(curr_comp_norm[clust1_idx][windows1])
             mvperc2 = MovingAverages.mvpercentiles(curr_comp_norm[clust2_idx][windows2])
-            MovingAverages.temporal_mov_avg_protein(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], 
-                mvavgs_x_clust1[-1], mvavgs_comp_clust1[-1], mvperc1, None, folder, fileprefixes[i] + "_clust1")
-            MovingAverages.temporal_mov_avg_protein(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], 
-                mvavgs_x_clust2[-1], mvavgs_comp_clust2[-1], mvperc2, None, folder, fileprefixes[i] + "_clust2")
+            if do_plotting:
+                MovingAverages.temporal_mov_avg_protein(curr_pol[clust1_idx], curr_comp_norm[clust1_idx], 
+                    mvavgs_x_clust1[-1], mvavgs_comp_clust1[-1], mvperc1, None, folder, fileprefixes[i] + "_clust1")
+                MovingAverages.temporal_mov_avg_protein(curr_pol[clust2_idx], curr_comp_norm[clust2_idx], 
+                    mvavgs_x_clust2[-1], mvavgs_comp_clust2[-1], mvperc2, None, folder, fileprefixes[i] + "_clust2")
         
         # Make example plots for the randomization trials for the NFAT5 example in manuscript
-        if wp_ensg[i] == "ENSG00000102908":
+        if wp_ensg[i] == "ENSG00000102908" and do_plotting:
             median_rng_idx = np.argsort(curr_percvar_rng_comp)
             for iii, idx in enumerate([0,len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)//2,3*len(curr_percvar_rng_comp)//4,len(curr_percvar_rng_comp)-1]):
                 MovingAverages.temporal_mov_avg_randomization_example_protein(curr_pol, curr_comp_norm, curr_comp_perm[median_rng_idx[idx]], 
@@ -229,36 +231,37 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
         windows = np.asarray([np.arange(start, start + WINDOW) for start in np.arange(len(curr_pol) - WINDOW + 1)])
         mvperc_comp = MovingAverages.mvpercentiles(curr_ab_norm[windows])
         mvperc_comps.append(mvperc_comp)
-        MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
-            mvavg_xvals, mvavg_comp, mvperc_comp, None, folder, fileprefixes[i])
-        
-        # Make the plots for microtubules (takes 10 mins for all, so just do the arbitrary one in the Fig 1)
-        if well == "C07_55405991":
-            mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
-            MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, 
-                    mvavg_xvals, mvavg_mt, mvperc_mt, None, folder_mt, f"{fileprefixes[i]}_mt")
-            if well == "C07_55405991": # keep here in case making all pseudotime plots
-                pd.DataFrame({
-                    "ENSG" : wp_ensg[i],
-                    "Antibody" : wp_ab[i],
-                    "Compartment" : "Cell",
-                    "CCD" : "No",
-                    "cell_pseudotime" : [",".join([str(ppp) for ppp in pp]) for pp in [curr_pol]],
-                    "cell_intensity" : [",".join([str(yyy) for yyy in yy]) for yy in [curr_mt_cell_norm]],
-                    "mvavg_x" : [",".join([str(xxx) for xxx in xx]) for xx in [mvavg_xvals]],
-                    "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in [mvavg_mt]],
-                    "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[0]]],
-                    "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-1]]],
-                    "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[1]]],
-                    "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-2]]],
-                    "phase" : [",".join(pp) for pp in [curr_mockbulk_phase]],
-                    "WellPlate" : u_well_plates[i]}).to_csv(
-                        "output/mtplottingline.tsv", index=False, sep="\t")
-        
-        # Make the plots for each bimodal protein
-        if clusters is not None:
+        if do_plotting:
             MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
-                mvavg_xvals, mvavg_comp, mvperc_comp, clusters, folder, fileprefixes[i] + "_clust1&2")
+                mvavg_xvals, mvavg_comp, mvperc_comp, None, folder, fileprefixes[i])
+            
+            # Make the plots for microtubules (takes 10 mins for all, so just do the arbitrary one in the Fig 1)
+            if well == "C07_55405991":
+                mvperc_mt =  MovingAverages.mvpercentiles(curr_mt_cell_norm[windows])
+                MovingAverages.temporal_mov_avg_protein(curr_pol, curr_mt_cell_norm, 
+                        mvavg_xvals, mvavg_mt, mvperc_mt, None, folder_mt, f"{fileprefixes[i]}_mt")
+                if well == "C07_55405991": # keep here in case making all pseudotime plots
+                    pd.DataFrame({
+                        "ENSG" : wp_ensg[i],
+                        "Antibody" : wp_ab[i],
+                        "Compartment" : "Cell",
+                        "CCD" : "No",
+                        "cell_pseudotime" : [",".join([str(ppp) for ppp in pp]) for pp in [curr_pol]],
+                        "cell_intensity" : [",".join([str(yyy) for yyy in yy]) for yy in [curr_mt_cell_norm]],
+                        "mvavg_x" : [",".join([str(xxx) for xxx in xx]) for xx in [mvavg_xvals]],
+                        "mvavg_y" : [",".join([str(yyy) for yyy in yy]) for yy in [mvavg_mt]],
+                        "mvavgs_10p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[0]]],
+                        "mvavgs_90p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-1]]],
+                        "mvavgs_25p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[1]]],
+                        "mvavgs_75p" : [",".join([str(yyy) for yyy in yy]) for yy in [mvperc_mt[-2]]],
+                        "phase" : [",".join(pp) for pp in [curr_mockbulk_phase]],
+                        "WellPlate" : u_well_plates[i]}).to_csv(
+                            "output/mtplottingline.tsv", index=False, sep="\t")
+        
+            # Make the plots for each bimodal protein
+            if clusters is not None:
+                MovingAverages.temporal_mov_avg_protein(curr_pol, curr_ab_norm, 
+                    mvavg_xvals, mvavg_comp, mvperc_comp, clusters, folder, fileprefixes[i] + "_clust1&2")
         
     alpha_ccd = 0.01
     perc_var_cell, perc_var_nuc, perc_var_cyto, perc_var_mt = np.array(perc_var_cell),np.array(perc_var_nuc),np.array(perc_var_cyto),np.array(perc_var_mt) # percent variance attributed to cell cycle (mean POI intensities)
@@ -323,28 +326,29 @@ def cell_cycle_dependence_protein(u_well_plates, wp_ensg, wp_ab, use_log_ccd, do
     
     wp_ccd_unibimodal = wp_comp_ccd_difffromrng | wp_comp_ccd_clust1 | wp_comp_ccd_clust2
 
-    plt.figure(figsize=(10,10))
-    plt.scatter(perc_var_comp_withbimodal, mean_diff_from_rng_withbimodal, c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
-    plt.hlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(perc_var_comp), np.max(perc_var_comp), color="gray")
-    plt.xlabel("Percent Variance Explained by Cell Cycle")
-    plt.ylabel("Mean Difference from Random")
-    plt.savefig("figures/MedianDiffFromRandom.png")
-    plt.savefig("figures/MedianDiffFromRandom.pdf")
-    # plt.show()
-    plt.close()
-    
-    pervar_adj_withbimodal_nextafter = np.nextafter(wp_comp_eq_percvar_adj_withbimodal, wp_comp_eq_percvar_adj_withbimodal + 1)
-    plt.figure(figsize=(10,10))
-    plt.scatter(mean_diff_from_rng_withbimodal, -np.log10(pervar_adj_withbimodal_nextafter), c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
-    plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, 
-               np.min(-np.log10(pervar_adj_withbimodal_nextafter)), 
-               np.max(-np.log10(pervar_adj_withbimodal_nextafter)), color="gray")
-    plt.xlabel("Mean Difference from Random")
-    plt.ylabel("-log10 adj p-value from randomization")
-    plt.savefig("figures/MedianDiffFromRandomVolcano.png")
-    plt.savefig("figures/MedianDiffFromRandomVolcano.pdf")
-    # plt.show()
-    plt.close()    
+    if do_plotting:
+        plt.figure(figsize=(10,10))
+        plt.scatter(perc_var_comp_withbimodal, mean_diff_from_rng_withbimodal, c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
+        plt.hlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, np.min(perc_var_comp), np.max(perc_var_comp), color="gray")
+        plt.xlabel("Percent Variance Explained by Cell Cycle")
+        plt.ylabel("Mean Difference from Random")
+        plt.savefig("figures/MedianDiffFromRandom.png")
+        plt.savefig("figures/MedianDiffFromRandom.pdf")
+        # plt.show()
+        plt.close()
+        
+        pervar_adj_withbimodal_nextafter = np.nextafter(wp_comp_eq_percvar_adj_withbimodal, wp_comp_eq_percvar_adj_withbimodal + 1)
+        plt.figure(figsize=(10,10))
+        plt.scatter(mean_diff_from_rng_withbimodal, -np.log10(pervar_adj_withbimodal_nextafter), c=wp_comp_ccd_difffromrng_withbimodal, cmap="bwr_r")
+        plt.vlines(MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM, 
+                   np.min(-np.log10(pervar_adj_withbimodal_nextafter)), 
+                   np.max(-np.log10(pervar_adj_withbimodal_nextafter)), color="gray")
+        plt.xlabel("Mean Difference from Random")
+        plt.ylabel("-log10 adj p-value from randomization")
+        plt.savefig("figures/MedianDiffFromRandomVolcano.png")
+        plt.savefig("figures/MedianDiffFromRandomVolcano.pdf")
+        # plt.show()
+        plt.close()    
     
     return (wp_comp_ccd_difffromrng, mean_diff_from_rng_mt, wp_comp_ccd_clust1, wp_comp_ccd_clust2, wp_ccd_unibimodal, 
         wp_comp_ccd_gauss, perc_var_comp, mean_diff_from_rng, wp_comp_eq_percvar_adj, 

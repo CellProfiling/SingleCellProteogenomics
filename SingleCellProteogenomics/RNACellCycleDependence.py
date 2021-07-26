@@ -23,7 +23,7 @@ import scipy
 
 np.random.seed(0) # Get the same results each time
 WINDOW = 100 # Number of points for moving average window for protein analysis
-PERMUTATIONS = 100#10000 # Number of permutations used for randomization analysis
+PERMUTATIONS = 10000 # Number of permutations used for randomization analysis
 PERMUTATIONS_ISOFORMS = 100
 MIN_MEAN_PERCVAR_DIFF_FROM_RANDOM = 0.08 # Cutoff used for percent additional variance explained by the cell cycle than random
 
@@ -292,7 +292,7 @@ def compare_genes_to_isoforms(adata, ccdprotein, ccdtranscript, adata_nonccdprot
     print(f"{sum(ccdIsoformsPerCcdProtein > 0) / sum(ccdprotein)}% of CCD proteins had at least one CCD transcript isoform")
     print(f"{sum(ccdIsoformsPerNonCcdProtein > 0) / sum(adata_nonccdprotein)}% of non-CCD proteins had at least one CCD transcript isoform")
     
-def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp, u_plates):
+def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp, u_plates, make_mvavg_plots_isoforms=False):
     '''Analyze the isoform-level results over the cell cycle'''
     # Read in the data & QC analysis
     valuetype, use_spikeins, biotype_to_use = "Tpms", False, "protein_coding"
@@ -307,7 +307,7 @@ def analyze_isoforms(adata, ccdtranscript, wp_ensg, ccd_comp, nonccd_comp, u_pla
     bioccd = np.genfromtxt("input/ProteinData/BiologicallyDefinedCCD.txt", dtype='str') # from mitotic structures in the protein work
     ccd_regev_filtered_isoform, ccd_filtered_isoform, nonccd_filtered_isoform = utils.ccd_gene_lists(adata_isoform)
     adata_ccdprotein_isoform, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform = RNADataPreparation.is_ccd(adata_isoform, wp_ensg, ccd_comp, nonccd_comp, bioccd, ccd_regev_filtered_isoform)
-    rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, True)
+    rna_ccd_analysis_results = analyze_ccd_variation_by_mvavg_rna(adata_isoform, wp_ensg, ccd_comp, bioccd, adata_nonccdprotein_isoform, adata_regevccdgenes_isoform, biotype_to_use, use_isoforms=True, make_mvavg_plots_isoforms=make_mvavg_plots_isoforms)
     percent_ccd_variance_isoform, total_gini_isoform, mean_diff_from_rng_isoform, pass_meandiff_isoform, eq_percvar_adj_isoform, fucci_time_inds_isoform, norm_exp_sort_isoform, moving_averages_isoform, mvavg_xvals_isoform, perms_isoform, ccdtranscript_isoform, ccdprotein_isoform, mvpercs_isoform = rna_ccd_analysis_results    
     return adata_isoform, ccdtranscript_isoform
 
