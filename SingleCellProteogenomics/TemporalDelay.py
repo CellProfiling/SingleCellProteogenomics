@@ -409,7 +409,7 @@ def analyze_ccd_isoform_correlations(adata, adata_isoform, ccdtranscript, ccdtra
     '''Evaluate the pearson correlations for CCD isoforms from genes with multiple CCD isoforms'''
     gene_varnames = list(adata.var_names)
     isoform_varnames = list(adata_isoform.var_names)
-    isoformToGene = pd.read_csv(f"{RNADataPreparation.{newinputs()}}/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
+    isoformToGene = pd.read_csv(f"{RNADataPreparation.newinputs()}/IsoformToGene.csv.gz", index_col=False, header=None, names=["transcript_id", "gene_id"])
     isoformIdList = list(isoformToGene["transcript_id"])
     isoform_varnames_geneids = np.array([isoformToGene["gene_id"][isoformIdList.index(t)] for t in isoform_varnames])
     ccdIsoformWithCcdGene = ccdtranscript_isoform[np.isin(isoform_varnames_geneids, gene_varnames)] & np.array([ccdtranscript[gene_varnames.index(gene_id)] for gene_id in isoform_varnames_geneids if gene_id in gene_varnames])

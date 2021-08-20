@@ -8,6 +8,8 @@ __pycache__/
 */~$*
 cache/
 **/.DS_Store
+.coverage
+.pytest_cache/
 
 # Output or Downloaded Folders
 input.zip
