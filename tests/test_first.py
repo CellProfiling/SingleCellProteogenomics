@@ -43,6 +43,13 @@ class TestTest(unittest.TestCase):
                 np.log10(self.protein.protein_data.red_fucci[fromplate])
                 == self.protein.log_red_fucci_zeroc[fromplate] + redplatemedian
             )
+            assert all(
+                np.greater_equal(self.protein.log_green_fucci_zeroc_rescale, 0)
+            )
+            assert all(
+                np.greater_equal(self.protein.log_red_fucci_zeroc_rescale, 0)
+            )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
