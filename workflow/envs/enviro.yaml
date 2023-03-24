@@ -4,7 +4,7 @@ channels:
 
 dependencies:
   - pandas
-  - numpy
+  - numpy=1.23
   - python
   - scanpy=1.9.2
   - umap-learn=0.5.1
