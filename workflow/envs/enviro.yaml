@@ -6,7 +6,7 @@ dependencies:
   - pandas
   - numpy
   - python
-  - scanpy=1.7.2
+  - scanpy=1.9.2
   - umap-learn=0.5.1
   - scipy
   - matplotlib
@@ -14,6 +14,6 @@ dependencies:
   - seaborn
   - biopython
   - louvain
-  - scvelo=0.2.3
+  - scvelo
   - gdown # for downloads; keep here too
   - unzip # for downloads; keep here too
