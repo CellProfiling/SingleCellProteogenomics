@@ -27,7 +27,7 @@ This workflow can be run using `snakemake`:
 
 The single-cell RNA-Seq data is available at GEO SRA under project number [GSE146773](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE146773).
 
-The cell cycle phase and FACS intensity information for these ~1,000 cells are contained in the [input folder](https://drive.google.com/file/d/149ICTtieYjuKWZoLwRLzimwff0n6eWqw/view?usp=sharing) within three files, one per plate, starting with `RNAData/180911_Fucci_single cell seq_ss2-18-*.csv`.
+The cell cycle phase and FACS intensity information for these ~1,000 cells are contained in the [input folder](https://drive.google.com/file/d/149ICTtieYjuKWZoLwRLzimwff0n6eWqw/view?usp=sharing) within three files, one per plate, starting with `RNAData/180911_Fucci_single cell seq_ss2-18-*.csv`. Raw FACS intensities, normalized FACS intensities, and calculated FUCCI pseudotime can also be found [here](https://drive.google.com/file/d/1gamqvr4Hh89is4sPuA2fvwMWRnoQ0yz0/view?usp=sharing).
 
 The `snakemake` workflow used to analyze the scRNA-Seq dataset, including RNA velocity calculations and louvain unsupervised clustering, can be found in this repository: https://github.com/CellProfiling/FucciSingleCellSeqPipeline.
 
